@@ -16,6 +16,7 @@
     "build:preview": "cross-env KERNSEITE_BUILD_MODE=preview astro build && node scripts/build-csp-hashes.mjs",
     "build:production": "cross-env KERNSEITE_BUILD_MODE=production astro build && node scripts/build-csp-hashes.mjs",
     "preview": "astro preview",
+    "preview:host": "astro preview --host",
     "copy-fonts": "node scripts/copy-fonts.mjs",
     "typecheck": "astro check",
     "lint": "eslint .",

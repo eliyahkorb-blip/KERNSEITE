@@ -46,6 +46,18 @@ und `noindex`. Der Deploy-Guard (`pnpm guard:no-fixture`) verweigert dann den Up
 > ist `pnpm build:production` bewusst blockiert. Das ist gewollt – siehe
 > `docs/LEGAL_TODO.md`.
 
+## Vorschau (vor dem Merge)
+
+Für die visuelle Prüfung auf Smartphone und Desktop gibt es einen eigenen Vorschau-Build
+(echte Daten, `noindex`, sichtbarer „Vorschau“-Hinweis, Formular deaktiviert):
+
+```bash
+pnpm build:preview      # baut die Vorschau
+pnpm preview:host       # lokal ausliefern (auch fürs Smartphone im selben WLAN)
+```
+
+Öffentliche Vorschau-URL (GitHub Pages) und Artefakt-Download: siehe `docs/PREVIEW.md`.
+
 ## Nützliche Skripte
 
 ```bash
