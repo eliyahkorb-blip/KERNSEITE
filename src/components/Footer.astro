@@ -1,0 +1,150 @@
+---
+import { footerNav } from '../config/navigation';
+import { site, canShowHostingClaim } from '../config/site';
+import { activeCompany } from '../lib/config-validation';
+
+const year = new Date().getFullYear();
+const c = activeCompany;
+---
+
+<footer class="site-footer section--navy on-dark">
+  <div class="content">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <a class="wordmark wordmark--footer" href="/" aria-label="KERNSEITE – zur Startseite">
+          <span>KERNSEITE</span><span class="wordmark__dot" aria-hidden="true">.</span>
+        </a>
+        <p class="site-footer__claim">{site.claim}</p>
+        <p class="site-footer__legalname">{c.legalDisplayName}</p>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="Footer-Navigation">
+        {
+          footerNav.map((group) => (
+            <div class="site-footer__group">
+              <h2 class="site-footer__group-title">{group.title}</h2>
+              <ul role="list">
+                {group.items.map((item) => (
+                  <li>
+                    <a href={item.href}>{item.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p class="site-footer__copy">
+        © {year}
+        {c.legalDisplayName} · {site.region.city}, {site.region.state}
+      </p>
+      <ul class="site-footer__meta" role="list">
+        {canShowHostingClaim && <li>{site.hostingClaimText}</li>}
+        {
+          site.consentRequired && (
+            <li>
+              <a href="/cookie-einstellungen/">Cookie-Einstellungen</a>
+            </li>
+          )
+        }
+        <li><a href="/barrierefreiheit/">Barrierefreiheit</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block: clamp(3rem, 2rem + 4vw, 5rem);
+  }
+  .site-footer__top {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .wordmark--footer {
+    font-size: 1.6rem;
+    color: var(--text-invert);
+  }
+  .site-footer__claim {
+    margin-block-start: var(--space-md);
+    color: var(--text-invert-muted);
+    max-width: 26ch;
+  }
+  .site-footer__legalname {
+    margin-block-start: var(--space-xs);
+    font-size: var(--fs-small);
+    color: var(--text-invert-muted);
+  }
+  .site-footer__nav {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl);
+  }
+  .site-footer__group-title {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: var(--fw-medium);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-cyan);
+    margin-block-end: var(--space-md);
+  }
+  .site-footer__group ul {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+  }
+  .site-footer__group a {
+    color: var(--text-invert-muted);
+    text-decoration: none;
+    font-size: var(--fs-small);
+  }
+  .site-footer__group a:hover {
+    color: var(--text-invert);
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md) var(--space-xl);
+    justify-content: space-between;
+    align-items: center;
+    margin-block-start: var(--space-2xl);
+    padding-block-start: var(--space-lg);
+    border-block-start: 1px solid var(--border-invert);
+  }
+  .site-footer__copy {
+    font-size: var(--fs-small);
+    color: var(--text-invert-muted);
+  }
+  .site-footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md) var(--space-lg);
+    margin: 0;
+    padding: 0;
+    font-size: var(--fs-small);
+    color: var(--text-invert-muted);
+  }
+  .site-footer__meta a {
+    color: var(--text-invert-muted);
+    text-decoration: none;
+  }
+  .site-footer__meta a:hover {
+    color: var(--color-cyan);
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__top {
+      grid-template-columns: 1fr 1.4fr;
+      gap: var(--space-4xl);
+    }
+    .site-footer__nav {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

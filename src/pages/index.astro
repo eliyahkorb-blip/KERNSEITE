@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site, canShowHostingClaim } from '../config/site';
+
+const trustParts = [
+  'Individuell entwickelt',
+  'datenschutzfreundlich geplant',
+  ...(canShowHostingClaim ? ['auf Wunsch in Deutschland gehostet'] : []),
+];
+---
+
+<BaseLayout
+  title="Individuelle Websites für Unternehmen mit Anspruch"
+  description={site.shortDescription}
+>
+  <section class="hero section--paper">
+    <div class="content hero__grid">
+      <div class="hero__text">
+        <p class="eyebrow">Digitalstudio aus Würzburg · für Unternehmen mit Anspruch</p>
+        <h1 class="hero__title">Dein Unternehmen ist besser als sein Internetauftritt.</h1>
+        <p class="lead hero__subline">
+          KERNSEITE entwickelt individuelle Websites und verbindet sie auf Wunsch mit Google,
+          Unternehmensvideo, Social Media und intelligenten Automatisierungen.
+        </p>
+        <div class="hero__ctas">
+          <a class="btn btn--primary" href="/kontakt/">Projekt besprechen</a>
+          <a class="btn btn--secondary" href="/arbeiten/">Arbeiten ansehen</a>
+        </div>
+        <p class="hero__trust">{trustParts.join(' · ')}</p>
+      </div>
+      <div class="hero__media" aria-hidden="true">
+        <div class="hero__placeholder">Hero-Animation folgt (M3)</div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+  }
+  .hero__grid {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .hero__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-hero);
+    margin-block: var(--space-md) var(--space-lg);
+    max-width: 15ch;
+  }
+  .hero__subline {
+    max-width: 46ch;
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-block-start: var(--space-xl);
+  }
+  .hero__trust {
+    margin-block-start: var(--space-lg);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+  .hero__placeholder {
+    display: grid;
+    place-items: center;
+    min-height: 360px;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    color: var(--text-muted);
+    background: var(--color-bright);
+  }
+  @media (min-width: 64rem) {
+    .hero__grid {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
+</style>

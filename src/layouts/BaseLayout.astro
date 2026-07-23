@@ -1,0 +1,76 @@
+---
+import '../styles/tokens.css';
+import '../styles/fonts.css';
+import '../styles/global.css';
+
+import Seo from '../components/Seo.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ConsentManager from '../components/ConsentManager.astro';
+import { site } from '../config/site';
+import { websiteJsonLd, organizationJsonLd } from '../lib/jsonld';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  jsonLd?: Array<Record<string, unknown> | null>;
+  bodyClass?: string;
+}
+
+const { title, description, ogImage, noindex = false, jsonLd = [], bodyClass } = Astro.props;
+const path = Astro.url.pathname;
+
+// Basis-Schemas auf jeder Seite (Organization nur bei vollständigen Echtdaten).
+const baseSchemas = [websiteJsonLd(), organizationJsonLd()];
+const allSchemas = [...baseSchemas, ...jsonLd];
+---
+
+<!doctype html>
+<html lang={site.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f1e8" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="mask-icon" href="/favicon.svg" color="#304ffe" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Kritische, lokal gehostete Schriften vorladen -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/bricolage-grotesque-latin-var.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/inter-latin-400.woff2"
+      crossorigin
+    />
+
+    <Seo
+      title={title}
+      description={description}
+      path={path}
+      ogImage={ogImage}
+      noindex={noindex}
+      jsonLd={allSchemas}
+    />
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <ConsentManager />
+  </body>
+</html>

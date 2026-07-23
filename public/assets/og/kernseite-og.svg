@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="KERNSEITE – Der digitale Kern deines Unternehmens">
+  <defs>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#304FFE"/>
+      <stop offset="1" stop-color="#19E6F2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#081B3A"/>
+  <rect x="0" y="0" width="1200" height="8" fill="url(#edge)"/>
+  <g font-family="Inter, system-ui, sans-serif" fill="#FCFBF7">
+    <text x="90" y="150" font-size="26" letter-spacing="4" fill="#19E6F2" font-family="'IBM Plex Mono', monospace">DIGITALSTUDIO · WÜRZBURG</text>
+    <text x="86" y="330" font-size="140" font-weight="700" letter-spacing="-4" font-family="'Bricolage Grotesque', Inter, sans-serif">KERNSEITE<tspan fill="#19E6F2">.</tspan></text>
+    <text x="90" y="420" font-size="42" fill="#B8C4DA">Der digitale Kern deines Unternehmens.</text>
+    <text x="90" y="560" font-size="26" fill="#B8C4DA">Individuelle Websites · Google · Video · Social · KI</text>
+  </g>
+  <g transform="translate(980,360)">
+    <rect x="0" y="0" width="150" height="150" rx="28" fill="#0d244a" stroke="#223a63"/>
+    <g fill="none" stroke="#FCFBF7" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" transform="translate(30,28) scale(1.4)">
+      <path d="M8 5 V55"/>
+      <path d="M11 30 L40 5"/>
+      <path d="M11 30 L40 55"/>
+    </g>
+    <circle cx="120" cy="120" r="11" fill="#19E6F2"/>
+  </g>
+</svg>
