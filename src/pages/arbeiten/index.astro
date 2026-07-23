@@ -1,0 +1,233 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CaseMockup from '../../components/CaseMockup.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import { cases, caseFilters } from '../../config/cases';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Arbeiten', path: '/arbeiten/' },
+];
+---
+
+<PageLayout
+  title="Arbeiten"
+  description="Konzeptstudien von KERNSEITE – eigenständig entwickelte Demo-Auftritte, klar gekennzeichnet. Keine erfundenen Ergebnisse, Kennzahlen oder Kundenstimmen."
+  eyebrow="Arbeiten"
+  h1="Arbeiten, die mehr zeigen als schöne Screens."
+  lead="Solange noch keine freigegebenen Kundenprojekte vorliegen, zeigen wir eigenständig entwickelte Konzeptstudien. Sie sind klar als solche gekennzeichnet – ohne erfundene Ergebnisse, Kennzahlen oder Kundenstimmen."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section section--bright">
+    <div class="content">
+      <div class="filterbar" role="group" aria-label="Arbeiten filtern">
+        <button type="button" class="filterbar__btn" data-filter="all" aria-pressed="true">
+          Alle
+        </button>
+        {
+          caseFilters.map((f) => (
+            <button type="button" class="filterbar__btn" data-filter={f.key} aria-pressed="false">
+              {f.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <ul class="cases" role="list" data-cases>
+        {
+          cases.map((c) => (
+            <li class="cases__item" data-filters={c.filters.join(' ')}>
+              <a class="case-card" href={c.href}>
+                <span class="case-card__pixels" aria-hidden="true" />
+                <div class="case-card__media">
+                  <CaseMockup
+                    theme={c.mockupTheme}
+                    brand={c.title}
+                    tagline={c.tagline}
+                    industryLabel={c.industryLabel}
+                  />
+                </div>
+                <div class="case-card__meta">
+                  <span class="badge badge--concept">{c.badge}</span>
+                  <h2 class="case-card__title">{c.title}</h2>
+                  <p class="case-card__industry">{c.industryLabel}</p>
+                  <p class="case-card__tagline">{c.tagline}</p>
+                  <span class="case-card__cta arrow-link">
+                    Konzeptstudie ansehen{' '}
+                    <span class="arrow" aria-hidden="true">
+                      →
+                    </span>
+                  </span>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="cases__empty" data-empty hidden>
+        Für diesen Filter gibt es aktuell keine Arbeiten.
+      </p>
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Dein Projekt wird die nächste Arbeit."
+    text="Lass uns über deinen Auftritt sprechen – ehrlich, unverbindlich und ohne Paket-Verkauf."
+    ctaLabel="Projekt besprechen"
+    ctaHref="/kontakt/"
+    secondaryLabel="Leistungen ansehen"
+    secondaryHref="/leistungen/"
+  />
+</PageLayout>
+
+<style>
+  .filterbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block-end: var(--space-2xl);
+  }
+  .filterbar__btn {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--border-strong);
+    background: var(--color-bright);
+    color: var(--text-muted);
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
+  }
+  .filterbar__btn:hover {
+    border-color: var(--color-graphite);
+    color: var(--text);
+  }
+  .filterbar__btn[aria-pressed='true'] {
+    background: var(--color-graphite);
+    border-color: var(--color-graphite);
+    color: var(--color-bright);
+  }
+
+  .cases {
+    display: grid;
+    gap: var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cases__item[hidden] {
+    display: none;
+  }
+  .case-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2.25rem);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--surface-muted);
+    text-decoration: none;
+    color: var(--text);
+    height: 100%;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out);
+  }
+  .case-card:hover,
+  .case-card:focus-visible {
+    transform: translateY(-4px);
+    border-color: var(--color-ultramarine);
+    box-shadow: var(--shadow-lg);
+  }
+  .case-card__pixels {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, var(--color-ultramarine) 1.4px, transparent 1.6px);
+    background-size: 20px 20px;
+    opacity: 0;
+    transform: scale(1.04);
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
+    pointer-events: none;
+  }
+  .case-card:hover .case-card__pixels,
+  .case-card:focus-visible .case-card__pixels {
+    opacity: 0.16;
+    transform: scale(1);
+  }
+  .case-card__media,
+  .case-card__meta {
+    position: relative;
+    z-index: 1;
+  }
+  .case-card__meta {
+    margin-block-start: var(--space-lg);
+  }
+  .case-card__title {
+    margin-block-start: 0.75rem;
+    font-size: var(--fs-h3);
+  }
+  .case-card__industry {
+    margin-block-start: 0.15rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--brand-strong);
+  }
+  .case-card__tagline {
+    margin-block-start: 0.5rem;
+    color: var(--text-muted);
+  }
+  .case-card__cta {
+    margin-block-start: 0.9rem;
+    font-size: var(--fs-small);
+  }
+  .cases__empty {
+    margin-block-start: var(--space-xl);
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 48rem) {
+    .cases {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .cases {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .case-card__pixels {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Client-seitiger Filter für die Arbeiten-Übersicht.
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.cases__item'));
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+
+  function apply(filter: string) {
+    let visible = 0;
+    items.forEach((item) => {
+      const filters = (item.dataset.filters ?? '').split(' ');
+      const show = filter === 'all' || filters.includes(filter);
+      item.hidden = !show;
+      if (show) visible++;
+    });
+    if (empty) empty.hidden = visible !== 0;
+  }
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+      apply(btn.dataset.filter ?? 'all');
+    });
+  });
+</script>

@@ -1,0 +1,358 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CaseMockup from '../../components/CaseMockup.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import { cases, type CaseStudy } from '../../config/cases';
+import { getService, type ServiceKey } from '../../config/services';
+import { breadcrumbJsonLd } from '../../lib/jsonld';
+
+export function getStaticPaths() {
+  return cases.map((c) => ({ params: { slug: c.slug }, props: { study: c } }));
+}
+
+interface Props {
+  study: CaseStudy;
+}
+const { study } = Astro.props;
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Arbeiten', path: '/arbeiten/' },
+  { name: study.title, path: study.href },
+];
+const serviceLabels = study.services.map((key) => getService(key as ServiceKey).label);
+---
+
+<BaseLayout
+  title={`${study.title} · Konzeptstudie`}
+  description={`Konzeptstudie (kein Kundenprojekt): ${study.tagline} ${study.situation}`.slice(
+    0,
+    155,
+  )}
+  jsonLd={[breadcrumbJsonLd(breadcrumbs)]}
+>
+  <!-- 1. Große visuelle Eröffnung -->
+  <header class="case-hero section--paper">
+    <div class="content">
+      <Breadcrumbs items={breadcrumbs} />
+      <span class="badge badge--concept case-hero__badge">{study.badge}</span>
+      <div class="case-hero__grid">
+        <div>
+          <p class="eyebrow">{study.industryLabel}</p>
+          <h1 class="case-hero__title">{study.title}</h1>
+          <p class="lead case-hero__tagline">{study.tagline}</p>
+        </div>
+        <div class="case-hero__media">
+          <CaseMockup
+            theme={study.mockupTheme}
+            brand={study.title}
+            tagline={study.tagline}
+            industryLabel={study.industryLabel}
+          />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. Kunde / Branche / Leistungen -->
+  <section class="section section--bright section--tight">
+    <div class="content">
+      <dl class="factbar">
+        <div>
+          <dt>Auftraggeber</dt>
+          <dd>Fiktiv – Konzeptstudie</dd>
+        </div>
+        <div>
+          <dt>Branche</dt>
+          <dd>{study.industryLabel}</dd>
+        </div>
+        <div>
+          <dt>Leistungen</dt>
+          <dd>{serviceLabels.join(', ')}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- 3–6. Ausgangslage / Ziel / Strategie / Designsystem -->
+  <section class="section section--paper">
+    <div class="content story">
+      <article class="story__block">
+        <p class="eyebrow">Ausgangssituation</p>
+        <p class="story__text">{study.situation}</p>
+      </article>
+      <article class="story__block">
+        <p class="eyebrow">Ziel</p>
+        <p class="story__text">{study.goal}</p>
+      </article>
+      <article class="story__block">
+        <p class="eyebrow">Strategie</p>
+        <p class="story__text">{study.strategy}</p>
+      </article>
+      <article class="story__block">
+        <p class="eyebrow">Designsystem</p>
+        <p class="story__text">{study.designSystem}</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 7. Website-Ausschnitte -->
+  <section class="section section--muted">
+    <div class="content">
+      <div class="band-head">
+        <p class="eyebrow">Website-Ausschnitte</p>
+        <h2 class="section-title">Was den Auftritt ausmacht.</h2>
+      </div>
+      <div class="showcase">
+        <div class="showcase__desktop">
+          <CaseMockup
+            theme={study.mockupTheme}
+            brand={study.title}
+            tagline={study.tagline}
+            industryLabel={study.industryLabel}
+          />
+        </div>
+        <ul class="showcase__list" role="list">
+          {study.highlights.map((h) => <li>{h}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Mobile Darstellung -->
+  <section class="section section--bright">
+    <div class="content mobileview">
+      <div class="mobileview__text">
+        <p class="eyebrow">Mobile Darstellung</p>
+        <h2 class="section-title">Für die Hand gedacht.</h2>
+        <p class="lead">
+          Das mobile Layout wird eigenständig gestaltet – nicht nur zusammengeschoben. Die
+          wichtigsten Wege bleiben mit dem Daumen erreichbar.
+        </p>
+      </div>
+      <div class="mobileview__phone">
+        <CaseMockup
+          theme={study.mockupTheme}
+          brand={study.title}
+          tagline={study.tagline}
+          industryLabel={study.industryLabel}
+          class="is-phone"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Optionale Module -->
+  {
+    study.optionalModules.length > 0 && (
+      <section class="section section--paper">
+        <div class="content">
+          <div class="band-head">
+            <p class="eyebrow">Optionale Module</p>
+            <h2 class="section-title">Sinnvoll andockbar.</h2>
+          </div>
+          <ul class="modules" role="list">
+            {study.optionalModules.map((m) => (
+              <li class="modules__item">{m}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- 10. Ergebnisse + 11. Kundenstimme (ehrlich, ohne Erfindung) -->
+  <section class="section section--muted">
+    <div class="content honesty">
+      <div class="honesty__card">
+        <p class="eyebrow">Belegbare Ergebnisse</p>
+        <p>
+          Dies ist eine Konzeptstudie. Wir weisen bewusst keine Kennzahlen oder Ergebnisse aus.
+          Belegbare Resultate zeigen wir ausschließlich bei echten, freigegebenen Projekten.
+        </p>
+      </div>
+      <div class="honesty__card">
+        <p class="eyebrow">Kundenstimme</p>
+        <p>
+          Kundenstimmen veröffentlichen wir nur mit ausdrücklicher Freigabe. Für diese Konzeptstudie
+          liegt keine vor.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Stell dir das für dein Unternehmen vor."
+    text="Aus einer Konzeptstudie wird ein echter Auftritt, sobald wir dein Unternehmen kennen."
+    ctaLabel="Projekt besprechen"
+    ctaHref="/kontakt/"
+    secondaryLabel="Weitere Arbeiten"
+    secondaryHref="/arbeiten/"
+  />
+</BaseLayout>
+
+<style>
+  .case-hero {
+    padding-block: clamp(1.5rem, 1rem + 2vw, 2.75rem) var(--section-y);
+  }
+  .case-hero__badge {
+    margin-block: var(--space-lg) var(--space-lg);
+  }
+  .case-hero__grid {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .case-hero__title {
+    font-size: clamp(2.5rem, 1rem + 6vw, 5.5rem);
+    margin-block: var(--space-sm) var(--space-md);
+  }
+  .case-hero__tagline {
+    max-width: 40ch;
+  }
+  @media (min-width: 64rem) {
+    .case-hero__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4xl);
+    }
+  }
+
+  .factbar {
+    display: grid;
+    gap: var(--space-lg);
+    margin: 0;
+  }
+  .factbar dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-block-end: 0.25rem;
+  }
+  .factbar dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-h4);
+  }
+  @media (min-width: 48rem) {
+    .factbar {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .story {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .story__text {
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    max-width: 62ch;
+  }
+  @media (min-width: 48rem) {
+    .story {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .showcase {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .showcase__list {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .showcase__list li {
+    position: relative;
+    padding-inline-start: 1.6rem;
+    font-size: var(--fs-lead);
+  }
+  .showcase__list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    background: var(--color-ultramarine);
+  }
+  @media (min-width: 64rem) {
+    .showcase {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+  }
+
+  .mobileview {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .mobileview__phone {
+    max-width: 320px;
+    margin-inline: auto;
+  }
+  .mobileview__phone :global(.is-phone) {
+    box-shadow: var(--shadow-lg);
+  }
+  @media (min-width: 64rem) {
+    .mobileview {
+      grid-template-columns: 1fr 0.7fr;
+    }
+  }
+
+  .modules {
+    display: grid;
+    gap: var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .modules__item {
+    padding: var(--space-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bright);
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+  }
+  @media (min-width: 48rem) {
+    .modules {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .honesty {
+    display: grid;
+    gap: var(--grid-gap);
+  }
+  .honesty__card {
+    padding: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    background: var(--color-bright);
+    max-width: 60ch;
+  }
+  .honesty__card p:not(.eyebrow) {
+    color: var(--text-muted);
+  }
+  @media (min-width: 48rem) {
+    .honesty {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .band-head {
+    display: grid;
+    gap: var(--space-sm);
+    margin-block-end: var(--space-xl);
+  }
+</style>
