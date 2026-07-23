@@ -65,6 +65,31 @@ const roles = [
   lead="KERNSEITE ist das Digitalstudio von Eliyah Korb. Der Schwerpunkt liegt auf individuellen Websites und digitalen Auftritten – regional verankert in Würzburg, ergänzt durch ein projektbezogenes Partnernetzwerk."
   breadcrumbs={breadcrumbs}
 >
+  <!-- Person / Porträt -->
+  <section class="section section--paper section--tight">
+    <div class="content person">
+      <figure class="person__portrait">
+        <img
+          src="/assets/team/eliyah-portrait.svg"
+          width="800"
+          height="1000"
+          alt="Platzhalter für ein Porträt von Eliyah Korb – echtes Foto folgt."
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption class="person__cap">Porträt folgt</figcaption>
+      </figure>
+      <div class="person__text">
+        <p class="eyebrow">Hinter KERNSEITE</p>
+        <h2 class="section-title">Eliyah Korb – dein Ansprechpartner.</h2>
+        <p class="lead">
+          KERNSEITE wird von Eliyah Korb geführt. Du hast über das ganze Projekt hinweg einen festen
+          Ansprechpartner – von der Strategie bis zur fertigen Website.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- Werte -->
   <section class="section section--bright">
     <div class="content">
@@ -147,6 +172,45 @@ const roles = [
     display: grid;
     gap: var(--space-sm);
     margin-block-end: var(--space-xl);
+  }
+
+  .person {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .person__portrait {
+    margin: 0;
+    position: relative;
+    max-width: 340px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+  }
+  .person__portrait img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .person__cap {
+    position: absolute;
+    inset-block-end: 0.6rem;
+    inset-inline-start: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--color-alert);
+    border-radius: 4px;
+    padding: 0.15rem 0.45rem;
+  }
+  @media (min-width: 48rem) {
+    .person {
+      grid-template-columns: auto 1fr;
+      gap: var(--space-4xl);
+    }
   }
   .values {
     display: grid;
