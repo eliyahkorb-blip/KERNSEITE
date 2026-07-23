@@ -1,0 +1,19 @@
+---
+import { SHOW_DRAFT_NOTICES } from '../lib/build-mode';
+import { legal } from '../config/legal';
+
+interface Props {
+  text?: string;
+}
+const { text = legal.draftNotice } = Astro.props;
+---
+
+{
+  /* Nur im Entwicklungsmodus sichtbar. Im Produktions-/CI-Build wird nichts gerendert. */
+  SHOW_DRAFT_NOTICES && (
+    <div class="draft-notice" role="note">
+      <strong>{legal.reviewReminderTitle}</strong>
+      {text}
+    </div>
+  )
+}

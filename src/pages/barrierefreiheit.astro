@@ -1,0 +1,69 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import DraftNotice from '../components/DraftNotice.astro';
+import { activeCompany } from '../lib/config-validation';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Barrierefreiheit', path: '/barrierefreiheit/' },
+];
+const c = activeCompany;
+---
+
+<PageLayout
+  title="Barrierefreiheit"
+  description="Erklärung zur Barrierefreiheit von KERNSEITE. Ziel ist die weitgehende Vereinbarkeit mit WCAG 2.2 AA."
+  eyebrow="Rechtliches"
+  h1="Erklärung zur Barrierefreiheit"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section section--paper">
+    <div class="content">
+      <DraftNotice
+        text="Entwurf – nur im Entwicklungsmodus sichtbar. Diese Erklärung zur Barrierefreiheit ist ein technisch vorbereiteter Entwurf. Der tatsächliche Stand der Vereinbarkeit sowie bekannte Einschränkungen sind nach einer fachlichen Prüfung (z. B. gemäß BFSG/EN 301 549) zu ergänzen."
+      />
+      <div class="prose">
+        <p>
+          Wir möchten, dass unsere Website von möglichst vielen Menschen gut genutzt werden kann –
+          unabhängig von Einschränkungen oder der verwendeten Technik. Als technischer
+          Qualitätsstandard dient uns WCAG 2.2 auf Stufe AA.
+        </p>
+
+        <h2>Umgesetzte Maßnahmen</h2>
+        <ul>
+          <li>Semantisches HTML mit klaren Landmarken und sinnvoller Überschriftenstruktur</li>
+          <li>Vollständige Bedienbarkeit per Tastatur und klar sichtbare Fokuszustände</li>
+          <li>
+            Ausreichende Farbkontraste; Informationen werden nicht allein über Farbe vermittelt
+          </li>
+          <li>Skip-Link zum Hauptinhalt</li>
+          <li>Formulare mit Beschriftungen, Beschreibungen und verständlichen Fehlermeldungen</li>
+          <li>Statusmeldungen über geeignete Live-Regionen</li>
+          <li>Respektierung der Systemeinstellung „Bewegung reduzieren“</li>
+          <li>Alternativtexte für informative Bilder; dekorative Grafiken ohne Alt-Text</li>
+          <li>Ausreichend große Bedienelemente</li>
+        </ul>
+
+        <h2>Stand der Vereinbarkeit</h2>
+        <p>
+          Der konkrete Vereinbarkeitsstatus wird nach einer strukturierten Prüfung ergänzt. Sollten
+          einzelne Inhalte noch nicht vollständig barrierefrei sein, arbeiten wir an deren
+          Verbesserung.
+        </p>
+
+        <h2>Bekannte Einschränkungen</h2>
+        <p>
+          Bekannte Einschränkungen werden hier nach der Prüfung transparent aufgeführt. Wir setzen
+          bewusst keinen scheinbaren „Barrierefreiheits-Schalter“ ein, der nur Farben ändert und
+          vollständige Barrierefreiheit vortäuscht.
+        </p>
+
+        <h2>Feedback und Kontakt</h2>
+        <p>
+          Wenn dir etwas auffällt, das nicht gut zugänglich ist, freuen wir uns über einen Hinweis.
+          Du erreichst uns unter: {c.email}. Wir bemühen uns, gemeldete Probleme zeitnah zu beheben.
+        </p>
+      </div>
+    </div>
+  </section>
+</PageLayout>

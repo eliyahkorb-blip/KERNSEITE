@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { mainNav } from '../config/navigation';
+---
+
+<BaseLayout
+  title="Seite nicht gefunden"
+  description="Diese Seite existiert nicht (mehr)."
+  noindex={true}
+>
+  <section class="notfound section--paper">
+    <div class="content">
+      <p class="eyebrow">Fehler 404</p>
+      <h1 class="notfound__title">Diese Seite gibt es nicht.</h1>
+      <p class="lead notfound__lead">
+        Vielleicht wurde sie verschoben oder die Adresse enthält einen Tippfehler. Hier geht es
+        weiter:
+      </p>
+      <div class="notfound__actions">
+        <a class="btn btn--primary" href="/">Zur Startseite</a>
+        <a class="btn btn--secondary" href="/kontakt/">Kontakt</a>
+      </div>
+      <nav class="notfound__nav" aria-label="Wichtige Seiten">
+        <ul role="list">
+          {
+            mainNav.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: clamp(3rem, 2rem + 6vw, 7rem);
+  }
+  .notfound__title {
+    font-size: clamp(2.5rem, 1rem + 7vw, 6rem);
+    margin-block: var(--space-sm) var(--space-lg);
+    max-width: 16ch;
+  }
+  .notfound__lead {
+    max-width: 48ch;
+  }
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-block-start: var(--space-xl);
+  }
+  .notfound__nav {
+    margin-block-start: var(--space-3xl);
+    border-block-start: 1px solid var(--border);
+    padding-block-start: var(--space-lg);
+  }
+  .notfound__nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md) var(--space-xl);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .notfound__nav a {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    color: var(--text);
+  }
+  .notfound__nav a:hover {
+    color: var(--brand-strong);
+  }
+</style>

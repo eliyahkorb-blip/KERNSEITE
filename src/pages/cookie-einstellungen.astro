@@ -1,0 +1,68 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { site } from '../config/site';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Cookie-Einstellungen', path: '/cookie-einstellungen/' },
+];
+---
+
+<PageLayout
+  title="Cookie-Einstellungen"
+  description="Cookie- und Einwilligungseinstellungen."
+  eyebrow="Datenschutz"
+  h1="Cookie-Einstellungen"
+  breadcrumbs={breadcrumbs}
+  noindex={true}
+>
+  <section class="section section--paper">
+    <div class="content prose">
+      {
+        site.consentRequired ? (
+          <>
+            <p>
+              Hier kannst du deine Einwilligung zu optionalen Diensten anpassen. Notwendige
+              Funktionen sind für den Betrieb der Website erforderlich und immer aktiv.
+            </p>
+            <p>
+              <button type="button" class="btn btn--secondary" data-consent-reset>
+                Auswahl zurücksetzen
+              </button>
+            </p>
+            <p class="cookie-reset-status" role="status" aria-live="polite" data-reset-status />
+          </>
+        ) : (
+          <>
+            <p>
+              Aktuell setzt diese Website ausschließlich technisch notwendige Funktionen ein. Es
+              werden keine zustimmungspflichtigen Cookies oder Tracking-Dienste verwendet – daher
+              ist keine Cookie-Einwilligung erforderlich.
+            </p>
+            <p>
+              Sollten wir künftig einwilligungspflichtige Dienste einbinden, findest du an dieser
+              Stelle die Möglichkeit, deine Einwilligung zu verwalten und jederzeit zu widerrufen.
+              Weitere Informationen findest du in der{' '}
+              <a href="/datenschutz/">Datenschutzerklärung</a>.
+            </p>
+          </>
+        )
+      }
+    </div>
+  </section>
+</PageLayout>
+
+{
+  site.consentRequired && (
+    <script>
+      const btn = document.querySelector('[data-consent-reset]');
+      const status = document.querySelector('[data-reset-status]');
+      if (btn && status) {
+        btn.addEventListener('click', () => {
+          localStorage.removeItem('kernseite-consent');
+          status.textContent = 'Deine Auswahl wurde zurückgesetzt. Beim nächsten Seitenaufruf wirst du erneut gefragt.';
+        });
+      }
+    </script>
+  )
+}
