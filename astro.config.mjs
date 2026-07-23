@@ -65,6 +65,8 @@ export default defineConfig({
   vite: {
     build: {
       cssCodeSplit: true,
+      // Keine Inline-Assets/-Scripts – ausführbare Skripte extern ausliefern (CSP-freundlich).
+      assetsInlineLimit: 0,
     },
   },
 });

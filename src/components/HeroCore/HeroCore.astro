@@ -1,0 +1,736 @@
+---
+// Hero-Animation „Der digitale Kern“.
+// Reines DOM/CSS/SVG + Web Animations API – keine WebGL/3D-Bibliothek, kein Video,
+// kein externes CDN. Der dekorative Mockup-Bereich ist aria-hidden; die Modul-Buttons
+// sind tastaturbedienbar und steuern die Darstellung. Eine Textalternative beschreibt
+// die Szene. Auf `prefers-reduced-motion` läuft eine statische Variante.
+
+const modules = [
+  { key: 'website', label: 'Website' },
+  { key: 'google', label: 'Google' },
+  { key: 'video', label: 'Video' },
+  { key: 'social', label: 'Social' },
+  { key: 'ki', label: 'KI / Voice' },
+];
+---
+
+<div class="hero-core" data-hero-core>
+  <div
+    class="hero-core__stage"
+    data-stage
+    data-active-module="website"
+    data-industry="handwerk"
+    role="group"
+    aria-label="Interaktive Demo: die Website als digitaler Kern, verbunden mit Google, Video, Social Media und KI."
+  >
+    <!-- Verbindungslinien -->
+    <svg
+      class="hero-core__links"
+      viewBox="0 0 1000 700"
+      fill="none"
+      aria-hidden="true"
+      preserveAspectRatio="none"
+    >
+      <path class="link" data-link="website" d="M150 120 C 220 130, 255 142, 300 152"></path>
+      <path class="link" data-link="google" d="M860 110 C 800 130, 782 138, 742 152"></path>
+      <path class="link" data-link="video" d="M880 330 C 820 330, 795 331, 752 332"></path>
+      <path class="link" data-link="social" d="M820 580 C 760 572, 732 566, 702 558"></path>
+      <path class="link" data-link="ki" d="M140 520 C 220 520, 262 520, 300 520"></path>
+    </svg>
+
+    <!-- Browser-Mockup (dekorativ) -->
+    <div class="browser" data-browser aria-hidden="true">
+      <div class="browser__chrome">
+        <span class="browser__dots"><i></i><i></i><i></i></span>
+        <span class="browser__url" data-url>meisterwerk.example</span>
+        <span class="browser__demo">Demo</span>
+      </div>
+      <div class="browser__viewport" data-viewport>
+        <div class="site">
+          <div class="site__nav">
+            <span class="site__brand" data-brand>Meisterwerk</span>
+            <span class="site__navlinks"><i></i><i></i><i></i></span>
+          </div>
+          <div class="site__hero">
+            <p class="site__eyebrow" data-industrylabel>Handwerk · Konzeptstudie</p>
+            <p class="site__headline" data-tagline>Handwerk, das man sieht.</p>
+            <span class="site__cta"></span>
+          </div>
+          <div class="site__rows">
+            <span class="site__row"></span>
+            <span class="site__row"></span>
+            <span class="site__row site__row--short"></span>
+          </div>
+        </div>
+
+        <!-- Modul-Overlays -->
+        <div class="overlay overlay--google" data-overlay="google">
+          <div class="ov-card">
+            <span class="ov-card__title" data-brand-echo>Meisterwerk</span>
+            <span class="ov-stars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="ov-line"></span>
+            <span class="ov-map"></span>
+          </div>
+        </div>
+        <div class="overlay overlay--video" data-overlay="video">
+          <div class="ov-video"><span class="ov-play" aria-hidden="true"></span></div>
+        </div>
+        <div class="overlay overlay--social" data-overlay="social">
+          <div class="ov-reels">
+            <span class="ov-reel"></span><span class="ov-reel"></span><span class="ov-reel"></span>
+          </div>
+        </div>
+        <div class="overlay overlay--ki" data-overlay="ki">
+          <div class="ov-chat">
+            <span class="ov-bubble ov-bubble--in">Habt ihr diese Woche frei?</span>
+            <span class="ov-bubble ov-bubble--out">Ja – Donnerstag, 14:00 Uhr.</span>
+            <span class="ov-bubble ov-bubble--tag">Termin vorgemerkt ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module -->
+    <ul class="hero-core__modules" role="list">
+      {
+        modules.map((m) => (
+          <li class={`module module--${m.key}`}>
+            <button
+              type="button"
+              class="module__btn"
+              data-module={m.key}
+              aria-pressed={m.key === 'website' ? 'true' : 'false'}
+            >
+              <span class="module__label">{m.label}</span>
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <p class="visually-hidden" data-hero-alt>
+    Konzept-Demo: Im Zentrum steht eine individuell entwickelte Unternehmenswebsite. Um sie herum
+    docken die Erweiterungen Google-Sichtbarkeit, Unternehmensvideo, Social Media und KI / Voice an.
+    Wechselnde Beispielbranchen (Handwerk, Zahnarztpraxis, Hotel, B2B) sind als Konzeptstudien
+    gekennzeichnet.
+  </p>
+</div>
+
+<style>
+  .hero-core {
+    width: 100%;
+  }
+  .hero-core__stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 10 / 7;
+    --demo-accent: var(--color-ultramarine);
+  }
+  .hero-core__stage[data-industry='zahnarzt'] {
+    --demo-accent: #0a8ea0;
+  }
+  .hero-core__stage[data-industry='hotel'] {
+    --demo-accent: var(--color-navy);
+  }
+  .hero-core__stage[data-industry='b2b'] {
+    --demo-accent: #223cd6;
+  }
+
+  /* Verbindungslinien */
+  .hero-core__links {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .link {
+    stroke: var(--border-strong);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 5 7;
+    opacity: 0.6;
+    transition:
+      stroke var(--dur-base) var(--ease-out),
+      opacity var(--dur-base) var(--ease-out);
+  }
+  .hero-core__stage[data-active-module='google'] .link[data-link='google'],
+  .hero-core__stage[data-active-module='video'] .link[data-link='video'],
+  .hero-core__stage[data-active-module='social'] .link[data-link='social'],
+  .hero-core__stage[data-active-module='ki'] .link[data-link='ki'],
+  .hero-core__stage[data-active-module='website'] .link[data-link='website'] {
+    stroke: var(--color-ultramarine);
+    opacity: 1;
+    animation: link-pulse 1.4s var(--ease-out) infinite;
+  }
+  @keyframes link-pulse {
+    from {
+      stroke-dashoffset: 24;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* Browser */
+  .browser {
+    position: absolute;
+    left: 29%;
+    top: 16%;
+    width: 46%;
+    height: 66%;
+    background: var(--color-bright);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    z-index: 2;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .browser__chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--surface-muted);
+    border-block-end: 1px solid var(--border);
+  }
+  .browser__dots {
+    display: inline-flex;
+    gap: 4px;
+  }
+  .browser__dots i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+  .browser__url {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    background: var(--color-bright);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .browser__demo {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--color-alert);
+    border-radius: 4px;
+    padding: 0.1rem 0.35rem;
+  }
+  .browser__viewport {
+    position: relative;
+    height: calc(100% - 33px);
+    background: var(--color-bright);
+  }
+
+  /* Website-Inhalt */
+  .site {
+    position: absolute;
+    inset: 0;
+    padding: clamp(0.6rem, 1.4vw, 1.1rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+  .site__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .site__brand {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(0.75rem, 1.6vw, 1rem);
+    color: var(--demo-accent);
+  }
+  .site__navlinks {
+    display: inline-flex;
+    gap: 6px;
+  }
+  .site__navlinks i {
+    width: 16px;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--border-strong);
+  }
+  .site__hero {
+    margin-block-start: 0.4rem;
+  }
+  .site__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-block-end: 0.3rem;
+  }
+  .site__headline {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.05;
+    font-size: clamp(1rem, 3vw, 1.9rem);
+    color: var(--text);
+    max-width: 14ch;
+  }
+  .site__cta {
+    display: inline-block;
+    width: 40%;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--demo-accent);
+    margin-block-start: 0.6rem;
+  }
+  .site__rows {
+    margin-block-start: auto;
+    display: grid;
+    gap: 7px;
+  }
+  .site__row {
+    height: 9px;
+    border-radius: 4px;
+    background: var(--surface-muted);
+  }
+  .site__row--short {
+    width: 60%;
+  }
+
+  /* Overlays */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 8%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+    background: color-mix(in srgb, var(--color-navy) 8%, transparent);
+    backdrop-filter: blur(1px);
+  }
+  .hero-core__stage[data-active-module='google'] .overlay--google,
+  .hero-core__stage[data-active-module='video'] .overlay--video,
+  .hero-core__stage[data-active-module='social'] .overlay--social,
+  .hero-core__stage[data-active-module='ki'] .overlay--ki {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .hero-core__stage[data-active-module='website'] .site,
+  .hero-core__stage[data-active-module='google'] .site,
+  .hero-core__stage[data-active-module='video'] .site,
+  .hero-core__stage[data-active-module='social'] .site,
+  .hero-core__stage[data-active-module='ki'] .site {
+    opacity: 1;
+  }
+
+  .ov-card {
+    width: 100%;
+    max-width: 220px;
+    background: var(--color-bright);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
+    padding: 0.7rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .ov-card__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+  .ov-stars {
+    display: inline-flex;
+    gap: 3px;
+  }
+  .ov-stars i {
+    width: 10px;
+    height: 10px;
+    background: #f5a623;
+    clip-path: polygon(
+      50% 0,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 91%,
+      50% 70%,
+      21% 91%,
+      32% 57%,
+      2% 35%,
+      39% 35%
+    );
+  }
+  .ov-line {
+    height: 8px;
+    width: 80%;
+    border-radius: 4px;
+    background: var(--surface-muted);
+  }
+  .ov-map {
+    height: 46px;
+    border-radius: 8px;
+    background:
+      radial-gradient(circle at 60% 40%, var(--demo-accent) 0 6px, transparent 7px),
+      linear-gradient(135deg, #dfe6f2, #eef1f6);
+  }
+
+  .ov-video {
+    width: 78%;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--color-navy), #123a6b);
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow-md);
+  }
+  .ov-play {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 12px 0 12px 20px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 4px;
+  }
+
+  .ov-reels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    width: 90%;
+  }
+  .ov-reel {
+    aspect-ratio: 9 / 16;
+    border-radius: 8px;
+    background: linear-gradient(160deg, var(--demo-accent), var(--color-cyan));
+    box-shadow: var(--shadow-sm);
+  }
+  .ov-reel:nth-child(2) {
+    background: linear-gradient(160deg, var(--color-navy), var(--demo-accent));
+  }
+
+  .ov-chat {
+    display: grid;
+    gap: 6px;
+    width: 92%;
+    max-width: 250px;
+  }
+  .ov-bubble {
+    font-size: 0.68rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 10px;
+    max-width: 85%;
+  }
+  .ov-bubble--in {
+    background: var(--color-bright);
+    border: 1px solid var(--border);
+    justify-self: start;
+    border-bottom-left-radius: 2px;
+  }
+  .ov-bubble--out {
+    background: var(--demo-accent);
+    color: #fff;
+    justify-self: end;
+    border-bottom-right-radius: 2px;
+  }
+  .ov-bubble--tag {
+    justify-self: end;
+    background: color-mix(in srgb, var(--color-cyan) 25%, var(--color-bright));
+    border: 1px solid var(--color-cyan);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+  }
+
+  /* Module */
+  .hero-core__modules {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .module {
+    position: absolute;
+    z-index: 3;
+    transform: translate(-50%, -50%);
+  }
+  .module--website {
+    left: 15%;
+    top: 17.1%;
+  }
+  .module--google {
+    left: 86%;
+    top: 15.7%;
+  }
+  .module--video {
+    left: 88%;
+    top: 47.1%;
+  }
+  .module--social {
+    left: 82%;
+    top: 82.9%;
+  }
+  .module--ki {
+    left: 14%;
+    top: 74.3%;
+  }
+  .module__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--border-strong);
+    background: var(--color-bright);
+    box-shadow: var(--shadow-sm);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  .module__btn::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    transition: background-color var(--dur-fast) var(--ease-out);
+  }
+  .module__btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--color-ultramarine);
+    color: var(--text);
+  }
+  .module__btn[aria-pressed='true'] {
+    border-color: var(--color-ultramarine);
+    color: var(--brand-strong);
+    box-shadow: var(--shadow-md);
+  }
+  .module__btn[aria-pressed='true']::before {
+    background: var(--color-cyan);
+  }
+
+  /* Mobil: vereinfachtes, statisches Layout */
+  @media (max-width: 47.99rem) {
+    .hero-core__stage {
+      aspect-ratio: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .hero-core__links {
+      display: none;
+    }
+    .browser {
+      position: relative;
+      left: auto;
+      top: auto;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
+    }
+    .hero-core__modules {
+      position: static;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .module {
+      position: static;
+      transform: none;
+    }
+  }
+
+  /* Reduzierte Bewegung: keine Puls-Animation, ruhige Anzeige */
+  @media (prefers-reduced-motion: reduce) {
+    .link {
+      animation: none !important;
+    }
+    .browser,
+    .overlay,
+    .site,
+    .module__btn {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Steuerung: Auto-Zyklus der Module, langsamerer Branchenwechsel, Nutzerinteraktion,
+  // Pause bei Offscreen/inaktivem Tab, Respekt vor prefers-reduced-motion.
+  interface DemoIndustry {
+    key: string;
+    label: string;
+    brand: string;
+    domain: string;
+    tagline: string;
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-hero-core]');
+  const stage = root?.querySelector<HTMLElement>('[data-stage]');
+  if (root && stage) {
+    const moduleButtons = Array.from(stage.querySelectorAll<HTMLButtonElement>('[data-module]'));
+    const moduleKeys = moduleButtons.map((b) => b.dataset.module!);
+    const urlEl = stage.querySelector<HTMLElement>('[data-url]');
+    const brandEl = stage.querySelector<HTMLElement>('[data-brand]');
+    const brandEcho = stage.querySelector<HTMLElement>('[data-brand-echo]');
+    const taglineEl = stage.querySelector<HTMLElement>('[data-tagline]');
+    const industryLabelEl = stage.querySelector<HTMLElement>('[data-industrylabel]');
+
+    const industries: DemoIndustry[] = [
+      {
+        key: 'handwerk',
+        label: 'Handwerk · Konzeptstudie',
+        brand: 'Meisterwerk',
+        domain: 'meisterwerk.example',
+        tagline: 'Handwerk, das man sieht.',
+      },
+      {
+        key: 'zahnarzt',
+        label: 'Zahnarztpraxis · Konzeptstudie',
+        brand: 'Dentale Linie',
+        domain: 'dentale-linie.example',
+        tagline: 'Ruhig ankommen. Gut beraten.',
+      },
+      {
+        key: 'hotel',
+        label: 'Hotel · Konzeptstudie',
+        brand: 'Haus am Fluss',
+        domain: 'haus-am-fluss.example',
+        tagline: 'Bleib, wo es schön ist.',
+      },
+      {
+        key: 'b2b',
+        label: 'B2B · Konzeptstudie',
+        brand: 'Nordwerk Systeme',
+        domain: 'nordwerk.example',
+        tagline: 'Technik, die man versteht.',
+      },
+    ];
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    let moduleIndex = 0;
+    let industryIndex = 0;
+    let running = false;
+    let inView = false;
+    let userHold = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    function setModule(key: string) {
+      stage!.dataset.activeModule = key;
+      moduleButtons.forEach((b) =>
+        b.setAttribute('aria-pressed', b.dataset.module === key ? 'true' : 'false'),
+      );
+    }
+
+    function setIndustry(i: number) {
+      const ind = industries[i];
+      stage!.dataset.industry = ind.key;
+      if (urlEl) urlEl.textContent = ind.domain;
+      if (brandEl) brandEl.textContent = ind.brand;
+      if (brandEcho) brandEcho.textContent = ind.brand;
+      if (taglineEl) taglineEl.textContent = ind.tagline;
+      if (industryLabelEl) industryLabelEl.textContent = ind.label;
+    }
+
+    function step() {
+      if (!running) return;
+      moduleIndex = (moduleIndex + 1) % moduleKeys.length;
+      setModule(moduleKeys[moduleIndex]);
+      if (moduleIndex === 0) {
+        industryIndex = (industryIndex + 1) % industries.length;
+        setIndustry(industryIndex);
+      }
+      schedule(moduleIndex === 0 ? 2800 : 2100);
+    }
+
+    function schedule(delay: number) {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(step, delay);
+    }
+
+    function start() {
+      if (running || reduceMotion.matches || !inView || userHold) return;
+      running = true;
+      schedule(2100);
+    }
+
+    function stop() {
+      running = false;
+      if (timer) clearTimeout(timer);
+    }
+
+    // Nutzerinteraktion: Modul aktivieren, Auto-Zyklus pausieren.
+    moduleButtons.forEach((btn, i) => {
+      const activate = () => {
+        userHold = true;
+        stop();
+        moduleIndex = i;
+        setModule(btn.dataset.module!);
+      };
+      const release = () => {
+        userHold = false;
+        start();
+      };
+      btn.addEventListener('click', activate);
+      btn.addEventListener('mouseenter', activate);
+      btn.addEventListener('focus', activate);
+      btn.addEventListener('mouseleave', release);
+      btn.addEventListener('blur', release);
+    });
+
+    // Nur animieren, wenn im Viewport.
+    const io = new IntersectionObserver(
+      (entries) => {
+        inView = entries[0]?.isIntersecting ?? false;
+        if (inView) start();
+        else stop();
+      },
+      { threshold: 0.25 },
+    );
+    io.observe(stage);
+
+    // Pause bei inaktivem Tab.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stop();
+      else start();
+    });
+
+    // Auf Änderung der Bewegungspräferenz reagieren.
+    reduceMotion.addEventListener('change', () => {
+      if (reduceMotion.matches) {
+        stop();
+        setModule('website');
+        setIndustry(0);
+      } else {
+        start();
+      }
+    });
+
+    // Initialzustand
+    setIndustry(0);
+    setModule('website');
+  }
+</script>

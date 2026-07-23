@@ -1,11 +1,39 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroCore from '../components/HeroCore/HeroCore.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import ProcessBand from '../components/ProcessBand.astro';
+import WorkGrid from '../components/WorkGrid.astro';
+import IndustryList from '../components/IndustryList.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+
 import { site, canShowHostingClaim } from '../config/site';
+import { services } from '../config/services';
+import { cases } from '../config/cases';
+import { processShort } from '../config/process';
+import { homeFaqs } from '../config/faq';
 
 const trustParts = [
   'Individuell entwickelt',
   'datenschutzfreundlich geplant',
   ...(canShowHostingClaim ? ['auf Wunsch in Deutschland gehostet'] : []),
+];
+
+const problems = [
+  'Interessenten zweifeln an der Professionalität.',
+  'Bewerber entscheiden sich für modernere Wettbewerber.',
+  'Google versteht Angebot und Standort nicht eindeutig.',
+  'Gute Leistungen wirken online austauschbar.',
+  'Anfragen gehen durch schlechte Nutzerführung verloren.',
+];
+const websiteProcess = [
+  'Strategie',
+  'Struktur',
+  'Design',
+  'Entwicklung',
+  'Veröffentlichung',
+  'Betreuung',
 ];
 ---
 
@@ -13,45 +41,211 @@ const trustParts = [
   title="Individuelle Websites für Unternehmen mit Anspruch"
   description={site.shortDescription}
 >
+  <!-- HERO -->
   <section class="hero section--paper">
-    <div class="content hero__grid">
-      <div class="hero__text">
-        <p class="eyebrow">Digitalstudio aus Würzburg · für Unternehmen mit Anspruch</p>
-        <h1 class="hero__title">Dein Unternehmen ist besser als sein Internetauftritt.</h1>
-        <p class="lead hero__subline">
-          KERNSEITE entwickelt individuelle Websites und verbindet sie auf Wunsch mit Google,
-          Unternehmensvideo, Social Media und intelligenten Automatisierungen.
-        </p>
-        <div class="hero__ctas">
-          <a class="btn btn--primary" href="/kontakt/">Projekt besprechen</a>
-          <a class="btn btn--secondary" href="/arbeiten/">Arbeiten ansehen</a>
+    <div class="content">
+      <p class="eyebrow">Digitalstudio aus Würzburg · für Unternehmen mit Anspruch</p>
+      <h1 class="hero__title">Dein Unternehmen ist besser als sein Internetauftritt.</h1>
+      <div class="hero__lower">
+        <div class="hero__intro">
+          <p class="lead">
+            KERNSEITE entwickelt individuelle Websites und verbindet sie auf Wunsch mit Google,
+            Unternehmensvideo, Social Media und intelligenten Automatisierungen.
+          </p>
+          <div class="hero__ctas">
+            <a class="btn btn--primary" href="/kontakt/">Projekt besprechen</a>
+            <a class="btn btn--secondary" href="/arbeiten/">Arbeiten ansehen</a>
+          </div>
+          <p class="hero__trust">{trustParts.join(' · ')}</p>
         </div>
-        <p class="hero__trust">{trustParts.join(' · ')}</p>
-      </div>
-      <div class="hero__media" aria-hidden="true">
-        <div class="hero__placeholder">Hero-Animation folgt (M3)</div>
+        <div class="hero__media">
+          <HeroCore />
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- PROBLEM -->
+  <section class="section section--bright">
+    <div class="content problem">
+      <div class="problem__head">
+        <p class="eyebrow">Der ehrliche Blick</p>
+        <h2 class="section-title">Eine schlechte Website kostet mehr als eine neue.</h2>
+      </div>
+      <ul class="problem__list" role="list">
+        {problems.map((p) => <li class="problem__item">{p}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- KERNLEISTUNG -->
+  <section class="section section--paper">
+    <div class="content">
+      <div class="kern__head">
+        <p class="eyebrow">Kernleistung</p>
+        <h2 class="section-title section-title--wide">
+          Individuell entwickelt. Nicht zusammengeklickt.
+        </h2>
+        <p class="lead measure">
+          Jede KERNSEITE beginnt mit dem Unternehmen, nicht mit einem fertigen Template. Struktur,
+          Design, Inhalte und Technik werden so entwickelt, dass der digitale Auftritt zur
+          tatsächlichen Qualität des Betriebs passt.
+        </p>
+      </div>
+      <div class="kern__band">
+        <ProcessBand steps={websiteProcess} ariaLabel="Ablauf eines Website-Projekts" />
+      </div>
+    </div>
+  </section>
+
+  <!-- LEISTUNGSARCHITEKTUR -->
+  <section class="section section--muted">
+    <div class="content">
+      <div class="services__head">
+        <p class="eyebrow">Leistungen</p>
+        <h2 class="section-title section-title--wide">
+          Die Website ist der Kern. Alles Weitere dockt sinnvoll an.
+        </h2>
+      </div>
+      <ul class="services__grid" role="list">
+        {
+          services.map((service, i) => (
+            <li class:list={['services__cell', { 'services__cell--core': service.isCore }]}>
+              <ServiceCard service={service} index={i} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ARBEITEN -->
+  <section class="section section--bright">
+    <div class="content">
+      <div class="work__head">
+        <p class="eyebrow">Arbeiten</p>
+        <h2 class="section-title">So kann dein Unternehmen wirken.</h2>
+        <p class="lead measure">
+          Solange noch keine freigegebenen Kundenprojekte vorliegen, zeigen wir eigenständig
+          entwickelte Konzeptstudien – klar als solche gekennzeichnet.
+        </p>
+      </div>
+      <WorkGrid items={cases} />
+      <p class="work__more">
+        <a class="arrow-link" href="/arbeiten/"
+          >Alle Arbeiten ansehen <span class="arrow" aria-hidden="true">→</span></a
+        >
+      </p>
+    </div>
+  </section>
+
+  <!-- BRANCHEN -->
+  <section class="section section--paper">
+    <div class="content">
+      <div class="branchen__head">
+        <p class="eyebrow">Branchen</p>
+        <h2 class="section-title">Gute Gestaltung versteht das Geschäft dahinter.</h2>
+      </div>
+      <IndustryList />
+    </div>
+  </section>
+
+  <!-- NETZWERK -->
+  <section class="section section--muted">
+    <div class="content netzwerk">
+      <div>
+        <p class="eyebrow">Netzwerk</p>
+        <h2 class="section-title">Ein Ansprechpartner. Die richtigen Spezialisten.</h2>
+      </div>
+      <div class="netzwerk__text">
+        <p class="lead">
+          KERNSEITE wird von Eliyah Korb geführt. Für Film, Social Media und KI arbeiten wir
+          projektbezogen mit spezialisierten selbstständigen Partnern zusammen. So bleibt die
+          Kommunikation zentral, während jede Aufgabe von der passenden Fachperson umgesetzt wird.
+        </p>
+        <a class="arrow-link" href="/agentur/"
+          >Mehr über das Studio <span class="arrow" aria-hidden="true">→</span></a
+        >
+      </div>
+    </div>
+  </section>
+
+  <!-- PROZESS -->
+  <section class="section section--bright">
+    <div class="content">
+      <div class="prozess__head">
+        <p class="eyebrow">Prozess</p>
+        <h2 class="section-title">Klarer Ablauf. Keine Agentur-Nebelmaschine.</h2>
+      </div>
+      <ol class="prozess__grid" role="list">
+        {
+          processShort.map((step, i) => (
+            <li class="prozess__step">
+              <span class="prozess__num" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h3 class="prozess__title">{step.title}</h3>
+              <p class="prozess__body">{step.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="work__more">
+        <a class="arrow-link" href="/prozess/"
+          >Prozess im Detail <span class="arrow" aria-hidden="true">→</span></a
+        >
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ-AUSZUG -->
+  <section class="section section--paper">
+    <div class="content faq-home">
+      <div class="faq-home__head">
+        <p class="eyebrow">Häufige Fragen</p>
+        <h2 class="section-title">Kurz und ehrlich beantwortet.</h2>
+        <p class="lead">
+          Weitere Antworten – von Kosten bis Datenschutz – findest du auf der FAQ-Seite.
+        </p>
+        <a class="arrow-link" href="/faq/"
+          >Alle Fragen ansehen <span class="arrow" aria-hidden="true">→</span></a
+        >
+      </div>
+      <div class="faq-home__list">
+        <FaqAccordion items={homeFaqs} />
+      </div>
+    </div>
+  </section>
+
+  <!-- ABSCHLUSS-CTA -->
+  <CtaBanner
+    title="Zeit für einen Auftritt, der zu deinem Unternehmen passt."
+    text="Im ersten Gespräch klären wir, was wirklich sinnvoll ist – und was du dir sparen kannst."
+    ctaLabel="Unverbindlich anfragen"
+    ctaHref="/kontakt/"
+    secondaryLabel="Leistungen ansehen"
+    secondaryHref="/leistungen/"
+  />
 </BaseLayout>
 
 <style>
+  /* HERO */
   .hero {
-    padding-block: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+    padding-block: clamp(2rem, 1rem + 4vw, 4.5rem) var(--section-y);
   }
-  .hero__grid {
+  .hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 1rem + 6.4vw, 7rem);
+    margin-block: var(--space-md) var(--space-2xl);
+    max-width: 22ch;
+  }
+  .hero__lower {
     display: grid;
     gap: var(--space-2xl);
     align-items: center;
   }
-  .hero__title {
-    font-family: var(--font-display);
-    font-size: var(--fs-hero);
-    margin-block: var(--space-md) var(--space-lg);
-    max-width: 15ch;
-  }
-  .hero__subline {
-    max-width: 46ch;
+  .hero__intro .lead {
+    max-width: 42ch;
   }
   .hero__ctas {
     display: flex;
@@ -66,18 +260,172 @@ const trustParts = [
     letter-spacing: 0.04em;
     color: var(--text-muted);
   }
-  .hero__placeholder {
+  @media (min-width: 64rem) {
+    .hero__lower {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: var(--space-4xl);
+    }
+  }
+
+  /* PROBLEM */
+  .problem {
     display: grid;
-    place-items: center;
-    min-height: 360px;
-    border: 1px dashed var(--border-strong);
-    border-radius: var(--radius-lg);
-    color: var(--text-muted);
-    background: var(--color-bright);
+    gap: var(--space-2xl);
+  }
+  .problem__list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: prob;
+  }
+  .problem__item {
+    counter-increment: prob;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: start;
+    padding: 1.1rem 0;
+    border-block-start: 1px solid var(--border);
+    font-size: var(--fs-lead);
+    font-family: var(--font-display);
+    font-weight: var(--fw-medium);
+  }
+  .problem__item::before {
+    content: counter(prob, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-alert);
+    padding-block-start: 0.35rem;
   }
   @media (min-width: 64rem) {
-    .hero__grid {
-      grid-template-columns: 1.05fr 0.95fr;
+    .problem {
+      grid-template-columns: 0.8fr 1.2fr;
+      align-items: start;
+    }
+  }
+
+  /* KERN */
+  .kern__head {
+    display: grid;
+    gap: var(--space-lg);
+    max-width: 60ch;
+  }
+  .kern__band {
+    margin-block-start: var(--space-2xl);
+  }
+
+  /* SERVICES */
+  .services__head {
+    margin-block-end: var(--space-2xl);
+  }
+  .services__grid {
+    display: grid;
+    gap: var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 48rem) {
+    .services__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .services__cell--core {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 64rem) {
+    .services__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .services__cell--core {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* WORK / SHARED "more" link */
+  .work__head,
+  .branchen__head,
+  .prozess__head,
+  .work__head {
+    margin-block-end: var(--space-2xl);
+    display: grid;
+    gap: var(--space-md);
+  }
+  .work__more {
+    margin-block-start: var(--space-xl);
+  }
+
+  /* NETZWERK */
+  .netzwerk {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  .netzwerk__text {
+    display: grid;
+    gap: var(--space-lg);
+    justify-items: start;
+    max-width: 60ch;
+  }
+  @media (min-width: 64rem) {
+    .netzwerk {
+      grid-template-columns: 0.8fr 1.2fr;
+      align-items: start;
+    }
+  }
+
+  /* PROZESS */
+  .prozess__grid {
+    display: grid;
+    gap: var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .prozess__step {
+    padding: var(--space-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bright);
+  }
+  .prozess__num {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--brand-strong);
+  }
+  .prozess__title {
+    margin-block: 0.4rem 0.5rem;
+    font-size: var(--fs-h4);
+  }
+  .prozess__body {
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  @media (min-width: 48rem) {
+    .prozess__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* FAQ HOME */
+  .faq-home {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+  .faq-home__head {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+  }
+  @media (min-width: 64rem) {
+    .faq-home {
+      grid-template-columns: 0.8fr 1.2fr;
+    }
+    .faq-home__head {
+      position: sticky;
+      top: 100px;
     }
   }
 </style>

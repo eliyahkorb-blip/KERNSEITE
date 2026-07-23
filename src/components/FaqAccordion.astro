@@ -1,0 +1,90 @@
+---
+import type { FaqItem } from '../config/faq';
+
+interface Props {
+  items: readonly FaqItem[];
+  /** Erstes Element geöffnet darstellen. */
+  openFirst?: boolean;
+}
+const { items, openFirst = false } = Astro.props;
+---
+
+<div class="faq">
+  {
+    items.map((item, i) => (
+      <details class="faq__item" open={openFirst && i === 0}>
+        <summary class="faq__summary">
+          <span class="faq__q">{item.question}</span>
+          <span class="faq__icon" aria-hidden="true" />
+        </summary>
+        <div class="faq__answer">
+          <p>{item.answer}</p>
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .faq__item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--color-bright);
+    overflow: hidden;
+  }
+  .faq__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: 1.1rem 1.25rem;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-h4);
+  }
+  .faq__summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq__summary:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: -3px;
+  }
+  .faq__icon {
+    position: relative;
+    flex: none;
+    inline-size: 20px;
+    block-size: 20px;
+  }
+  .faq__icon::before,
+  .faq__icon::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    background: var(--brand-strong);
+    transform: translate(-50%, -50%);
+  }
+  .faq__icon::before {
+    inline-size: 14px;
+    block-size: 2px;
+  }
+  .faq__icon::after {
+    inline-size: 2px;
+    block-size: 14px;
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .faq__item[open] .faq__icon::after {
+    transform: translate(-50%, -50%) scaleY(0);
+  }
+  .faq__answer {
+    padding: 0 1.25rem 1.25rem;
+    color: var(--text-muted);
+    max-width: var(--measure);
+  }
+</style>

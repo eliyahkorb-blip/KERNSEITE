@@ -1,0 +1,71 @@
+---
+import { industries } from '../config/industries';
+---
+
+<ul class="industry-list" role="list">
+  {
+    industries.map((ind) => (
+      <li class="industry-list__item">
+        <a class="industry-list__link" href={ind.href}>
+          <span class="industry-list__name">{ind.title}</span>
+          <span class="industry-list__arg">{ind.argument}</span>
+          <span class="industry-list__arrow" aria-hidden="true">
+            →
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .industry-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--border);
+  }
+  .industry-list__link {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.25rem 1rem;
+    padding: clamp(1rem, 0.75rem + 1vw, 1.75rem) 0;
+    border-block-end: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: padding-inline-start var(--dur-base) var(--ease-out);
+  }
+  .industry-list__link:hover,
+  .industry-list__link:focus-visible {
+    padding-inline-start: 0.75rem;
+  }
+  .industry-list__name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.6rem, 1rem + 2.6vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-tight);
+  }
+  .industry-list__arg {
+    grid-column: 1;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    max-width: 48ch;
+  }
+  .industry-list__arrow {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    font-size: 1.5rem;
+    color: var(--brand-strong);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .industry-list__link:hover .industry-list__arrow,
+  .industry-list__link:focus-visible .industry-list__arrow {
+    transform: translateX(6px);
+  }
+  .section--navy .industry-list,
+  .section--navy .industry-list__link {
+    border-color: var(--border-invert);
+  }
+</style>

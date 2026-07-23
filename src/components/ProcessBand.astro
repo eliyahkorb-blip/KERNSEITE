@@ -1,0 +1,89 @@
+---
+interface Props {
+  steps: readonly string[];
+  ariaLabel?: string;
+}
+const { steps, ariaLabel = 'Projektablauf' } = Astro.props;
+---
+
+<ol class="process-band" aria-label={ariaLabel}>
+  {
+    steps.map((step, i) => (
+      <li class="process-band__step">
+        <span class="process-band__num" aria-hidden="true">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+        <span class="process-band__label">{step}</span>
+        {i < steps.length - 1 && (
+          <span class="process-band__arrow" aria-hidden="true">
+            →
+          </span>
+        )}
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .process-band {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+  .process-band__step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1 1 auto;
+    min-width: max-content;
+    padding: 0.9rem 1.1rem;
+    background: var(--color-bright);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+  .process-band__num {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--brand-strong);
+  }
+  .process-band__label {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-small);
+    white-space: nowrap;
+  }
+  .process-band__arrow {
+    position: absolute;
+    right: -0.55rem;
+    color: var(--border-strong);
+    background: var(--bg);
+    z-index: 1;
+  }
+  .section--navy .process-band__step {
+    background: #0d244a;
+    border-color: var(--border-invert);
+  }
+  .section--navy .process-band__label {
+    color: var(--text-invert);
+  }
+  .section--navy .process-band__num {
+    color: var(--color-cyan);
+  }
+  @media (max-width: 47.99rem) {
+    .process-band {
+      flex-direction: column;
+    }
+    .process-band__step {
+      min-width: 0;
+    }
+    .process-band__arrow {
+      display: none;
+    }
+  }
+</style>
