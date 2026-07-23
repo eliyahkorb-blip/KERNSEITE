@@ -1,8 +1,8 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import CaseMockup from '../../components/CaseMockup.astro';
+import WorkCard from '../../components/WorkCard.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
-import { cases, caseFilters } from '../../config/cases';
+import { works, workFilters } from '../../config/cases';
 
 const breadcrumbs = [
   { name: 'Start', path: '/' },
@@ -12,10 +12,10 @@ const breadcrumbs = [
 
 <PageLayout
   title="Arbeiten"
-  description="Konzeptstudien von KERNSEITE – eigenständig entwickelte Demo-Auftritte, klar gekennzeichnet. Keine erfundenen Ergebnisse, Kennzahlen oder Kundenstimmen."
+  description="Ausgewählte Referenzen und Konzeptstudien von KERNSEITE. Reale Projekte sind als Referenz gekennzeichnet, fiktive Beispiele klar als Konzeptstudie."
   eyebrow="Arbeiten"
   h1="Arbeiten, die mehr zeigen als schöne Screens."
-  lead="Solange noch keine freigegebenen Kundenprojekte vorliegen, zeigen wir eigenständig entwickelte Konzeptstudien. Sie sind klar als solche gekennzeichnet – ohne erfundene Ergebnisse, Kennzahlen oder Kundenstimmen."
+  lead="Echte, umgesetzte Projekte stehen als Referenz vorn. Ergänzend zeigen wir eigenständig entwickelte Konzeptstudien – klar als solche gekennzeichnet, ohne erfundene Ergebnisse oder Kennzahlen."
   breadcrumbs={breadcrumbs}
 >
   <section class="section section--bright">
@@ -25,7 +25,7 @@ const breadcrumbs = [
           Alle
         </button>
         {
-          caseFilters.map((f) => (
+          workFilters.map((f) => (
             <button type="button" class="filterbar__btn" data-filter={f.key} aria-pressed="false">
               {f.label}
             </button>
@@ -33,38 +33,10 @@ const breadcrumbs = [
         }
       </div>
 
-      <ul class="cases" role="list" data-cases>
-        {
-          cases.map((c) => (
-            <li class="cases__item" data-filters={c.filters.join(' ')}>
-              <a class="case-card" href={c.href}>
-                <span class="case-card__pixels" aria-hidden="true" />
-                <div class="case-card__media">
-                  <CaseMockup
-                    theme={c.mockupTheme}
-                    brand={c.title}
-                    tagline={c.tagline}
-                    industryLabel={c.industryLabel}
-                  />
-                </div>
-                <div class="case-card__meta">
-                  <span class="badge badge--concept">{c.badge}</span>
-                  <h2 class="case-card__title">{c.title}</h2>
-                  <p class="case-card__industry">{c.industryLabel}</p>
-                  <p class="case-card__tagline">{c.tagline}</p>
-                  <span class="case-card__cta arrow-link">
-                    Konzeptstudie ansehen{' '}
-                    <span class="arrow" aria-hidden="true">
-                      →
-                    </span>
-                  </span>
-                </div>
-              </a>
-            </li>
-          ))
-        }
+      <ul class="works" role="list" data-works>
+        {works.map((work) => <WorkCard work={work} />)}
       </ul>
-      <p class="cases__empty" data-empty hidden>
+      <p class="works__empty" data-empty hidden>
         Für diesen Filter gibt es aktuell keine Arbeiten.
       </p>
     </div>
@@ -110,99 +82,26 @@ const breadcrumbs = [
     color: var(--color-bright);
   }
 
-  .cases {
+  .works {
     display: grid;
     gap: var(--grid-gap);
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .cases__item[hidden] {
-    display: none;
-  }
-  .case-card {
-    position: relative;
-    display: block;
-    overflow: hidden;
-    padding: clamp(1.25rem, 1rem + 1.5vw, 2.25rem);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    background: var(--surface-muted);
-    text-decoration: none;
-    color: var(--text);
-    height: 100%;
-    transition:
-      transform var(--dur-base) var(--ease-out),
-      border-color var(--dur-base) var(--ease-out),
-      box-shadow var(--dur-base) var(--ease-out);
-  }
-  .case-card:hover,
-  .case-card:focus-visible {
-    transform: translateY(-4px);
-    border-color: var(--color-ultramarine);
-    box-shadow: var(--shadow-lg);
-  }
-  .case-card__pixels {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle, var(--color-ultramarine) 1.4px, transparent 1.6px);
-    background-size: 20px 20px;
-    opacity: 0;
-    transform: scale(1.04);
-    transition:
-      opacity var(--dur-slow) var(--ease-out),
-      transform var(--dur-slow) var(--ease-out);
-    pointer-events: none;
-  }
-  .case-card:hover .case-card__pixels,
-  .case-card:focus-visible .case-card__pixels {
-    opacity: 0.16;
-    transform: scale(1);
-  }
-  .case-card__media,
-  .case-card__meta {
-    position: relative;
-    z-index: 1;
-  }
-  .case-card__meta {
-    margin-block-start: var(--space-lg);
-  }
-  .case-card__title {
-    margin-block-start: 0.75rem;
-    font-size: var(--fs-h3);
-  }
-  .case-card__industry {
-    margin-block-start: 0.15rem;
-    font-family: var(--font-mono);
-    font-size: var(--fs-small);
-    color: var(--brand-strong);
-  }
-  .case-card__tagline {
-    margin-block-start: 0.5rem;
-    color: var(--text-muted);
-  }
-  .case-card__cta {
-    margin-block-start: 0.9rem;
-    font-size: var(--fs-small);
-  }
-  .cases__empty {
+  .works__empty {
     margin-block-start: var(--space-xl);
     color: var(--text-muted);
   }
 
   @media (min-width: 48rem) {
-    .cases {
+    .works {
       grid-template-columns: repeat(2, 1fr);
     }
   }
   @media (min-width: 64rem) {
-    .cases {
+    .works {
       grid-template-columns: repeat(3, 1fr);
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .case-card__pixels {
-      transition: none;
     }
   }
 </style>
@@ -210,7 +109,7 @@ const breadcrumbs = [
 <script>
   // Client-seitiger Filter für die Arbeiten-Übersicht.
   const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
-  const items = Array.from(document.querySelectorAll<HTMLElement>('.cases__item'));
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.workcard-li'));
   const empty = document.querySelector<HTMLElement>('[data-empty]');
 
   function apply(filter: string) {

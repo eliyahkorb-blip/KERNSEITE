@@ -1,38 +1,170 @@
-export type CaseFilter = 'websites' | 'google' | 'video' | 'social' | 'ki' | 'konzeptstudie';
+export type CaseFilter =
+  | 'referenz'
+  | 'websites'
+  | 'google'
+  | 'video'
+  | 'social'
+  | 'ki'
+  | 'gastronomie'
+  | 'lokale-dienstleister'
+  | 'konzeptstudie';
 
-export interface CaseStudy {
+export type MockupTheme = 'meisterwerk' | 'dentale-linie' | 'haus-am-fluss';
+
+/** Gemeinsame Felder aller Arbeiten. */
+interface WorkCommon {
   readonly slug: string;
   readonly href: string;
-  /** Immer true, solange keine echten, freigegebenen Kundenprojekte vorliegen. */
-  readonly isConceptStudy: true;
-  /** Einheitliches Label für Karten und Detailseiten. */
-  readonly badge: 'Konzeptstudie – kein Kundenprojekt';
   readonly title: string;
   readonly industryLabel: string;
   readonly tagline: string;
-  /** Filter-Tags für die Übersichtsseite. */
   readonly filters: readonly CaseFilter[];
-  /** Farbwelt-Schlüssel für das lokal erzeugte Mockup. */
-  readonly mockupTheme: 'meisterwerk' | 'dentale-linie' | 'haus-am-fluss';
+}
+
+/** Referenz-Screenshot (aktuell klar gekennzeichneter Platzhalter). */
+export interface WorkScreenshot {
+  /** Bildpfad (Platzhalter; echte WebP/AVIF-Screenshots ersetzen ihn später). */
+  readonly src: string;
+  readonly width: number;
+  readonly height: number;
+  readonly alt: string;
+}
+
+/** Echtes, umgesetztes Kundenprojekt (KEINE Konzeptstudie). */
+export interface ProjectWork extends WorkCommon {
+  readonly kind: 'project';
+  /** Name des realen Auftraggebers (Nutzungsrechte bestätigt). */
+  readonly client: string;
+  /** z. B. "Gastronomie · Website · Mobile Experience". */
+  readonly category: string;
+  /** Live-Website (href, ggf. Punycode für IDN). */
+  readonly liveUrl: string;
+  /** Anzeige-Label der Live-Website (Unicode). */
+  readonly liveLabel: string;
+  /**
+   * Ist die Live-URL im Build-Environment bestätigt/erreichbar? Wird `false`, wenn die URL
+   * (noch) nicht verifiziert werden konnte – dann Hinweis, dass Link/Screenshots geprüft
+   * bzw. ergänzt werden. Keine erfundenen Ergebnisse.
+   */
+  readonly verified: boolean;
+  readonly situation: string;
+  readonly solution: string;
+  /** Leistungsumfang (beschreibend, keine erfundenen Kennzahlen). */
+  readonly scope: readonly string[];
+  readonly screenshotDesktop: WorkScreenshot;
+  readonly screenshotMobile: WorkScreenshot;
+}
+
+/** Konzeptstudie – kein Kundenprojekt (klar gekennzeichnet). */
+export interface ConceptWork extends WorkCommon {
+  readonly kind: 'concept';
+  readonly isConceptStudy: true;
+  readonly badge: 'Konzeptstudie – kein Kundenprojekt';
+  readonly mockupTheme: MockupTheme;
   readonly situation: string;
   readonly goal: string;
   readonly strategy: string;
   readonly designSystem: string;
-  /** Genutzte Leistungen (service keys). */
   readonly services: readonly string[];
-  /** Website-Ausschnitte / Module, die im Mockup gezeigt werden. */
   readonly highlights: readonly string[];
-  /** Optionale Module (Video, Google, KI …). */
   readonly optionalModules: readonly string[];
 }
 
+export type Work = ProjectWork | ConceptWork;
+
 /**
- * Drei Konzeptstudien. Alle Namen, Inhalte und Darstellungen sind fiktiv und dienen
- * ausschließlich der Illustration. KEINE echten Kundennamen, Ergebnisse, Kennzahlen,
- * Bewertungen oder Testimonials.
+ * ECHTE Referenzen (vom Auftraggeber freigegeben, Nutzungsrechte bestätigt).
+ *
+ * Hinweis: Die Live-Sites konnten im Build-Environment nicht abgerufen werden
+ * (Egress-Policy), daher sind die Screenshots aktuell klar gekennzeichnete Platzhalter.
+ * Sie werden durch echte, lokal gespeicherte Screenshots (WebP/AVIF) ersetzt.
+ * Es werden KEINE erfundenen Ergebnisse oder Prozentwerte genannt.
  */
-export const cases: readonly CaseStudy[] = [
+const projects: readonly ProjectWork[] = [
   {
+    kind: 'project',
+    slug: 'kaya-doener-himmelstadt',
+    href: '/arbeiten/kaya-doener-himmelstadt/',
+    title: 'Digitaler Auftritt für Kaya Döner Himmelstadt',
+    client: 'Kaya Döner Himmelstadt',
+    industryLabel: 'Gastronomie',
+    category: 'Gastronomie · Website · Mobile Experience',
+    tagline:
+      'Ein klar strukturierter Webauftritt für einen lokalen Gastronomiebetrieb – mit direkter Nutzerführung, mobil optimierter Darstellung und schnellem Zugang zu den wichtigsten Informationen.',
+    liveUrl: 'https://www.kaya-doener-himmelstadt.de',
+    liveLabel: 'www.kaya-doener-himmelstadt.de',
+    verified: false,
+    filters: ['referenz', 'websites', 'gastronomie'],
+    situation:
+      'Ein lokaler Gastronomiebetrieb braucht einen Auftritt, der die wichtigsten Informationen sofort erreichbar macht – gerade auf dem Smartphone.',
+    solution:
+      'Ein klar strukturierter Webauftritt mit direkter Nutzerführung, mobil optimierter Darstellung und schnellem Zugang zu den zentralen Inhalten.',
+    scope: [
+      'Individuelle Website',
+      'Mobile Experience / responsive Umsetzung',
+      'Klare Nutzerführung zu den wichtigsten Informationen',
+      'Fokus auf Performance und Zugänglichkeit',
+    ],
+    screenshotDesktop: {
+      src: '/assets/references/kaya-doener-desktop.svg',
+      width: 1440,
+      height: 900,
+      alt: 'Platzhalter für den Desktop-Screenshot der Website von Kaya Döner Himmelstadt – echter Screenshot folgt.',
+    },
+    screenshotMobile: {
+      src: '/assets/references/kaya-doener-mobile.svg',
+      width: 390,
+      height: 780,
+      alt: 'Platzhalter für den mobilen Screenshot der Website von Kaya Döner Himmelstadt – echter Screenshot folgt.',
+    },
+  },
+  {
+    kind: 'project',
+    slug: 'kinderkoerbchen',
+    href: '/arbeiten/kinderkoerbchen/',
+    title: 'Vertrauensvoller Webauftritt für Kinderkörbchen',
+    client: 'Kinderkörbchen',
+    industryLabel: 'Lokaler Dienstleister',
+    category: 'Lokaler Dienstleister · Website · Sichtbarkeit',
+    tagline:
+      'Ein freundlicher und übersichtlicher Webauftritt, der Angebot, Persönlichkeit und Vertrauen verständlich zusammenführt und auf allen Geräten zugänglich macht.',
+    // IDN: Punycode als href, Unicode als Anzeige.
+    liveUrl: 'https://www.xn--kinderkrbchen-9ib.de',
+    liveLabel: 'www.kinderkörbchen.de',
+    verified: false,
+    filters: ['referenz', 'websites', 'lokale-dienstleister'],
+    situation:
+      'Ein lokaler Dienstleister möchte Angebot, Persönlichkeit und Vertrauen online verständlich zusammenführen – zugänglich auf allen Geräten.',
+    solution:
+      'Ein freundlicher, übersichtlicher Webauftritt, der die wichtigsten Inhalte klar bündelt und Vertrauen aufbaut.',
+    scope: [
+      'Individuelle Website',
+      'Struktur für Angebot und Vertrauen',
+      'Responsive Darstellung für alle Geräte',
+      'Grundlagen für die Auffindbarkeit',
+    ],
+    screenshotDesktop: {
+      src: '/assets/references/kinderkoerbchen-desktop.svg',
+      width: 1440,
+      height: 900,
+      alt: 'Platzhalter für den Desktop-Screenshot der Website von Kinderkörbchen – echter Screenshot folgt.',
+    },
+    screenshotMobile: {
+      src: '/assets/references/kinderkoerbchen-mobile.svg',
+      width: 390,
+      height: 780,
+      alt: 'Platzhalter für den mobilen Screenshot der Website von Kinderkörbchen – echter Screenshot folgt.',
+    },
+  },
+];
+
+/**
+ * Konzeptstudien – fiktiv, klar als „Konzeptstudie – kein Kundenprojekt“ gekennzeichnet.
+ * KEINE echten Kundennamen, Ergebnisse, Kennzahlen, Bewertungen oder Testimonials.
+ */
+const concepts: readonly ConceptWork[] = [
+  {
+    kind: 'concept',
     slug: 'meisterwerk',
     href: '/arbeiten/meisterwerk/',
     isConceptStudy: true,
@@ -59,6 +191,7 @@ export const cases: readonly CaseStudy[] = [
     optionalModules: ['Google-Unternehmensprofil'],
   },
   {
+    kind: 'concept',
     slug: 'dentale-linie',
     href: '/arbeiten/dentale-linie/',
     isConceptStudy: true,
@@ -85,6 +218,7 @@ export const cases: readonly CaseStudy[] = [
     optionalModules: ['Website-Chatbot für häufige Fragen'],
   },
   {
+    kind: 'concept',
     slug: 'haus-am-fluss',
     href: '/arbeiten/haus-am-fluss/',
     isConceptStudy: true,
@@ -112,11 +246,18 @@ export const cases: readonly CaseStudy[] = [
   },
 ];
 
-export function getCase(slug: string): CaseStudy | undefined {
-  return cases.find((c) => c.slug === slug);
+/** Reihenfolge: echte Referenzen zuerst, dann Konzeptstudien. */
+export const works: readonly Work[] = [...projects, ...concepts];
+
+/** Nur echte Referenzprojekte (z. B. für „Ausgewählte Arbeiten“ auf der Startseite). */
+export const featuredProjects: readonly ProjectWork[] = projects;
+
+export function getWork(slug: string): Work | undefined {
+  return works.find((w) => w.slug === slug);
 }
 
-export const caseFilters: readonly { readonly key: CaseFilter; readonly label: string }[] = [
+export const workFilters: readonly { readonly key: CaseFilter; readonly label: string }[] = [
+  { key: 'referenz', label: 'Referenzen' },
   { key: 'websites', label: 'Websites' },
   { key: 'google', label: 'Google' },
   { key: 'video', label: 'Video' },

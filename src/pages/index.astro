@@ -3,14 +3,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroCore from '../components/HeroCore/HeroCore.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import ProcessBand from '../components/ProcessBand.astro';
-import WorkGrid from '../components/WorkGrid.astro';
+import ReferenceImage from '../components/ReferenceImage.astro';
 import IndustryList from '../components/IndustryList.astro';
 import FaqAccordion from '../components/FaqAccordion.astro';
 import CtaBanner from '../components/CtaBanner.astro';
 
 import { site, canShowHostingClaim } from '../config/site';
 import { services } from '../config/services';
-import { cases } from '../config/cases';
+import { featuredProjects } from '../config/cases';
 import { processShort } from '../config/process';
 import { homeFaqs } from '../config/faq';
 
@@ -123,17 +123,42 @@ const websiteProcess = [
   <section class="section section--bright">
     <div class="content">
       <div class="work__head">
-        <p class="eyebrow">Arbeiten</p>
+        <p class="eyebrow">Ausgewählte Arbeiten</p>
         <h2 class="section-title">So kann dein Unternehmen wirken.</h2>
         <p class="lead measure">
-          Solange noch keine freigegebenen Kundenprojekte vorliegen, zeigen wir eigenständig
-          entwickelte Konzeptstudien – klar als solche gekennzeichnet.
+          Echte, umgesetzte Projekte – ergänzt durch eigenständige Konzeptstudien auf der
+          Arbeiten-Seite (klar als solche gekennzeichnet).
         </p>
       </div>
-      <WorkGrid items={cases} />
+      <ul class="featured" role="list">
+        {
+          featuredProjects.map((project) => (
+            <li class="featured__item">
+              <a class="featured__link" href={project.href}>
+                <ReferenceImage
+                  shot={project.screenshotDesktop}
+                  variant="desktop"
+                  pending={!project.verified}
+                />
+                <div class="featured__meta">
+                  <span class="badge badge--reference">Referenz</span>
+                  <h3 class="featured__title">{project.title}</h3>
+                  <p class="featured__cat">{project.category}</p>
+                  <span class="featured__cta arrow-link">
+                    Projekt ansehen{' '}
+                    <span class="arrow" aria-hidden="true">
+                      →
+                    </span>
+                  </span>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
       <p class="work__more">
         <a class="arrow-link" href="/arbeiten/"
-          >Alle Arbeiten ansehen <span class="arrow" aria-hidden="true">→</span></a
+          >Alle Arbeiten & Konzeptstudien <span class="arrow" aria-hidden="true">→</span></a
         >
       </p>
     </div>
@@ -355,6 +380,50 @@ const websiteProcess = [
   }
   .work__more {
     margin-block-start: var(--space-xl);
+  }
+
+  /* FEATURED PROJECTS */
+  .featured {
+    display: grid;
+    gap: var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .featured__link {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .featured__meta {
+    margin-block-start: var(--space-lg);
+  }
+  .featured__title {
+    margin-block-start: 0.6rem;
+    font-size: var(--fs-h3);
+  }
+  .featured__cat {
+    margin-block-start: 0.2rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--brand-strong);
+  }
+  .featured__cta {
+    margin-block-start: 0.8rem;
+    font-size: var(--fs-small);
+  }
+  .featured__link:hover .featured__cta .arrow {
+    transform: translateX(3px);
+  }
+  .badge--reference {
+    border-color: var(--color-ultramarine);
+    color: #fff;
+    background: var(--color-ultramarine);
+  }
+  @media (min-width: 48rem) {
+    .featured {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   /* NETZWERK */

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 780" width="390" height="780" role="img" aria-label="Platzhalter – Screenshot folgt: Kaya Döner Himmelstadt (Mobil)">
+  <rect width="390" height="780" fill="#F4F1E8"/>
+  <rect x="0" y="0" width="390" height="44" fill="#ECEADF"/>
+  <rect x="120" y="16" width="150" height="12" rx="6" fill="#CBD4E3"/>
+  <g font-family="Inter, system-ui, sans-serif" text-anchor="middle">
+    <text x="195" y="330" font-size="13" letter-spacing="2" fill="#304FFE" font-family="'IBM Plex Mono', monospace">REFERENZ · GASTRONOMIE</text>
+    <text x="195" y="392" font-size="34" font-weight="700" fill="#111318">Screenshot</text>
+    <text x="195" y="432" font-size="34" font-weight="700" fill="#111318">folgt</text>
+    <text x="195" y="480" font-size="16" fill="#4A4F5A">Kaya Döner Himmelstadt</text>
+    <text x="195" y="512" font-size="12" fill="#8A8F9A">Mobiler Screenshot wird ergänzt</text>
+  </g>
+  <rect x="1" y="1" width="388" height="778" fill="none" stroke="#DDD8C8" stroke-width="2"/>
+</svg>

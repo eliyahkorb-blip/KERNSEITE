@@ -1,0 +1,121 @@
+---
+import type { Work } from '../config/cases';
+import CaseMockup from './CaseMockup.astro';
+import ReferenceImage from './ReferenceImage.astro';
+
+interface Props {
+  work: Work;
+}
+const { work } = Astro.props;
+---
+
+<li class="workcard-li" data-filters={work.filters.join(' ')}>
+  <article class="workcard">
+    <a class="workcard__link" href={work.href}>
+      <div class="workcard__media">
+        {
+          work.kind === 'project' ? (
+            <ReferenceImage
+              shot={work.screenshotDesktop}
+              variant="desktop"
+              pending={!work.verified}
+            />
+          ) : (
+            <CaseMockup
+              theme={work.mockupTheme}
+              brand={work.title}
+              tagline={work.tagline}
+              industryLabel={work.industryLabel}
+            />
+          )
+        }
+      </div>
+      <div class="workcard__meta">
+        {
+          work.kind === 'project' ? (
+            <span class="badge badge--reference">Referenz</span>
+          ) : (
+            <span class="badge badge--concept">{work.badge}</span>
+          )
+        }
+        <h2 class="workcard__title">{work.title}</h2>
+        <p class="workcard__cat">
+          {work.kind === 'project' ? work.category : work.industryLabel}
+        </p>
+        <p class="workcard__tagline">{work.tagline}</p>
+        <span class="workcard__cta arrow-link">
+          {work.kind === 'project' ? 'Projekt ansehen' : 'Konzeptstudie ansehen'}{' '}
+          <span class="arrow" aria-hidden="true">→</span>
+        </span>
+      </div>
+    </a>
+    {
+      work.kind === 'project' && (
+        <a class="workcard__live" href={work.liveUrl} target="_blank" rel="noopener noreferrer">
+          Live ansehen: {work.liveLabel}
+        </a>
+      )
+    }
+  </article>
+</li>
+
+<style>
+  .workcard-li[hidden] {
+    display: none;
+  }
+  .workcard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--surface-muted);
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out);
+  }
+  .workcard:hover,
+  .workcard:focus-within {
+    transform: translateY(-4px);
+    border-color: var(--color-ultramarine);
+    box-shadow: var(--shadow-lg);
+  }
+  .workcard__link {
+    text-decoration: none;
+    color: var(--text);
+  }
+  .workcard__meta {
+    margin-block-start: var(--space-lg);
+  }
+  .workcard__title {
+    margin-block-start: 0.75rem;
+    font-size: var(--fs-h3);
+  }
+  .workcard__cat {
+    margin-block-start: 0.2rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--brand-strong);
+  }
+  .workcard__tagline {
+    margin-block-start: 0.5rem;
+    color: var(--text-muted);
+  }
+  .workcard__cta {
+    margin-block-start: 0.9rem;
+    font-size: var(--fs-small);
+  }
+  .workcard__live {
+    margin-block-start: var(--space-md);
+    font-size: var(--fs-small);
+    color: var(--brand-strong);
+    font-family: var(--font-mono);
+  }
+  .badge--reference {
+    border-color: var(--color-ultramarine);
+    color: #fff;
+    background: var(--color-ultramarine);
+  }
+</style>

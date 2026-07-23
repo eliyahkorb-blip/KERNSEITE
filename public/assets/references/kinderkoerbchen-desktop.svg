@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="1440" height="900" role="img" aria-label="Platzhalter – Screenshot folgt: Kinderkörbchen (Desktop)">
+  <rect width="1440" height="900" fill="#F4F1E8"/>
+  <rect x="0" y="0" width="1440" height="64" fill="#ECEADF"/>
+  <circle cx="40" cy="32" r="8" fill="#CBD4E3"/><circle cx="70" cy="32" r="8" fill="#CBD4E3"/><circle cx="100" cy="32" r="8" fill="#CBD4E3"/>
+  <rect x="150" y="18" width="700" height="28" rx="14" fill="#FCFBF7" stroke="#DDD8C8"/>
+  <text x="172" y="37" font-family="'IBM Plex Mono', monospace" font-size="15" fill="#4A4F5A">www.kinderkörbchen.de</text>
+  <g font-family="Inter, system-ui, sans-serif" text-anchor="middle">
+    <text x="720" y="360" font-size="24" letter-spacing="3" fill="#304FFE" font-family="'IBM Plex Mono', monospace">REFERENZ · LOKALER DIENSTLEISTER</text>
+    <text x="720" y="470" font-size="84" font-weight="700" fill="#111318">Screenshot folgt</text>
+    <text x="720" y="540" font-size="34" fill="#4A4F5A">Kinderkörbchen</text>
+    <text x="720" y="600" font-size="20" fill="#8A8F9A">Echter Website-Screenshot (Desktop) wird ergänzt</text>
+  </g>
+  <rect x="1" y="1" width="1438" height="898" fill="none" stroke="#DDD8C8" stroke-width="2"/>
+</svg>
