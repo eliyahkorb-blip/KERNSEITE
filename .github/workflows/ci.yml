@@ -16,10 +16,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # pnpm-Version stammt aus package.json ("packageManager"); kein doppelter version-Input.
       - name: pnpm einrichten
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Node einrichten
         uses: actions/setup-node@v4

@@ -23,9 +23,18 @@ export interface Company {
   readonly brandName: string;
   /** Rechtlich saubere Form für Impressum/Footer/geschäftliche Bereiche. */
   readonly legalDisplayName: string;
-  /** Name der natürlichen Person hinter dem Einzelunternehmen. */
+  /** Name der natürlichen Person, die KERNSEITE betreibt (Anbieter i. S. d. § 5 DDG). */
   readonly legalName: string;
+  /**
+   * Rechtsform – NICHT erfinden. Solange die Firmierung nicht final geklärt ist, leer
+   * lassen; dann wird keine Rechtsform behauptet. Zentral hier änderbar.
+   */
   readonly legalForm: string;
+  /**
+   * Statushinweis: KERNSEITE wird bis zur endgültigen Klärung als Marke bzw.
+   * geschäftliche Bezeichnung dargestellt.
+   */
+  readonly legalStatusNote: string;
   readonly street: string;
   readonly postalCode: string;
   readonly city: string;
@@ -57,14 +66,19 @@ export const company: Company = {
   brandName: 'KERNSEITE',
   legalDisplayName: 'KERNSEITE – Eliyah Korb',
   legalName: 'Eliyah Korb',
-  legalForm: 'Einzelunternehmen',
-  street: PLACEHOLDER,
-  postalCode: PLACEHOLDER,
-  city: PLACEHOLDER,
+  // Rechtsform noch nicht final geklärt -> bewusst leer (keine erfundene Rechtsform).
+  legalForm: '',
+  legalStatusNote:
+    'KERNSEITE ist eine Marke bzw. geschäftliche Bezeichnung. Anbieter im Sinne des § 5 DDG ist Eliyah Korb.',
+  // Vorläufige, für die Vorschau bestätigte Angaben:
+  street: 'Würzburger Straße 14',
+  postalCode: '97250',
+  city: 'Erlabrunn',
   country: 'Deutschland',
-  email: PLACEHOLDER,
-  phone: PLACEHOLDER,
-  vatId: PLACEHOLDER_OPTIONAL,
+  email: 'info@kernseite.de',
+  phone: '+49 160 92647414',
+  // USt-IdNr. nicht erfunden -> leer (Impressum blendet den Abschnitt dann aus).
+  vatId: '',
   responsibleContent: 'Eliyah Korb',
   supervisoryAuthority: '',
   hostingProvider: PLACEHOLDER,

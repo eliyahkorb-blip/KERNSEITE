@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 // Produktions-Domain zentral über Env konfigurierbar. Muss vor Live-Gang bestätigt
 // werden (siehe docs/LEGAL_TODO.md). Wird für Canonicals, Sitemap und OG-URLs genutzt.
-const SITE_URL = process.env.SITE_URL || 'https://kernseite.de';
+const SITE_URL = process.env.SITE_URL || 'https://www.kernseite.de';
 const BUILD_MODE =
   process.env.KERNSEITE_BUILD_MODE ||
   (process.env.NODE_ENV === 'development' ? 'dev' : 'production');

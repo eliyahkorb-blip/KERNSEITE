@@ -11,6 +11,7 @@ const breadcrumbs = [
 const c = activeCompany;
 const showVat = !isPlaceholder(c.vatId);
 const showAuthority = !isPlaceholder(c.supervisoryAuthority);
+const showLegalForm = !isPlaceholder(c.legalForm);
 ---
 
 <PageLayout
@@ -28,12 +29,13 @@ const showAuthority = !isPlaceholder(c.supervisoryAuthority);
         <h2>Angaben gemäß § 5 DDG</h2>
         <p>
           {c.legalDisplayName}<br />
-          {c.legalName} ({c.legalForm})<br />
+          {c.legalName}{showLegalForm && ` (${c.legalForm})`}<br />
           {c.street}<br />
           {c.postalCode}
           {c.city}<br />
           {c.country}
         </p>
+        {c.legalStatusNote && <p>{c.legalStatusNote}</p>}
 
         <h2>Kontakt</h2>
         <p>

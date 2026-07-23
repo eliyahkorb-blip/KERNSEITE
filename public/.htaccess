@@ -10,6 +10,10 @@
   RewriteCond %{HTTPS} !=on
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Canonical: kernseite.de -> www.kernseite.de (non-www auf www)
+  RewriteCond %{HTTP_HOST} ^kernseite\.de$ [NC]
+  RewriteRule ^ https://www.kernseite.de%{REQUEST_URI} [L,R=301]
 </IfModule>
 
 # ----- Fehlerseiten ----------------------------------------------------------

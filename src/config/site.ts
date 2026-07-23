@@ -4,8 +4,8 @@ import { hasConfirmedHostingLocation } from '../lib/config-validation';
  * Globale Seiten-Konfiguration und Feature-Flags.
  */
 export const site = {
-  /** Produktions-Domain (auch in astro.config.mjs verwendet). */
-  url: process.env.SITE_URL || 'https://kernseite.de',
+  /** Produktions-Domain (Canonical = www-Variante; auch in astro.config.mjs verwendet). */
+  url: process.env.SITE_URL || 'https://www.kernseite.de',
   name: 'KERNSEITE',
   lang: 'de',
   locale: 'de_DE',

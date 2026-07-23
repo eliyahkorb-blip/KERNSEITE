@@ -15,7 +15,9 @@ export const companyFixture: Company = {
   brandName: 'KERNSEITE',
   legalDisplayName: 'KERNSEITE – Eliyah Korb (FIXTURE)',
   legalName: 'Eliyah Korb',
-  legalForm: 'Einzelunternehmen',
+  legalForm: '',
+  legalStatusNote:
+    'KERNSEITE ist eine Marke bzw. geschäftliche Bezeichnung. Anbieter im Sinne des § 5 DDG ist Eliyah Korb. (FIXTURE)',
   street: 'Musterstraße 1',
   postalCode: '97070',
   city: 'Musterstadt',
