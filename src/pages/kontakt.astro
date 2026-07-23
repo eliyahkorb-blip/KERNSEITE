@@ -1,0 +1,153 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site } from '../config/site';
+import { activeCompany, isPlaceholder } from '../lib/config-validation';
+import { SHOW_DRAFT_NOTICES } from '../lib/build-mode';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Kontakt', path: '/kontakt/' },
+];
+
+const c = activeCompany;
+const emailReady = !isPlaceholder(c.email);
+const phoneReady = !isPlaceholder(c.phone);
+const phoneHref = 'tel:' + c.phone.replace(/[^\d+]/g, '');
+---
+
+<PageLayout
+  title="Kontakt"
+  description="Erzähl kurz, was du vorhast: per Formular, E-Mail oder Telefon. KERNSEITE meldet sich persönlich."
+  eyebrow="Kontakt"
+  h1="Erzähl kurz, was du vorhast."
+  lead="Ein paar Sätze genügen für den Anfang. Wir melden uns persönlich und klären im ersten Gespräch, was wirklich sinnvoll ist."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section section--paper">
+    <div class="content kontakt">
+      <div class="kontakt__form">
+        <h2 class="visually-hidden">Kontaktformular</h2>
+        <ContactForm />
+      </div>
+
+      <aside class="kontakt__aside">
+        <h2 class="kontakt__aside-title">Direkt erreichbar</h2>
+        <ul class="channels" role="list">
+          <li class="channel">
+            <span class="channel__label">E-Mail</span>
+            {
+              emailReady ? (
+                <a class="channel__value" href={`mailto:${c.email}`}>
+                  {c.email}
+                </a>
+              ) : (
+                <span class="channel__value channel__value--todo">
+                  {SHOW_DRAFT_NOTICES ? 'E-Mail wird ergänzt (LEGAL_TODO)' : ''}
+                </span>
+              )
+            }
+          </li>
+          <li class="channel">
+            <span class="channel__label">Telefon</span>
+            {
+              phoneReady ? (
+                <a class="channel__value" href={phoneHref}>
+                  {c.phone}
+                </a>
+              ) : (
+                <span class="channel__value channel__value--todo">
+                  {SHOW_DRAFT_NOTICES ? 'Telefon wird ergänzt (LEGAL_TODO)' : ''}
+                </span>
+              )
+            }
+          </li>
+          {
+            site.bookingUrl && (
+              <li class="channel">
+                <span class="channel__label">Termin</span>
+                <a
+                  class="channel__value"
+                  href={site.bookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Termin auswählen (externer Anbieter)
+                </a>
+              </li>
+            )
+          }
+        </ul>
+
+        <div class="kontakt__note">
+          <p>
+            Deine Anfrage landet direkt bei Eliyah Korb. Kein Callcenter, keine automatische
+            Warteschleife.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .kontakt {
+    display: grid;
+    gap: var(--space-3xl);
+    align-items: start;
+  }
+  .kontakt__aside-title {
+    font-size: var(--fs-h3);
+    margin-block-end: var(--space-lg);
+  }
+  .channels {
+    display: grid;
+    gap: var(--space-lg);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .channel {
+    display: grid;
+    gap: 0.2rem;
+    padding-block-end: var(--space-lg);
+    border-block-end: 1px solid var(--border);
+  }
+  .channel__label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .channel__value {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-h4);
+    color: var(--text);
+    text-decoration: none;
+  }
+  a.channel__value:hover {
+    color: var(--brand-strong);
+  }
+  .channel__value--todo {
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    font-family: var(--font-mono);
+  }
+  .kontakt__note {
+    margin-block-start: var(--space-xl);
+    padding: var(--space-lg);
+    background: var(--surface-muted);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+
+  @media (min-width: 64rem) {
+    .kontakt {
+      grid-template-columns: 1.5fr 0.9fr;
+      gap: var(--space-4xl);
+    }
+  }
+</style>

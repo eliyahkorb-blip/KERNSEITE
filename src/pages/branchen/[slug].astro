@@ -1,0 +1,181 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import { industries, type Industry } from '../../config/industries';
+import { getService, type ServiceKey } from '../../config/services';
+
+export function getStaticPaths() {
+  return industries.map((industry) => ({
+    params: { slug: industry.slug },
+    props: { industry },
+  }));
+}
+
+interface Props {
+  industry: Industry;
+}
+const { industry } = Astro.props;
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Branchen', path: '/branchen/' },
+  { name: industry.label, path: industry.href },
+];
+const related = industry.relatedServices.map((key) => getService(key as ServiceKey));
+---
+
+<PageLayout
+  title={industry.title}
+  description={industry.intro.slice(0, 155)}
+  eyebrow="Branche"
+  h1={industry.detailH1}
+  lead={industry.intro}
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schwerpunkte -->
+  <section class="section section--bright">
+    <div class="content focus">
+      <div class="focus__head">
+        <p class="eyebrow">Worauf es hier ankommt</p>
+        <h2 class="section-title">Schwerpunkte für {industry.label}.</h2>
+      </div>
+      <div class="focus__list">
+        {
+          industry.focus.map((f, i) => (
+            <article class="focus__item">
+              <span class="focus__num" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <h3 class="focus__title">{f.title}</h3>
+                <p class="focus__body">{f.body}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Passende Leistungen -->
+  <section class="section section--muted">
+    <div class="content">
+      <div class="band-head">
+        <p class="eyebrow">Passende Leistungen</p>
+        <h2 class="section-title">Das bringt dich hier weiter.</h2>
+      </div>
+      <ul class="related" role="list">
+        {
+          related.map((r) => (
+            <li>
+              <a class="related__link" href={r.href}>
+                <span class="related__name">{r.cardTitle}</span>
+                <span class="related__teaser">{r.teaser}</span>
+                <span class="arrow-link related__cta">
+                  Ansehen{' '}
+                  <span class="arrow" aria-hidden="true">
+                    →
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBanner
+    title={`Bereit für einen Auftritt, der zu ${industry.label} passt?`}
+    text="Im ersten Gespräch klären wir, was für dein Geschäft wirklich zählt."
+    ctaLabel="Projekt besprechen"
+    ctaHref="/kontakt/"
+    secondaryLabel="Weitere Branchen"
+    secondaryHref="/branchen/"
+  />
+</PageLayout>
+
+<style>
+  .focus,
+  .focus__list {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .focus__list {
+    gap: var(--space-xl);
+  }
+  .focus__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .focus__num {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--brand-strong);
+    padding-block-start: 0.3rem;
+  }
+  .focus__title {
+    font-size: var(--fs-h4);
+  }
+  .focus__body {
+    margin-block-start: 0.3rem;
+    color: var(--text-muted);
+    max-width: 64ch;
+  }
+
+  .band-head {
+    display: grid;
+    gap: var(--space-sm);
+    margin-block-end: var(--space-xl);
+  }
+  .related {
+    display: grid;
+    gap: var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .related__link {
+    display: grid;
+    gap: 0.4rem;
+    padding: var(--space-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bright);
+    text-decoration: none;
+    color: var(--text);
+    height: 100%;
+    transition:
+      border-color var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+  .related__link:hover,
+  .related__link:focus-visible {
+    border-color: var(--color-ultramarine);
+    transform: translateY(-3px);
+  }
+  .related__name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-h4);
+  }
+  .related__teaser {
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  .related__cta {
+    font-size: var(--fs-small);
+  }
+
+  @media (min-width: 64rem) {
+    .focus {
+      grid-template-columns: 0.7fr 1.3fr;
+      align-items: start;
+    }
+    .related {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

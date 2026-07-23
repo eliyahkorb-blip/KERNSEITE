@@ -1,0 +1,133 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import { processFull } from '../config/process';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Prozess', path: '/prozess/' },
+];
+---
+
+<PageLayout
+  title="Prozess"
+  description="Von der ersten Idee bis zur fertigen KERNSEITE: ein klarer, nachvollziehbarer Ablauf in neun Schritten – mit klarer Aufteilung, wer was übernimmt."
+  eyebrow="Prozess"
+  h1="Von der ersten Idee bis zur fertigen KERNSEITE."
+  lead="Ein gutes Projekt braucht keinen Nebel, sondern einen klaren Ablauf. Hier siehst du jeden Schritt – und wer jeweils was beiträgt."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section section--paper">
+    <div class="content">
+      <ol class="steps" role="list">
+        {
+          processFull.map((step) => (
+            <li class="step">
+              <div class="step__marker" aria-hidden="true">
+                <span class="step__num">{String(step.number).padStart(2, '0')}</span>
+              </div>
+              <div class="step__content">
+                <h2 class="step__title">{step.title}</h2>
+                <p class="step__body">{step.body}</p>
+                <div class="step__roles">
+                  {step.customer && (
+                    <p class="step__role">
+                      <span class="step__roletag">Du lieferst</span>
+                      {step.customer}
+                    </p>
+                  )}
+                  {step.kernseite && (
+                    <p class="step__role">
+                      <span class="step__roletag step__roletag--k">KERNSEITE übernimmt</span>
+                      {step.kernseite}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Starten wir mit Schritt eins."
+    text="Das Erstgespräch ist unverbindlich. Danach weißt du, woran du bist."
+    ctaLabel="Projekt besprechen"
+    ctaHref="/kontakt/"
+    secondaryLabel="Leistungen ansehen"
+    secondaryHref="/leistungen/"
+  />
+</PageLayout>
+
+<style>
+  .steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-lg);
+    padding-block: var(--space-2xl);
+    border-block-start: 1px solid var(--border);
+  }
+  .step:first-child {
+    border-block-start: none;
+    padding-block-start: 0;
+  }
+  .step__marker {
+    display: grid;
+    place-items: center;
+    inline-size: 56px;
+    block-size: 56px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-ultramarine);
+    background: color-mix(in srgb, var(--color-ultramarine) 6%, var(--color-bright));
+  }
+  .step__num {
+    font-family: var(--font-mono);
+    font-weight: var(--fw-medium);
+    color: var(--brand-strong);
+  }
+  .step__title {
+    font-size: var(--fs-h3);
+  }
+  .step__body {
+    margin-block-start: 0.5rem;
+    color: var(--text-muted);
+    max-width: 64ch;
+  }
+  .step__roles {
+    display: grid;
+    gap: 0.6rem;
+    margin-block-start: var(--space-lg);
+  }
+  .step__role {
+    display: grid;
+    gap: 0.2rem;
+    font-size: var(--fs-small);
+    color: var(--text);
+  }
+  .step__roletag {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .step__roletag--k {
+    color: var(--brand-strong);
+  }
+
+  @media (min-width: 48rem) {
+    .step__roles {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+    }
+  }
+</style>
