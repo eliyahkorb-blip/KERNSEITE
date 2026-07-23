@@ -1,0 +1,315 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import ProcessBand from '../../components/ProcessBand.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import { services, type Service } from '../../config/services';
+import { serviceJsonLd } from '../../lib/jsonld';
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+interface Props {
+  service: Service;
+}
+const { service } = Astro.props;
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Leistungen', path: '/leistungen/' },
+  { name: service.label, path: service.href },
+];
+
+// Verwandte Leistungen (die übrigen).
+const related = services.filter((s) => s.key !== service.key).slice(0, 4);
+const metaDescription = `${service.problem} ${service.solution}`.slice(0, 155);
+---
+
+<PageLayout
+  title={service.cardTitle}
+  description={metaDescription}
+  eyebrow={service.isCore ? 'Kernleistung' : 'Leistung · Erweiterung'}
+  h1={service.detailH1}
+  lead={service.intro}
+  breadcrumbs={breadcrumbs}
+  extraJsonLd={[serviceJsonLd(service)]}
+>
+  <!-- Problem / Lösung -->
+  <section class="section section--bright">
+    <div class="content ps-grid">
+      <div class="ps-grid__card">
+        <p class="eyebrow">Problem</p>
+        <p class="ps-grid__text">{service.problem}</p>
+      </div>
+      <div class="ps-grid__card ps-grid__card--accent">
+        <p class="eyebrow">Lösung</p>
+        <p class="ps-grid__text">{service.solution}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Redaktionelle Abschnitte -->
+  <section class="section section--paper">
+    <div class="content sections-grid">
+      <div class="sections-grid__head">
+        <p class="eyebrow">Im Detail</p>
+        <h2 class="section-title">Worauf es dabei ankommt.</h2>
+      </div>
+      <div class="sections-grid__list">
+        {
+          service.sections.map((sec) => (
+            <article class="detail-sec">
+              <h3 class="detail-sec__title">{sec.title}</h3>
+              <p class="detail-sec__body">{sec.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Bestandteile + Nutzen -->
+  <section class="section section--muted">
+    <div class="content two-col">
+      <div>
+        <h2 class="section-title">Typische Bestandteile</h2>
+        <ul class="ticklist ticklist--lg" role="list">
+          {service.components.map((c) => <li>{c}</li>)}
+        </ul>
+      </div>
+      <div>
+        <h2 class="section-title">Der Nutzen</h2>
+        <ul class="ticklist ticklist--lg" role="list">
+          {service.benefits.map((b) => <li>{b}</li>)}
+        </ul>
+        <h3 class="mini-h">Passende Zielgruppen</h3>
+        <ul class="taglist" role="list">
+          {service.audiences.map((a) => <li>{a}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ablauf -->
+  <section class="section section--bright">
+    <div class="content">
+      <div class="band-head">
+        <p class="eyebrow">Ablauf</p>
+        <h2 class="section-title">So läuft es ab.</h2>
+      </div>
+      <ProcessBand steps={service.steps} ariaLabel={`Ablauf: ${service.cardTitle}`} />
+      {
+        service.partnerNote && (
+          <p class="partner-note">
+            <span class="partner-note__tag">Netzwerk</span>
+            {service.partnerNote}
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- Verwandte Leistungen -->
+  <section class="section section--paper">
+    <div class="content">
+      <div class="band-head">
+        <p class="eyebrow">Weitere Leistungen</p>
+        <h2 class="section-title">Sinnvoll kombinierbar.</h2>
+      </div>
+      <ul class="related" role="list">
+        {
+          related.map((r) => (
+            <li>
+              <a class="related__link" href={r.href}>
+                <span class="related__name">{r.cardTitle}</span>
+                <span class="related__teaser">{r.teaser}</span>
+                <span class="related__arrow arrow-link">
+                  Ansehen{' '}
+                  <span class="arrow" aria-hidden="true">
+                    →
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Passt das zu deinem Vorhaben?"
+    text="Erzähl kurz, was du planst. Wir sagen ehrlich, ob und wie es sinnvoll ist."
+    ctaLabel="Projekt besprechen"
+    ctaHref="/kontakt/"
+    secondaryLabel="Alle Leistungen"
+    secondaryHref="/leistungen/"
+  />
+</PageLayout>
+
+<style>
+  .ps-grid {
+    display: grid;
+    gap: var(--grid-gap);
+  }
+  .ps-grid__card {
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bright);
+  }
+  .ps-grid__card--accent {
+    background: color-mix(in srgb, var(--color-ultramarine) 6%, var(--color-bright));
+    border-color: color-mix(in srgb, var(--color-ultramarine) 30%, var(--border));
+  }
+  .ps-grid__text {
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+  }
+
+  .sections-grid,
+  .two-col {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .sections-grid__list {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  .detail-sec__title {
+    font-size: var(--fs-h4);
+  }
+  .detail-sec__body {
+    margin-block-start: 0.4rem;
+    color: var(--text-muted);
+    max-width: 68ch;
+  }
+
+  .mini-h {
+    margin-block: var(--space-xl) var(--space-md);
+    font-size: var(--fs-h4);
+  }
+  .ticklist {
+    display: grid;
+    gap: 0.5rem;
+    margin: var(--space-lg) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ticklist--lg li {
+    position: relative;
+    padding-inline-start: 1.6rem;
+    font-size: var(--fs-lead);
+  }
+  .ticklist--lg li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    background: var(--color-ultramarine);
+  }
+  .taglist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: var(--space-md) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .taglist li {
+    font-size: var(--fs-small);
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    color: var(--text-muted);
+  }
+
+  .band-head {
+    display: grid;
+    gap: var(--space-sm);
+    margin-block-end: var(--space-xl);
+  }
+  .partner-note {
+    margin-block-start: var(--space-xl);
+    padding: var(--space-lg);
+    background: color-mix(in srgb, var(--color-cyan) 8%, var(--color-bright));
+    border: 1px solid color-mix(in srgb, var(--color-cyan) 40%, var(--border));
+    border-radius: var(--radius-md);
+    max-width: 70ch;
+  }
+  .partner-note__tag {
+    display: inline-block;
+    margin-inline-end: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand-strong);
+  }
+
+  .related {
+    display: grid;
+    gap: var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .related__link {
+    display: grid;
+    gap: 0.4rem;
+    padding: var(--space-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bright);
+    text-decoration: none;
+    color: var(--text);
+    height: 100%;
+    transition:
+      border-color var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+  .related__link:hover,
+  .related__link:focus-visible {
+    border-color: var(--color-ultramarine);
+    transform: translateY(-3px);
+  }
+  .related__name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-h4);
+  }
+  .related__teaser {
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  .related__arrow {
+    font-size: var(--fs-small);
+  }
+
+  @media (min-width: 48rem) {
+    .ps-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .related {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .sections-grid {
+      grid-template-columns: 0.7fr 1.3fr;
+      align-items: start;
+    }
+    .two-col {
+      grid-template-columns: 1fr 1fr;
+    }
+    .related {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

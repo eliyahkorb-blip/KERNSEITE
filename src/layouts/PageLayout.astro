@@ -1,0 +1,64 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import type { Crumb } from '../components/Breadcrumbs.astro';
+import { breadcrumbJsonLd } from '../lib/jsonld';
+
+interface Props {
+  title?: string;
+  description?: string;
+  eyebrow?: string;
+  h1: string;
+  lead?: string;
+  breadcrumbs?: Crumb[];
+  extraJsonLd?: Array<Record<string, unknown> | null>;
+  noindex?: boolean;
+  /** Header-Hintergrund. */
+  variant?: 'paper' | 'bright' | 'navy';
+}
+
+const {
+  title,
+  description,
+  eyebrow,
+  h1,
+  lead,
+  breadcrumbs = [],
+  extraJsonLd = [],
+  noindex = false,
+  variant = 'paper',
+} = Astro.props;
+
+const jsonLd = [breadcrumbJsonLd(breadcrumbs), ...extraJsonLd];
+---
+
+<BaseLayout title={title ?? h1} description={description} noindex={noindex} jsonLd={jsonLd}>
+  <header class={`page-hero section--${variant}${variant === 'navy' ? ' on-dark' : ''}`}>
+    <div class="content">
+      {breadcrumbs.length > 1 && <Breadcrumbs items={breadcrumbs} />}
+      {eyebrow && <p class="eyebrow page-hero__eyebrow">{eyebrow}</p>}
+      <h1 class="page-hero__title">{h1}</h1>
+      {lead && <p class="lead page-hero__lead">{lead}</p>}
+      <slot name="hero-extra" />
+    </div>
+  </header>
+  <slot />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding-block: clamp(1.75rem, 1rem + 3vw, 3.25rem) clamp(2rem, 1.5rem + 3vw, 4rem);
+  }
+  .page-hero__eyebrow {
+    margin-block-start: var(--space-lg);
+  }
+  .page-hero__title {
+    font-size: clamp(2.25rem, 1rem + 5vw, 5rem);
+    max-width: 20ch;
+    margin-block-start: var(--space-sm);
+  }
+  .page-hero__lead {
+    margin-block-start: var(--space-lg);
+    max-width: 58ch;
+  }
+</style>

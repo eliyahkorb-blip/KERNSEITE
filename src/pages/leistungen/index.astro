@@ -1,0 +1,264 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import ProcessBand from '../../components/ProcessBand.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import { services } from '../../config/services';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Leistungen', path: '/leistungen/' },
+];
+
+const hierarchy = [
+  {
+    label: 'Website als Fundament',
+    text: 'Der digitale Kern. Ohne ein solides Fundament bringen alle weiteren Maßnahmen wenig.',
+  },
+  { label: 'Sichtbarkeit über Google', text: 'Gefunden werden, wenn Menschen in der Nähe suchen.' },
+  {
+    label: 'Vertrauen über Bild und Video',
+    text: 'Echte Einblicke, die Texte allein nicht vermitteln.',
+  },
+  {
+    label: 'Reichweite über Social Media',
+    text: 'Erkennbar bleiben – mit einem klaren, planbaren Auftritt.',
+  },
+  {
+    label: 'Weniger Aufwand über KI',
+    text: 'Routinearbeit automatisieren, ohne den persönlichen Kontakt zu ersetzen.',
+  },
+];
+---
+
+<PageLayout
+  title="Leistungen"
+  description="Website als Fundament, ergänzt durch Google-Sichtbarkeit, Unternehmensvideo, Social Media und Automatisierung. Klare Hierarchie statt beliebiger Full-Service-Liste."
+  eyebrow="Leistungen"
+  h1="Alles beginnt mit einer starken Website."
+  lead="Die Website ist das zentrale Produkt. Alle weiteren Leistungen sind Erweiterungen, die sinnvoll an diesen Kern andocken – keine gleichwertige, beliebige Full-Service-Liste."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Hierarchie -->
+  <section class="section section--bright">
+    <div class="content">
+      <h2 class="section-title section-title--wide">Eine klare Hierarchie.</h2>
+      <ol class="hierarchy" role="list">
+        {
+          hierarchy.map((item, i) => (
+            <li class="hierarchy__item">
+              <span class="hierarchy__num" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <h3 class="hierarchy__label">{item.label}</h3>
+                <p class="hierarchy__text">{item.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Leistungen im Detail -->
+  {
+    services.map((service, i) => (
+      <section
+        class={`section ${i % 2 === 0 ? 'section--paper' : 'section--muted'}`}
+        id={service.slug}
+      >
+        <div class="content service-block">
+          <div class="service-block__intro">
+            <p class="eyebrow">
+              {service.isCore ? 'Kernleistung' : 'Erweiterung'} · {String(i + 1).padStart(2, '0')}
+            </p>
+            <h2 class="service-block__title">{service.cardTitle}</h2>
+            <p class="lead">{service.teaser}</p>
+            <dl class="service-block__ps">
+              <dt>Problem</dt>
+              <dd>{service.problem}</dd>
+              <dt>Lösung</dt>
+              <dd>{service.solution}</dd>
+            </dl>
+            {service.partnerNote && <p class="service-block__partner">{service.partnerNote}</p>}
+            <a class="btn btn--secondary" href={service.href}>
+              Details zu {service.label}
+            </a>
+          </div>
+          <div class="service-block__cols">
+            <div>
+              <h3 class="service-block__h">Typische Bestandteile</h3>
+              <ul class="ticklist" role="list">
+                {service.components.map((c) => (
+                  <li>{c}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 class="service-block__h">Nutzen</h3>
+              <ul class="ticklist" role="list">
+                {service.benefits.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+              <h3 class="service-block__h service-block__h--sp">Passt zu</h3>
+              <ul class="taglist" role="list">
+                {service.audiences.map((a) => (
+                  <li>{a}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div class="service-block__band">
+            <h3 class="service-block__h">Ablauf</h3>
+            <ProcessBand steps={service.steps} ariaLabel={`Ablauf: ${service.cardTitle}`} />
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <CtaBanner
+    title="Nicht sicher, was du wirklich brauchst?"
+    text="Im ersten Gespräch sortieren wir gemeinsam – ehrlich, ohne Paket-Verkauf."
+    ctaLabel="Projekt besprechen"
+    ctaHref="/kontakt/"
+    secondaryLabel="Arbeiten ansehen"
+    secondaryHref="/arbeiten/"
+  />
+</PageLayout>
+
+<style>
+  .hierarchy {
+    margin: var(--space-2xl) 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0;
+    counter-reset: h;
+  }
+  .hierarchy__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem;
+    padding: 1.25rem 0;
+    border-block-start: 1px solid var(--border);
+    align-items: start;
+  }
+  .hierarchy__num {
+    font-family: var(--font-mono);
+    color: var(--brand-strong);
+    font-size: 0.85rem;
+    padding-block-start: 0.35rem;
+  }
+  .hierarchy__label {
+    font-size: var(--fs-h4);
+  }
+  .hierarchy__text {
+    margin-block-start: 0.3rem;
+    color: var(--text-muted);
+    max-width: 62ch;
+  }
+
+  .service-block {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .service-block__title {
+    font-size: var(--fs-h2);
+    margin-block: var(--space-xs) var(--space-md);
+  }
+  .service-block__ps {
+    margin-block-start: var(--space-lg);
+    display: grid;
+    gap: 0.35rem 1.25rem;
+  }
+  .service-block__ps dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--brand-strong);
+    margin-block-start: 0.75rem;
+  }
+  .service-block__ps dd {
+    margin: 0;
+    color: var(--text-muted);
+    max-width: 60ch;
+  }
+  .service-block__partner {
+    margin-block-start: var(--space-lg);
+    padding: var(--space-md);
+    border-inline-start: 3px solid var(--color-cyan);
+    background: color-mix(in srgb, var(--color-cyan) 8%, transparent);
+    font-size: var(--fs-small);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .service-block__intro .btn {
+    margin-block-start: var(--space-lg);
+  }
+  .service-block__cols {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  .service-block__h {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-block-end: var(--space-md);
+  }
+  .service-block__h--sp {
+    margin-block-start: var(--space-xl);
+  }
+  .ticklist {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ticklist li {
+    position: relative;
+    padding-inline-start: 1.5rem;
+  }
+  .ticklist li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--color-ultramarine);
+  }
+  .taglist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .taglist li {
+    font-size: var(--fs-small);
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 64rem) {
+    .service-block {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+    .service-block__cols {
+      grid-template-columns: 1fr 1fr;
+    }
+    .service-block__band {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
