@@ -3,8 +3,10 @@ name: Preview
 # Erzeugt eine visuelle Vorschau (echte Daten, noindex, Vorschau-Hinweis, Formular
 # deaktiviert). Nicht für produktives Hosting (Marker + guard-no-fixture).
 on:
+  push:
+    branches:
+      - claude/feat-kernseite-website-5cid9c
   pull_request:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -32,12 +34,13 @@ jobs:
           path: dist/
           retention-days: 14
 
-  # Optional (manuell): Öffentliche Vorschau-URL via GitHub Pages auf dem Repo-Unterpfad.
+  # Öffentliche Vorschau-URL via GitHub Pages auf dem Repo-Unterpfad (/<repo>/).
   # Voraussetzung: Settings -> Pages -> Source = "GitHub Actions" (bei privaten Repos ist
-  # GitHub Pages nur mit passendem Plan verfügbar). Läuft NUR bei manuellem Start, damit
-  # Pull-Request-Prüfungen nicht rot werden, falls Pages (noch) nicht aktiviert ist.
+  # GitHub Pages nur mit passendem Plan verfügbar).
+  # Läuft bei Push auf den Feature-Branch und bei manuellem Start – NICHT bei Pull Requests,
+  # damit PR-Läufe nur das Artefakt erzeugen und niemals deployen.
   pages:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
