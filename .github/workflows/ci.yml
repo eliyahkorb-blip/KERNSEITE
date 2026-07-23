@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'claude/**']
+  pull_request:
+    branches: [main]
+
+# CI verwendet ausschließlich build:ci (Fixture-Daten). Der Output ist als
+# DO_NOT_DEPLOY markiert und wird nie deployt.
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: pnpm einrichten
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Abhängigkeiten installieren
+        run: pnpm install --frozen-lockfile
+
+      - name: Schriften bereitstellen
+        run: pnpm copy-fonts
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build (CI/Fixture)
+        run: pnpm build:ci
+
+      - name: QA-Prüfungen (Links, extern, inline, a11y, secrets)
+        run: pnpm qa
+
+      - name: Deploy-Guard (Fixture darf nicht deploybar sein)
+        run: |
+          node scripts/guard-no-fixture.mjs dist && echo "unerwartet: kein Marker" && exit 1 || echo "OK: Fixture-Build korrekt als nicht deploybar erkannt"
+
+      - name: Playwright-Browser installieren
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: End-to-End-Tests
+        run: pnpm test:e2e
+
+      - name: Playwright-Report als Artefakt
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  php-lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP einrichten
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Composer validieren
+        working-directory: php
+        run: composer validate --strict
+
+      - name: Composer installieren
+        working-directory: php
+        run: composer install --no-dev --no-interaction --prefer-dist
+
+      - name: PHP-Syntax prüfen
+        run: |
+          for f in $(find php/api -name '*.php' -not -path '*/vendor/*'); do
+            php -l "$f"
+          done

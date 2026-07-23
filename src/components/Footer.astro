@@ -102,6 +102,8 @@ const c = activeCompany;
     color: var(--text-invert-muted);
     text-decoration: none;
     font-size: var(--fs-small);
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
   .site-footer__group a:hover {
     color: var(--text-invert);
@@ -143,6 +145,8 @@ const c = activeCompany;
       grid-template-columns: 1fr 1.4fr;
       gap: var(--space-4xl);
     }
+  }
+  @media (min-width: 64rem) {
     .site-footer__nav {
       grid-template-columns: repeat(4, 1fr);
     }
