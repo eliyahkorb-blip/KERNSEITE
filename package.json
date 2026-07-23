@@ -13,6 +13,7 @@
     "start": "astro dev",
     "build": "pnpm run build:production",
     "build:ci": "cross-env KERNSEITE_BUILD_MODE=ci astro build && node scripts/build-csp-hashes.mjs",
+    "build:preview": "cross-env KERNSEITE_BUILD_MODE=preview astro build && node scripts/build-csp-hashes.mjs",
     "build:production": "cross-env KERNSEITE_BUILD_MODE=production astro build && node scripts/build-csp-hashes.mjs",
     "preview": "astro preview",
     "copy-fonts": "node scripts/copy-fonts.mjs",

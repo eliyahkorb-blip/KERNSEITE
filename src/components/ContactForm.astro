@@ -1,7 +1,9 @@
 ---
 import { services } from '../config/services';
+import { IS_PREVIEW } from '../lib/build-mode';
 
 // Endpoint des PHP-Formulars (wird beim Deployment nach public_html/api/ ausgeliefert).
+// Im Vorschaumodus wird NICHT gesendet (kein Mailversand).
 const ACTION = '/api/contact.php';
 
 const budgets = [
@@ -19,7 +21,14 @@ const timings = [
 ];
 ---
 
-<form class="cform" method="post" action={ACTION} data-contact-form novalidate>
+<form
+  class="cform"
+  method="post"
+  action={IS_PREVIEW ? '#' : ACTION}
+  data-contact-form
+  data-preview={IS_PREVIEW ? '' : undefined}
+  novalidate
+>
   <!-- Honeypot (für Menschen unsichtbar) -->
   <div class="cform__hp" aria-hidden="true">
     <label for="cf-website2">Bitte dieses Feld frei lassen</label>
@@ -111,6 +120,14 @@ const timings = [
     Informationen findest du in der <a href="/datenschutz/">Datenschutzerklärung</a>.
   </p>
 
+  {
+    IS_PREVIEW && (
+      <p class="cform__preview-note">
+        Vorschaumodus: Das Formular dient nur zur Ansicht. Es wird keine Nachricht gesendet.
+      </p>
+    )
+  }
+
   <div class="cform__actions">
     <button type="submit" class="btn btn--primary" data-submit>Anfrage senden</button>
   </div>
@@ -185,6 +202,15 @@ const timings = [
     color: var(--text-muted);
     max-width: 60ch;
   }
+  .cform__preview-note {
+    margin-block-start: var(--space-md);
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--color-alert);
+    background: color-mix(in srgb, var(--color-alert) 8%, var(--color-bright));
+    color: #7a2417;
+    font-size: var(--fs-small);
+  }
   .cform__actions {
     margin-block-start: var(--space-lg);
   }
@@ -213,7 +239,18 @@ const timings = [
   // Progressive Enhancement: Ohne JS funktioniert das Formular als normaler POST an PHP.
   // Mit JS: Client-Validierung, Absenden per fetch, Statusmeldung in Live-Region.
   const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
-  if (form) {
+  if (form && form.dataset.preview !== undefined) {
+    // Vorschaumodus: niemals senden, nur eine Hinweismeldung anzeigen.
+    const status = form.querySelector<HTMLElement>('[data-status]');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (status) {
+        status.dataset.state = '';
+        status.textContent =
+          'Vorschaumodus: Es wird keine Nachricht gesendet. Auf der Live-Website funktioniert das Formular normal.';
+      }
+    });
+  } else if (form) {
     const status = form.querySelector<HTMLElement>('[data-status]');
     const submit = form.querySelector<HTMLButtonElement>('[data-submit]');
     const renderedAt = form.querySelector<HTMLInputElement>('[data-rendered-at]');

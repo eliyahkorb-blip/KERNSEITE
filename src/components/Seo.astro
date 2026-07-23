@@ -1,7 +1,7 @@
 ---
 import { seo, buildTitle, canonicalFor } from '../config/seo';
 import { site } from '../config/site';
-import { IS_CI } from '../lib/build-mode';
+import { IS_NOINDEX_BUILD } from '../lib/build-mode';
 
 interface Props {
   title?: string;
@@ -28,8 +28,8 @@ const {
 const fullTitle = buildTitle(title);
 const canonical = canonicalFor(path);
 const ogImageUrl = canonicalFor(ogImage);
-// CI-/Fixture-Builds werden grundsätzlich auf noindex gesetzt.
-const isNoindex = noindex || IS_CI;
+// CI-/Fixture- und Vorschau-Builds werden grundsätzlich auf noindex gesetzt.
+const isNoindex = noindex || IS_NOINDEX_BUILD;
 
 const schemas = jsonLd.filter((s): s is Record<string, unknown> => s != null);
 ---

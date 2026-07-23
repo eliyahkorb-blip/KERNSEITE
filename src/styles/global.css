@@ -421,6 +421,25 @@ strong {
   letter-spacing: 0.08em;
 }
 
+/* --- Vorschau-Hinweis (nur build:preview) --------------------------------- */
+.preview-ribbon {
+  position: fixed;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+  z-index: var(--z-modal);
+  margin: 0;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-alert);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+}
+
 /* --- Utilities ------------------------------------------------------------ */
 .flow-lg {
   --flow: 1.5rem;

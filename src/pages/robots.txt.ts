@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro';
 import { site } from '../config/site';
-import { IS_CI } from '../lib/build-mode';
+import { IS_NOINDEX_BUILD } from '../lib/build-mode';
 
 const base = site.url.replace(/\/$/, '');
 
-// Im CI-/Fixture-Build alles sperren (Output ist ohnehin nicht deploybar).
-const body = IS_CI
-  ? `# CI-/Fixture-Build – nicht deployen\nUser-agent: *\nDisallow: /\n`
+// Im CI-/Fixture- und Vorschau-Build alles sperren (Output ist nicht produktiv).
+const body = IS_NOINDEX_BUILD
+  ? `# Nicht-produktiver Build (CI/Vorschau) – nicht indexieren\nUser-agent: *\nDisallow: /\n`
   : `User-agent: *
 Allow: /
 

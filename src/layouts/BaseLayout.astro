@@ -9,6 +9,7 @@ import Footer from '../components/Footer.astro';
 import ConsentManager from '../components/ConsentManager.astro';
 import { site } from '../config/site';
 import { websiteJsonLd, organizationJsonLd } from '../lib/jsonld';
+import { IS_PREVIEW } from '../lib/build-mode';
 
 interface Props {
   title?: string;
@@ -66,6 +67,13 @@ const allSchemas = [...baseSchemas, ...jsonLd];
   </head>
   <body class={bodyClass}>
     <a class="skip-link" href="#main">Zum Inhalt springen</a>
+    {
+      IS_PREVIEW && (
+        <p class="preview-ribbon" role="note">
+          Vorschau – nicht produktiv
+        </p>
+      )
+    }
     <Header />
     <main id="main" tabindex="-1">
       <slot />
