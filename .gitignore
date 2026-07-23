@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-php/vendor/
+php/api/vendor/
 
 # Build output
 dist/

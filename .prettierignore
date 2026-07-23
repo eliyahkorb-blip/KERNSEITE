@@ -1,7 +1,8 @@
 dist/
+deploy/
 .astro/
 node_modules/
-php/vendor/
+php/
 pnpm-lock.yaml
 public/fonts/
 playwright-report/

@@ -1,0 +1,27 @@
+# KERNSEITE – Schutz des Kontakt-Endpunkts
+# Nur contact.php ist direkt erreichbar. Alles andere (bootstrap.php, src/, vendor/,
+# composer.*, .env*, Dotfiles) wird per Serverkonfiguration gesperrt.
+
+Options -Indexes
+
+# Apache 2.4
+<IfModule mod_authz_core.c>
+  <FilesMatch ".*">
+    Require all denied
+  </FilesMatch>
+  <Files "contact.php">
+    Require all granted
+  </Files>
+</IfModule>
+
+# Apache 2.2 (Fallback)
+<IfModule !mod_authz_core.c>
+  <FilesMatch ".*">
+    Order allow,deny
+    Deny from all
+  </FilesMatch>
+  <Files "contact.php">
+    Order allow,deny
+    Allow from all
+  </Files>
+</IfModule>

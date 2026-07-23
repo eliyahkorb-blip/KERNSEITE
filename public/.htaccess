@@ -1,0 +1,88 @@
+# =============================================================================
+# KERNSEITE – Apache-Konfiguration (Sicherheit, Caching, Kompression)
+# Ziel: normales deutsches Webhosting (Apache). Passe Werte bei Bedarf an.
+# =============================================================================
+
+# ----- HTTPS erzwingen -------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Nur weiterleiten, wenn nicht bereits HTTPS (Proxy-tauglich über X-Forwarded-Proto)
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ----- Fehlerseiten ----------------------------------------------------------
+ErrorDocument 404 /404.html
+
+# ----- Sicherheits-Header ----------------------------------------------------
+<IfModule mod_headers.c>
+  # Content-Security-Policy passend zum realen Build:
+  # alles selbst gehostet, keine externen Dienste, kein 'unsafe-inline'.
+  # {{CSP_SCRIPT_HASHES}} wird von scripts/build-csp-hashes.mjs mit sha256-Hashes
+  # der Inline-JSON-LD-Blöcke gefüllt.
+  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; script-src 'self'{{CSP_SCRIPT_HASHES}}; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests"
+
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+
+  # HSTS: ERST aktivieren, wenn HTTPS dauerhaft und korrekt eingerichtet ist!
+  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+</IfModule>
+
+# ----- Schutz sensibler Dateien ----------------------------------------------
+<IfModule mod_authz_core.c>
+  <FilesMatch "(^\.|\.(env|ini|log|sh|bak|dist|lock|json)$|composer\.(json|lock))">
+    Require all denied
+  </FilesMatch>
+  # site.webmanifest ausdrücklich erlauben (endet auf .webmanifest, nicht .json)
+</IfModule>
+<IfModule !mod_authz_core.c>
+  <FilesMatch "(^\.|\.(env|ini|log|sh|bak|dist|lock|json)$)">
+    Order allow,deny
+    Deny from all
+  </FilesMatch>
+</IfModule>
+
+Options -Indexes
+
+# ----- Kompression -----------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml application/xml
+</IfModule>
+
+# ----- Caching ---------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  # Gehashte Build-Assets: lange cachen
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/avif "access plus 30 days"
+  # HTML: kurz cachen (Inhalte können sich ändern)
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Immutable-Cache für die gehashten Astro-Assets
+  <FilesMatch "^.*\.(css|js|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# ----- MIME ------------------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+  AddType font/woff2 .woff2
+  AddType image/avif .avif
+</IfModule>
