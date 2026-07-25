@@ -1,8 +1,11 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
+import AccentWord from '../../components/AccentWord.astro';
+import { existsSync } from 'node:fs';
 import { industries, type Industry } from '../../config/industries';
 import { getService, type ServiceKey } from '../../config/services';
+import { works, type ProjectWork } from '../../config/cases';
 
 export function getStaticPaths() {
   return industries.map((industry) => ({
@@ -22,60 +25,124 @@ const breadcrumbs = [
   { name: industry.label, path: industry.href },
 ];
 const related = industry.relatedServices.map((key) => getService(key as ServiceKey));
+
+// Bild nur einbinden, wenn es tatsächlich vorliegt (keine leeren Platzhalter).
+const imgUrl = new URL(`../../../public/assets/branchen/${industry.slug}.webp`, import.meta.url);
+const image = existsSync(imgUrl) ? `/assets/branchen/${industry.slug}.webp` : null;
+
+// Branchentypische Referenz, wenn vorhanden.
+const projects = works.filter((w): w is ProjectWork => w.kind === 'project');
+const refBySlug: Record<string, string | undefined> = {
+  'gastronomie-hotels': 'kaya-doener-himmelstadt',
+  'lokale-dienstleister': 'kinderkoerbchen',
+};
+const reference = projects.find((p) => p.slug === refBySlug[industry.slug]);
+
+/** Ein markiertes Wort je Branchen-Headline. */
+const accentBySlug: Record<string, string> = {
+  handwerk: 'Aufträge',
+  zahnarztpraxen: 'Vertrauen',
+  'gastronomie-hotels': 'Gäste',
+  'lokale-dienstleister': 'Nähe',
+  'b2b-mittelstand': 'Anfragen',
+};
+const accent = accentBySlug[industry.slug];
+const idx = accent ? industry.detailH1.indexOf(accent) : -1;
+const pre = idx >= 0 ? industry.detailH1.slice(0, idx) : industry.detailH1;
+const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
 ---
 
 <PageLayout
   title={industry.title}
   description={industry.intro.slice(0, 155)}
-  eyebrow="Branche"
-  h1={industry.detailH1}
+  h1Slot
   lead={industry.intro}
   breadcrumbs={breadcrumbs}
 >
-  <!-- Schwerpunkte -->
-  <section class="section section--bright">
-    <div class="content focus">
-      <div class="focus__head">
-        <p class="eyebrow">Worauf es hier ankommt</p>
-        <h2 class="section-title">Schwerpunkte für {industry.label}.</h2>
-      </div>
-      <div class="focus__list">
+  <h1 slot="h1">
+    {pre}{idx >= 0 && <AccentWord>{accent}</AccentWord>}{post}
+  </h1>
+
+  {
+    image && (
+      <section class="hero-img">
+        <div class="content--wide content">
+          <img src={image} alt="" width="1600" height="900" loading="eager" decoding="async" />
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Typische Probleme -->
+  <section class="section section--cream">
+    <div class="content">
+      <h2 class="sec">Worauf es hier ankommt</h2>
+      <ol class="focus" role="list">
         {
           industry.focus.map((f, i) => (
-            <article class="focus__item">
+            <li class="focus__item">
               <span class="focus__num" aria-hidden="true">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <div>
+              <div class="focus__body">
                 <h3 class="focus__title">{f.title}</h3>
-                <p class="focus__body">{f.body}</p>
+                <p class="focus__text">{f.body}</p>
               </div>
-            </article>
+            </li>
           ))
         }
-      </div>
+      </ol>
     </div>
   </section>
 
+  <!-- Passende Referenz -->
+  {
+    reference && (
+      <section class="section section--surface">
+        <div class="content ref">
+          <div>
+            <p class="label">Aus dieser Branche</p>
+            <h2 class="ref__title">{reference.headline}</h2>
+            <p class="ref__body">{reference.tagline}</p>
+            <a class="link-arrow" href={reference.href}>
+              Projekt ansehen <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+          <span class="ref__media" aria-hidden="true">
+            <img
+              src={reference.screenshotDesktop.src}
+              srcset={reference.screenshotDesktop.srcset}
+              sizes="(min-width: 64rem) 55vw, 100vw"
+              width={reference.screenshotDesktop.width}
+              height={reference.screenshotDesktop.height}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          </span>
+        </div>
+      </section>
+    )
+  }
+
   <!-- Passende Leistungen -->
-  <section class="section section--muted">
+  <section class="section section--paper">
     <div class="content">
-      <div class="band-head">
-        <p class="eyebrow">Passende Leistungen</p>
-        <h2 class="section-title">Das bringt dich hier weiter.</h2>
-      </div>
-      <ul class="related" role="list">
+      <h2 class="sec">Das bringt dich hier weiter</h2>
+      <ul class="rel" role="list">
         {
-          related.map((r) => (
+          related.map((r, i) => (
             <li>
-              <a class="related__link" href={r.href}>
-                <span class="related__name">{r.cardTitle}</span>
-                <span class="related__teaser">{r.teaser}</span>
-                <span class="arrow-link related__cta">
-                  Ansehen{' '}
-                  <span class="arrow" aria-hidden="true">
-                    →
-                  </span>
+              <a class="rel__link" href={r.href}>
+                <span class="rel__num" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span class="rel__main">
+                  <span class="rel__name">{r.cardTitle}</span>
+                  <span class="rel__teaser">{r.teaser}</span>
+                </span>
+                <span class="rel__go" aria-hidden="true">
+                  →
                 </span>
               </a>
             </li>
@@ -88,94 +155,133 @@ const related = industry.relatedServices.map((key) => getService(key as ServiceK
   <CtaBanner
     title={`Bereit für einen Auftritt, der zu ${industry.label} passt?`}
     text="Im ersten Gespräch klären wir, was für dein Geschäft wirklich zählt."
-    ctaLabel="Projekt besprechen"
-    ctaHref="/kontakt/"
-    secondaryLabel="Weitere Branchen"
-    secondaryHref="/branchen/"
   />
 </PageLayout>
 
 <style>
-  .focus,
-  .focus__list {
-    display: grid;
-    gap: var(--space-2xl);
+  .hero-img img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
   }
-  .focus__list {
-    gap: var(--space-xl);
+
+  .sec {
+    font-size: var(--fs-h2);
+    max-width: 16ch;
+    margin-block-end: clamp(2rem, 1.5rem + 3vw, 4rem);
+  }
+
+  .focus {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
   }
   .focus__item {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 1.25rem;
-    align-items: start;
+    gap: 1rem clamp(1rem, 3vw, 2.5rem);
+    padding-block: clamp(1.25rem, 1rem + 1.4vw, 2rem);
+    border-block-end: 1px solid var(--line);
   }
   .focus__num {
     font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--brand-strong);
-    padding-block-start: 0.3rem;
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-label);
+    color: var(--accent-ink);
+    padding-block-start: 0.3em;
   }
   .focus__title {
-    font-size: var(--fs-h4);
+    font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+    letter-spacing: -0.028em;
   }
-  .focus__body {
-    margin-block-start: 0.3rem;
+  .focus__text {
+    margin-block-start: 0.45rem;
     color: var(--text-muted);
-    max-width: 64ch;
+    max-width: 60ch;
+    font-size: var(--fs-small);
   }
 
-  .band-head {
+  .ref {
     display: grid;
-    gap: var(--space-sm);
-    margin-block-end: var(--space-xl);
+    gap: var(--space-2xl);
+    align-items: center;
   }
-  .related {
-    display: grid;
-    gap: var(--grid-gap);
+  .ref__title {
+    margin-block-start: var(--space-md);
+    font-size: var(--fs-h3);
+    line-height: 0.95;
+    max-width: 14ch;
+  }
+  .ref__body {
+    margin-block-start: var(--space-lg);
+    color: var(--text-muted);
+    max-width: 44ch;
+  }
+  .ref .link-arrow {
+    margin-block-start: var(--space-xl);
+  }
+  .ref__media img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+  }
+
+  .rel {
     margin: 0;
     padding: 0;
     list-style: none;
+    border-block-start: 1px solid var(--line);
   }
-  .related__link {
+  .rel__link {
     display: grid;
-    gap: 0.4rem;
-    padding: var(--space-lg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--color-bright);
+    grid-template-columns: auto 1fr auto;
+    gap: 0.6rem clamp(1rem, 3vw, 2.5rem);
+    align-items: start;
+    padding-block: clamp(1.25rem, 1rem + 1.4vw, 2rem);
+    border-block-end: 1px solid var(--line);
     text-decoration: none;
     color: var(--text);
-    height: 100%;
-    transition:
-      border-color var(--dur-base) var(--ease-out),
-      transform var(--dur-base) var(--ease-out);
   }
-  .related__link:hover,
-  .related__link:focus-visible {
-    border-color: var(--color-accent-deep);
-    transform: translateY(-3px);
+  .rel__num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-label);
+    color: var(--accent-ink);
+    padding-block-start: 0.45em;
   }
-  .related__name {
+  .rel__name {
+    display: block;
     font-family: var(--font-display);
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-h4);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.3rem, 2.6vw, 2.1rem);
+    letter-spacing: var(--track-display);
+    line-height: 1.05;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
-  .related__teaser {
+  .rel__teaser {
+    display: block;
+    margin-block-start: 0.5rem;
     color: var(--text-muted);
     font-size: var(--fs-small);
+    max-width: 60ch;
   }
-  .related__cta {
-    font-size: var(--fs-small);
+  .rel__go {
+    color: var(--accent-ink);
+    padding-block-start: 0.35em;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .rel__link:hover .rel__go {
+    transform: translateX(7px);
   }
 
   @media (min-width: 64rem) {
-    .focus {
-      grid-template-columns: 0.7fr 1.3fr;
-      align-items: start;
-    }
-    .related {
-      grid-template-columns: repeat(3, 1fr);
+    .ref {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: clamp(3rem, 5vw, 5rem);
     }
   }
 </style>

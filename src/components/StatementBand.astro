@@ -1,0 +1,81 @@
+---
+/**
+ * StatementBand – reduziertes Laufband direkt unter dem Hero.
+ * Keine Karten, nur Typografie. Bei reduzierter Bewegung steht es still.
+ */
+interface Props {
+  items?: readonly string[];
+}
+const {
+  items = ['Websites', 'Sichtbarkeit', 'SEO / GEO', 'Video', 'Automation'],
+} = Astro.props;
+
+// Zweimal ausgeben, damit die Schleife nahtlos wirkt.
+const run = [...items, ...items];
+---
+
+<section class="band section--dark" aria-label="Leistungsschwerpunkte">
+  <div class="band__track" data-band>
+    {
+      run.map((item, i) => (
+        <span class="band__item" aria-hidden={i >= items.length ? 'true' : undefined}>
+          {item}
+          <i class="band__dot" aria-hidden="true" />
+        </span>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .band {
+    overflow: hidden;
+    padding-block: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+    border-block: 1px solid var(--line-invert);
+  }
+  .band__track {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 3vw, 3.5rem);
+    width: max-content;
+    animation: band-run 42s linear infinite;
+  }
+  .band__item {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(1.5rem, 3vw, 3.5rem);
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.6rem, 4vw, 3.25rem);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text-invert);
+    white-space: nowrap;
+  }
+  .band__dot {
+    inline-size: 0.4em;
+    block-size: 0.4em;
+    border-radius: 50%;
+    background: var(--accent);
+    flex: none;
+  }
+
+  @keyframes band-run {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .band__track {
+      animation: none;
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding-inline: var(--gutter);
+    }
+  }
+</style>

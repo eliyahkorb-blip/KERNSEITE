@@ -60,7 +60,7 @@ const roles = [
 <PageLayout
   title="Agentur"
   description="KERNSEITE ist das Digitalstudio von Eliyah Korb aus Würzburg: Schwerpunkt individuelle Websites, ergänzt durch ein projektbezogenes Partnernetzwerk."
-  eyebrow="Agentur"
+  label="Agentur"
   h1="Klein im Kern. Stark im Netzwerk."
   lead="KERNSEITE ist das Digitalstudio von Eliyah Korb. Der Schwerpunkt liegt auf individuellen Websites und digitalen Auftritten – regional verankert in Würzburg, ergänzt durch ein projektbezogenes Partnernetzwerk."
   breadcrumbs={breadcrumbs}
@@ -80,8 +80,8 @@ const roles = [
         <figcaption class="person__cap">Porträt folgt</figcaption>
       </figure>
       <div class="person__text">
-        <p class="eyebrow">Hinter KERNSEITE</p>
-        <h2 class="section-title">Eliyah Korb – dein Ansprechpartner.</h2>
+        <p class="label">Hinter KERNSEITE</p>
+        <h2 class="head__title">Eliyah Korb – dein Ansprechpartner.</h2>
         <p class="lead">
           KERNSEITE wird von Eliyah Korb geführt. Du hast über das ganze Projekt hinweg einen festen
           Ansprechpartner – von der Strategie bis zur fertigen Website.
@@ -91,11 +91,11 @@ const roles = [
   </section>
 
   <!-- Werte -->
-  <section class="section section--bright">
+  <section class="section section--cream">
     <div class="content">
       <div class="band-head">
-        <p class="eyebrow">Haltung</p>
-        <h2 class="section-title">Wie wir arbeiten.</h2>
+        <p class="label">Haltung</p>
+        <h2 class="head__title">Wie wir arbeiten.</h2>
       </div>
       <ul class="values" role="list">
         {
@@ -114,8 +114,8 @@ const roles = [
   <section class="section section--paper">
     <div class="content">
       <div class="band-head">
-        <p class="eyebrow">Transparenz</p>
-        <h2 class="section-title section-title--wide">Wer arbeitet an meinem Projekt?</h2>
+        <p class="label">Transparenz</p>
+        <h2 class="head__title head__title--wide">Wer arbeitet an meinem Projekt?</h2>
         <p class="lead measure">
           Eliyah Korb ist dein zentraler Ansprechpartner und verantwortet Strategie, Design,
           Konzeption und Umsetzung. Für Film, Social Media und KI werden je nach Projekt
@@ -142,11 +142,11 @@ const roles = [
   </section>
 
   <!-- Region -->
-  <section class="section section--muted">
+  <section class="section section--surface">
     <div class="content region">
       <div>
-        <p class="eyebrow">Region</p>
-        <h2 class="section-title">Verwurzelt in {site.region.city}.</h2>
+        <p class="label">Region</p>
+        <h2 class="head__title">Verwurzelt in {site.region.city}.</h2>
       </div>
       <p class="lead region__text">
         KERNSEITE arbeitet aus {site.region.city} in {site.region.area} und betreut Unternehmen in {
@@ -185,7 +185,7 @@ const roles = [
     max-width: 340px;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: 1px solid var(--line);
     box-shadow: var(--shadow-md);
   }
   .person__portrait img {
@@ -201,9 +201,8 @@ const roles = [
     font-size: 0.62rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #fff;
-    background: var(--color-alert);
-    border-radius: 4px;
+    color: var(--ks-black);
+    background: var(--accent);
     padding: 0.15rem 0.45rem;
   }
   @media (min-width: 48rem) {
@@ -221,9 +220,9 @@ const roles = [
   }
   .values__item {
     padding: var(--space-lg);
-    border: 1px solid var(--border);
+    border: 1px solid var(--line);
     border-radius: var(--radius-lg);
-    background: var(--color-bright);
+    background: var(--ks-cream);
   }
   .values__title {
     font-size: var(--fs-h4);
@@ -239,13 +238,13 @@ const roles = [
     margin: var(--space-xl) 0 0;
     padding: 0;
     list-style: none;
-    border-block-start: 1px solid var(--border);
+    border-block-start: 1px solid var(--line);
   }
   .roles__item {
     display: grid;
     gap: 0.25rem 1.5rem;
     padding: 1.1rem 0;
-    border-block-end: 1px solid var(--border);
+    border-block-end: 1px solid var(--line);
   }
   .roles__role {
     font-family: var(--font-display);
@@ -255,7 +254,7 @@ const roles = [
   .roles__who {
     font-family: var(--font-mono);
     font-size: var(--fs-small);
-    color: var(--brand-strong);
+    color: var(--accent-ink);
   }
   .roles__note {
     color: var(--text-muted);

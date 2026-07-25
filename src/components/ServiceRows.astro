@@ -1,0 +1,146 @@
+---
+/**
+ * ServiceRows – Leistungsübersicht als große redaktionelle Reihen.
+ * Ersetzt die frühere Kartenoptik: nur Linien, Nummern und Typografie.
+ * Auf Desktop laufen die Zeilen über die volle Breite.
+ */
+import { services } from '../config/services';
+
+interface Props {
+  /** Nur diese Leistungen zeigen (Schlüssel). Leer = alle. */
+  exclude?: readonly string[];
+  headingLevel?: 'h3' | 'h4';
+}
+const { exclude = [], headingLevel = 'h3' } = Astro.props;
+const rows = services.filter((s) => !exclude.includes(s.key));
+const Tag = headingLevel;
+---
+
+<ul class="rows" role="list">
+  {
+    rows.map((s, i) => (
+      <li class="rows__item">
+        <a class="rows__link" href={s.href}>
+          <span class="rows__num" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <span class="rows__main">
+            <Tag class="rows__title">{s.cardTitle}</Tag>
+            <span class="rows__body">{s.teaser}</span>
+          </span>
+          <span class="rows__go" aria-hidden="true">
+            →
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .rows__item {
+    border-block-end: 1px solid var(--line);
+  }
+  .rows__link {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: start;
+    column-gap: clamp(1rem, 3vw, 3rem);
+    row-gap: 0.75rem;
+    padding-block: clamp(1.75rem, 1rem + 2.4vw, 3rem);
+    text-decoration: none;
+    color: var(--text);
+    transition: padding-inline-start var(--dur-base) var(--ease-out);
+  }
+  .rows__link:hover,
+  .rows__link:focus-visible {
+    color: var(--text);
+    padding-inline-start: clamp(0.5rem, 1.5vw, 1.5rem);
+  }
+  .rows__num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-label);
+    color: var(--accent-ink);
+    padding-block-start: 0.55em;
+  }
+  .rows__title {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.75rem, 3.6vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: var(--track-display);
+    /* lange Komposita dürfen umbrechen */
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  .rows__body {
+    display: block;
+    margin-block-start: 0.85rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    max-width: 62ch;
+  }
+  .rows__go {
+    font-size: 1.4rem;
+    color: var(--accent-ink);
+    padding-block-start: 0.2em;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .rows__link:hover .rows__go,
+  .rows__link:focus-visible .rows__go {
+    transform: translateX(8px);
+  }
+
+  /* Feine Cyan-Linie beim Hover statt Kachelrahmen */
+  .rows__item {
+    position: relative;
+  }
+  .rows__item::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: -1px;
+    block-size: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .rows__item:hover::after,
+  .rows__item:focus-within::after {
+    transform: scaleX(1);
+  }
+
+  .section--dark .rows,
+  .section--dark .rows__item {
+    border-color: var(--line-invert);
+  }
+  .section--dark .rows__link {
+    color: var(--text-invert);
+  }
+  .section--dark .rows__body {
+    color: var(--text-muted);
+  }
+  .section--dark .rows__num,
+  .section--dark .rows__go {
+    color: var(--accent);
+  }
+
+  @media (max-width: 47.99rem) {
+    .rows__link {
+      grid-template-columns: auto 1fr;
+    }
+    .rows__go {
+      grid-column: 2;
+      justify-self: start;
+    }
+  }
+</style>

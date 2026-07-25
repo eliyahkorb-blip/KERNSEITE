@@ -1,0 +1,170 @@
+---
+/**
+ * IndustryGrid – asymmetrisches Branchenraster.
+ *
+ * Keine identischen Karten: die Felder haben unterschiedliche Breiten und
+ * Höhen, der Aufbau bricht bewusst die Rasterlogik. Liegt für eine Branche ein
+ * Bild unter `public/assets/branchen/<slug>.webp`, wird es verwendet; sonst
+ * trägt die Fläche allein die Typografie (keine leeren Bildplatzhalter).
+ */
+import { existsSync } from 'node:fs';
+import { industries } from '../config/industries';
+
+const imgDir = new URL('../../public/assets/branchen/', import.meta.url);
+const imageFor = (slug: string) =>
+  existsSync(new URL(`${slug}.webp`, imgDir)) ? `/assets/branchen/${slug}.webp` : null;
+
+// Feste Größenverteilung sorgt für die Asymmetrie.
+const spans = ['a', 'b', 'c', 'd', 'e'] as const;
+const items = industries.map((ind, i) => ({
+  ...ind,
+  image: imageFor(ind.slug),
+  span: spans[i % spans.length],
+}));
+---
+
+<ul class="igrid" role="list">
+  {
+    items.map((ind, i) => (
+      <li class:list={['igrid__cell', `igrid__cell--${ind.span}`]}>
+        <a class="igrid__link" href={ind.href}>
+          {ind.image ? (
+            <span class="igrid__media">
+              <img src={ind.image} alt="" width="1200" height="800" loading="lazy" decoding="async" />
+            </span>
+          ) : (
+            <span class="igrid__rule" aria-hidden="true" />
+          )}
+          <span class="igrid__meta">
+            <span class="igrid__num" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span class="igrid__name">{ind.title}</span>
+          </span>
+          <span class="igrid__arg">{ind.argument}</span>
+          <span class="igrid__go" aria-hidden="true">
+            →
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .igrid {
+    display: grid;
+    gap: clamp(2rem, 1.5rem + 2vw, 3.5rem) clamp(1.5rem, 1rem + 2vw, 3rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .igrid__link {
+    display: grid;
+    gap: var(--space-md);
+    text-decoration: none;
+    color: var(--text);
+    height: 100%;
+    align-content: start;
+  }
+  .igrid__link:hover {
+    color: var(--text);
+  }
+
+  .igrid__media {
+    display: block;
+    overflow: hidden;
+    background: var(--ks-surface);
+    aspect-ratio: 3 / 2;
+  }
+  .igrid__media img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .igrid__link:hover .igrid__media img {
+    transform: scale(1.03);
+  }
+
+  /* Ohne Bild trägt eine kräftige Linie die Fläche. */
+  .igrid__rule {
+    display: block;
+    block-size: 3px;
+    background: var(--ks-black);
+    transition: background-color var(--dur-base) var(--ease-out);
+  }
+  .igrid__link:hover .igrid__rule,
+  .igrid__link:focus-visible .igrid__rule {
+    background: var(--accent);
+  }
+
+  .igrid__meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+  }
+  .igrid__num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-label);
+    color: var(--accent-ink);
+    flex: none;
+  }
+  .igrid__name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.6rem, 3vw, 2.75rem);
+    line-height: 1;
+    letter-spacing: var(--track-display);
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  .igrid__arg {
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    max-width: 42ch;
+  }
+  .igrid__go {
+    justify-self: start;
+    font-size: 1.25rem;
+    color: var(--accent-ink);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .igrid__link:hover .igrid__go,
+  .igrid__link:focus-visible .igrid__go {
+    transform: translateX(7px);
+  }
+
+  /* --- Asymmetrie ab Tablet --------------------------------------------- */
+  @media (min-width: 48rem) {
+    .igrid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .igrid__cell--a {
+      grid-column: span 7;
+    }
+    .igrid__cell--b {
+      grid-column: span 5;
+      padding-block-start: clamp(1.5rem, 4vw, 4rem);
+    }
+    .igrid__cell--c {
+      grid-column: span 5;
+    }
+    .igrid__cell--d {
+      grid-column: span 7;
+      padding-block-start: clamp(1rem, 3vw, 3rem);
+    }
+    .igrid__cell--e {
+      grid-column: span 8;
+    }
+    .igrid__cell--b .igrid__media,
+    .igrid__cell--c .igrid__media {
+      aspect-ratio: 4 / 5;
+    }
+    .igrid__cell--e .igrid__media {
+      aspect-ratio: 16 / 9;
+    }
+  }
+</style>

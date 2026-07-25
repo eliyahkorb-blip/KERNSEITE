@@ -1,89 +1,77 @@
 # Design-System
 
-Haltung: **ruhig, hochwertig, präzise, agenturig.** Große Typografie, viel Weißraum,
-klare Hierarchien, feine Linien statt Kacheln. Farbe wird sparsam eingesetzt.
+Haltung: **editorial, mutig, ruhig, hochwertig.** Sehr große Typografie, echte Bilder,
+wechselnde Layouts, bewusste Asymmetrie, klare Abschnittswechsel.
 
-Bewusst **nicht**: KI-SaaS-Optik, Glassmorphism, Neonverläufe, bunte Icon-Kacheln,
-Bento-Überladung, verspielte Microinteractions, Deko ohne Funktion.
+**Karten sind aus dem Frontend verschwunden.** Inhalte werden strukturiert über
+Typografie, Bilder, Linien, Raster, Weißraum, wechselnde Hintergrundflächen und
+große Kapitelnummern ohne Box. Kartenähnliche Flächen gibt es nur noch für
+Formularfelder, Filter und Dialoge.
 
 ## Farben (`src/styles/tokens.css`)
 
-| Token                 | Wert      | Rolle                                        |
-| --------------------- | --------- | -------------------------------------------- |
-| `--color-sand`        | `#EDE9E1` | warmes Beige-Grau – ruhige Grundfläche        |
-| `--color-paper`       | `#F6F4EF` | Off-White                                     |
-| `--color-bright`      | `#FDFCFA` | hellste Fläche (Karten)                       |
-| `--color-ink`         | `#14161A` | Typografie, primäre Schaltflächen             |
-| `--color-ink-deep`    | `#0F1215` | dunkle Kapitel, Hero, Footer                  |
-| `--color-cyan`        | `#19E6F2` | **einzige Akzentfarbe** (Flächen, Dunkelgrund) |
-| `--color-accent-deep` | `#0A6A73` | lesbare Cyan-Variante auf Hell (Links, Pfeile) |
-| `--color-alert`       | `#B4442F` | **nur** Dev-/Vorschau-Hinweise, nie im Design |
+| Token             | Wert      | Rolle                                        |
+| ----------------- | --------- | -------------------------------------------- |
+| `--ks-cyan`       | `#00E3F2` | **einzige kräftige Akzentfarbe**              |
+| `--ks-cyan-dark`  | `#006B73` | Cyan für kleine Texte auf hellem Grund (AA)   |
+| `--ks-black`      | `#101214` | Typografie, dunkle Flächen                    |
+| `--ks-black-soft` | `#25282B` | abgesetzte dunkle Flächen                     |
+| `--ks-paper`      | `#F4F0E7` | warme Grundfläche                             |
+| `--ks-cream`      | `#FCFAF5` | hellste Fläche                                |
+| `--ks-surface`    | `#EAE5DB` | abgesetzte helle Fläche                       |
+| `--ks-line`       | `#D5CFC2` | Trennlinien                                   |
+| `--ks-muted`      | `#60646B` | Sekundärtext                                  |
 
-**Regel:** Cyan ist die einzige Akzentfarbe. Auf hellem Grund wird die dunkle
-Variante `--color-accent-deep` verwendet (AA-Kontrast), auf dunklem Grund das
-helle Cyan. Keine zweite Akzentfarbe einführen. Keine Farbverläufe als Deko.
+Entfernt: `#19E6F2`, Ultramarin, Marineblau, Blau-Grau, Signalrot als UI-Farbe.
+Blau, Lila, Orange, Grün und Gelb kommen im Interface nicht vor.
 
-Kontraste (geprüft): Text auf allen Hellflächen ≥ 5,0:1, Cyan auf `--color-ink-deep`
-≥ 11,7:1.
+**Kontextfarben über Variablen.** `.section--dark`, `.wf--dark` und `.section--cyan`
+setzen `--text`, `--text-muted`, `--accent-ink`, `--line` und `--line-strong` neu.
+Custom Properties vererben sich, dadurch passen sich alle Komponenten automatisch an –
+das ist zuverlässiger als Overrides, die an Astros Style-Scoping scheitern.
+
+**Ausnahme:** Kunden-Screenshots behalten ihre Originalfarben und werden nicht
+eingefärbt.
+
+## Markiertes Wort (`AccentWord`)
+
+Zentrales Markenelement: schwarzer Text auf cyanfarbener Markerfläche mit leicht
+organischen Kanten, `box-decoration-break: clone` für stabile Zeilenumbrüche.
+Maximal ein bis zwei markierte Begriffe je großer Headline. Die Markierung trägt
+keine eigene Bedeutung – der Text bleibt ohne Farbwahrnehmung vollständig verständlich.
+
+Variante `underline` für kräftige Unterstreichung statt Fläche.
 
 ## Typografie
 
-- **Display/Headlines:** Bricolage Grotesque (variabel)
-- **Fließtext/UI:** Inter
-- **Labels/technisch:** IBM Plex Mono (Eyebrows, Zähler, Meta)
-- Alle Schriften **lokal** (SIL OFL), `font-display: swap`, kritische Schnitte vorgeladen.
-- Skala via `clamp()`: `--fs-hero` 48 → 160 px, `--fs-h1` 36 → 76 px, `--fs-h2` 30 → 56 px.
-- Enges Tracking bei großen Graden (`--tracking-tight` / `--tracking-tighter`),
-  Zeilenhöhe `0.98`–`1.14` bei Headlines.
-
-## Layout
-
-- Container max. `1600px`, Inhaltsbreite max. `1380px`, Lesebreite `~62ch`.
-- `--section-y` (72 → 176 px) als vertikaler Rhythmus; direkt nach einem Seitenkopf reduziert.
-- Flächenwechsel: `sand` → `bright` → `paper` → `dark`. Klassen:
-  `.section--sand`, `.section--paper`, `.section--bright`, `.section--muted`, `.section--dark`.
-- Mobile Layouts eigenständig gestaltet (nicht nur zusammengeschoben).
+- Display: Bricolage Grotesque · Text: Inter · Labels: IBM Plex Mono — alle lokal (SIL OFL)
+- Hero-H1 `clamp(3.8rem, 8.5vw, 9.5rem)`, `line-height: .88`, `letter-spacing: -.065em`
+- H2 `clamp(2.2rem, 6vw, 7rem)` · Projektüberschriften `clamp(2rem, 4.6vw, 5.8rem)`
+- Fließtext max. `58ch`
+- Überschriften mit `overflow-wrap: break-word` und `hyphens: auto` — lange deutsche
+  Komposita sprengen sonst auf 390 px die Zeile.
+- Keine Monospace-Eyebrows vor jedem Abschnitt. `.label` nur bei Projektkategorie,
+  Branche, Abschnittsnummer, technischen Angaben und im Footer.
 
 ## Bausteine
 
-- `.section-head` – einheitlicher Sektionskopf (Eyebrow, Titel, Lead)
-- `.eyebrow` – Mono-Label mit kurzer Cyan-Linie
-- `.arrow-link` – Standard-Textlink mit Unterlinie, Cyan beim Hover
-- `.btn--primary` (Ink auf Hell / Cyan auf Dunkel), `.btn--secondary` (Hairline)
-- `.card` – ruhige helle Fläche, 1 px Kontur, `--radius-lg`
-- `.hairline` – feine Trennlinie
-- `.reveal` – dezentes Einblenden beim Scrollen (Progressive Enhancement, s. u.)
+`HeroCinematic` · `StatementBand` · `WorkFeature` · `ServiceRows` · `GoogleProfile` ·
+`ProblemList` · `IndustryGrid` · `ProcessTimeline` · `FaqAccordion` · `CtaBanner` ·
+`AccentWord` · `Header` · `Footer` · `ContactForm` · `Breadcrumbs` · `ConsentManager`
 
-**Karten-Regel:** helle Fläche, feine Kontur, kein Schlagschatten im Ruhezustand,
-kein Farbfeld, keine Badge-Systeme. Hover verändert nur die Konturfarbe bzw. hebt
-Medien minimal an.
-
-## Komponenten (`src/components/`)
-
-- `Header` (+ barrierefreies Mobilmenü mit Fokusfalle), `Footer`, `Seo`, `Breadcrumbs`
-- `HeroCinematic` – Hero mit Loop-Video, Cyan-Bildschirmfläche und CRT-Anmutung
-- `GoogleProfile` – Sektion „Lokale Sichtbarkeit“ (Google-Unternehmensprofil)
-- `ServiceCard`, `ProcessBand`, `WorkCard`, `ReferenceImage`, `CaseMockup`,
-  `IndustryList`, `FaqAccordion`, `CtaBanner`, `ContactForm`, `ConsentManager`, `DraftNotice`
-- Layouts: `BaseLayout`, `PageLayout`
+Entfernt: `ServiceCard`, `WorkCard`, `ProcessBand`, `IndustryList`, `CaseMockup`,
+`ReferenceImage`, `HeroFigure` — sämtlich Träger der alten Kartenoptik.
 
 ## Bewegung
 
-- Nur `transform`/`opacity`, ruhig und kurz. Keine Parallax-Effekte, kein Scroll-Jacking.
-- `.reveal`: Inhalte sind **standardmäßig sichtbar**; erst wenn das Skript den
-  Beobachter aktiviert, wird eingeblendet (`html.has-reveal`). Ohne JS oder bei
-  `prefers-reduced-motion` bleibt alles sofort lesbar.
-- Hero: Video und Bildschirm-Flackern pausieren offscreen, bei inaktivem Tab und bei
-  `prefers-reduced-motion`.
-- Keine WebGL/3D-Bibliothek. Das Hero-Video ist dekorativ, stumm und ohne Steuerung.
+Nur `transform`/`opacity`. `.reveal` blendet erst ein, wenn das Skript den Beobachter
+aktiviert (`html.has-reveal`) — ohne JS und bei `prefers-reduced-motion` ist alles
+sofort sichtbar. Der CRT-Bildschirm flackert dezent und steht bei reduzierter Bewegung
+still. Das Statement-Band läuft langsam und hält bei reduzierter Bewegung an.
 
 ## Barrierefreiheit
 
-WCAG 2.2 AA als Zielstandard: Landmarken, genau eine H1/Seite, Fokus-Sichtbarkeit,
-Skip-Link, ausreichende Kontraste, Tastaturbedienbarkeit, Live-Regionen, keine Info nur
-über Farbe, Touch-Ziele ≥ 48 px (Schaltflächen `min-height: 52px`).
-
-## Marke
-
-Wortmarke „KERNSEITE.“ mit Punkt in Cyan; reduziertes K-Monogramm als Favicon
-(`public/favicon.svg`).
+WCAG 2.2 AA als Zielstandard. Automatisch geprüft: genau eine H1 je Seite, korrekte
+Überschriftenhierarchie, Alt-Texte, zugängliche Namen, Kontraste auf allen Flächen
+(inkl. dunkler und cyanfarbener Kontexte), kein horizontaler Überlauf bei 390 px,
+sichtbarer Fokus in Cyan, Skip-Link, Tastaturbedienung des Mobilmenüs.

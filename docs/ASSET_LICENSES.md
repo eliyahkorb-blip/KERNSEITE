@@ -1,42 +1,66 @@
-# Asset-Lizenzen
+# Asset-Lizenzen und Herkunft
 
-Übersicht aller mitgelieferten Assets und ihrer Lizenzen. Es werden keine fremden
-Stockbilder oder Hotlinks verwendet; alle visuellen Platzhalter sind eigenständig als
-CSS/SVG gestaltet.
+## Schriften
 
-## Schriften (lokal gehostet, SIL Open Font License 1.1)
+| Schrift              | Lizenz  | Herkunft                              | Dateien                    |
+| -------------------- | ------- | ------------------------------------- | -------------------------- |
+| Bricolage Grotesque  | SIL OFL | `@fontsource-variable/bricolage-grotesque` | `public/fonts/*.woff2` |
+| Inter                | SIL OFL | `@fontsource/inter`                   | `public/fonts/*.woff2`     |
+| IBM Plex Mono        | SIL OFL | `@fontsource/ibm-plex-mono`           | `public/fonts/*.woff2`     |
 
-Bezogen über die npm-Pakete `@fontsource*` (Quelle: npm-Registry), lokal nach
-`public/fonts/` kopiert (`scripts/copy-fonts.mjs`). Vollständige Lizenztexte:
-`public/fonts/OFL.txt`.
+Lizenztext: `public/fonts/OFL.txt`. Alle Schriften werden lokal ausgeliefert,
+es gibt keine Verbindung zu Google Fonts oder einem CDN.
 
-| Schrift             | Verwendung          | Dateien                               | Lizenz      |
-| ------------------- | ------------------- | ------------------------------------- | ----------- |
-| Bricolage Grotesque | Display / Headlines | `bricolage-grotesque-latin-var.woff2` | SIL OFL 1.1 |
-| Inter               | Fließtext / UI      | `inter-latin-{400,500,600,700}.woff2` | SIL OFL 1.1 |
-| IBM Plex Mono       | technische Labels   | `ibm-plex-mono-latin-{400,500}.woff2` | SIL OFL 1.1 |
+## Originalmedien (vom Auftraggeber bereitgestellt)
 
-Die SIL OFL erlaubt die Einbettung und Weitergabe. Kein Google-Fonts-/CDN-Hotlink.
+Diese Dateien stammen aus dem Asset-Paket `KERNSEITE_finale_assets.zip`. Sie wurden
+**inhaltlich nicht verändert** – weder nachgezeichnet, noch neu erzeugt, noch mit
+zusätzlichen Angaben versehen. Zulässig waren ausschließlich Formatkonvertierung,
+Komprimierung, responsive Größen und ein Zuschnitt leerer Außenränder.
 
-## Eigene Grafiken (© KERNSEITE – Eliyah Korb)
+| Datei (ausgeliefert)                                             | Quelle (unverändert abgelegt)                                          | Bearbeitung |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------- |
+| `assets/references/kaya-doener-desktop.webp` (+ 800/1200/1600)     | `assets/references/source/case-kaya-doener-desktop.png`                 | PNG → WebP q80, zusätzliche Breiten |
+| `assets/references/kinderkoerbchen-desktop.webp` (+ 800/1200/1600) | `assets/references/source/case-kinderkoerbchen-desktop.png`             | PNG → WebP q80, zusätzliche Breiten |
+| `assets/references/google-business-profile-kinderkoerbchen.webp`   | `assets/references/source/google-business-profile-kinderkoerbchen.png`  | PNG → WebP q92 (Text bleibt scharf) |
+| `assets/video/hero-kernseite-poster.webp` (+ 900/1280)             | `assets/references/source/hero-kernseite-poster.png`                    | PNG → WebP q86, zusätzliche Breiten |
+| `assets/video/hero-kernseite-poster-portrait.webp`                 | dieselbe Quelle                                                        | Zuschnitt des leeren linken Randes (ab x = 620) für Mobil |
 
-| Asset                               | Typ         | Zweck                       |
-| ----------------------------------- | ----------- | --------------------------- |
-| `public/favicon.svg`                | SVG         | Favicon (K-Monogramm)       |
-| `public/assets/og/kernseite-og.svg` | SVG         | Open-Graph-/Social-Preview  |
-| Hero-Animation „Der digitale Kern“  | DOM/CSS/SVG | interaktives Konzept-Mockup |
-| Case-Mockups (Konzeptstudien)       | CSS/SVG     | eigenständige UI-Attrappen  |
+**Bewertungen, Telefonnummern, Adressen, Öffnungszeiten und Zahlen im
+Google-Screenshot sind unverändert.** Die Screenshots behalten ihre Originalfarben
+und werden nicht in die Markenfarbe eingefärbt.
 
-## Bibliotheken (Server, Kontaktformular)
+Nutzungsrechte an den abgebildeten Kundenwebsites: freigegeben durch die jeweiligen
+Auftraggeber (Kaya Döner Himmelstadt, Anna-Lena’s Kinderkörbchen).
 
-| Paket                 | Lizenz   | Zweck              |
-| --------------------- | -------- | ------------------ |
-| `phpmailer/phpmailer` | LGPL-2.1 | SMTP-Versand (PHP) |
+## Eigene Grafiken
 
-Composer verwaltet die Abhängigkeit reproduzierbar (`php/composer.json` + `composer.lock`).
-Der `vendor/`-Ordner wird nicht committet und ist im Deployment per `.htaccess`/Guard gesperrt.
+| Datei                          | Herkunft                                   |
+| ------------------------------ | ------------------------------------------ |
+| `public/favicon.svg`           | eigenes K-Monogramm                        |
+| `public/assets/og/kernseite-og.svg` | eigenes Open-Graph-Motiv              |
+| `public/assets/team/eliyah-portrait.svg` | gekennzeichneter Platzhalter, echtes Porträt folgt |
 
-## Noch zu ersetzen
+## Noch zu beschaffen: Branchenbilder
 
-Ein final gerastertes OG-Bild (1200×630 PNG/JPG) kann das SVG ersetzen, falls einzelne
-Plattformen SVG-OG nicht rendern (siehe `docs/ASSET_SHOTLIST.md`).
+Für die Branchenflächen sind Bilder vorgesehen. Sie werden **nur eingebunden, wenn die
+Datei tatsächlich vorliegt** (`existsSync`-Prüfung im Build) – es entstehen also keine
+leeren Bildplatzhalter. Bis dahin trägt die Typografie die Fläche.
+
+Ablage: `public/assets/branchen/<slug>.webp`, Seitenverhältnis 3:2, min. 1600 × 1067.
+
+| Branche       | Datei                                     | Unsplash-Photo-ID | Fotograf:in |
+| ------------- | ----------------------------------------- | ----------------- | ----------- |
+| Handwerk      | `assets/branchen/handwerk.webp`           | `oW4mPEcgdEc`     | *(beim Download eintragen)* |
+| Zahnarztpraxen| `assets/branchen/zahnarztpraxen.webp`     | `Bg81yWKZlMg`     | *(beim Download eintragen)* |
+| Gastronomie   | `assets/branchen/gastronomie-hotels.webp` | `dU6UO85FZgs`     | *(beim Download eintragen)* |
+| Hotels        | *(alternativ zur Gastronomie)*            | `dgTzAvblPw4`     | *(beim Download eintragen)* |
+
+**Wichtig:** Diese Bilder konnten im Build-Environment nicht geladen werden – der
+ausgehende Netzwerkzugriff auf `unsplash.com` und `images.unsplash.com` wird von der
+Egress-Policy blockiert (HTTP 403 beim CONNECT). Die Dateien müssen daher manuell
+heruntergeladen und lokal abgelegt werden.
+
+Beim Einsetzen bitte je Bild ergänzen: Fotograf:in, Photo-ID, Quell-URL und Datum des
+Downloads. Nur kostenlose Unsplash-Bilder verwenden (**kein Unsplash+**). Keine
+Hotlinks – die Dateien liegen lokal, sonst schlägt `pnpm qa` (`check-external`) fehl.

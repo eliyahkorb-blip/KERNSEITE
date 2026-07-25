@@ -89,3 +89,68 @@ export const processFull: readonly ProcessStep[] = [
     kernseite: 'Laufende Betreuung und Weiterentwicklung.',
   },
 ];
+
+/**
+ * Zeitachse für die editoriale Prozessdarstellung (Startseite + /prozess/).
+ * Je Schritt: was passiert, was der Kunde liefert, was KERNSEITE übernimmt,
+ * und was am Ende vorliegt.
+ */
+export interface TimelineStep {
+  readonly title: string;
+  readonly what: string;
+  readonly you: string;
+  readonly us: string;
+  readonly result: string;
+}
+
+export const processTimeline: readonly TimelineStep[] = [
+  {
+    title: 'Kennenlernen',
+    what: 'Ein Gespräch über dein Vorhaben: Was läuft gut, was hakt, wo willst du hin. Ohne Verkaufsdruck.',
+    you: 'Einblick in Betrieb, Zielgruppe und bisherige Erfahrungen',
+    us: 'Einschätzung, was sich lohnt – und was nicht',
+    result: 'Klarheit, ob wir zueinander passen',
+  },
+  {
+    title: 'Analyse',
+    what: 'Wir sehen uns an, was bereits existiert: Website, Google-Profil, Auffindbarkeit, Wettbewerbsumfeld.',
+    you: 'Zugänge zu bestehenden Konten, sofern vorhanden',
+    us: 'Bestandsaufnahme und Priorisierung',
+    result: 'Ein Angebot mit festem Umfang',
+  },
+  {
+    title: 'Struktur',
+    what: 'Bevor gestaltet wird, steht die Gliederung: Welche Seiten braucht es, welche Frage beantwortet jede davon.',
+    you: 'Fachliche Rückmeldung zu Inhalten und Begriffen',
+    us: 'Seitenstruktur, Nutzerführung, Textgerüst',
+    result: 'Eine abgestimmte Landkarte der Website',
+  },
+  {
+    title: 'Design',
+    what: 'Die visuelle Richtung entsteht am echten Inhalt – nicht an Blindtext in einer Vorlage.',
+    you: 'Bildmaterial, Logo, Rückmeldung zur Richtung',
+    us: 'Gestaltung, Typografie, Bildsprache',
+    result: 'Gestaltete Seiten, die du beurteilen kannst',
+  },
+  {
+    title: 'Entwicklung',
+    what: 'Umsetzung als schnelle, barrierearme und datenschutzfreundliche Website.',
+    you: 'Freigaben und letzte Inhalte',
+    us: 'Programmierung, Technik, Tests',
+    result: 'Eine funktionsfähige Website auf einer Testadresse',
+  },
+  {
+    title: 'Veröffentlichung',
+    what: 'Kontrolle, Umzug auf die echte Domain, Einrichtung von Weiterleitungen und Grundlagen der Auffindbarkeit.',
+    you: 'Domain- und Hosting-Zugänge',
+    us: 'Live-Gang, Prüfung, Übergabe',
+    result: 'Die Website ist erreichbar und auffindbar',
+  },
+  {
+    title: 'Weiterentwicklung',
+    what: 'Nach dem Start geht es weiter: Inhalte ergänzen, Sichtbarkeit beobachten, sinnvoll ausbauen.',
+    you: 'Neue Inhalte und Rückmeldungen aus der Praxis',
+    us: 'Pflege, Updates, Erweiterungen nach Bedarf',
+    result: 'Eine Website, die mitwächst',
+  },
+];

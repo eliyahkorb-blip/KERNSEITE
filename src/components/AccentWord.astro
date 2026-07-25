@@ -1,0 +1,19 @@
+---
+/**
+ * AccentWord – markiert ein einzelnes Wort in einer großen Headline.
+ *
+ * Schwarzer Text auf cyanfarbener Markerfläche (oder mit kräftiger
+ * Unterstreichung). Die Markierung trägt keine eigene Bedeutung – die Aussage
+ * steht vollständig im Text, damit nichts allein über Farbe transportiert wird.
+ *
+ * Regel: maximal ein bis zwei markierte Begriffe pro großer Headline.
+ */
+interface Props {
+  /** `mark` = Markerfläche (Standard), `underline` = kräftige Unterstreichung. */
+  variant?: 'mark' | 'underline';
+}
+const { variant = 'mark' } = Astro.props;
+const cls = variant === 'underline' ? 'accent-word accent-word--underline' : 'accent-word';
+---
+
+<span class={cls}><slot /></span>

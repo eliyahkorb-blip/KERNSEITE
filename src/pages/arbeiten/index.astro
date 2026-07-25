@@ -1,132 +1,63 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import WorkCard from '../../components/WorkCard.astro';
+import WorkFeature from '../../components/WorkFeature.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
-import { works, workFilters } from '../../config/cases';
+import AccentWord from '../../components/AccentWord.astro';
+import { works } from '../../config/cases';
 
 const breadcrumbs = [
   { name: 'Start', path: '/' },
   { name: 'Arbeiten', path: '/arbeiten/' },
 ];
+
+const projects = works.filter((w) => w.kind === 'project');
 ---
 
 <PageLayout
   title="Arbeiten"
-  description="Ausgewählte Referenzen und Konzeptstudien von KERNSEITE. Reale Projekte sind als Referenz gekennzeichnet, fiktive Beispiele klar als Konzeptstudie."
-  eyebrow="Arbeiten"
-  h1="Arbeiten, die mehr zeigen als schöne Screens."
-  lead="Echte, umgesetzte Projekte stehen als Referenz vorn. Ergänzend zeigen wir eigenständig entwickelte Konzeptstudien – klar als solche gekennzeichnet, ohne erfundene Ergebnisse oder Kennzahlen."
+  description="Umgesetzte Kundenprojekte von KERNSEITE: Kaya Döner Himmelstadt und Anna-Lena’s Kinderkörbchen – Websites, lokale Sichtbarkeit und digitale Speisekarten."
+  h1Slot
   breadcrumbs={breadcrumbs}
+  lead="Zwei Betriebe, zwei Handschriften. Beide Projekte sind live und werden weiter betreut."
 >
-  <section class="section section--bright">
-    <div class="content">
-      <div class="filterbar" role="group" aria-label="Arbeiten filtern">
-        <button type="button" class="filterbar__btn" data-filter="all" aria-pressed="true">
-          Alle
-        </button>
-        {
-          workFilters.map((f) => (
-            <button type="button" class="filterbar__btn" data-filter={f.key} aria-pressed="false">
-              {f.label}
-            </button>
-          ))
-        }
-      </div>
+  <h1 slot="h1">
+    Arbeiten, die nicht nach <AccentWord>Vorlage</AccentWord> aussehen.
+  </h1>
 
-      <ul class="works" role="list" data-works>
-        {works.map((work) => <WorkCard work={work} />)}
-      </ul>
-      <p class="works__empty" data-empty hidden>
-        Für diesen Filter gibt es aktuell keine Arbeiten.
+  {
+    projects.map((project, i) => (
+      <WorkFeature
+        work={project}
+        index={i}
+        flip={i % 2 === 1}
+        tone={i === 0 ? 'dark' : 'light'}
+      />
+    ))
+  }
+
+  <section class="section section--paper">
+    <div class="content next">
+      <h2 class="next__title">Dein Projekt wird die nächste Arbeit.</h2>
+      <p class="lead">
+        Erzähl kurz, was du vorhast. Wir sagen offen, ob und wie wir helfen können.
       </p>
+      <a class="link-arrow" href="/kontakt/">
+        Projekt besprechen <span class="arrow" aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 
-  <CtaBanner
-    title="Dein Projekt wird die nächste Arbeit."
-    text="Lass uns über deinen Auftritt sprechen – ehrlich, unverbindlich und ohne Paket-Verkauf."
-    ctaLabel="Projekt besprechen"
-    ctaHref="/kontakt/"
-    secondaryLabel="Leistungen ansehen"
-    secondaryHref="/leistungen/"
-  />
+  <CtaBanner />
 </PageLayout>
 
 <style>
-  .filterbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-block-end: var(--space-2xl);
-  }
-  .filterbar__btn {
-    font-family: var(--font-mono);
-    font-size: var(--fs-small);
-    padding: 0.45rem 0.9rem;
-    border-radius: var(--radius-pill);
-    border: 1.5px solid var(--border-strong);
-    background: var(--color-bright);
-    color: var(--text-muted);
-    transition:
-      border-color var(--dur-fast) var(--ease-out),
-      color var(--dur-fast) var(--ease-out),
-      background-color var(--dur-fast) var(--ease-out);
-  }
-  .filterbar__btn:hover {
-    border-color: var(--color-graphite);
-    color: var(--text);
-  }
-  .filterbar__btn[aria-pressed='true'] {
-    background: var(--color-graphite);
-    border-color: var(--color-graphite);
-    color: var(--color-bright);
-  }
-
-  .works {
+  .next {
     display: grid;
-    gap: var(--grid-gap);
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    gap: var(--space-lg);
+    justify-items: start;
   }
-  .works__empty {
-    margin-block-start: var(--space-xl);
-    color: var(--text-muted);
-  }
-
-  @media (min-width: 48rem) {
-    .works {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  @media (min-width: 64rem) {
-    .works {
-      grid-template-columns: repeat(3, 1fr);
-    }
+  .next__title {
+    font-size: var(--fs-h2);
+    max-width: 16ch;
   }
 </style>
-
-<script>
-  // Client-seitiger Filter für die Arbeiten-Übersicht.
-  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
-  const items = Array.from(document.querySelectorAll<HTMLElement>('.workcard-li'));
-  const empty = document.querySelector<HTMLElement>('[data-empty]');
-
-  function apply(filter: string) {
-    let visible = 0;
-    items.forEach((item) => {
-      const filters = (item.dataset.filters ?? '').split(' ');
-      const show = filter === 'all' || filters.includes(filter);
-      item.hidden = !show;
-      if (show) visible++;
-    });
-    if (empty) empty.hidden = visible !== 0;
-  }
-
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      buttons.forEach((b) => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
-      apply(btn.dataset.filter ?? 'all');
-    });
-  });
-</script>

@@ -156,7 +156,7 @@ const timings = [
     font-size: var(--fs-small);
   }
   .field__req {
-    color: var(--color-alert);
+    color: var(--accent-ink);
   }
   .field__opt {
     color: var(--text-muted);
@@ -168,9 +168,9 @@ const timings = [
   .field textarea {
     width: 100%;
     padding: 0.7rem 0.85rem;
-    border: 1.5px solid var(--border-strong);
+    border: 1.5px solid var(--line-strong);
     border-radius: var(--radius-md);
-    background: var(--color-bright);
+    background: var(--ks-cream);
     font-size: var(--fs-body);
     transition: border-color var(--dur-fast) var(--ease-out);
   }
@@ -179,14 +179,14 @@ const timings = [
   .field textarea:focus-visible {
     outline: 3px solid var(--focus-ring);
     outline-offset: 1px;
-    border-color: var(--color-accent-deep);
+    border-color: var(--accent-ink);
   }
   .field textarea {
     resize: vertical;
     min-height: 8rem;
   }
   .field [aria-invalid='true'] {
-    border-color: var(--color-alert);
+    border-color: var(--accent-ink);
   }
   .field__hint {
     font-size: 0.8rem;
@@ -206,8 +206,8 @@ const timings = [
     margin-block-start: var(--space-md);
     padding: 0.6rem 0.9rem;
     border-radius: var(--radius-md);
-    border: 1px dashed var(--color-alert);
-    background: color-mix(in srgb, var(--color-alert) 8%, var(--color-bright));
+    border: 1px dashed var(--accent-ink);
+    background: color-mix(in srgb, var(--accent-ink) 8%, var(--ks-cream));
     color: #7a2417;
     font-size: var(--fs-small);
   }

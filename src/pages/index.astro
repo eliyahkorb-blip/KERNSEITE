@@ -1,442 +1,204 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroCinematic from '../components/HeroCinematic.astro';
-import ServiceCard from '../components/ServiceCard.astro';
-import ProcessBand from '../components/ProcessBand.astro';
-import ReferenceImage from '../components/ReferenceImage.astro';
-import IndustryList from '../components/IndustryList.astro';
+import StatementBand from '../components/StatementBand.astro';
+import WorkFeature from '../components/WorkFeature.astro';
+import ServiceRows from '../components/ServiceRows.astro';
 import GoogleProfile from '../components/GoogleProfile.astro';
+import ProblemList from '../components/ProblemList.astro';
+import IndustryGrid from '../components/IndustryGrid.astro';
+import ProcessTimeline from '../components/ProcessTimeline.astro';
 import FaqAccordion from '../components/FaqAccordion.astro';
 import CtaBanner from '../components/CtaBanner.astro';
+import AccentWord from '../components/AccentWord.astro';
 
 import { site } from '../config/site';
-import { services } from '../config/services';
 import { featuredProjects } from '../config/cases';
-import { processShort } from '../config/process';
+import { processTimeline } from '../config/process';
 import { homeFaqs } from '../config/faq';
 
-const coreService = services.find((s) => s.isCore);
-const addOnServices = services.filter((s) => !s.isCore);
-
 const problems = [
-  'Der Auftritt wirkt schwächer als das Unternehmen dahinter.',
+  'Interessenten zweifeln an der Professionalität.',
+  'Bewerber entscheiden sich für modernere Wettbewerber.',
   'Google versteht Angebot und Standort nicht eindeutig.',
-  'Anfragen gehen durch unklare Nutzerführung verloren.',
   'Gute Leistungen wirken online austauschbar.',
-  'Auf dem Smartphone bricht die Seite die Geduld der Besucher.',
+  'Anfragen gehen durch schlechte Nutzerführung verloren.',
 ];
 
-const websiteProcess = [
-  'Strategie',
-  'Struktur',
-  'Design',
-  'Entwicklung',
-  'Veröffentlichung',
-  'Betreuung',
-];
+// Startseite zeigt nur die ersten Schritte; der Rest steht auf /prozess/.
+const timelineHome = processTimeline.slice(0, 4);
 ---
 
 <BaseLayout
-  title="Individuelle Websites für Unternehmen mit Anspruch"
+  title="Digitalagentur für Websites, Sichtbarkeit & Systeme"
   description={site.shortDescription}
 >
   <HeroCinematic />
 
-  <!-- PROBLEM -->
-  <section class="section section--sand">
-    <div class="content problem reveal">
-      <div class="problem__head">
-        <p class="eyebrow">Der ehrliche Blick</p>
-        <h2 class="section-title">Eine schwache Website kostet mehr als eine neue.</h2>
-      </div>
-      <ul class="problem__list" role="list">
-        {problems.map((p) => <li class="problem__item">{p}</li>)}
-      </ul>
-    </div>
-  </section>
+  <StatementBand />
 
-  <!-- KERNLEISTUNG: die Website ist der Kern -->
-  <section class="section section--bright">
-    <div class="content reveal">
-      <div class="section-head kern__head">
-        <p class="eyebrow">Kernleistung</p>
-        <h2 class="section-title section-title--wide">
-          Die Website ist der Kern. Alles Weitere dockt daran an.
-        </h2>
-        <p class="lead">
-          Jede KERNSEITE beginnt beim Unternehmen, nicht bei einem Template. Struktur, Design,
-          Inhalte und Technik entstehen so, dass der Auftritt zur tatsächlichen Qualität des
-          Betriebs passt. Erst danach kommt alles, was sinnvoll daran andockt.
-        </p>
-      </div>
-      <ProcessBand steps={websiteProcess} ariaLabel="Ablauf eines Website-Projekts" />
-    </div>
-  </section>
-
-  <!-- LEISTUNGSARCHITEKTUR -->
-  <section class="section section--paper">
-    <div class="content reveal">
-      <div class="section-head">
-        <p class="eyebrow">Leistungen</p>
-        <h2 class="section-title section-title--wide">Ein Fundament. Sinnvolle Ergänzungen.</h2>
-        <p class="lead">
-          Wir bauen nicht alles an, was möglich ist – sondern das, was bei dir tatsächlich etwas
-          bringt.
-        </p>
-      </div>
-
-      {
-        coreService && (
-          <div class="services__core">
-            <ServiceCard service={coreService} index={0} />
-          </div>
-        )
-      }
-
-      <ul class="services__grid" role="list">
-        {
-          addOnServices.map((service, i) => (
-            <li>
-              <ServiceCard service={service} index={i + 1} />
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
-  <!-- ARBEITEN -->
-  <section class="section section--sand">
-    <div class="content reveal">
-      <div class="section-head work__head">
-        <p class="eyebrow">Ausgewählte Arbeiten</p>
-        <h2 class="section-title">Zwei Betriebe. Zwei Handschriften.</h2>
-        <p class="lead">
-          Echte, umgesetzte Kundenprojekte aus unterschiedlichen Branchen – jeweils auf das
-          zugeschnitten, was der Betrieb wirklich braucht.
-        </p>
-      </div>
-      <ul class="featured" role="list">
-        {
-          featuredProjects.map((project) => (
-            <li class="featured__item">
-              <a class="featured__link" href={project.href}>
-                <ReferenceImage
-                  shot={project.screenshotDesktop}
-                  variant="desktop"
-                  pending={!project.verified}
-                />
-                <div class="featured__meta">
-                  <p class="featured__cat">{project.category}</p>
-                  <h3 class="featured__title">{project.title}</h3>
-                  <p class="featured__tagline">{project.tagline}</p>
-                  <span class="featured__cta">
-                    Projekt ansehen{' '}
-                    <span class="arrow" aria-hidden="true">
-                      →
-                    </span>
-                  </span>
-                </div>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-      <p class="work__more">
-        <a class="arrow-link" href="/arbeiten/">
-          Alle Arbeiten & Konzeptstudien <span class="arrow" aria-hidden="true">→</span>
-        </a>
+  <!-- ARBEITEN – kommen bewusst früh -->
+  <section class="section section--cream" id="arbeiten">
+    <div class="content head reveal">
+      <p class="label">Ausgewählte Arbeiten</p>
+      <h2 class="head__title">
+        Arbeiten, die nicht nach <AccentWord>Vorlage</AccentWord> aussehen.
+      </h2>
+      <p class="lead">
+        Zwei umgesetzte Kundenprojekte aus unterschiedlichen Branchen – jeweils auf das gebaut, was
+        der Betrieb wirklich braucht.
       </p>
     </div>
   </section>
 
-  <!-- LOKALE SICHTBARKEIT / GOOGLE-UNTERNEHMENSPROFIL -->
+  {
+    featuredProjects.map((project, i) => (
+      <WorkFeature work={project} index={i} flip={i % 2 === 1} tone={i === 0 ? 'dark' : 'light'} />
+    ))
+  }
+
+  <section class="section--cream section--tight">
+    <div class="content">
+      <a class="link-arrow" href="/arbeiten/">
+        Alle Arbeiten ansehen <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- LEISTUNGEN -->
+  <section class="section section--paper" id="leistungen">
+    <div class="content reveal">
+      <div class="head">
+        <p class="label">Leistungen</p>
+        <h2 class="head__title head__title--wide">
+          Die Website ist der <AccentWord>Kern</AccentWord>. Alles Weitere dockt sinnvoll an.
+        </h2>
+        <p class="lead">
+          Wir bauen nicht alles an, was möglich ist – sondern das, was bei dir tatsächlich etwas
+          bewegt.
+        </p>
+      </div>
+      <ServiceRows />
+    </div>
+  </section>
+
+  <!-- GOOGLE-UNTERNEHMENSPROFIL -->
   <GoogleProfile />
 
-  <!-- BRANCHEN -->
-  <section class="section section--paper">
-    <div class="content reveal">
-      <div class="section-head">
-        <p class="eyebrow">Branchen</p>
-        <h2 class="section-title">Gute Gestaltung versteht das Geschäft dahinter.</h2>
+  <!-- PROBLEM -->
+  <section class="section section--dark">
+    <div class="content problem reveal">
+      <div>
+        <p class="label">Der ehrliche Blick</p>
+        <h2 class="head__title">
+          Eine schwache Website kostet <AccentWord>mehr</AccentWord> als eine neue.
+        </h2>
       </div>
-      <IndustryList />
+      <ProblemList items={problems} />
+    </div>
+  </section>
+
+  <!-- BRANCHEN -->
+  <section class="section section--paper" id="branchen">
+    <div class="content reveal">
+      <div class="head">
+        <p class="label">Branchen</p>
+        <h2 class="head__title head__title--wide">
+          Gute Gestaltung versteht das Geschäft dahinter.
+        </h2>
+      </div>
+      <IndustryGrid />
     </div>
   </section>
 
   <!-- PROZESS -->
-  <section class="section section--bright">
+  <section class="section section--cream" id="prozess">
     <div class="content reveal">
-      <div class="section-head prozess__head">
-        <p class="eyebrow">Prozess</p>
-        <h2 class="section-title">Klarer Ablauf. Keine Agentur-Nebelmaschine.</h2>
+      <div class="head">
+        <p class="label">Prozess</p>
+        <h2 class="head__title">
+          Klarer Prozess. Keine <AccentWord>Agentur-Schleifen</AccentWord>.
+        </h2>
         <p class="lead">
-          Du weißt jederzeit, woran gerade gearbeitet wird, was von dir gebraucht wird und was als
-          Nächstes passiert.
+          Du weißt jederzeit, woran gearbeitet wird, was von dir gebraucht wird und was als Nächstes
+          passiert.
         </p>
       </div>
-      <ol class="prozess__grid" role="list">
-        {
-          processShort.map((step, i) => (
-            <li class="prozess__step">
-              <span class="prozess__num" aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <h3 class="prozess__title">{step.title}</h3>
-              <p class="prozess__body">{step.body}</p>
-            </li>
-          ))
-        }
-      </ol>
-      <p class="work__more">
-        <a class="arrow-link" href="/prozess/">
-          Prozess im Detail <span class="arrow" aria-hidden="true">→</span>
+      <ProcessTimeline steps={timelineHome} />
+      <p class="more">
+        <a class="link-arrow" href="/prozess/">
+          Alle sieben Schritte ansehen <span class="arrow" aria-hidden="true">→</span>
         </a>
       </p>
     </div>
   </section>
 
-  <!-- NETZWERK -->
-  <section class="section section--sand">
-    <div class="content netzwerk reveal">
+  <!-- ÜBER KERNSEITE -->
+  <section class="section section--surface" id="agentur">
+    <div class="content about reveal">
       <div>
-        <p class="eyebrow">Netzwerk</p>
-        <h2 class="section-title">Ein Ansprechpartner. Die richtigen Spezialisten.</h2>
+        <p class="label">Über KERNSEITE</p>
+        <h2 class="head__title">Ein Ansprechpartner. Spezialisten, wenn sie gebraucht werden.</h2>
       </div>
-      <div class="netzwerk__text">
+      <div class="about__text">
         <p class="lead">
-          KERNSEITE wird von Eliyah Korb geführt. Für Film, Social Media und KI arbeiten wir
-          projektbezogen mit spezialisierten selbstständigen Partnern zusammen. So bleibt die
-          Kommunikation zentral, während jede Aufgabe von der passenden Fachperson umgesetzt wird.
+          KERNSEITE wird von Eliyah Korb geführt: Strategie, Beratung und Projektsteuerung liegen in
+          einer Hand. Für Social Media &amp; Content, KI &amp; Automatisierung sowie Film &amp;
+          Produktion arbeiten wir projektbezogen mit selbstständigen Partnern zusammen.
         </p>
-        <a class="arrow-link" href="/agentur/">
+        <p class="about__body">
+          Du sprichst also nicht mit wechselnden Ansprechpartnern, sondern mit der Person, die dein
+          Projekt kennt. Die passenden Fachleute kommen dazu, wenn eine Aufgabe sie braucht.
+        </p>
+        <a class="link-arrow" href="/agentur/">
           Mehr über das Studio <span class="arrow" aria-hidden="true">→</span>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- FAQ-AUSZUG -->
-  <section class="section section--paper">
+  <!-- FAQ -->
+  <section class="section section--paper" id="faq">
     <div class="content faq-home reveal">
       <div class="faq-home__head">
-        <p class="eyebrow">Häufige Fragen</p>
-        <h2 class="section-title">Kurz und ehrlich beantwortet.</h2>
-        <p class="lead">
-          Weitere Antworten – von Kosten bis Datenschutz – findest du auf der FAQ-Seite.
-        </p>
-        <a class="arrow-link" href="/faq/">
+        <p class="label">Häufige Fragen</p>
+        <h2 class="head__title">Kurz beantwortet.</h2>
+        <a class="link-arrow" href="/faq/">
           Alle Fragen ansehen <span class="arrow" aria-hidden="true">→</span>
         </a>
       </div>
-      <div class="faq-home__list">
+      <div>
         <FaqAccordion items={homeFaqs} />
       </div>
     </div>
   </section>
 
-  <!-- ABSCHLUSS-CTA -->
-  <CtaBanner
-    title="Zeit für einen Auftritt, der zu deinem Unternehmen passt."
-    text="Im ersten Gespräch klären wir, was wirklich sinnvoll ist – und was du dir sparen kannst."
-    ctaLabel="Kostenfreie Analyse"
-    ctaHref="/kontakt/"
-    secondaryLabel="Leistungen ansehen"
-    secondaryHref="/leistungen/"
-  />
+  <CtaBanner />
 </BaseLayout>
 
 <style>
-  /* PROBLEM */
   .problem {
     display: grid;
     gap: var(--space-2xl);
   }
-  .problem__list {
-    display: grid;
-    gap: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    counter-reset: prob;
-    border-block-start: 1px solid var(--border);
-  }
-  .problem__item {
-    counter-increment: prob;
-    display: grid;
-    grid-template-columns: 2.5rem 1fr;
-    gap: 1rem;
-    align-items: baseline;
-    padding-block: clamp(1.1rem, 0.8rem + 0.8vw, 1.6rem);
-    border-block-end: 1px solid var(--border);
-    font-family: var(--font-display);
-    font-size: var(--fs-h4);
-    font-weight: var(--fw-medium);
-    letter-spacing: -0.01em;
-  }
-  .problem__item::before {
-    content: counter(prob, decimal-leading-zero);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: var(--fw-regular);
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-  }
-  @media (min-width: 64rem) {
-    .problem {
-      grid-template-columns: 0.85fr 1.15fr;
-      gap: var(--space-4xl);
-      align-items: start;
-    }
+  .more {
+    margin-block-start: clamp(2rem, 1.5rem + 2vw, 3.5rem);
   }
 
-  /* KERN */
-  .kern__head .lead {
-    max-width: 54ch;
-  }
-
-  /* SERVICES */
-  .services__core {
-    margin-block-end: var(--grid-gap);
-  }
-  .services__grid {
+  .about {
     display: grid;
-    gap: var(--grid-gap);
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    gap: var(--space-2xl);
   }
-  @media (min-width: 48rem) {
-    .services__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  /* WORK */
-  .work__more {
-    margin-block-start: var(--space-3xl);
-  }
-  .featured {
+  .about__text {
     display: grid;
-    gap: var(--space-3xl);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .featured__link {
-    display: block;
-    text-decoration: none;
-    color: var(--text);
-  }
-  .featured__link :global(.refimg__screen) {
-    transition: transform var(--dur-slow) var(--ease-out);
-  }
-  .featured__link:hover :global(.refimg__screen) {
-    transform: translateY(-4px);
-  }
-  .featured__meta {
-    margin-block-start: var(--space-xl);
-  }
-  .featured__cat {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-  .featured__title {
-    margin-block-start: var(--space-sm);
-    font-size: var(--fs-h3);
-    max-width: 20ch;
-  }
-  .featured__tagline {
-    margin-block-start: var(--space-md);
-    color: var(--text-muted);
-    max-width: 48ch;
-  }
-  .featured__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-block-start: var(--space-lg);
-    font-size: var(--fs-small);
-    font-weight: var(--fw-semibold);
-    border-block-end: 1px solid var(--border-strong);
-    padding-block-end: 0.3rem;
-    transition: border-color var(--dur-fast) var(--ease-out);
-  }
-  .featured__cta .arrow {
-    color: var(--brand);
-    transition: transform var(--dur-base) var(--ease-out);
-  }
-  .featured__link:hover .featured__cta {
-    border-block-end-color: var(--accent);
-  }
-  .featured__link:hover .featured__cta .arrow {
-    transform: translateX(4px);
-  }
-  @media (min-width: 48rem) {
-    .featured {
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--grid-gap);
-    }
-  }
-
-  /* NETZWERK */
-  .netzwerk {
-    display: grid;
-    gap: var(--space-xl);
-  }
-  .netzwerk__text {
-    display: grid;
-    gap: var(--space-xl);
+    gap: var(--space-lg);
     justify-items: start;
     max-width: 58ch;
   }
-  @media (min-width: 64rem) {
-    .netzwerk {
-      grid-template-columns: 0.85fr 1.15fr;
-      gap: var(--space-4xl);
-      align-items: start;
-    }
-  }
-
-  /* PROZESS */
-  .prozess__grid {
-    display: grid;
-    gap: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border-block-start: 1px solid var(--border);
-  }
-  .prozess__step {
-    padding-block: var(--space-xl);
-    border-block-end: 1px solid var(--border);
-  }
-  .prozess__num {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
+  .about__body {
     color: var(--text-muted);
   }
-  .prozess__title {
-    margin-block: var(--space-sm) var(--space-sm);
-    font-size: var(--fs-h4);
-  }
-  .prozess__body {
-    color: var(--text-muted);
-    font-size: var(--fs-small);
-    max-width: 46ch;
-  }
-  @media (min-width: 48rem) {
-    .prozess__grid {
-      grid-template-columns: repeat(3, 1fr);
-      column-gap: var(--grid-gap);
-    }
-  }
 
-  /* FAQ HOME */
   .faq-home {
     display: grid;
     gap: var(--space-2xl);
@@ -447,14 +209,25 @@ const websiteProcess = [
     gap: var(--space-lg);
     justify-items: start;
   }
+
   @media (min-width: 64rem) {
+    .problem {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(3rem, 5vw, 6rem);
+      align-items: start;
+    }
+    .about {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 5vw, 6rem);
+      align-items: start;
+    }
     .faq-home {
       grid-template-columns: 0.8fr 1.2fr;
-      gap: var(--space-4xl);
+      gap: clamp(3rem, 5vw, 6rem);
     }
     .faq-home__head {
       position: sticky;
-      top: 7rem;
+      top: 7.5rem;
     }
   }
 </style>

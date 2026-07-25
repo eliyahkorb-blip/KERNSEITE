@@ -1,0 +1,169 @@
+---
+/**
+ * ProcessTimeline – editoriale, vertikale Zeitachse.
+ * Ersetzt die frühere Reihe aus sechs Kästen: große Nummern, feine Linien,
+ * wechselnde Ausrichtung auf Desktop.
+ */
+export interface ProcessStep {
+  readonly title: string;
+  /** Was passiert in diesem Schritt? */
+  readonly what: string;
+  /** Was liefert der Kunde? */
+  readonly you: string;
+  /** Was übernimmt KERNSEITE? */
+  readonly us: string;
+  /** Was entsteht? */
+  readonly result: string;
+}
+
+interface Props {
+  steps: readonly ProcessStep[];
+  /** Ebene der Schritt-Überschriften (abhängig vom Seitenkontext). */
+  headingLevel?: 'h2' | 'h3';
+}
+const { steps, headingLevel = 'h3' } = Astro.props;
+const Tag = headingLevel;
+---
+
+<ol class="tl" role="list">
+  {
+    steps.map((s, i) => (
+      <li class:list={['tl__step', { 'tl__step--alt': i % 2 === 1 }]}>
+        <div class="tl__num" aria-hidden="true">
+          {String(i + 1).padStart(2, '0')}
+        </div>
+        <div class="tl__body">
+          <Tag class="tl__title">{s.title}</Tag>
+          <p class="tl__what">{s.what}</p>
+          <dl class="tl__facts">
+            <div class="tl__fact">
+              <dt>Du lieferst</dt>
+              <dd>{s.you}</dd>
+            </div>
+            <div class="tl__fact">
+              <dt>Wir übernehmen</dt>
+              <dd>{s.us}</dd>
+            </div>
+            <div class="tl__fact">
+              <dt>Es entsteht</dt>
+              <dd>{s.result}</dd>
+            </div>
+          </dl>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .tl {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: relative;
+  }
+  .tl__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: clamp(1rem, 3vw, 2.5rem);
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+    border-block-start: 1px solid var(--line);
+  }
+  .tl__step:last-child {
+    border-block-end: 1px solid var(--line);
+  }
+
+  .tl__num {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    color: var(--accent);
+    -webkit-text-stroke: 0;
+  }
+
+  .tl__title {
+    font-size: clamp(1.5rem, 2.8vw, 2.5rem);
+    letter-spacing: var(--track-display);
+    line-height: 1;
+  }
+  .tl__what {
+    margin-block-start: var(--space-md);
+    color: var(--text-muted);
+    max-width: 52ch;
+  }
+
+  .tl__facts {
+    display: grid;
+    gap: 0;
+    margin-block-start: var(--space-lg);
+    max-width: 60ch;
+  }
+  .tl__fact {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 0.5rem 1rem;
+    padding-block: 0.65rem;
+    border-block-start: 1px solid var(--line);
+  }
+  .tl__fact dt {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .tl__fact dd {
+    margin: 0;
+    font-size: var(--fs-small);
+  }
+
+  .section--dark .tl__step,
+  .section--dark .tl__step:last-child,
+  .section--dark .tl__fact {
+    border-color: var(--line-invert);
+  }
+  .section--dark .tl__what {
+    color: var(--text-muted);
+  }
+
+  /* Wechselnde Ausrichtung auf großen Displays */
+  @media (min-width: 64rem) {
+    .tl__step {
+      grid-template-columns: 8rem minmax(0, 30rem) 1fr;
+      column-gap: clamp(2rem, 4vw, 4rem);
+      align-items: start;
+    }
+    .tl__body {
+      display: contents;
+    }
+    .tl__title {
+      grid-column: 2;
+    }
+    .tl__what {
+      grid-column: 2;
+      margin-block-start: var(--space-md);
+    }
+    .tl__facts {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+      margin-block-start: 0;
+    }
+    .tl__step--alt .tl__num {
+      justify-self: end;
+      text-align: right;
+    }
+    .tl__step--alt .tl__facts {
+      grid-column: 3;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .tl__fact {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+  }
+</style>

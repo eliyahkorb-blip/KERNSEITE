@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import IndustryList from '../../components/IndustryList.astro';
+import IndustryGrid from '../../components/IndustryGrid.astro';
+import AccentWord from '../../components/AccentWord.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
 
 const breadcrumbs = [
@@ -12,14 +13,15 @@ const breadcrumbs = [
 <PageLayout
   title="Branchen"
   description="KERNSEITE gestaltet Websites für Handwerk, Praxen, Gastronomie & Hotels, lokale Dienstleister und den B2B-Mittelstand – jede Branche mit eigenständigem Inhalt."
-  eyebrow="Branchen"
-  h1="Gute Gestaltung versteht das Geschäft dahinter."
+  h1Slot
   lead="Jede Branche hat eigene Fragen, eigene Zielgruppen und eigene Wege zur Anfrage. Deshalb bekommt jede Branche einen eigenständigen Auftritt – keinen Textbaustein mit ausgetauschtem Wort."
   breadcrumbs={breadcrumbs}
 >
+  <h1 slot="h1">Gute Gestaltung versteht das <AccentWord>Geschäft</AccentWord> dahinter.</h1>
+
   <section class="section section--paper">
     <div class="content">
-      <IndustryList />
+      <IndustryGrid />
     </div>
   </section>
 

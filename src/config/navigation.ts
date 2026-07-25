@@ -27,6 +27,7 @@ export const footerNav: readonly NavGroup[] = [
     title: 'Leistungen',
     items: [
       { label: 'Websites', href: '/leistungen/websites/' },
+      { label: 'SEO & GEO', href: '/leistungen/seo-geo/' },
       { label: 'Google-Unternehmensprofil', href: '/leistungen/google-unternehmensprofil/' },
       { label: 'Unternehmensvideo', href: '/leistungen/unternehmensvideo/' },
       { label: 'Social Media', href: '/leistungen/social-media/' },
@@ -59,6 +60,7 @@ export const footerNav: readonly NavGroup[] = [
       { label: 'Impressum', href: '/impressum/' },
       { label: 'Datenschutz', href: '/datenschutz/' },
       { label: 'Barrierefreiheit', href: '/barrierefreiheit/' },
+      { label: 'AGB', href: '/agb/' },
     ],
   },
 ];

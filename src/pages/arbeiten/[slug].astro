@@ -1,19 +1,19 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import CaseMockup from '../../components/CaseMockup.astro';
-import ReferenceImage from '../../components/ReferenceImage.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
-import { works, type Work } from '../../config/cases';
-import { getService, type ServiceKey } from '../../config/services';
+import GoogleProfile from '../../components/GoogleProfile.astro';
+import { works, type ProjectWork } from '../../config/cases';
 import { breadcrumbJsonLd } from '../../lib/jsonld';
 
 export function getStaticPaths() {
-  return works.map((w) => ({ params: { slug: w.slug }, props: { work: w } }));
+  return works
+    .filter((w): w is ProjectWork => w.kind === 'project')
+    .map((w) => ({ params: { slug: w.slug }, props: { work: w } }));
 }
 
 interface Props {
-  work: Work;
+  work: ProjectWork;
 }
 const { work } = Astro.props;
 
@@ -22,397 +22,223 @@ const breadcrumbs = [
   { name: 'Arbeiten', path: '/arbeiten/' },
   { name: work.title, path: work.href },
 ];
+
+const other = works.find((w) => w.kind === 'project' && w.slug !== work.slug) as
+  | ProjectWork
+  | undefined;
+
+// Nur beim Kindertagespflege-Projekt gehört das echte Google-Profil dazu.
+const showGoogleProfile = work.slug === 'kinderkoerbchen';
 ---
 
-{
-  work.kind === 'project' ? (
-    <BaseLayout
-      title={work.title}
-      description={`${work.tagline}`.slice(0, 155)}
-      jsonLd={[breadcrumbJsonLd(breadcrumbs)]}
-    >
-      {/* 1. Große visuelle Eröffnung */}
-      <header class="case-hero section--paper">
-        <div class="content">
-          <Breadcrumbs items={breadcrumbs} />
-          <span class="badge badge--reference case-hero__badge">Referenz</span>
-          <div class="case-hero__grid">
-            <div>
-              <p class="eyebrow">{work.category}</p>
-              <h1 class="case-hero__title">{work.title}</h1>
-              <p class="lead case-hero__tagline">{work.tagline}</p>
-              <a
-                class="btn btn--primary case-hero__live"
-                href={work.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Live ansehen: {work.liveLabel}
-              </a>
-            </div>
-            <div class="case-hero__media">
-              <ReferenceImage
-                shot={work.screenshotDesktop}
-                variant="desktop"
-                eager
-                pending={!work.verified}
-              />
-            </div>
-          </div>
-        </div>
-      </header>
+<BaseLayout
+  title={`${work.title} – Referenz`}
+  description={work.tagline.slice(0, 155)}
+  jsonLd={[breadcrumbJsonLd(breadcrumbs)]}
+>
+  <header class="chero section--paper">
+    <div class="content">
+      <Breadcrumbs items={breadcrumbs} />
+      <p class="label chero__cat">{work.category}</p>
+      <h1 class="chero__title">{work.headline}</h1>
+      <p class="chero__client">{work.title}</p>
+      <p class="lead chero__lead">{work.tagline}</p>
+      <div class="chero__actions">
+        <a class="btn btn--primary" href={work.liveUrl} target="_blank" rel="noopener noreferrer">
+          Website ansehen
+          <span class="visually-hidden"> (öffnet in neuem Tab)</span>
+        </a>
+        <span class="chero__domain">{work.liveLabel}</span>
+      </div>
+    </div>
+  </header>
 
-      {/* 2. Fakten */}
-      <section class="section section--bright section--tight">
-        <div class="content">
-          <dl class="factbar">
-            <div>
-              <dt>Auftraggeber</dt>
-              <dd>{work.client}</dd>
-            </div>
-            <div>
-              <dt>Branche</dt>
-              <dd>{work.industryLabel}</dd>
-            </div>
-            <div>
-              <dt>Live-Website</dt>
-              <dd>
-                <a href={work.liveUrl} target="_blank" rel="noopener noreferrer">
-                  {work.liveLabel}
-                </a>
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
-      {/* 3. + 4. Ausgangssituation / Lösung */}
-      <section class="section section--paper">
-        <div class="content story">
-          <article class="story__block">
-            <p class="eyebrow">Ausgangssituation</p>
-            <p class="story__text">{work.situation}</p>
-          </article>
-          <article class="story__block">
-            <p class="eyebrow">Umgesetzte Lösung</p>
-            <p class="story__text">{work.solution}</p>
-          </article>
-        </div>
-      </section>
-
-      {/* 5. Leistungsumfang */}
-      <section class="section section--muted">
-        <div class="content">
-          <div class="band-head">
-            <p class="eyebrow">Leistungsumfang</p>
-            <h2 class="section-title">Was umgesetzt wurde.</h2>
-          </div>
-          <ul class="scopelist" role="list">
-            {work.scope.map((s) => (
-              <li>{s}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* 6. Desktop + Mobile Darstellung */}
-      <section class="section section--bright">
-        <div class="content">
-          <div class="band-head">
-            <p class="eyebrow">Darstellung</p>
-            <h2 class="section-title">Desktop und mobil.</h2>
-          </div>
-          <div class="shots">
-            <ReferenceImage
-              shot={work.screenshotDesktop}
-              variant="desktop"
-              pending={!work.verified}
-            />
-            <div class="shots__phone">
-              <ReferenceImage
-                shot={work.screenshotMobile}
-                variant="phone"
-                pending={!work.verified}
-              />
-            </div>
-          </div>
-          {!work.verified && (
-            <p class="pending-note">
-              Hinweis: Die Screenshots sind aktuell klar gekennzeichnete Platzhalter. Die echten
-              Website-Aufnahmen werden ergänzt.
-            </p>
-          )}
-        </div>
-      </section>
-
-      <CtaBanner
-        title="So ein Auftritt für dein Unternehmen?"
-        text="Erzähl kurz, was du vorhast – wir sagen ehrlich, was sinnvoll ist."
-        ctaLabel="Projekt anfragen"
-        ctaHref="/kontakt/"
-        secondaryLabel="Weitere Arbeiten"
-        secondaryHref="/arbeiten/"
+  <!-- Großflächiger echter Screenshot -->
+  <section class="shot">
+    <div class="content--wide content">
+      <img
+        src={work.screenshotDesktop.src}
+        srcset={work.screenshotDesktop.srcset}
+        sizes="(min-width: 90rem) 1480px, 100vw"
+        width={work.screenshotDesktop.width}
+        height={work.screenshotDesktop.height}
+        alt={work.screenshotDesktop.alt}
+        decoding="async"
       />
-    </BaseLayout>
-  ) : (
-    <BaseLayout
-      title={`${work.title} · Konzeptstudie`}
-      description={`Konzeptstudie (kein Kundenprojekt): ${work.tagline} ${work.situation}`.slice(
-        0,
-        155,
-      )}
-      jsonLd={[breadcrumbJsonLd(breadcrumbs)]}
-    >
-      {/* Konzeptstudie – klar gekennzeichnet */}
-      <header class="case-hero section--paper">
-        <div class="content">
-          <Breadcrumbs items={breadcrumbs} />
-          <span class="badge badge--concept case-hero__badge">{work.badge}</span>
-          <div class="case-hero__grid">
-            <div>
-              <p class="eyebrow">{work.industryLabel}</p>
-              <h1 class="case-hero__title">{work.title}</h1>
-              <p class="lead case-hero__tagline">{work.tagline}</p>
-            </div>
-            <div class="case-hero__media">
-              <CaseMockup
-                theme={work.mockupTheme}
-                brand={work.title}
-                tagline={work.tagline}
-                industryLabel={work.industryLabel}
-              />
-            </div>
-          </div>
-        </div>
-      </header>
+    </div>
+  </section>
 
-      <section class="section section--bright section--tight">
-        <div class="content">
-          <dl class="factbar">
-            <div>
-              <dt>Auftraggeber</dt>
-              <dd>Fiktiv – Konzeptstudie</dd>
-            </div>
-            <div>
-              <dt>Branche</dt>
-              <dd>{work.industryLabel}</dd>
-            </div>
-            <div>
-              <dt>Leistungen</dt>
-              <dd>{work.services.map((k) => getService(k as ServiceKey).label).join(', ')}</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
+  <!-- Ausgangslage / Lösung -->
+  <section class="section section--cream">
+    <div class="content two">
+      <div class="two__col">
+        <p class="label">Ausgangslage</p>
+        <p class="two__text">{work.situation}</p>
+      </div>
+      <div class="two__col">
+        <p class="label">Lösung</p>
+        <p class="two__text">{work.solution}</p>
+      </div>
+    </div>
+  </section>
 
-      <section class="section section--paper">
-        <div class="content story">
-          <article class="story__block">
-            <p class="eyebrow">Ausgangssituation</p>
-            <p class="story__text">{work.situation}</p>
-          </article>
-          <article class="story__block">
-            <p class="eyebrow">Ziel</p>
-            <p class="story__text">{work.goal}</p>
-          </article>
-          <article class="story__block">
-            <p class="eyebrow">Strategie</p>
-            <p class="story__text">{work.strategy}</p>
-          </article>
-          <article class="story__block">
-            <p class="eyebrow">Designsystem</p>
-            <p class="story__text">{work.designSystem}</p>
-          </article>
+  <!-- Leistungsumfang als typografische Liste -->
+  <section class="section section--paper">
+    <div class="content">
+      <h2 class="sec-title">Was umgesetzt wurde</h2>
+      <ol class="scope" role="list">
+        {
+          work.scope.map((item, i) => (
+            <li class="scope__item">
+              <span class="scope__num" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span class="scope__text">{item}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {showGoogleProfile && <GoogleProfile />}
+
+  {
+    other && (
+      <section class="section section--surface">
+        <div class="content nextwork">
+          <p class="label">Nächste Arbeit</p>
+          <h2 class="nextwork__title">
+            <a href={other.href}>{other.headline}</a>
+          </h2>
+          <p class="nextwork__meta">{other.title} · {other.category}</p>
+          <a class="link-arrow" href={other.href}>
+            Projekt ansehen <span class="arrow" aria-hidden="true">→</span>
+          </a>
         </div>
       </section>
+    )
+  }
 
-      <section class="section section--muted">
-        <div class="content">
-          <div class="band-head">
-            <p class="eyebrow">Website-Ausschnitte</p>
-            <h2 class="section-title">Was den Auftritt ausmacht.</h2>
-          </div>
-          <ul class="scopelist" role="list">
-            {work.highlights.map((h) => (
-              <li>{h}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section class="section section--bright">
-        <div class="content honesty">
-          <div class="honesty__card">
-            <p class="eyebrow">Belegbare Ergebnisse</p>
-            <p>
-              Dies ist eine Konzeptstudie. Wir weisen bewusst keine Kennzahlen oder Ergebnisse aus.
-              Belegbare Resultate zeigen wir ausschließlich bei echten, freigegebenen Projekten.
-            </p>
-          </div>
-          <div class="honesty__card">
-            <p class="eyebrow">Kundenstimme</p>
-            <p>
-              Kundenstimmen veröffentlichen wir nur mit ausdrücklicher Freigabe. Für diese
-              Konzeptstudie liegt keine vor.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <CtaBanner
-        title="Stell dir das für dein Unternehmen vor."
-        text="Aus einer Konzeptstudie wird ein echter Auftritt, sobald wir dein Unternehmen kennen."
-        ctaLabel="Projekt besprechen"
-        ctaHref="/kontakt/"
-        secondaryLabel="Weitere Arbeiten"
-        secondaryHref="/arbeiten/"
-      />
-    </BaseLayout>
-  )
-}
+  <CtaBanner />
+</BaseLayout>
 
 <style>
-  .case-hero {
-    padding-block: clamp(1.5rem, 1rem + 2vw, 2.75rem) var(--section-y);
+  .chero {
+    padding-block: clamp(2rem, 1.5rem + 3vw, 4rem) clamp(2.5rem, 2rem + 3vw, 4rem);
   }
-  .case-hero__badge {
-    margin-block: var(--space-lg) var(--space-lg);
+  .chero__cat {
+    display: block;
+    margin-block-start: var(--space-xl);
   }
-  .badge--reference {
-    border-color: var(--color-accent-deep);
-    color: #fff;
-    background: var(--color-accent-deep);
+  .chero__title {
+    margin-block-start: var(--space-md);
+    font-size: var(--fs-h1);
+    line-height: 0.9;
+    letter-spacing: var(--track-hero);
+    max-width: 14ch;
   }
-  .case-hero__grid {
-    display: grid;
-    gap: var(--space-2xl);
-    align-items: center;
-  }
-  .case-hero__title {
-    font-size: clamp(2.25rem, 1rem + 5vw, 4.5rem);
-    margin-block: var(--space-sm) var(--space-md);
-  }
-  .case-hero__tagline {
-    max-width: 48ch;
-  }
-  .case-hero__live {
+  .chero__client {
     margin-block-start: var(--space-lg);
-  }
-  @media (min-width: 64rem) {
-    .case-hero__grid {
-      grid-template-columns: 0.9fr 1.1fr;
-      gap: var(--space-4xl);
-    }
-  }
-
-  .factbar {
-    display: grid;
-    gap: var(--space-lg);
-    margin: 0;
-  }
-  .factbar dt {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-block-end: 0.25rem;
-  }
-  .factbar dd {
-    margin: 0;
-    font-family: var(--font-display);
     font-weight: var(--fw-semibold);
-    font-size: var(--fs-h4);
+    font-size: var(--fs-lead);
   }
-  .factbar a {
-    color: var(--brand-strong);
+  .chero__lead {
+    margin-block-start: var(--space-md);
   }
-  @media (min-width: 48rem) {
-    .factbar {
-      grid-template-columns: repeat(3, 1fr);
-    }
+  .chero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-block-start: var(--space-2xl);
+  }
+  .chero__domain {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
 
-  .story {
+  .shot {
+    padding-block-end: clamp(2rem, 1.5rem + 3vw, 4rem);
+    background: linear-gradient(to bottom, var(--ks-paper) 0 45%, var(--ks-cream) 45% 100%);
+  }
+  .shot img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+  }
+
+  .two {
     display: grid;
     gap: var(--space-2xl);
   }
-  .story__text {
+  .two__text {
+    margin-block-start: var(--space-md);
     font-size: var(--fs-lead);
     line-height: 1.5;
-    max-width: 62ch;
-  }
-  @media (min-width: 48rem) {
-    .story {
-      grid-template-columns: 1fr 1fr;
-    }
+    max-width: 46ch;
   }
 
-  .band-head {
-    display: grid;
-    gap: var(--space-sm);
-    margin-block-end: var(--space-xl);
+  .sec-title {
+    font-size: var(--fs-h2);
+    max-width: 14ch;
+    margin-block-end: clamp(2rem, 1.5rem + 2vw, 3.5rem);
   }
-  .scopelist {
-    display: grid;
-    gap: 0.6rem;
+  .scope {
     margin: 0;
     padding: 0;
     list-style: none;
+    border-block-start: 1px solid var(--line);
   }
-  .scopelist li {
-    position: relative;
-    padding-inline-start: 1.6rem;
-    font-size: var(--fs-lead);
+  .scope__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: clamp(1rem, 3vw, 2.5rem);
+    align-items: baseline;
+    padding-block: clamp(1.1rem, 0.9rem + 1.2vw, 1.9rem);
+    border-block-end: 1px solid var(--line);
   }
-  .scopelist li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 9px;
-    height: 9px;
-    border-radius: 2px;
-    background: var(--color-accent-deep);
+  .scope__num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-label);
+    color: var(--accent-ink);
+  }
+  .scope__text {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.2rem, 2.2vw, 1.9rem);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
   }
 
-  .shots {
+  .nextwork {
     display: grid;
-    gap: var(--space-2xl);
-    align-items: end;
+    gap: var(--space-md);
+    justify-items: start;
   }
-  .shots__phone {
-    justify-self: center;
+  .nextwork__title {
+    font-size: var(--fs-h3);
+    line-height: 0.95;
+    max-width: 14ch;
   }
-  @media (min-width: 64rem) {
-    .shots {
-      grid-template-columns: 1.6fr 0.7fr;
-    }
+  .nextwork__title a {
+    color: inherit;
+    text-decoration: none;
   }
-  .pending-note {
-    margin-block-start: var(--space-lg);
+  .nextwork__meta {
+    color: var(--text-muted);
     font-size: var(--fs-small);
-    color: var(--text-muted);
-    max-width: 62ch;
+  }
+  .nextwork .link-arrow {
+    margin-block-start: var(--space-md);
   }
 
-  .honesty {
-    display: grid;
-    gap: var(--grid-gap);
-  }
-  .honesty__card {
-    padding: clamp(1.5rem, 1rem + 2vw, 2.25rem);
-    border: 1px dashed var(--border-strong);
-    border-radius: var(--radius-lg);
-    background: var(--color-bright);
-    max-width: 60ch;
-  }
-  .honesty__card p:not(.eyebrow) {
-    color: var(--text-muted);
-  }
-  @media (min-width: 48rem) {
-    .honesty {
+  @media (min-width: 64rem) {
+    .two {
       grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 5vw, 6rem);
     }
   }
 </style>

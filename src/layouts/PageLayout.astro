@@ -7,26 +7,31 @@ import { breadcrumbJsonLd } from '../lib/jsonld';
 interface Props {
   title?: string;
   description?: string;
-  eyebrow?: string;
-  h1: string;
+  /** Kleines Label über der Headline (sparsam einsetzen). */
+  label?: string;
+  /** Reine Text-Headline. Alternativ den Slot `h1` mit Markup nutzen. */
+  h1?: string;
+  /** Wenn true, wird die Headline aus dem Slot `h1` gerendert. */
+  h1Slot?: boolean;
   lead?: string;
   breadcrumbs?: Crumb[];
   extraJsonLd?: Array<Record<string, unknown> | null>;
   noindex?: boolean;
-  /** Header-Hintergrund. */
-  variant?: 'sand' | 'paper' | 'bright' | 'dark';
+  /** Hintergrund des Seitenkopfs. */
+  variant?: 'paper' | 'cream' | 'surface' | 'dark';
 }
 
 const {
   title,
   description,
-  eyebrow,
+  label,
   h1,
+  h1Slot = false,
   lead,
   breadcrumbs = [],
   extraJsonLd = [],
   noindex = false,
-  variant = 'sand',
+  variant = 'paper',
 } = Astro.props;
 
 const jsonLd = [breadcrumbJsonLd(breadcrumbs), ...extraJsonLd];
@@ -36,8 +41,8 @@ const jsonLd = [breadcrumbJsonLd(breadcrumbs), ...extraJsonLd];
   <header class={`page-hero section--${variant}${variant === 'dark' ? ' on-dark' : ''}`}>
     <div class="content">
       {breadcrumbs.length > 1 && <Breadcrumbs items={breadcrumbs} />}
-      {eyebrow && <p class="eyebrow page-hero__eyebrow">{eyebrow}</p>}
-      <h1 class="page-hero__title">{h1}</h1>
+      {label && <p class="label page-hero__label">{label}</p>}
+      {h1Slot ? <slot name="h1" /> : <h1 class="page-hero__title">{h1}</h1>}
       {lead && <p class="lead page-hero__lead">{lead}</p>}
       <slot name="hero-extra" />
     </div>
@@ -47,18 +52,22 @@ const jsonLd = [breadcrumbJsonLd(breadcrumbs), ...extraJsonLd];
 
 <style>
   .page-hero {
-    padding-block: clamp(1.75rem, 1rem + 3vw, 3.25rem) clamp(2rem, 1.5rem + 3vw, 4rem);
+    padding-block: clamp(2rem, 1.5rem + 3vw, 4rem) clamp(2.5rem, 2rem + 4vw, 5.5rem);
   }
-  .page-hero__eyebrow {
-    margin-block-start: var(--space-lg);
+  .page-hero__label {
+    display: block;
+    margin-block-start: var(--space-xl);
   }
-  .page-hero__title {
-    font-size: clamp(2.25rem, 1rem + 5vw, 5rem);
-    max-width: 20ch;
-    margin-block-start: var(--space-sm);
+  .page-hero :global(h1) {
+    margin-block-start: var(--space-md);
+    font-size: var(--fs-h1);
+    line-height: 0.9;
+    letter-spacing: var(--track-hero);
+    max-width: 18ch;
   }
   .page-hero__lead {
-    margin-block-start: var(--space-lg);
-    max-width: 58ch;
+    margin-block-start: var(--space-xl);
+    font-size: var(--fs-lead);
+    max-width: 52ch;
   }
 </style>

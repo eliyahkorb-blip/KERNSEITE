@@ -2,61 +2,59 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Hero (HeroCinematic)', () => {
   test('Kernaussage und beide CTAs sind sichtbar', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
 
     const hero = page.locator('[data-hero]');
     await expect(hero).toBeVisible();
 
-    // Genau eine H1, und sie steht als echter Text im Hero (nicht im Bild).
     const h1 = page.locator('h1');
     await expect(h1).toHaveCount(1);
     await expect(h1).toContainText('Deine Website');
 
-    await expect(hero.getByRole('link', { name: 'Kostenfreie Analyse' })).toBeVisible();
+    await expect(hero.getByRole('link', { name: 'Projekt besprechen' })).toBeVisible();
     await expect(hero.getByRole('link', { name: 'Arbeiten ansehen' })).toBeVisible();
   });
 
-  test('Die Szene ist dekorativ und nicht fokussierbar', async ({ page }) => {
+  test('Die Szene ist dekorativ und enthält keine Tastatur-Stopps', async ({ page }) => {
     await page.goto('/');
-    const stage = page.locator('[data-hero] .hero__stage');
-    await expect(stage).toBeVisible();
+    const media = page.locator('[data-hero] .hero__media');
+    await expect(media).toBeVisible();
 
-    // Die Szene selbst (CRT-Figur bzw. Video + Overlay) ist als dekorativ
-    // ausgezeichnet und trägt keine Bedeutung für Screenreader.
-    const decorative = stage.locator('[aria-hidden="true"]');
-    expect(await decorative.count()).toBeGreaterThan(0);
+    // Die Bildschirmfläche trägt keine Bedeutung für Screenreader.
+    await expect(page.locator('[data-crt]')).toHaveAttribute('aria-hidden', 'true');
 
-    // Innerhalb der Szene gibt es keine Tastatur-Stopps.
-    const focusables = stage.locator('a, button, input, select, textarea, [tabindex="0"]');
+    const focusables = media.locator('a, button, input, select, textarea, [tabindex="0"]');
     await expect(focusables).toHaveCount(0);
   });
 
   test('Der Monitor zeigt das Wort KERNSEITE', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('[data-hero-word]')).toHaveText('KERNSEITE');
+    await expect(page.locator('[data-crt-word]')).toHaveText('KERNSEITE');
   });
 
-  test('prefers-reduced-motion: Hero rendert statisch ohne Fehler', async ({ browser }) => {
+  test('prefers-reduced-motion: kein Wortwechsel, kein Flackern', async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await context.newPage();
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
 
     await page.goto('/');
-    const hero = page.locator('[data-hero]');
-    await expect(hero).toBeVisible();
-    // Das Skript markiert den Hero als statisch -> keine Flacker-Animation.
-    await expect(hero).toHaveClass(/is-static/);
-    await expect(page.locator('h1')).toBeVisible();
+    const crt = page.locator('[data-crt]');
+    await expect(crt).toBeVisible();
+    // Ohne Bewegung wird die Flacker-Klasse nie gesetzt.
+    await expect(crt).not.toHaveClass(/is-live/);
+
+    // Auch nach mehreren Wechselintervallen bleibt „KERNSEITE“ stehen.
+    await page.waitForTimeout(2600);
+    await expect(page.locator('[data-crt-word]')).toHaveText('KERNSEITE');
 
     expect(errors).toEqual([]);
     await context.close();
   });
 
-  test('Ohne Bewegungspräferenz bleiben alle Reveal-Inhalte lesbar', async ({ page }) => {
+  test('Ohne Bewegungspräferenz bleiben Reveal-Inhalte lesbar', async ({ page }) => {
     await page.goto('/');
-    // Die letzte Sektion wird angesteuert; danach muss ihr Inhalt sichtbar sein.
     const faq = page.locator('.faq-home');
     await faq.scrollIntoViewIfNeeded();
     await expect(faq).toBeVisible();

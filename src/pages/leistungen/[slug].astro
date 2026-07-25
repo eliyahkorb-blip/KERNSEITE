@@ -1,15 +1,15 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import ProcessBand from '../../components/ProcessBand.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
+import AccentWord from '../../components/AccentWord.astro';
+import GoogleProfile from '../../components/GoogleProfile.astro';
+import FaqAccordion from '../../components/FaqAccordion.astro';
 import { services, type Service } from '../../config/services';
-import { serviceJsonLd } from '../../lib/jsonld';
+import { works, type ProjectWork } from '../../config/cases';
+import { faqs } from '../../config/faq';
 
 export function getStaticPaths() {
-  return services.map((service) => ({
-    params: { slug: service.slug },
-    props: { service },
-  }));
+  return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
 }
 
 interface Props {
@@ -23,114 +23,331 @@ const breadcrumbs = [
   { name: service.label, path: service.href },
 ];
 
-// Verwandte Leistungen (die übrigen).
-const related = services.filter((s) => s.key !== service.key).slice(0, 4);
-const metaDescription = `${service.problem} ${service.solution}`.slice(0, 155);
+/** Ein markiertes Wort je Headline. */
+const accents: Record<string, string> = {
+  websites: 'aussehen',
+  'seo-geo': 'wiedergegeben',
+  google: 'vor Ort',
+  video: 'sehen',
+  social: 'erkennbar',
+  ki: 'Arbeit',
+};
+const accent = accents[service.key];
+const [beforeAccent, afterAccent] = accent
+  ? (() => {
+      const i = service.detailH1.indexOf(accent);
+      return i === -1
+        ? [service.detailH1, '']
+        : [service.detailH1.slice(0, i), service.detailH1.slice(i + accent.length)];
+    })()
+  : [service.detailH1, ''];
+
+const projects = works.filter((w): w is ProjectWork => w.kind === 'project');
+const relatedProject =
+  service.key === 'websites' || service.key === 'seo-geo'
+    ? projects[0]
+    : service.key === 'google'
+      ? projects.find((p) => p.slug === 'kinderkoerbchen')
+      : undefined;
+
+// Passende Fragen zur Leistung (nur sichtbare FAQs bekommen später Schema).
+const serviceFaqs = faqs.filter((f) => f.services?.includes(service.key)).slice(0, 4);
+
+const otherServices = services.filter((s) => s.key !== service.key);
+
+// Beispielhafte Frage-Antwort-Paare für die SEO/GEO-Visualisierung.
+const geoQuestions = [
+  'Wer macht Websites in Würzburg?',
+  'Was kostet eine Unternehmenswebsite?',
+  'Kindertagespflege in Eisingen – wer hat Plätze frei?',
+  'Döner in Himmelstadt – wann ist geöffnet?',
+];
+
+// Bausteine der KI-/Automatisierungskette.
+const kiChain = [
+  { label: 'Anfrage', body: 'Formular, Anruf oder Chat' },
+  { label: 'Vorqualifizierung', body: 'Chatbot oder Voice Agent klärt Standardfragen' },
+  { label: 'Übergabe', body: 'Strukturierte Daten ins Postfach oder CRM' },
+  { label: 'Mensch', body: 'Die eigentliche Beratung übernimmst du' },
+];
+
+// Inhaltsraster für Social Media.
+const socialFrames = ['Haltung', 'Format', 'Wiedererkennung', 'Redaktionsplan', 'Bildwelt', 'Ton'];
+
+// Kapitel eines Unternehmensvideos.
+const videoBeats = [
+  { n: '01', t: 'Auftakt', b: 'Ort, Menschen, Atmosphäre – in wenigen Sekunden verständlich.' },
+  { n: '02', t: 'Arbeit', b: 'Was ihr tut, in echten Situationen statt gestellter Szenen.' },
+  { n: '03', t: 'Haltung', b: 'Warum ihr es so macht – O-Ton statt Werbeversprechen.' },
+  { n: '04', t: 'Schluss', b: 'Ein klarer nächster Schritt, kein Abspann ins Leere.' },
+];
 ---
 
 <PageLayout
-  title={service.cardTitle}
-  description={metaDescription}
-  eyebrow={service.isCore ? 'Kernleistung' : 'Leistung · Erweiterung'}
-  h1={service.detailH1}
-  lead={service.intro}
+  title={service.label}
+  description={service.intro.slice(0, 155)}
+  h1Slot
   breadcrumbs={breadcrumbs}
-  extraJsonLd={[serviceJsonLd(service)]}
+  lead={service.intro}
+  variant={service.key === 'video' ? 'dark' : 'paper'}
 >
-  <!-- Problem / Lösung -->
-  <section class="section section--bright">
-    <div class="content ps-grid">
-      <div class="ps-grid__card">
-        <p class="eyebrow">Problem</p>
-        <p class="ps-grid__text">{service.problem}</p>
+  <h1 slot="h1">
+    {beforeAccent}{accent && <AccentWord>{accent}</AccentWord>}{afterAccent}
+  </h1>
+
+  <!-- Problem / Lösung: zwei Spalten, nur Linie dazwischen -->
+  <section class="section section--cream">
+    <div class="content ps">
+      <div class="ps__col">
+        <p class="label">Problem</p>
+        <p class="ps__text">{service.problem}</p>
       </div>
-      <div class="ps-grid__card ps-grid__card--accent">
-        <p class="eyebrow">Lösung</p>
-        <p class="ps-grid__text">{service.solution}</p>
+      <div class="ps__col ps__col--solution">
+        <p class="label label--accent">Lösung</p>
+        <p class="ps__text">{service.solution}</p>
       </div>
     </div>
   </section>
 
-  <!-- Redaktionelle Abschnitte -->
+  <!-- ============ Leistungsspezifisches visuelles Kapitel ============ -->
+  {
+    service.key === 'websites' && (
+      <section class="section section--paper">
+        <div class="content">
+          <h2 class="vis__title">So sieht das in der Praxis aus.</h2>
+          <div class="browsers">
+            {projects.map((p) => (
+              <a class="browser" href={p.href}>
+                <span class="browser__bar" aria-hidden="true">
+                  <i /> <i /> <i />
+                  <span class="browser__url">{p.liveLabel}</span>
+                </span>
+                <img
+                  src={p.screenshotDesktop.src}
+                  srcset={p.screenshotDesktop.srcset}
+                  sizes="(min-width: 64rem) 46vw, 100vw"
+                  width={p.screenshotDesktop.width}
+                  height={p.screenshotDesktop.height}
+                  alt={p.screenshotDesktop.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="browser__cap">{p.title}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    service.key === 'seo-geo' && (
+      <section class="section section--dark">
+        <div class="content">
+          <h2 class="vis__title">Suche ist eine Frage. Sichtbarkeit ist die Antwort.</h2>
+          <ul class="qa" role="list">
+            {geoQuestions.map((q) => (
+              <li class="qa__row">
+                <span class="qa__q">
+                  <span class="qa__mark" aria-hidden="true">
+                    ?
+                  </span>
+                  {q}
+                </span>
+                <span class="qa__a" aria-hidden="true">
+                  <span class="qa__bar" />
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p class="qa__note">
+            Je klarer eine Seite genau eine Frage beantwortet, desto eher taucht sie in Suche und
+            Antwortsystemen auf. Kein Keyword-Stapeln, sondern verständliche Aussagen.
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  {service.key === 'google' && <GoogleProfile bare={false} />}
+
+  {
+    service.key === 'video' && (
+      <section class="section section--dark">
+        <div class="content">
+          <h2 class="vis__title">Vier Kapitel. Kein Werbefilm.</h2>
+          <ol class="beats" role="list">
+            {videoBeats.map((b) => (
+              <li class="beat">
+                <span class="beat__n" aria-hidden="true">
+                  {b.n}
+                </span>
+                <span class="beat__frame" aria-hidden="true" />
+                <h3 class="beat__t">{b.t}</h3>
+                <p class="beat__b">{b.b}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    service.key === 'social' && (
+      <section class="section section--surface">
+        <div class="content">
+          <h2 class="vis__title">Wiedererkennung entsteht durch Wiederholung.</h2>
+          <ul class="frames" role="list">
+            {socialFrames.map((f, i) => (
+              <li class:list={['frame', `frame--${(i % 3) + 1}`]}>
+                <span class="frame__label">{f}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="qa__note qa__note--light">
+            Eine Marke muss nicht jeden Tag posten. Sie muss erkennbar bleiben – gleiche Bildsprache,
+            gleiche Tonlage, verlässlicher Rhythmus.
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    service.key === 'ki' && (
+      <section class="section section--dark">
+        <div class="content">
+          <h2 class="vis__title">Automatisiert wird die Arbeit. Nicht das Gespräch.</h2>
+          <ol class="chain" role="list">
+            {kiChain.map((c, i) => (
+              <li class="chain__step">
+                <span class="chain__n" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 class="chain__t">{c.label}</h3>
+                <p class="chain__b">{c.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Leistungsumfang + Nutzen -->
   <section class="section section--paper">
-    <div class="content sections-grid">
-      <div class="sections-grid__head">
-        <p class="eyebrow">Im Detail</p>
-        <h2 class="section-title">Worauf es dabei ankommt.</h2>
-      </div>
-      <div class="sections-grid__list">
-        {
-          service.sections.map((sec) => (
-            <article class="detail-sec">
-              <h3 class="detail-sec__title">{sec.title}</h3>
-              <p class="detail-sec__body">{sec.body}</p>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- Bestandteile + Nutzen -->
-  <section class="section section--muted">
-    <div class="content two-col">
+    <div class="content scope-grid">
       <div>
-        <h2 class="section-title">Typische Bestandteile</h2>
-        <ul class="ticklist ticklist--lg" role="list">
+        <h2 class="sub">Was dazugehört</h2>
+        <ul class="lines" role="list">
           {service.components.map((c) => <li>{c}</li>)}
         </ul>
       </div>
       <div>
-        <h2 class="section-title">Der Nutzen</h2>
-        <ul class="ticklist ticklist--lg" role="list">
+        <h2 class="sub">Was es bringt</h2>
+        <ul class="lines" role="list">
           {service.benefits.map((b) => <li>{b}</li>)}
         </ul>
-        <h3 class="mini-h">Passende Zielgruppen</h3>
-        <ul class="taglist" role="list">
-          {service.audiences.map((a) => <li>{a}</li>)}
-        </ul>
+        <p class="aud">
+          <span class="label">Passend für</span>
+          <span class="aud__list">{service.audiences.join(' · ')}</span>
+        </p>
       </div>
     </div>
   </section>
 
   <!-- Ablauf -->
-  <section class="section section--bright">
+  <section class="section section--cream">
     <div class="content">
-      <div class="band-head">
-        <p class="eyebrow">Ablauf</p>
-        <h2 class="section-title">So läuft es ab.</h2>
-      </div>
-      <ProcessBand steps={service.steps} ariaLabel={`Ablauf: ${service.cardTitle}`} />
-      {
-        service.partnerNote && (
-          <p class="partner-note">
-            <span class="partner-note__tag">Netzwerk</span>
-            {service.partnerNote}
-          </p>
-        )
-      }
+      <h2 class="sub sub--wide">So läuft es ab</h2>
+      <ol class="steps" role="list">
+        {
+          service.steps.map((s, i) => (
+            <li class="steps__item">
+              <span class="steps__n" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span class="steps__t">{s}</span>
+            </li>
+          ))
+        }
+      </ol>
     </div>
   </section>
 
-  <!-- Verwandte Leistungen -->
+  <!-- Redaktionelle Vertiefung -->
+  {
+    service.sections.length > 0 && (
+      <section class="section section--paper">
+        <div class="content deep">
+          {service.sections.map((sec) => (
+            <div class="deep__item">
+              <h2 class="deep__title">{sec.title}</h2>
+              <p class="deep__body">{sec.body}</p>
+            </div>
+          ))}
+          {service.partnerNote && <p class="deep__note">{service.partnerNote}</p>}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Passende Referenz -->
+  {
+    relatedProject && (
+      <section class="section section--surface">
+        <div class="content ref">
+          <div>
+            <p class="label">Passende Arbeit</p>
+            <h2 class="ref__title">{relatedProject.headline}</h2>
+            <p class="ref__body">{relatedProject.tagline}</p>
+            <a class="link-arrow" href={relatedProject.href}>
+              Projekt ansehen <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+          <span class="ref__media" aria-hidden="true">
+            <img
+              src={relatedProject.screenshotDesktop.src}
+              srcset={relatedProject.screenshotDesktop.srcset}
+              sizes="(min-width: 64rem) 50vw, 100vw"
+              width={relatedProject.screenshotDesktop.width}
+              height={relatedProject.screenshotDesktop.height}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          </span>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- FAQ zur Leistung -->
+  {
+    serviceFaqs.length > 0 && (
+      <section class="section section--cream">
+        <div class="content faq-wrap">
+          <h2 class="sub">Häufige Fragen</h2>
+          <FaqAccordion items={serviceFaqs} />
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Weitere Leistungen -->
   <section class="section section--paper">
     <div class="content">
-      <div class="band-head">
-        <p class="eyebrow">Weitere Leistungen</p>
-        <h2 class="section-title">Sinnvoll kombinierbar.</h2>
-      </div>
-      <ul class="related" role="list">
+      <h2 class="sub sub--wide">Sinnvoll kombinierbar</h2>
+      <ul class="others" role="list">
         {
-          related.map((r) => (
+          otherServices.map((s) => (
             <li>
-              <a class="related__link" href={r.href}>
-                <span class="related__name">{r.cardTitle}</span>
-                <span class="related__teaser">{r.teaser}</span>
-                <span class="related__arrow arrow-link">
-                  Ansehen{' '}
-                  <span class="arrow" aria-hidden="true">
-                    →
-                  </span>
+              <a class="others__link" href={s.href}>
+                <span class="others__name">{s.cardTitle}</span>
+                <span class="others__go" aria-hidden="true">
+                  →
                 </span>
               </a>
             </li>
@@ -140,176 +357,414 @@ const metaDescription = `${service.problem} ${service.solution}`.slice(0, 155);
     </div>
   </section>
 
-  <CtaBanner
-    title="Passt das zu deinem Vorhaben?"
-    text="Erzähl kurz, was du planst. Wir sagen ehrlich, ob und wie es sinnvoll ist."
-    ctaLabel="Projekt besprechen"
-    ctaHref="/kontakt/"
-    secondaryLabel="Alle Leistungen"
-    secondaryHref="/leistungen/"
-  />
+  <CtaBanner />
 </PageLayout>
 
 <style>
-  .ps-grid {
-    display: grid;
-    gap: var(--grid-gap);
-  }
-  .ps-grid__card {
-    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--color-bright);
-  }
-  .ps-grid__card--accent {
-    background: color-mix(in srgb, var(--color-accent-deep) 6%, var(--color-bright));
-    border-color: color-mix(in srgb, var(--color-accent-deep) 30%, var(--border));
-  }
-  .ps-grid__text {
-    font-size: var(--fs-lead);
-    line-height: 1.5;
-  }
-
-  .sections-grid,
-  .two-col {
+  /* Problem / Lösung */
+  .ps {
     display: grid;
     gap: var(--space-2xl);
   }
-  .sections-grid__list {
-    display: grid;
-    gap: var(--space-xl);
-  }
-  .detail-sec__title {
-    font-size: var(--fs-h4);
-  }
-  .detail-sec__body {
-    margin-block-start: 0.4rem;
-    color: var(--text-muted);
-    max-width: 68ch;
-  }
-
-  .mini-h {
-    margin-block: var(--space-xl) var(--space-md);
-    font-size: var(--fs-h4);
-  }
-  .ticklist {
-    display: grid;
-    gap: 0.5rem;
-    margin: var(--space-lg) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .ticklist--lg li {
-    position: relative;
-    padding-inline-start: 1.6rem;
+  .ps__text {
+    margin-block-start: var(--space-md);
     font-size: var(--fs-lead);
+    line-height: 1.5;
+    max-width: 46ch;
   }
-  .ticklist--lg li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 9px;
-    height: 9px;
-    border-radius: 2px;
-    background: var(--color-accent-deep);
+  .ps__col--solution {
+    border-inline-start: 2px solid var(--accent);
+    padding-inline-start: clamp(1.25rem, 3vw, 2.5rem);
   }
-  .taglist {
+
+  .vis__title {
+    font-size: var(--fs-h2);
+    max-width: 18ch;
+    margin-block-end: clamp(2rem, 1.5rem + 3vw, 4rem);
+  }
+
+  /* Websites: Browserrahmen */
+  .browsers {
+    display: grid;
+    gap: clamp(2rem, 1.5rem + 3vw, 3.5rem);
+  }
+  .browser {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .browser__bar {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: var(--space-md) 0 0;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.9rem;
+    background: var(--ks-surface);
+    border: 1px solid var(--line);
+    border-block-end: 0;
+  }
+  .browser__bar i {
+    inline-size: 9px;
+    block-size: 9px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+  .browser__url {
+    margin-inline-start: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+  .browser img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+    border: 1px solid var(--line);
+  }
+  .browser__cap {
+    display: block;
+    margin-block-start: var(--space-md);
+    font-weight: var(--fw-semibold);
+  }
+
+  /* SEO/GEO: Frage-Antwort-Struktur */
+  .qa {
+    margin: 0;
     padding: 0;
     list-style: none;
+    border-block-start: 1px solid var(--line-invert);
   }
-  .taglist li {
-    font-size: var(--fs-small);
-    padding: 0.3rem 0.7rem;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-pill);
+  .qa__row {
+    display: grid;
+    gap: 1rem;
+    padding-block: clamp(1.1rem, 1rem + 1vw, 1.8rem);
+    border-block-end: 1px solid var(--line-invert);
+    align-items: center;
+  }
+  .qa__q {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.1rem, 2vw, 1.8rem);
+    letter-spacing: -0.025em;
+    color: var(--text-invert);
+  }
+  .qa__mark {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    flex: none;
+  }
+  .qa__a {
+    display: block;
+    block-size: 8px;
+    background: var(--ks-black-soft);
+  }
+  .qa__bar {
+    display: block;
+    block-size: 100%;
+    background: var(--accent);
+    inline-size: 72%;
+  }
+  .qa__row:nth-child(2) .qa__bar {
+    inline-size: 54%;
+  }
+  .qa__row:nth-child(3) .qa__bar {
+    inline-size: 88%;
+  }
+  .qa__row:nth-child(4) .qa__bar {
+    inline-size: 66%;
+  }
+  .qa__note {
+    margin-block-start: var(--space-2xl);
+    color: var(--text-invert-muted);
+    max-width: 56ch;
+  }
+  .qa__note--light {
     color: var(--text-muted);
   }
 
-  .band-head {
+  /* Video: Kapitel */
+  .beats {
     display: grid;
-    gap: var(--space-sm);
-    margin-block-end: var(--space-xl);
-  }
-  .partner-note {
-    margin-block-start: var(--space-xl);
-    padding: var(--space-lg);
-    background: color-mix(in srgb, var(--color-cyan) 8%, var(--color-bright));
-    border: 1px solid color-mix(in srgb, var(--color-cyan) 40%, var(--border));
-    border-radius: var(--radius-md);
-    max-width: 70ch;
-  }
-  .partner-note__tag {
-    display: inline-block;
-    margin-inline-end: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--brand-strong);
-  }
-
-  .related {
-    display: grid;
-    gap: var(--grid-gap);
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .related__link {
-    display: grid;
-    gap: 0.4rem;
-    padding: var(--space-lg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--color-bright);
-    text-decoration: none;
-    color: var(--text);
-    height: 100%;
-    transition:
-      border-color var(--dur-base) var(--ease-out),
-      transform var(--dur-base) var(--ease-out);
+  .beat__n {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-label);
+    color: var(--accent);
   }
-  .related__link:hover,
-  .related__link:focus-visible {
-    border-color: var(--color-accent-deep);
-    transform: translateY(-3px);
+  .beat__frame {
+    display: block;
+    margin-block: var(--space-md);
+    aspect-ratio: 16 / 9;
+    background: var(--ks-black-soft);
+    border-block-start: 2px solid var(--accent);
   }
-  .related__name {
-    font-family: var(--font-display);
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-h4);
+  .beat__t {
+    font-size: var(--fs-h5);
   }
-  .related__teaser {
-    color: var(--text-muted);
-    font-size: var(--fs-small);
-  }
-  .related__arrow {
+  .beat__b {
+    margin-block-start: 0.4rem;
+    color: var(--text-invert-muted);
     font-size: var(--fs-small);
   }
 
+  /* Social: Inhaltsraster */
+  .frames {
+    display: grid;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .frame {
+    display: grid;
+    align-items: end;
+    padding: clamp(1rem, 2vw, 1.5rem);
+    aspect-ratio: 1;
+    background: var(--ks-cream);
+    border: 1px solid var(--line);
+  }
+  .frame--2 {
+    background: var(--ks-black);
+  }
+  .frame--2 .frame__label {
+    color: var(--ks-cream);
+  }
+  .frame--3 {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .frame__label {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.1rem, 2vw, 1.6rem);
+    letter-spacing: -0.03em;
+  }
+
+  /* KI: Kette */
+  .chain {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line-invert);
+  }
+  .chain__step {
+    padding-block: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    border-block-end: 1px solid var(--line-invert);
+  }
+  .chain__n {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-label);
+    color: var(--accent);
+  }
+  .chain__t {
+    margin-block-start: 0.5rem;
+    font-size: clamp(1.3rem, 2.4vw, 2rem);
+    letter-spacing: -0.03em;
+  }
+  .chain__b {
+    margin-block-start: 0.4rem;
+    color: var(--text-invert-muted);
+    font-size: var(--fs-small);
+  }
+
+  /* Umfang / Nutzen */
+  .scope-grid {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .sub {
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    letter-spacing: var(--track-display);
+    margin-block-end: var(--space-xl);
+    max-width: 16ch;
+  }
+  .sub--wide {
+    max-width: 24ch;
+  }
+  .lines {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .lines li {
+    padding-block: 0.85rem;
+    border-block-end: 1px solid var(--line);
+    font-size: var(--fs-small);
+  }
+  .aud {
+    margin-block-start: var(--space-xl);
+    display: grid;
+    gap: 0.35rem;
+  }
+  .aud__list {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+
+  /* Ablauf */
+  .steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    border-block-start: 1px solid var(--line);
+  }
+  .steps__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem clamp(1rem, 3vw, 2.5rem);
+    align-items: baseline;
+    padding-block: clamp(1rem, 0.9rem + 1vw, 1.6rem);
+    border-block-end: 1px solid var(--line);
+  }
+  .steps__n {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-label);
+    color: var(--accent-ink);
+  }
+  .steps__t {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.05rem, 1.8vw, 1.5rem);
+    letter-spacing: -0.02em;
+  }
+
+  /* Vertiefung */
+  .deep {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .deep__title {
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    letter-spacing: var(--track-display);
+    max-width: 18ch;
+  }
+  .deep__body {
+    margin-block-start: var(--space-md);
+    color: var(--text-muted);
+    max-width: 54ch;
+  }
+  .deep__note {
+    grid-column: 1 / -1;
+    padding-inline-start: clamp(1rem, 2vw, 1.5rem);
+    border-inline-start: 2px solid var(--accent);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    max-width: 60ch;
+  }
+
+  /* Referenz */
+  .ref {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .ref__title {
+    margin-block-start: var(--space-md);
+    font-size: var(--fs-h3);
+    line-height: 0.95;
+    max-width: 14ch;
+  }
+  .ref__body {
+    margin-block-start: var(--space-lg);
+    color: var(--text-muted);
+    max-width: 44ch;
+  }
+  .ref .link-arrow {
+    margin-block-start: var(--space-xl);
+  }
+  .ref__media img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+  }
+
+  .faq-wrap {
+    max-width: 62rem;
+  }
+
+  /* Weitere Leistungen */
+  .others {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .others__link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: clamp(1rem, 0.9rem + 1vw, 1.5rem);
+    border-block-end: 1px solid var(--line);
+    text-decoration: none;
+    color: var(--text);
+  }
+  .others__name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.15rem, 2.2vw, 1.8rem);
+    letter-spacing: -0.03em;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  .others__go {
+    color: var(--accent-ink);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .others__link:hover .others__go {
+    transform: translateX(6px);
+  }
+
   @media (min-width: 48rem) {
-    .ps-grid {
-      grid-template-columns: 1fr 1fr;
+    .beats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .related {
-      grid-template-columns: repeat(2, 1fr);
+    .frames {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .browsers {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .deep {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(2rem, 4vw, 4rem);
     }
   }
   @media (min-width: 64rem) {
-    .sections-grid {
-      grid-template-columns: 0.7fr 1.3fr;
-      align-items: start;
-    }
-    .two-col {
+    .ps {
       grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 5vw, 5rem);
     }
-    .related {
-      grid-template-columns: repeat(4, 1fr);
+    .scope-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 5vw, 5rem);
+    }
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2rem, 4vw, 4rem);
+    }
+    .qa__row {
+      grid-template-columns: 1.6fr 1fr;
+    }
+    .ref {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: clamp(3rem, 5vw, 5rem);
+    }
+    .beats {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 </style>

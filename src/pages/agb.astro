@@ -1,0 +1,156 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import DraftNotice from '../components/DraftNotice.astro';
+import { activeCompany } from '../lib/config-validation';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'AGB', path: '/agb/' },
+];
+const c = activeCompany;
+---
+
+<PageLayout
+  title="AGB"
+  description="Allgemeine Geschäftsbedingungen von KERNSEITE – Eliyah Korb für Website-Projekte, Betreuung und ergänzende digitale Leistungen."
+  label="Rechtliches"
+  h1="Allgemeine Geschäftsbedingungen"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section section--paper">
+    <div class="content">
+      <DraftNotice
+        text="Entwurf – nur im Entwicklungsmodus sichtbar. Diese Geschäftsbedingungen sind ein technisch vorbereiteter Entwurf und ersetzen keine Rechtsberatung. Vor der Verwendung im Geschäftsverkehr sind sie anwaltlich zu prüfen und auf die tatsächlichen Vertragsverhältnisse abzustimmen."
+      />
+      <div class="prose">
+        <h2>1. Geltungsbereich</h2>
+        <p>
+          Diese Bedingungen gelten für Verträge zwischen {c.legalDisplayName} (nachfolgend
+          „KERNSEITE“) und Auftraggeberinnen und Auftraggebern über die Konzeption, Gestaltung und
+          Entwicklung von Websites sowie über ergänzende digitale Leistungen. Abweichende
+          Bedingungen der Auftraggeberseite gelten nur, wenn KERNSEITE ihnen schriftlich zustimmt.
+        </p>
+
+        <h2>2. Vertragsschluss</h2>
+        <p>
+          Angebote von KERNSEITE sind freibleibend. Ein Vertrag kommt zustande, wenn ein Angebot in
+          Textform angenommen oder mit der Leistung nach ausdrücklicher Freigabe begonnen wird.
+          Maßgeblich für Umfang und Preis ist das jeweilige schriftliche Angebot.
+        </p>
+
+        <h2>3. Leistungsumfang</h2>
+        <p>
+          Der Leistungsumfang ergibt sich ausschließlich aus dem Angebot. Leistungen, die dort nicht
+          genannt sind, sind nicht geschuldet. Erweiterungen werden gesondert vereinbart und
+          abgerechnet. Für einzelne Leistungsbereiche – etwa Film, Social Media oder
+          Automatisierung – kann KERNSEITE spezialisierte Partner einsetzen; Vertragspartner bleibt
+          KERNSEITE.
+        </p>
+
+        <h2>4. Mitwirkung der Auftraggeberseite</h2>
+        <p>
+          Die Auftraggeberseite stellt die für das Projekt erforderlichen Inhalte, Zugänge und
+          Freigaben rechtzeitig bereit. Verzögern sich Mitwirkungsleistungen, verschieben sich
+          vereinbarte Termine entsprechend. Die Auftraggeberseite sichert zu, dass sie an
+          überlassenen Inhalten – insbesondere Texten, Bildern, Logos und Videos – die
+          erforderlichen Rechte besitzt.
+        </p>
+
+        <h2>5. Termine</h2>
+        <p>
+          Termine sind nur verbindlich, wenn sie ausdrücklich als verbindlich vereinbart wurden. Bei
+          Umständen, die KERNSEITE nicht zu vertreten hat, verlängern sich Fristen angemessen.
+        </p>
+
+        <h2>6. Abnahme</h2>
+        <p>
+          Nach Fertigstellung wird die Leistung zur Abnahme bereitgestellt. Erfolgt innerhalb von
+          zehn Werktagen keine Rückmeldung in Textform und wird die Leistung produktiv genutzt,
+          gilt sie als abgenommen. Unwesentliche Abweichungen berechtigen nicht zur Verweigerung der
+          Abnahme.
+        </p>
+
+        <h2>7. Vergütung und Zahlung</h2>
+        <p>
+          Die Vergütung richtet sich nach dem Angebot. Sofern nichts anderes vereinbart ist, werden
+          Teilzahlungen nach Projektfortschritt fällig. Rechnungen sind ohne Abzug innerhalb der
+          angegebenen Frist zahlbar. Laufende Leistungen wie Betreuung oder Wartung werden
+          periodisch abgerechnet.
+        </p>
+
+        <h2>8. Nutzungsrechte</h2>
+        <p>
+          Mit vollständiger Bezahlung erhält die Auftraggeberseite das einfache, zeitlich und
+          räumlich unbeschränkte Recht, die vereinbarten Arbeitsergebnisse für den vertraglich
+          vorgesehenen Zweck zu nutzen. Nicht übertragen werden Rechte an eingesetzten
+          Entwicklungswerkzeugen, Bibliotheken und wiederverwendbaren Bausteinen; hierfür gelten die
+          jeweiligen Lizenzbedingungen. Rechte Dritter an Schriften, Bildern oder Software bleiben
+          unberührt.
+        </p>
+
+        <h2>9. Referenznennung</h2>
+        <p>
+          KERNSEITE darf das Projekt nach Veröffentlichung als Referenz nennen und abbilden, sofern
+          die Auftraggeberseite dem zugestimmt hat. Die Zustimmung kann jederzeit für die Zukunft
+          widerrufen werden.
+        </p>
+
+        <h2>10. Gewährleistung</h2>
+        <p>
+          Es gelten die gesetzlichen Bestimmungen. Mängel sind nachvollziehbar zu beschreiben.
+          KERNSEITE bessert innerhalb angemessener Frist nach. Keine Gewähr wird übernommen für
+          Beeinträchtigungen, die auf nachträglichen Eingriffen Dritter, auf veränderten Inhalten
+          oder auf Ausfällen von Diensten Dritter beruhen.
+        </p>
+
+        <h2>11. Keine Erfolgsgarantie</h2>
+        <p>
+          KERNSEITE schuldet die vereinbarte Leistung, nicht einen bestimmten wirtschaftlichen
+          Erfolg. Insbesondere werden keine Platzierungen in Suchmaschinen, keine Reichweiten und
+          keine Anfragezahlen zugesichert, da diese von Faktoren außerhalb des Einflussbereichs von
+          KERNSEITE abhängen.
+        </p>
+
+        <h2>12. Haftung</h2>
+        <p>
+          KERNSEITE haftet unbeschränkt bei Vorsatz und grober Fahrlässigkeit sowie bei der
+          Verletzung von Leben, Körper oder Gesundheit. Bei einfacher Fahrlässigkeit besteht eine
+          Haftung nur für die Verletzung wesentlicher Vertragspflichten und der Höhe nach begrenzt
+          auf den vertragstypischen, vorhersehbaren Schaden. Im Übrigen ist die Haftung
+          ausgeschlossen. Die Regelungen des Produkthaftungsgesetzes bleiben unberührt.
+        </p>
+
+        <h2>13. Datenschutz und Vertraulichkeit</h2>
+        <p>
+          Beide Seiten behandeln vertrauliche Informationen der jeweils anderen Seite vertraulich.
+          Werden im Auftrag personenbezogene Daten verarbeitet, wird eine gesonderte Vereinbarung
+          zur Auftragsverarbeitung geschlossen. Weitere Informationen stehen in der{' '}
+          <a href="/datenschutz/">Datenschutzerklärung</a>.
+        </p>
+
+        <h2>14. Laufzeit und Kündigung</h2>
+        <p>
+          Projektverträge enden mit vollständiger Erbringung der vereinbarten Leistungen. Dauernde
+          Leistungen wie Betreuung oder Wartung können von beiden Seiten mit der vereinbarten Frist
+          gekündigt werden. Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt
+          unberührt.
+        </p>
+
+        <h2>15. Schlussbestimmungen</h2>
+        <p>
+          Es gilt das Recht der Bundesrepublik Deutschland. Sind beide Seiten Unternehmen, ist
+          Gerichtsstand der Sitz von KERNSEITE. Sollte eine Bestimmung unwirksam sein, bleibt die
+          Wirksamkeit der übrigen Bestimmungen unberührt.
+        </p>
+
+        <h2>Kontakt</h2>
+        <p>
+          {c.legalDisplayName}<br />
+          {c.street}<br />
+          {c.postalCode} {c.city}<br />
+          <a href={`mailto:${c.email}`}>{c.email}</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</PageLayout>

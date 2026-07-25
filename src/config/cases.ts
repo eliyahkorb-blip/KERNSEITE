@@ -23,8 +23,10 @@ interface WorkCommon {
 
 /** Referenz-Screenshot (aktuell klar gekennzeichneter Platzhalter). */
 export interface WorkScreenshot {
-  /** Bildpfad (Platzhalter; echte WebP/AVIF-Screenshots ersetzen ihn später). */
+  /** Bildpfad des echten Screenshots (WebP). */
   readonly src: string;
+  /** Responsive Varianten für `srcset`. */
+  readonly srcset?: string;
   readonly width: number;
   readonly height: number;
   readonly alt: string;
@@ -35,8 +37,10 @@ export interface ProjectWork extends WorkCommon {
   readonly kind: 'project';
   /** Name des realen Auftraggebers (Nutzungsrechte bestätigt). */
   readonly client: string;
-  /** z. B. "Gastronomie · Website · Mobile Experience". */
+  /** z. B. "Gastronomie · Website · digitale Speisekarte". */
   readonly category: string;
+  /** Große redaktionelle Projektüberschrift. */
+  readonly headline: string;
   /** Live-Website (href, ggf. Punycode für IDN). */
   readonly liveUrl: string;
   /** Anzeige-Label der Live-Website (Unicode). */
@@ -52,12 +56,12 @@ export interface ProjectWork extends WorkCommon {
   /** Leistungsumfang (beschreibend, keine erfundenen Kennzahlen). */
   readonly scope: readonly string[];
   readonly screenshotDesktop: WorkScreenshot;
-  readonly screenshotMobile: WorkScreenshot;
 }
 
 /** Konzeptstudie – kein Kundenprojekt (klar gekennzeichnet). */
 export interface ConceptWork extends WorkCommon {
   readonly kind: 'concept';
+  /** Konzeptstudien werden getrennt von echten Projekten gezeigt. */
   readonly isConceptStudy: true;
   readonly badge: 'Konzeptstudie – kein Kundenprojekt';
   readonly mockupTheme: MockupTheme;
@@ -85,15 +89,16 @@ const projects: readonly ProjectWork[] = [
     kind: 'project',
     slug: 'kaya-doener-himmelstadt',
     href: '/arbeiten/kaya-doener-himmelstadt/',
-    title: 'Digitaler Auftritt für Kaya Döner Himmelstadt',
+    title: 'Kaya Döner Himmelstadt',
+    headline: 'Appetit auf den ersten Klick.',
     client: 'Kaya Döner Himmelstadt',
     industryLabel: 'Gastronomie',
-    category: 'Gastronomie · Website · Mobile Experience',
+    category: 'Gastronomie · Website · digitale Speisekarte',
     tagline:
-      'Ein klar strukturierter Webauftritt für einen lokalen Gastronomiebetrieb – mit direkter Nutzerführung, mobil optimierter Darstellung und schnellem Zugang zu den wichtigsten Informationen.',
+      'Ein klarer und appetitlicher Webauftritt mit direkter Nutzerführung, digitaler Speisekarte und schnellem Zugang zu Standort und Kontakt.',
     liveUrl: 'https://www.kaya-doener-himmelstadt.de',
     liveLabel: 'www.kaya-doener-himmelstadt.de',
-    verified: false,
+    verified: true,
     filters: ['referenz', 'websites', 'gastronomie'],
     situation:
       'Ein lokaler Gastronomiebetrieb braucht einen Auftritt, der die wichtigsten Informationen sofort erreichbar macht – gerade auf dem Smartphone.',
@@ -106,32 +111,29 @@ const projects: readonly ProjectWork[] = [
       'Fokus auf Performance und Zugänglichkeit',
     ],
     screenshotDesktop: {
-      src: '/assets/references/kaya-doener-desktop.svg',
-      width: 1440,
-      height: 900,
-      alt: 'Gestaltungsvorschau der Website von Kaya Döner Himmelstadt: dunkler Kopfbereich, große Schlagzeile „Frischer Döner in Himmelstadt“ und Speisekarte.',
-    },
-    screenshotMobile: {
-      src: '/assets/references/kaya-doener-mobile.svg',
-      width: 390,
-      height: 780,
-      alt: 'Mobile Gestaltungsvorschau der Website von Kaya Döner Himmelstadt mit Schlagzeile, Aktionsschaltflächen und Öffnungszeiten.',
+      src: '/assets/references/kaya-doener-desktop.webp',
+      srcset:
+        '/assets/references/kaya-doener-desktop-800.webp 800w, /assets/references/kaya-doener-desktop-1200.webp 1200w, /assets/references/kaya-doener-desktop-1600.webp 1600w, /assets/references/kaya-doener-desktop.webp 1904w',
+      width: 1904,
+      height: 1010,
+      alt: 'Startseite von Kaya Döner Himmelstadt: dunkler Kopfbereich, Schlagzeile „Frischer Döner in Himmelstadt“, Produktfoto und Speisekarte.',
     },
   },
   {
     kind: 'project',
     slug: 'kinderkoerbchen',
     href: '/arbeiten/kinderkoerbchen/',
-    title: 'Vertrauensvoller Webauftritt für Kinderkörbchen',
-    client: 'Kinderkörbchen',
-    industryLabel: 'Lokaler Dienstleister',
-    category: 'Lokaler Dienstleister · Website · Sichtbarkeit',
+    title: 'Anna-Lena’s Kinderkörbchen',
+    headline: 'Vertrauen, bevor man sich kennt.',
+    client: 'Anna-Lena’s Kinderkörbchen',
+    industryLabel: 'Kindertagespflege',
+    category: 'Kindertagespflege · Website · lokale Sichtbarkeit',
     tagline:
-      'Ein freundlicher und übersichtlicher Webauftritt, der Angebot, Persönlichkeit und Vertrauen verständlich zusammenführt und auf allen Geräten zugänglich macht.',
+      'Ein warmer, persönlicher Webauftritt, der Betreuung, Persönlichkeit und Vertrauen verständlich zusammenführt.',
     // IDN: Punycode als href, Unicode als Anzeige.
-    liveUrl: 'https://www.xn--kinderkrbchen-9ib.de',
-    liveLabel: 'www.kinderkörbchen.de',
-    verified: false,
+    liveUrl: 'https://www.xn--kinderkrbchen-omb.com',
+    liveLabel: 'www.kinderkörbchen.com',
+    verified: true,
     filters: ['referenz', 'websites', 'lokale-dienstleister'],
     situation:
       'Ein lokaler Dienstleister möchte Angebot, Persönlichkeit und Vertrauen online verständlich zusammenführen – zugänglich auf allen Geräten.',
@@ -144,16 +146,12 @@ const projects: readonly ProjectWork[] = [
       'Grundlagen für die Auffindbarkeit',
     ],
     screenshotDesktop: {
-      src: '/assets/references/kinderkoerbchen-desktop.svg',
-      width: 1440,
-      height: 900,
-      alt: 'Gestaltungsvorschau der Website von Anna-Lena’s Kinderkörbchen: warme Farbwelt, Begrüßungstext und Porträtfläche.',
-    },
-    screenshotMobile: {
-      src: '/assets/references/kinderkoerbchen-mobile.svg',
-      width: 390,
-      height: 780,
-      alt: 'Mobile Gestaltungsvorschau der Website von Anna-Lena’s Kinderkörbchen mit Begrüßung und Kontaktschaltflächen.',
+      src: '/assets/references/kinderkoerbchen-desktop.webp',
+      srcset:
+        '/assets/references/kinderkoerbchen-desktop-800.webp 800w, /assets/references/kinderkoerbchen-desktop-1200.webp 1200w, /assets/references/kinderkoerbchen-desktop-1600.webp 1600w, /assets/references/kinderkoerbchen-desktop.webp 1905w',
+      width: 1905,
+      height: 1014,
+      alt: 'Startseite von Anna-Lena’s Kinderkörbchen: warme Farbwelt, Begrüßung „Schön, dass du da bist.“ und Porträtfoto.',
     },
   },
 ];
@@ -246,8 +244,20 @@ const concepts: readonly ConceptWork[] = [
   },
 ];
 
-/** Reihenfolge: echte Referenzen zuerst, dann Konzeptstudien. */
-export const works: readonly Work[] = [...projects, ...concepts];
+/**
+ * Konzeptstudien sind derzeit NICHT veröffentlicht. Sie wurden mit gezeichneten
+ * Mockups dargestellt und sollen nicht neben echten Kundenprojekten stehen.
+ * Zum Wiederveröffentlichen: `PUBLISH_CONCEPTS` auf `true` setzen – dann
+ * erscheinen sie ausschließlich in einem eigenen Abschnitt unterhalb der
+ * echten Arbeiten und niemals auf der Startseite.
+ */
+export const PUBLISH_CONCEPTS = false;
+
+/** Öffentlich sichtbare Arbeiten: aktuell ausschließlich echte Referenzen. */
+export const works: readonly Work[] = PUBLISH_CONCEPTS ? [...projects, ...concepts] : [...projects];
+
+/** Alle Konzeptstudien (unabhängig von der Veröffentlichung). */
+export const conceptStudies: readonly ConceptWork[] = concepts;
 
 /** Nur echte Referenzprojekte (z. B. für „Ausgewählte Arbeiten“ auf der Startseite). */
 export const featuredProjects: readonly ProjectWork[] = projects;
@@ -257,11 +267,7 @@ export function getWork(slug: string): Work | undefined {
 }
 
 export const workFilters: readonly { readonly key: CaseFilter; readonly label: string }[] = [
-  { key: 'referenz', label: 'Referenzen' },
   { key: 'websites', label: 'Websites' },
-  { key: 'google', label: 'Google' },
-  { key: 'video', label: 'Video' },
-  { key: 'social', label: 'Social' },
-  { key: 'ki', label: 'KI' },
-  { key: 'konzeptstudie', label: 'Konzeptstudien' },
+  { key: 'gastronomie', label: 'Gastronomie' },
+  { key: 'lokale-dienstleister', label: 'Lokale Dienstleister' },
 ];

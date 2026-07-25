@@ -26,43 +26,44 @@ const { items, openFirst = false } = Astro.props;
 </div>
 
 <style>
-  /* Editorial statt Kachel-Akkordeon: feine Linien, viel Ruhe. */
+  /* Nur Frage, feine Linie, Plus/Minus. Keine Karten. */
   .faq {
     display: grid;
     gap: 0;
-    border-block-start: 1px solid var(--border);
+    border-block-start: 1px solid var(--line);
   }
   .faq__item {
-    border-block-end: 1px solid var(--border);
+    border-block-end: 1px solid var(--line);
   }
   .faq__summary {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: var(--space-lg);
-    padding-block: clamp(1.1rem, 0.9rem + 0.8vw, 1.6rem);
+    padding-block: clamp(1.25rem, 1rem + 1.2vw, 2rem);
     cursor: pointer;
     list-style: none;
     font-family: var(--font-display);
     font-weight: var(--fw-semibold);
-    font-size: var(--fs-h4);
-    letter-spacing: -0.01em;
+    font-size: clamp(1.15rem, 2vw, 1.75rem);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
   }
   .faq__summary::-webkit-details-marker {
     display: none;
   }
   .faq__summary:focus-visible {
-    outline: 3px solid var(--focus-ring);
-    outline-offset: 3px;
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
   }
   .faq__q {
-    max-width: 46ch;
+    max-width: 44ch;
   }
   .faq__icon {
     position: relative;
     flex: none;
-    inline-size: 18px;
-    block-size: 18px;
+    inline-size: 20px;
+    block-size: 20px;
     align-self: center;
   }
   .faq__icon::before,
@@ -71,33 +72,36 @@ const { items, openFirst = false } = Astro.props;
     position: absolute;
     inset-block-start: 50%;
     inset-inline-start: 50%;
-    background: var(--brand);
+    background: var(--accent-ink);
     transform: translate(-50%, -50%);
   }
   .faq__icon::before {
-    inline-size: 14px;
-    block-size: 1.5px;
+    inline-size: 16px;
+    block-size: 2px;
   }
   .faq__icon::after {
-    inline-size: 1.5px;
-    block-size: 14px;
+    inline-size: 2px;
+    block-size: 16px;
     transition: transform var(--dur-fast) var(--ease-out);
   }
   .faq__item[open] .faq__icon::after {
     transform: translate(-50%, -50%) scaleY(0);
   }
   .faq__answer {
-    padding-block-end: clamp(1.1rem, 0.9rem + 0.8vw, 1.6rem);
+    padding-block-end: clamp(1.25rem, 1rem + 1.2vw, 2rem);
     color: var(--text-muted);
     max-width: var(--measure);
   }
 
   .section--dark .faq,
   .section--dark .faq__item {
-    border-color: var(--border-invert);
+    border-color: var(--line-invert);
+  }
+  .section--dark .faq__answer {
+    color: var(--text-invert-muted);
   }
   .section--dark .faq__icon::before,
   .section--dark .faq__icon::after {
-    background: var(--color-cyan);
+    background: var(--accent);
   }
 </style>

@@ -1,4 +1,4 @@
-export type ServiceKey = 'websites' | 'google' | 'video' | 'social' | 'ki';
+export type ServiceKey = 'websites' | 'seo-geo' | 'google' | 'video' | 'social' | 'ki';
 
 export interface ServiceSection {
   readonly title: string;
@@ -113,10 +113,63 @@ export const services: readonly Service[] = [
     ],
   },
   {
+    key: 'seo-geo',
+    slug: 'seo-geo',
+    href: '/leistungen/seo-geo/',
+    order: 2,
+    isCore: false,
+    label: 'SEO & GEO',
+    cardTitle: 'SEO & GEO',
+    teaser:
+      'Gefunden werden – in der Google-Suche und in KI-Antworten. SEO sorgt für saubere, auffindbare Seiten, GEO dafür, dass Antwortsysteme dein Unternehmen richtig wiedergeben.',
+    example:
+      'Beispiel: Eine Praxis bekommt je Behandlungsschwerpunkt eine eigene, klar beantwortende Seite – Suchmaschinen und Antwortsysteme finden dieselbe Aussage.',
+    detailH1: 'Gefunden werden. Und richtig wiedergegeben.',
+    intro:
+      'Suche passiert längst nicht mehr nur bei Google. Immer öfter beantworten Systeme die Frage direkt – mit Inhalten, die sie irgendwo gelesen haben. Beides braucht dieselbe Grundlage: klare, überprüfbare Inhalte auf einer technisch sauberen Seite.',
+    problem:
+      'Viele Seiten sind technisch langsam, thematisch unscharf und beantworten keine konkrete Frage. Dann fehlt Google die Grundlage für ein gutes Ergebnis – und Antwortsysteme geben Falsches oder gar nichts wieder.',
+    solution:
+      'Wir bauen die Inhalte entlang echter Fragen auf, geben jeder Seite genau ein Thema, sorgen für saubere Technik und machen Fakten wie Standort, Leistungen und Zuständigkeit eindeutig auslesbar.',
+    components: [
+      'Themen- und Fragenrecherche statt Keyword-Listen',
+      'Eine klare Aufgabe pro Seite (Struktur & interne Verlinkung)',
+      'Technische Grundlagen: Ladezeit, semantisches HTML, Sitemap, Canonicals',
+      'Strukturierte Daten für Unternehmen, Leistungen und FAQ',
+      'Verständliche, beantwortende Textstruktur (GEO-tauglich)',
+      'Lokale Signale für Würzburg, Regensburg und die Region',
+    ],
+    benefits: [
+      'Deine Seiten sind für Menschen und Maschinen eindeutig',
+      'Antwortsysteme geben deine Fakten korrekt wieder',
+      'Mehr qualifizierte Anfragen statt Zufallsbesuche',
+      'Eine Grundlage, die auch bei künftigen Suchsystemen trägt',
+    ],
+    steps: [
+      'Bestandsaufnahme: Was ist auffindbar, was fehlt?',
+      'Fragen und Themen je Zielgruppe sammeln',
+      'Seitenstruktur und interne Verlinkung festlegen',
+      'Inhalte beantwortend schreiben',
+      'Technik und strukturierte Daten umsetzen',
+      'Sichtbarkeit beobachten und nachschärfen',
+    ],
+    audiences: ['Lokale Dienstleister', 'Praxen', 'Gastronomie & Hotels', 'B2B-Mittelstand'],
+    sections: [
+      {
+        title: 'Was GEO bedeutet',
+        body: 'GEO steht für Generative Engine Optimization: die Optimierung für Systeme, die Antworten erzeugen statt Linklisten. Entscheidend sind klare Fakten, eindeutige Zuständigkeit und eine Struktur, die eine Frage tatsächlich beantwortet.',
+      },
+      {
+        title: 'Was wir nicht versprechen',
+        body: 'Keine Platzierungen, keine Garantien, keine Tricks. Sichtbarkeit lässt sich verbessern – wir arbeiten an den Grundlagen, die du selbst in der Hand hast, und sagen offen, was Zeit braucht.',
+      },
+    ],
+  },
+  {
     key: 'google',
     slug: 'google-unternehmensprofil',
     href: '/leistungen/google-unternehmensprofil/',
-    order: 2,
+    order: 3,
     isCore: false,
     label: 'Google-Sichtbarkeit',
     cardTitle: 'Google-Unternehmensprofil',
@@ -172,7 +225,7 @@ export const services: readonly Service[] = [
     key: 'video',
     slug: 'unternehmensvideo',
     href: '/leistungen/unternehmensvideo/',
-    order: 3,
+    order: 4,
     isCore: false,
     label: 'Unternehmensvideo',
     cardTitle: 'Unternehmensvideo',
@@ -220,7 +273,7 @@ export const services: readonly Service[] = [
     key: 'social',
     slug: 'social-media',
     href: '/leistungen/social-media/',
-    order: 4,
+    order: 5,
     isCore: false,
     label: 'Social Media',
     cardTitle: 'Social Media',
@@ -268,7 +321,7 @@ export const services: readonly Service[] = [
     key: 'ki',
     slug: 'ki-automatisierung',
     href: '/leistungen/ki-automatisierung/',
-    order: 5,
+    order: 6,
     isCore: false,
     label: 'KI & Automatisierung',
     cardTitle: 'KI & Automatisierung',

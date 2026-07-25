@@ -70,13 +70,12 @@ function isActive(href: string): boolean {
     position: sticky;
     top: 0;
     z-index: var(--z-header);
-    /* Ruhige, deckende Fläche – kein Milchglas, kein Blur. */
-    background: var(--color-paper);
+    background: var(--ks-paper);
     border-block-end: 1px solid transparent;
     transition: border-color var(--dur-base) var(--ease-out);
   }
   .site-header[data-scrolled] {
-    border-block-end-color: var(--border);
+    border-block-end-color: var(--line);
   }
 
   .site-header__inner {
@@ -84,20 +83,20 @@ function isActive(href: string): boolean {
     align-items: center;
     justify-content: space-between;
     gap: var(--space-lg);
-    min-height: 72px;
+    min-height: 76px;
   }
 
   .wordmark {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: 1.35rem;
-    letter-spacing: -0.02em;
+    font-size: 1.4rem;
+    letter-spacing: -0.045em;
     text-decoration: none;
     color: var(--text);
     white-space: nowrap;
   }
   .wordmark__dot {
-    color: var(--color-cyan);
+    color: var(--accent);
   }
 
   .primary-nav {
@@ -105,13 +104,13 @@ function isActive(href: string): boolean {
   }
   .primary-nav ul {
     display: flex;
-    gap: clamp(0.75rem, 0.2rem + 1.4vw, 1.75rem);
+    gap: clamp(0.75rem, 0.2rem + 1.6vw, 2rem);
     margin: 0;
     padding: 0;
   }
   .primary-nav a {
     display: inline-block;
-    padding: 0.4rem 0.15rem;
+    padding: 0.45rem 0.15rem;
     font-size: var(--fs-small);
     font-weight: var(--fw-medium);
     text-decoration: none;
@@ -123,9 +122,9 @@ function isActive(href: string): boolean {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -2px;
+    bottom: 0;
     height: 2px;
-    background: var(--color-accent-deep);
+    background: var(--accent);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform var(--dur-fast) var(--ease-out);
@@ -140,8 +139,12 @@ function isActive(href: string): boolean {
     align-items: center;
     gap: var(--space-md);
   }
+  /* Kompakter CTA statt großer schwarzer Pille */
   .site-header__cta {
     display: none;
+    min-height: 44px;
+    padding: 0.55rem 1.15rem;
+    font-size: var(--fs-small);
   }
 
   .burger {
@@ -150,21 +153,20 @@ function isActive(href: string): boolean {
     justify-content: center;
     inline-size: 48px;
     block-size: 48px;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: transparent;
   }
   .burger__box {
     display: grid;
     gap: 5px;
+    inline-size: 22px;
   }
   .burger__line {
     display: block;
-    inline-size: 22px;
     block-size: 2px;
     background: var(--text);
-    transition:
-      transform var(--dur-fast) var(--ease-out),
-      opacity var(--dur-fast) var(--ease-out);
+    transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
   }
   .burger[aria-expanded='true'] .burger__line:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
@@ -177,31 +179,33 @@ function isActive(href: string): boolean {
   }
 
   .mobile-menu {
-    border-block-start: 1px solid var(--border);
-    background: var(--color-bright);
-    padding: var(--space-lg) var(--gutter) var(--space-2xl);
+    border-block-start: 1px solid var(--line);
+    background: var(--ks-cream);
   }
   .mobile-menu[hidden] {
     display: none;
   }
+  .mobile-menu__nav {
+    padding: var(--space-lg) var(--gutter) var(--space-2xl);
+  }
   .mobile-menu__nav ul {
     display: grid;
-    gap: 0.25rem;
-    margin: 0 0 var(--space-lg);
+    margin: 0 0 var(--space-xl);
     padding: 0;
   }
   .mobile-menu__nav a:not(.btn) {
     display: block;
-    padding: 0.85rem 0.5rem;
+    padding: 0.95rem 0;
     font-family: var(--font-display);
-    font-size: 1.35rem;
-    font-weight: var(--fw-semibold);
+    font-size: 1.6rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.035em;
     text-decoration: none;
     color: var(--text);
-    border-block-end: 1px solid var(--border);
+    border-block-end: 1px solid var(--line);
   }
   .mobile-menu__nav a:not(.btn)[aria-current='page'] {
-    color: var(--brand);
+    color: var(--accent-ink);
   }
   .mobile-menu__cta {
     inline-size: 100%;
@@ -218,13 +222,8 @@ function isActive(href: string): boolean {
       display: none;
     }
     .mobile-menu {
-      display: none !important;
+      display: none;
     }
-  }
-
-  /* Scroll-Lock des Hintergrunds bei offenem Menü */
-  :global(html[data-menu-open]) {
-    overflow: hidden;
   }
 </style>
 

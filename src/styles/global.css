@@ -1,16 +1,15 @@
 /* =============================================================================
    KERNSEITE – Globale Styles
-   Haltung: viel Ruhe, große Typografie, klare Hierarchien, hochwertige Flächen.
-   Farbe wird sparsam eingesetzt – Cyan/Türkis ist die einzige Akzentfarbe.
+   Editorial statt Baukasten: große Typografie, Linien, Raster, Weißraum.
+   Karten gibt es nur noch für Formulare, Filter und Dialoge.
    ========================================================================== */
 
-/* --- Reset (schlank) ------------------------------------------------------ */
+/* --- Reset ---------------------------------------------------------------- */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
-
 * {
   margin: 0;
 }
@@ -49,13 +48,11 @@ select {
   font: inherit;
   color: inherit;
 }
-
 button {
   cursor: pointer;
   background: none;
   border: none;
 }
-
 ul[role='list'],
 ol[role='list'] {
   list-style: none;
@@ -66,30 +63,35 @@ ol[role='list'] {
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5 {
   font-family: var(--font-display);
   font-weight: var(--fw-bold);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tracking-tight);
-  text-wrap: balance;
+  line-height: var(--lh-display);
+  letter-spacing: var(--track-display);
   color: var(--text);
+  text-wrap: balance;
+  /* Lange deutsche Komposita dürfen umbrechen bzw. trennen,
+     sonst sprengen sie auf schmalen Displays die Zeile. */
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
-
 h1 {
   font-size: var(--fs-h1);
-  letter-spacing: var(--tracking-tighter);
+  letter-spacing: var(--track-hero);
 }
 h2 {
   font-size: var(--fs-h2);
 }
 h3 {
-  font-size: var(--fs-h3);
-  line-height: var(--lh-snug);
-}
-h4 {
   font-size: var(--fs-h4);
   line-height: var(--lh-snug);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.03em;
+}
+h4 {
+  font-size: var(--fs-h5);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.02em;
 }
 
 p {
@@ -97,32 +99,33 @@ p {
 }
 
 a {
-  color: var(--brand);
+  color: var(--accent-ink);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.18em;
 }
-
 a:hover {
-  color: var(--brand-strong);
+  color: var(--ks-black);
 }
 
 strong {
   font-weight: var(--fw-semibold);
 }
 
-/* --- Fokus / Accessibility ------------------------------------------------ */
+/* --- Fokus / A11y --------------------------------------------------------- */
 :focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
   border-radius: 2px;
 }
-
 .on-dark :focus-visible,
-.section--dark :focus-visible {
-  outline-color: var(--focus-ring-invert);
+.section--dark :focus-visible,
+.section--cyan :focus-visible {
+  outline-color: var(--accent);
+}
+.section--cyan :focus-visible {
+  outline-color: var(--ks-black);
 }
 
-/* Sichtbar nur für Screenreader */
 .visually-hidden {
   position: absolute !important;
   width: 1px;
@@ -135,68 +138,59 @@ strong {
   border: 0;
 }
 
-/* Skip-Link */
 .skip-link {
   position: absolute;
   left: var(--space-md);
   top: var(--space-md);
   z-index: var(--z-skiplink);
-  transform: translateY(-150%);
-  background: var(--color-ink);
-  color: var(--color-bright);
-  padding: 0.75rem 1.25rem;
-  border-radius: var(--radius-md);
+  transform: translateY(-160%);
+  background: var(--ks-black);
+  color: var(--ks-cream);
+  padding: 0.85rem 1.35rem;
   font-weight: var(--fw-semibold);
   text-decoration: none;
   transition: transform var(--dur-fast) var(--ease-out);
 }
 .skip-link:focus {
   transform: translateY(0);
-  color: var(--color-bright);
+  color: var(--ks-cream);
 }
 
-/* --- Layout-Primitives ---------------------------------------------------- */
+/* --- Layout --------------------------------------------------------------- */
 .container {
   width: 100%;
   max-width: var(--container-max);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-
 .content {
   width: 100%;
   max-width: var(--content-max);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
+.content--wide {
+  max-width: var(--container-max);
+}
 
 .section {
   padding-block: var(--section-y);
 }
-
 .section--tight {
-  padding-block: clamp(3rem, 2rem + 4vw, 5.5rem);
+  padding-block: clamp(3rem, 2rem + 4vw, 6rem);
 }
 
-/* Direkt nach einem Seitenkopf braucht es keinen doppelten Abstand. */
-.page-hero + .section {
-  padding-block-start: clamp(2rem, 1.5rem + 2.5vw, 4rem);
-}
-
-.section--sand {
-  background: var(--color-sand);
-}
 .section--paper {
-  background: var(--color-paper);
+  background: var(--ks-paper);
 }
-.section--bright {
-  background: var(--color-bright);
+.section--cream {
+  background: var(--ks-cream);
 }
-.section--muted {
-  background: var(--surface-muted);
+.section--surface {
+  background: var(--ks-surface);
 }
 .section--dark {
-  background: var(--color-ink-deep);
+  background: var(--ks-black);
   color: var(--text-invert);
 }
 .section--dark h1,
@@ -206,125 +200,97 @@ strong {
   color: var(--text-invert);
 }
 .section--dark a {
-  color: var(--color-cyan);
+  color: var(--accent);
 }
-.section--dark a:hover {
-  color: var(--color-cyan);
+.section--cyan {
+  background: var(--accent);
+  color: var(--ks-black);
 }
-
-.stack > * + * {
-  margin-block-start: var(--flow, 1rem);
+.section--cyan h1,
+.section--cyan h2,
+.section--cyan h3 {
+  color: var(--ks-black);
+}
+.section--cyan a {
+  color: var(--ks-black);
 }
 
 .measure {
   max-width: var(--measure);
 }
 
-.grid {
-  display: grid;
-  gap: var(--grid-gap);
+/* --- Markiertes Wort (Markenelement) -------------------------------------- */
+/* Schwarzer Text auf cyanfarbener Markerfläche. Bleibt über Zeilenumbrüche
+   stabil und ist auch ohne Farbwahrnehmung als Text vollständig lesbar. */
+.accent-word {
+  color: var(--ks-black);
+  background-color: var(--accent);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding-inline: 0.14em;
+  padding-block: 0.02em;
+  margin-inline: -0.04em;
+  /* leicht organisch: minimal ungleiche Kanten statt exaktem Rechteck */
+  border-radius: 0.14em 0.3em 0.16em 0.26em;
+}
+.section--dark .accent-word,
+.section--cyan .accent-word {
+  color: var(--ks-black);
+}
+.section--cyan .accent-word {
+  background-color: var(--ks-black);
+  color: var(--accent);
+}
+/* Variante: kräftige Unterstreichung statt Fläche */
+.accent-word--underline {
+  background-color: transparent;
+  border-radius: 0;
+  padding-inline: 0;
+  margin-inline: 0;
+  box-shadow: inset 0 -0.16em 0 var(--accent);
 }
 
-@media (min-width: 48rem) {
-  .grid--2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .grid--3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .grid--4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (min-width: 64rem) {
-  .grid--4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* --- Text-Bausteine ------------------------------------------------------- */
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
+/* --- Kleine Labels (sparsam) ---------------------------------------------- */
+.label {
+  display: inline-block;
   font-family: var(--font-mono);
   font-size: var(--fs-label);
-  letter-spacing: var(--tracking-label);
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-block-end: var(--space-lg);
 }
-.section--dark .eyebrow {
+.section--dark .label {
   color: var(--text-invert-muted);
 }
-.eyebrow::before {
-  content: '';
-  inline-size: 1.75rem;
-  block-size: 2px;
-  background: var(--accent);
-  flex: none;
+.label--accent {
+  color: var(--accent-ink);
+}
+.section--dark .label--accent {
+  color: var(--accent);
+}
+
+/* Große Kapitelnummer ohne Box */
+.chapter-num {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 1vw, 1rem);
+  letter-spacing: var(--track-label);
+  color: var(--accent-ink);
+}
+.section--dark .chapter-num {
+  color: var(--accent);
 }
 
 .lead {
   font-size: var(--fs-lead);
+  line-height: 1.55;
   color: var(--text-muted);
-  line-height: 1.58;
+  max-width: var(--measure);
 }
 .section--dark .lead {
   color: var(--text-invert-muted);
 }
-
-/* Sektionskopf: einheitliche, ruhige Hierarchie auf allen Seiten */
-.section-head {
-  display: grid;
-  gap: var(--space-lg);
-  margin-block-end: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
-}
-.section-head > .lead {
-  max-width: var(--measure);
-}
-
-.section-title {
-  font-size: var(--fs-h2);
-  max-width: 18ch;
-}
-
-.section-title--wide {
-  max-width: 26ch;
-}
-
-/* Feine Trennlinie statt Deko-Elementen */
-.hairline {
-  border: 0;
-  border-block-start: 1px solid var(--border);
-  margin: 0;
-}
-.section--dark .hairline {
-  border-color: var(--border-invert);
-}
-
-/* --- Badges (sehr zurückhaltend) ------------------------------------------ */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.3rem 0;
-  color: var(--text-muted);
-}
-.badge--concept {
-  color: var(--brand);
-}
-.badge--concept::before {
-  content: '';
-  inline-size: 0.45rem;
-  block-size: 0.45rem;
-  border-radius: 50%;
-  background: var(--accent);
-  flex: none;
+.section--cyan .lead {
+  color: var(--ks-black);
 }
 
 /* --- Buttons -------------------------------------------------------------- */
@@ -332,119 +298,158 @@ strong {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
-  min-height: 52px;
-  padding: 0.85rem 1.6rem;
-  border-radius: var(--radius-pill);
+  gap: 0.6rem;
+  min-height: 54px;
+  padding: 0.9rem 1.8rem;
   font-weight: var(--fw-semibold);
   font-size: var(--fs-small);
-  letter-spacing: 0.005em;
   text-decoration: none;
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-pill);
   transition:
     background-color var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out),
     color var(--dur-fast) var(--ease-out);
 }
-
 .btn--primary {
-  background: var(--color-ink);
-  color: var(--color-bright);
+  background: var(--accent);
+  color: var(--ks-black);
+  border-color: var(--accent);
 }
 .btn--primary:hover {
-  background: #2b3037;
-  color: var(--color-bright);
+  background: var(--ks-black);
+  border-color: var(--ks-black);
+  color: var(--accent);
 }
-.section--dark .btn--primary {
-  background: var(--color-cyan);
-  color: var(--color-ink);
-}
-.section--dark .btn--primary:hover {
-  background: #5df0f8;
-  color: var(--color-ink);
-}
-
 .btn--secondary {
   background: transparent;
   color: var(--text);
-  border-color: var(--border-strong);
+  border-color: var(--line-strong);
 }
 .btn--secondary:hover {
-  border-color: var(--color-ink);
+  border-color: var(--ks-black);
   color: var(--text);
 }
 .section--dark .btn--secondary {
   color: var(--text-invert);
-  border-color: #3a4048;
+  border-color: var(--line-invert);
 }
 .section--dark .btn--secondary:hover {
-  border-color: var(--color-cyan);
+  border-color: var(--accent);
   color: var(--text-invert);
 }
-
-.btn--ghost {
-  padding-inline: 0.25rem;
-  min-height: auto;
-  border-radius: 2px;
-  color: var(--brand);
+.section--cyan .btn--primary {
+  background: var(--ks-black);
+  border-color: var(--ks-black);
+  color: var(--accent);
+}
+.section--cyan .btn--primary:hover {
+  background: var(--ks-cream);
+  border-color: var(--ks-black);
+  color: var(--ks-black);
+}
+.section--cyan .btn--secondary {
+  border-color: var(--ks-black);
+  color: var(--ks-black);
 }
 
-/* Pfeil-Link – ruhiger Standard-CTA im Fließtext */
-.arrow-link {
+/* --- Textlink mit Pfeil ---------------------------------------------------- */
+.link-arrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   font-weight: var(--fw-semibold);
+  font-size: var(--fs-small);
   text-decoration: none;
   color: var(--text);
-  border-block-end: 1px solid var(--border-strong);
-  padding-block-end: 0.3rem;
+  padding-block-end: 0.35rem;
+  border-block-end: 1.5px solid var(--line-strong);
   transition: border-color var(--dur-fast) var(--ease-out);
 }
-.arrow-link:hover {
+.link-arrow:hover {
   color: var(--text);
   border-block-end-color: var(--accent);
 }
-.arrow-link .arrow {
-  color: var(--brand);
+.link-arrow .arrow {
+  color: var(--accent-ink);
   transition: transform var(--dur-base) var(--ease-out);
 }
-.arrow-link:hover .arrow {
-  transform: translateX(4px);
+.link-arrow:hover .arrow {
+  transform: translateX(5px);
 }
-.section--dark .arrow-link {
+.section--dark .link-arrow {
   color: var(--text-invert);
-  border-block-end-color: #3a4048;
+  border-block-end-color: var(--line-invert);
 }
-.section--dark .arrow-link:hover {
-  color: var(--text-invert);
-  border-block-end-color: var(--color-cyan);
+.section--dark .link-arrow:hover {
+  border-block-end-color: var(--accent);
 }
-.section--dark .arrow-link .arrow {
-  color: var(--color-cyan);
+.section--dark .link-arrow .arrow,
+.section--cyan .link-arrow .arrow {
+  color: var(--accent);
+}
+.section--cyan .link-arrow {
+  color: var(--ks-black);
+  border-block-end-color: rgba(16, 18, 20, 0.35);
+}
+.section--cyan .link-arrow .arrow {
+  color: var(--ks-black);
+}
+.section--cyan .link-arrow:hover {
+  border-block-end-color: var(--ks-black);
 }
 
-/* --- Karten / Flächen ----------------------------------------------------- */
-.card {
-  background: var(--color-bright);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+/* --- Linien --------------------------------------------------------------- */
+.rule {
+  border: 0;
+  border-block-start: 1px solid var(--line);
+  margin: 0;
+}
+.section--dark .rule {
+  border-color: var(--line-invert);
 }
 
-/* --- Prose (Rechtstexte, Fließtext) --------------------------------------- */
+/* --- Sektionskopf (typografisch, ohne Box) -------------------------------- */
+.head {
+  display: grid;
+  gap: var(--space-lg);
+  margin-block-end: clamp(3rem, 2rem + 4vw, 6rem);
+}
+.head__title {
+  font-size: var(--fs-h2);
+  max-width: 16ch;
+}
+.head__title--wide {
+  max-width: 22ch;
+}
+
+/* --- Medien --------------------------------------------------------------- */
+.media {
+  position: relative;
+  overflow: hidden;
+  background: var(--ks-surface);
+}
+.media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* --- Prose (Rechtstexte) --------------------------------------------------- */
 .prose {
   max-width: var(--measure);
 }
 .prose > * + * {
-  margin-block-start: 1.1em;
+  margin-block-start: 1.15em;
 }
 .prose h2 {
-  font-size: var(--fs-h3);
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  letter-spacing: -0.03em;
   margin-block-start: 2em;
 }
 .prose h3 {
-  font-size: var(--fs-h4);
+  font-size: var(--fs-h5);
   margin-block-start: 1.6em;
 }
 .prose ul,
@@ -455,15 +460,35 @@ strong {
   margin-block-start: 0.4em;
 }
 
-/* --- Dezentes Reveal beim Scrollen ---------------------------------------- */
-/* Standard: sichtbar. Erst wenn das Skript den Beobachter aktiviert, wird
-   ausgeblendet – ohne JS bleibt der Inhalt also immer lesbar. */
+/* --- Kontexte: dunkle und cyanfarbene Flächen -------------------------------
+   Statt jede Komponente einzeln zu überschreiben (was mit Astros Style-Scoping
+   unzuverlässig ist), setzt der Kontext die semantischen Variablen neu. Custom
+   Properties vererben sich – jede Komponente, die `--text-muted`, `--line` oder
+   `--accent-ink` nutzt, passt sich dadurch automatisch an. */
+.section--dark,
+.wf--dark {
+  --text: var(--ks-cream);
+  --text-muted: #a7abb0;
+  --accent-ink: var(--ks-cyan);
+  --line: var(--line-invert);
+  --line-strong: #3a4046;
+}
+
+.section--cyan {
+  --text: var(--ks-black);
+  --text-muted: #0c3d42;
+  --accent-ink: var(--ks-black);
+  --line: rgba(16, 18, 20, 0.25);
+  --line-strong: rgba(16, 18, 20, 0.45);
+}
+
+/* --- Reveal (Progressive Enhancement) -------------------------------------- */
 .reveal {
   opacity: 1;
 }
 html.has-reveal .reveal {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(18px);
   transition:
     opacity var(--dur-slow) var(--ease-out),
     transform var(--dur-slow) var(--ease-out);
@@ -473,12 +498,11 @@ html.has-reveal .reveal.is-visible {
   transform: none;
 }
 
-/* --- Dev-Only Draft-Hinweis ----------------------------------------------- */
+/* --- Dev-/Vorschau-Hinweise ------------------------------------------------ */
 .draft-notice {
-  border: 1px dashed var(--color-alert);
-  background: color-mix(in srgb, var(--color-alert) 6%, var(--color-bright));
-  color: #7a2417;
-  border-radius: var(--radius-md);
+  border-inline-start: 3px solid var(--accent);
+  background: var(--ks-surface);
+  color: var(--ks-black);
   padding: 1rem 1.25rem;
   margin-block-end: 2rem;
   font-size: var(--fs-small);
@@ -491,29 +515,24 @@ html.has-reveal .reveal.is-visible {
   letter-spacing: 0.08em;
 }
 
-/* --- Vorschau-Hinweis (nur build:preview) --------------------------------- */
 .preview-ribbon {
   position: fixed;
   inset-block-end: 1rem;
   inset-inline-end: 1rem;
   z-index: var(--z-modal);
   margin: 0;
-  padding: 0.5rem 0.9rem;
-  border-radius: var(--radius-pill);
-  background: var(--color-alert);
-  color: #fff;
+  padding: 0.55rem 1rem;
+  background: var(--accent);
+  color: var(--ks-black);
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  letter-spacing: 0.06em;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  box-shadow: var(--shadow-md);
   pointer-events: none;
 }
 
-/* --- Utilities ------------------------------------------------------------ */
-.flow-lg {
-  --flow: 1.5rem;
-}
+/* --- Utilities ------------------------------------------------------------- */
 .text-center {
   text-align: center;
 }
@@ -521,7 +540,7 @@ html.has-reveal .reveal.is-visible {
   margin-inline: auto;
 }
 
-/* --- Reduzierte Bewegung -------------------------------------------------- */
+/* --- Reduzierte Bewegung --------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
