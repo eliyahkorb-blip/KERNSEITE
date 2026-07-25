@@ -16,41 +16,66 @@ test.describe('Hero (HeroCinematic)', () => {
     await expect(hero.getByRole('link', { name: 'Arbeiten ansehen' })).toBeVisible();
   });
 
-  test('Die Szene ist dekorativ und enthält keine Tastatur-Stopps', async ({ page }) => {
+  test('Das CRT-Motiv wird als echtes Bild ausgeliefert', async ({ page }) => {
     await page.goto('/');
-    const media = page.locator('[data-hero] .hero__media');
-    await expect(media).toBeVisible();
+    const asset = page.locator('[data-hero] .hero__asset');
+    await expect(asset).toHaveCount(1);
 
-    // Die Bildschirmfläche trägt keine Bedeutung für Screenreader.
-    await expect(page.locator('[data-crt]')).toHaveAttribute('aria-hidden', 'true');
+    const src = await asset.getAttribute('src');
+    expect(src).toContain('hero-kernseite-poster');
 
-    const focusables = media.locator('a, button, input, select, textarea, [tabindex="0"]');
-    await expect(focusables).toHaveCount(0);
+    // Das Bild lädt tatsächlich (kein 404, keine Nullgröße).
+    const ok = await asset.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0);
+    expect(ok).toBe(true);
+
+    // Kein Medien-Platzhalter, keine gezeichnete Figur.
+    await expect(page.locator('.hero__placeholder')).toHaveCount(0);
+    await expect(page.locator('svg.figure')).toHaveCount(0);
   });
 
-  test('Der Monitor zeigt das Wort KERNSEITE', async ({ page }) => {
+  test('Über dem Bildschirm liegt kein Overlay mehr', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('[data-crt-word]')).toHaveText('KERNSEITE');
+    for (const sel of [
+      '.hero__screen',
+      '.hero__screen-panel',
+      '.hero__screen-glow',
+      '.hero__screen-scan',
+      '.crt',
+      '[data-crt]',
+      '[data-crt-word]',
+    ]) {
+      await expect(page.locator(sel), `${sel} darf nicht mehr existieren`).toHaveCount(0);
+    }
   });
 
-  test('prefers-reduced-motion: kein Wortwechsel, kein Flackern', async ({ browser }) => {
-    const context = await browser.newContext({ reducedMotion: 'reduce' });
-    const page = await context.newPage();
-    const errors: string[] = [];
-    page.on('pageerror', (e) => errors.push(e.message));
-
+  test('Kein dynamischer Wortwechsel auf dem Monitor', async ({ page }) => {
     await page.goto('/');
-    const crt = page.locator('[data-crt]');
-    await expect(crt).toBeVisible();
-    // Ohne Bewegung wird die Flacker-Klasse nie gesetzt.
-    await expect(crt).not.toHaveClass(/is-live/);
+    await expect(page.locator('[data-words]')).toHaveCount(0);
 
-    // Auch nach mehreren Wechselintervallen bleibt „KERNSEITE“ stehen.
+    // Auch nach mehreren früheren Wechselintervallen ändert sich nichts.
+    const before = await page.locator('[data-hero]').innerHTML();
     await page.waitForTimeout(2600);
-    await expect(page.locator('[data-crt-word]')).toHaveText('KERNSEITE');
+    const after = await page.locator('[data-hero]').innerHTML();
+    expect(after).toBe(before);
+  });
 
-    expect(errors).toEqual([]);
-    await context.close();
+  test('Keine dekorative Vorzeile über der H1', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('[data-hero] .hero__eyebrow')).toHaveCount(0);
+    await expect(
+      page.getByText('Digitalagentur für Websites, Sichtbarkeit & Systeme'),
+    ).toHaveCount(0);
+  });
+
+  test('„Unternehmen“ wird nicht getrennt', async ({ page }) => {
+    for (const w of [390, 430]) {
+      await page.setViewportSize({ width: w, height: 900 });
+      await page.goto('/');
+      const style = await page
+        .locator('h1')
+        .evaluate((el) => getComputedStyle(el).hyphens);
+      expect(style, `hyphens bei ${w}px`).toBe('none');
+    }
   });
 
   test('Ohne Bewegungspräferenz bleiben Reveal-Inhalte lesbar', async ({ page }) => {

@@ -8,6 +8,7 @@
   /* --- Markenpalette (verbindlich) -------------------------------------- */
   --ks-cyan: #00e3f2;
   --ks-cyan-dark: #006b73;
+  --ks-cyan-text: #00757d; /* Cyan als Schriftfarbe auf hellem Grund */
   --ks-black: #101214;
   --ks-black-soft: #25282b;
   --ks-paper: #f4f0e7;

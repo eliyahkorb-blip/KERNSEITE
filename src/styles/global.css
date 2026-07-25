@@ -219,54 +219,74 @@ strong {
   max-width: var(--measure);
 }
 
-/* --- Markiertes Wort (Markenelement) -------------------------------------- */
-/* Schwarzer Text auf cyanfarbener Markerfläche. Bleibt über Zeilenumbrüche
-   stabil und ist auch ohne Farbwahrnehmung als Text vollständig lesbar. */
+/* --- Markiertes Wort (Markenelement) --------------------------------------
+   Nur die Schriftfarbe wechselt – keine Fläche, kein Marker, keine Pille.
+   Schriftart, -größe, -stärke, Zeilenhöhe und Laufweite bleiben identisch,
+   damit die Headline ruhig bleibt. */
 .accent-word {
-  color: var(--ks-black);
-  background-color: var(--accent);
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  padding-inline: 0.14em;
-  padding-block: 0.02em;
-  margin-inline: -0.04em;
-  /* leicht organisch: minimal ungleiche Kanten statt exaktem Rechteck */
-  border-radius: 0.14em 0.3em 0.16em 0.26em;
+  display: inline;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  color: var(--ks-cyan-text);
+  font: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  /* markiertes Wort nie mitten im Wort umbrechen */
+  white-space: nowrap;
 }
 .section--dark .accent-word,
+.wf--dark .accent-word {
+  color: var(--ks-cyan);
+}
 .section--cyan .accent-word {
   color: var(--ks-black);
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.12em;
 }
-.section--cyan .accent-word {
-  background-color: var(--ks-black);
-  color: var(--accent);
-}
-/* Variante: kräftige Unterstreichung statt Fläche */
+/* Optionale, sehr dezente Unterstreichung */
 .accent-word--underline {
-  background-color: transparent;
-  border-radius: 0;
-  padding-inline: 0;
-  margin-inline: 0;
-  box-shadow: inset 0 -0.16em 0 var(--accent);
+  text-decoration-line: underline;
+  text-decoration-color: var(--ks-cyan);
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.08em;
 }
 
-/* --- Kleine Labels (sparsam) ---------------------------------------------- */
+/* --- Labels ----------------------------------------------------------------
+   Keine dekorativen Mini-Überschriften mehr: normale Sprache in normaler
+   Body-Schrift, Sentence Case, kein Monospace, kein Sperrsatz, kein Quadrat.
+   Die schmale Mono-Variante bleibt echten Metadaten vorbehalten
+   (Projektkategorie, Branche, Filter, technische Angaben, Footer). */
 .label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-muted);
+}
+.label--accent {
+  color: var(--ks-cyan-text);
+}
+.section--dark .label--accent {
+  color: var(--ks-cyan);
+}
+
+/* Echte Metadaten: klein, technisch, sparsam */
+.label--meta {
   display: inline-block;
   font-family: var(--font-mono);
   font-size: var(--fs-label);
+  font-weight: var(--fw-regular);
   letter-spacing: var(--track-label);
   text-transform: uppercase;
   color: var(--text-muted);
-}
-.section--dark .label {
-  color: var(--text-invert-muted);
-}
-.label--accent {
-  color: var(--accent-ink);
-}
-.section--dark .label--accent {
-  color: var(--accent);
 }
 
 /* Große Kapitelnummer ohne Box */
@@ -517,17 +537,23 @@ html.has-reveal .reveal.is-visible {
 
 .preview-ribbon {
   position: fixed;
-  inset-block-end: 1rem;
-  inset-inline-end: 1rem;
-  z-index: var(--z-modal);
+  /* Oben rechts unter dem Header: dort liegen keine Handlungsflächen,
+     unten würde das Badge auf Mobil die CTAs überdecken. */
+  inset-block-start: max(4.75rem, calc(env(safe-area-inset-top) + 4.75rem));
+  inset-inline-end: max(0.75rem, env(safe-area-inset-right));
+  z-index: 500;
+  inline-size: auto;
+  max-inline-size: calc(100vw - 1.5rem);
   margin: 0;
-  padding: 0.55rem 1rem;
-  background: var(--accent);
-  color: var(--ks-black);
+  padding: 0.45rem 0.6rem;
+  border-radius: 4px;
+  background: var(--ks-black);
+  color: var(--ks-cyan);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: var(--fw-semibold);
-  letter-spacing: 0.08em;
+  line-height: 1;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   pointer-events: none;
 }

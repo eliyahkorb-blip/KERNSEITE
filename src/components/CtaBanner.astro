@@ -69,15 +69,15 @@ const {
     letter-spacing: var(--track-display);
     max-width: 18ch;
   }
-  /* Hervorhebung innerhalb der Cyan-Fläche: schwarze Markerfläche */
+  /* Hervorhebung auf der Cyan-Fläche: rein typografisch, keine Fläche */
   .cta__mark {
     font-style: normal;
-    background: var(--ks-black);
-    color: var(--accent);
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-    padding-inline: 0.12em;
-    border-radius: 0.12em 0.26em 0.14em 0.22em;
+    background: none;
+    color: var(--ks-black);
+    text-decoration-line: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.12em;
+    white-space: nowrap;
   }
   .cta__text {
     font-size: var(--fs-lead);

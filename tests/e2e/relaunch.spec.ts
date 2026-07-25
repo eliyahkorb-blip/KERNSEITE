@@ -104,7 +104,6 @@ test.describe('Relaunch – Struktur', () => {
 
   test('Der Hero zeigt das fotorealistische Poster, nicht die Vektorfigur', async ({ page }) => {
     await page.goto('/');
-    // Es gibt keine gezeichnete Figur mehr.
     await expect(page.locator('svg.figure')).toHaveCount(0);
     const media = page.locator('[data-hero] .hero__asset');
     await expect(media).toHaveCount(1);
@@ -112,10 +111,69 @@ test.describe('Relaunch – Struktur', () => {
     expect(src).toContain('hero-kernseite-poster');
   });
 
-  test('Der CRT-Bildschirm zeigt echten Text', async ({ page }) => {
+  test('AccentWord besitzt keine Hintergrundfläche', async ({ page }) => {
     await page.goto('/');
-    const word = page.locator('[data-crt-word]');
-    await expect(word).toHaveText('KERNSEITE');
+    const word = page.locator('h1 .accent-word').first();
+    const s = await word.evaluate((el) => {
+      const cs = getComputedStyle(el);
+      const before = getComputedStyle(el, '::before');
+      const after = getComputedStyle(el, '::after');
+      return {
+        bg: cs.backgroundColor,
+        bgImage: cs.backgroundImage,
+        radius: cs.borderTopLeftRadius,
+        padding: cs.paddingLeft + cs.paddingTop,
+        color: cs.color,
+        beforeContent: before.content,
+        afterContent: after.content,
+      };
+    });
+    expect(s.bg).toBe('rgba(0, 0, 0, 0)');
+    expect(s.bgImage).toBe('none');
+    expect(s.radius).toBe('0px');
+    expect(s.padding).toBe('0px0px');
+    // Türkis eingefärbter Text
+    expect(s.color).toBe('rgb(0, 117, 125)');
+    // keine Pseudo-Element-Markerfläche
+    expect(['none', 'normal']).toContain(s.beforeContent);
+    expect(['none', 'normal']).toContain(s.afterContent);
+  });
+
+  test('Der Preview-Hinweis ist kompakt und verdeckt keine CTAs', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    const badge = page.locator('.preview-ribbon');
+    if ((await badge.count()) === 0) test.skip(true, 'nur im Preview-Build vorhanden');
+
+    const box = await badge.boundingBox();
+    expect(box, 'Badge ohne Maße').not.toBeNull();
+    // keine volle Breite
+    expect(box!.width).toBeLessThan(390 * 0.85);
+
+    for (const name of ['Projekt besprechen', 'Arbeiten ansehen']) {
+      const cta = page.locator('[data-hero]').getByRole('link', { name });
+      await expect(cta).toBeVisible();
+      const c = await cta.boundingBox();
+      const overlap =
+        c!.x < box!.x + box!.width &&
+        c!.x + c!.width > box!.x &&
+        c!.y < box!.y + box!.height &&
+        c!.y + c!.height > box!.y;
+      expect(overlap, `Badge überdeckt "${name}"`).toBe(false);
+    }
+  });
+
+  test('Beide Hero-CTAs sind bei 390 px vollständig sichtbar', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    for (const name of ['Projekt besprechen', 'Arbeiten ansehen']) {
+      const cta = page.locator('[data-hero]').getByRole('link', { name });
+      await expect(cta).toBeVisible();
+      const box = await cta.boundingBox();
+      expect(box!.height, `${name} zu flach`).toBeGreaterThanOrEqual(44);
+      expect(box!.x, `${name} ragt links heraus`).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width, `${name} ragt rechts heraus`).toBeLessThanOrEqual(390);
+    }
   });
 
   test('Konzeptstudien erscheinen nicht als Kundenprojekte', async ({ page }) => {

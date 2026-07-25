@@ -1,25 +1,26 @@
 ---
 /**
- * HeroCinematic – heller, editorialer Hero mit fotorealistischer CRT-Figur.
+ * HeroCinematic – zweigeteilter Hero: Text links, CRT-Motiv rechts.
  *
- * Medium ist das reale Poster (`hero-kernseite-poster.webp`); liegt zusätzlich
- * ein Loop-Video vor, wird dieses verwendet. Es gibt keinen gezeichneten Ersatz.
+ * Das Bild ist die visuelle Grundlage und wird NICHT übermalt: Der cyanfarbene
+ * Bildschirm samt Schriftzug „KERNSEITE“, die Glaswölbung, die Reflexionen und
+ * die Gehäusetiefe stammen aus dem Originalmotiv. Es liegt kein CSS-Overlay
+ * darüber, es gibt keinen zweiten Schriftzug und keinen Wortwechsel.
  *
- * Über der Bildschirmfläche des Monitors liegt ein exakt positioniertes
- * HTML-Overlay in KERNSEITE-Cyan mit echtem, gestochen scharfem Text. Die
- * Position ist relativ zum Medien-Container definiert: dessen Seitenverhältnis
- * entspricht exakt dem der Bilddatei, dadurch stimmen die Prozentwerte auf
- * jeder Bildschirmgröße.
+ * Das Motiv wird vollständig gezeigt (`height: auto`), damit weder die obere
+ * Bildschirmkante noch die rechte Gehäuseseite beschnitten wird.
  *
- * Messwerte der Glasfläche (visuell am gerenderten Bild abgeglichen):
- *   Querformat (1672 × 941) -> left 50.3 %  top 12.8 %  width 23.3 %  height 34.0 %
- *   Zuschnitt  (1052 × 941) -> left 21.1 %  top 12.8 %  width 37.0 %  height 34.0 %
+ * Liegt ein Loop-Video vor, ersetzt es das Standbild. Fehlt beides, erscheint
+ * eine neutrale Fläche – niemals eine gezeichnete Ersatzfigur.
  */
 import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import AccentWord from './AccentWord.astro';
 
-const mediaDir = new URL('../../public/assets/video/', import.meta.url);
-const hasFile = (n: string) => existsSync(new URL(n, mediaDir));
+// Auf das Projektverzeichnis beziehen – `import.meta.url` zeigt im Build
+// nicht zuverlässig auf die Komponentendatei.
+const mediaDir = join(process.cwd(), 'public', 'assets', 'video');
+const hasFile = (n: string) => existsSync(join(mediaDir, n));
 
 const sources = [
   { src: '/assets/video/hero-kernseite.webm', type: 'video/webm', file: 'hero-kernseite.webm' },
@@ -27,62 +28,18 @@ const sources = [
 ].filter((s) => hasFile(s.file));
 const hasVideo = sources.length > 0;
 
-const POSTER = '/assets/video/hero-kernseite-poster.webp';
-const POSTER_PORTRAIT = '/assets/video/hero-kernseite-poster-portrait.webp';
+/** Figurbetonter Zuschnitt – zeigt Monitor, Hemd und Jackett vollständig. */
+const POSTER = '/assets/video/hero-kernseite-poster-portrait.webp';
+const POSTER_WIDE = '/assets/video/hero-kernseite-poster.webp';
+const hasPoster = hasFile('hero-kernseite-poster-portrait.webp');
 
-const words = ['KERNSEITE', 'WEBSITES', 'SEO / GEO', 'GOOGLE', 'VIDEO', 'SOCIAL', 'AUTOMATION'];
+const ALT =
+  'Person im schwarzen Anzug mit weißem Hemd, deren Kopf ein alter Röhrenmonitor mit cyanfarbenem Bildschirm und dem Schriftzug KERNSEITE ist.';
 ---
 
 <section class="hero" data-hero>
-  <div class="hero__inner">
-    <!-- Medienfläche: Seitenverhältnis exakt wie die Quelldatei -->
-    <div class="hero__media">
-      {
-        hasVideo ? (
-          <video
-            class="hero__asset"
-            data-hero-video
-            poster={POSTER}
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="auto"
-            aria-hidden="true"
-            tabindex="-1"
-          >
-            {sources.map((s) => (
-              <source src={s.src} type={s.type} />
-            ))}
-          </video>
-        ) : (
-          <picture>
-            <source media="(max-width: 63.99rem)" srcset={POSTER_PORTRAIT} />
-            <img
-              class="hero__asset"
-              src={POSTER}
-              width="1672"
-              height="941"
-              alt="Person im dunklen Anzug, deren Kopf ein alter Röhrenmonitor mit leuchtendem Bildschirm ist."
-              fetchpriority="high"
-              decoding="async"
-            />
-          </picture>
-        )
-      }
-
-      <!-- Bildschirmfläche auf dem Monitor -->
-      <div class="crt" data-crt aria-hidden="true">
-        <span class="crt__word" data-crt-word data-words={words.join('|')}>{words[0]}</span>
-        <span class="crt__scan"></span>
-      </div>
-
-      <!-- Sehr sanfte Aufhellung der freien Fläche links (kein Kasten, kein Blur) -->
-      <div class="hero__wash" aria-hidden="true"></div>
-    </div>
-
+  <div class="hero__inner content">
     <div class="hero__text">
-      <p class="label hero__eyebrow">Digitalagentur für Websites, Sichtbarkeit &amp; Systeme</p>
       <h1 class="hero__title">
         Dein Unternehmen kann <AccentWord>mehr</AccentWord>.<br />
         Deine Website sollte es <AccentWord>zeigen</AccentWord>.
@@ -97,48 +54,61 @@ const words = ['KERNSEITE', 'WEBSITES', 'SEO / GEO', 'GOOGLE', 'VIDEO', 'SOCIAL'
       </div>
       <p class="hero__trust">Würzburg · Regensburg · Bayern · deutschlandweit</p>
     </div>
+
+    <div class="hero__media">
+      {
+        hasVideo ? (
+          <video
+            class="hero__asset"
+            data-hero-video
+            poster={hasPoster ? POSTER : undefined}
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+            aria-label={ALT}
+            tabindex="-1"
+          >
+            {sources.map((s) => (
+              <source src={s.src} type={s.type} />
+            ))}
+          </video>
+        ) : hasPoster ? (
+          <img
+            class="hero__asset"
+            src={POSTER}
+            srcset={`${POSTER} 1052w, ${POSTER_WIDE} 1672w`}
+            sizes="(min-width: 64rem) 46vw, 100vw"
+            width="1052"
+            height="941"
+            alt={ALT}
+            fetchpriority="high"
+            decoding="async"
+          />
+        ) : (
+          <div class="hero__placeholder" role="img" aria-label="Bildfläche – Motiv folgt." />
+        )
+      }
+    </div>
   </div>
 </section>
 
 <script>
+  // Nur Wiedergabe-Steuerung: Pause offscreen, bei inaktivem Tab und bei
+  // reduzierter Bewegung. Kein Bildschirmtext, kein Wortwechsel, kein Timer.
   const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   document.querySelectorAll<HTMLElement>('[data-hero]').forEach((hero) => {
-    const crt = hero.querySelector<HTMLElement>('[data-crt]');
-    const wordEl = hero.querySelector<HTMLElement>('[data-crt-word]');
     const video = hero.querySelector<HTMLVideoElement>('[data-hero-video]');
-    const words = (wordEl?.dataset.words ?? '').split('|').filter(Boolean);
+    if (!video) return;
 
     let inView = true;
-    let timer: number | undefined;
-    const still = () => REDUCED.matches;
 
     const sync = () => {
-      const active = inView && !document.hidden && !still();
-      crt?.classList.toggle('is-live', active);
-      if (video) {
-        if (active) void video.play().catch(() => {});
-        else video.pause();
-      }
-      // Bei reduzierter Bewegung bleibt dauerhaft „KERNSEITE“ stehen.
-      if (still() && wordEl && words.length) {
-        wordEl.textContent = words[0];
-        wordEl.classList.remove('is-out');
-      }
-    };
-
-    const cycle = () => {
-      if (!wordEl || words.length < 2) return;
-      let i = 0;
-      timer = window.setInterval(() => {
-        if (!inView || document.hidden || still()) return;
-        i = (i + 1) % words.length;
-        wordEl.classList.add('is-out');
-        window.setTimeout(() => {
-          wordEl.textContent = words[i];
-          wordEl.classList.remove('is-out');
-        }, 260);
-      }, 2000);
+      const active = inView && !document.hidden && !REDUCED.matches;
+      if (active) void video.play().catch(() => {});
+      else video.pause();
     };
 
     if ('IntersectionObserver' in window) {
@@ -154,11 +124,6 @@ const words = ['KERNSEITE', 'WEBSITES', 'SEO / GEO', 'GOOGLE', 'VIDEO', 'SOCIAL'
     document.addEventListener('visibilitychange', sync);
     REDUCED.addEventListener?.('change', sync);
     sync();
-    if (!still()) cycle();
-
-    window.addEventListener('pagehide', () => {
-      if (timer) window.clearInterval(timer);
-    });
   });
 </script>
 
@@ -166,110 +131,38 @@ const words = ['KERNSEITE', 'WEBSITES', 'SEO / GEO', 'GOOGLE', 'VIDEO', 'SOCIAL'
   .hero {
     background: var(--ks-paper);
   }
+
+  /* Mobil: normaler Dokumentfluss – Bild, dann Text, dann CTAs. */
   .hero__inner {
-    position: relative;
-    max-width: var(--container-max);
-    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.75rem, 1rem + 4vw, 3rem);
+    padding-block: clamp(1.5rem, 1rem + 3vw, 3rem) clamp(3rem, 2rem + 5vw, 5rem);
   }
 
-  /* --- Medienfläche ------------------------------------------------------- */
   .hero__media {
-    position: relative;
-    inline-size: 100%;
-    aspect-ratio: 1052 / 941; /* Mobil: Zuschnitt auf die Figur */
-    background: #cfcac4;
+    order: -1; /* Bild zuerst */
   }
-  .hero__asset {
+  .hero__asset,
+  .hero__placeholder {
     inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
+    block-size: auto;
     display: block;
   }
-
-  /* Aufhellung: unten/links heller, damit der Text sicher lesbar bleibt. */
-  /* Mobil steht der Text unter dem Bild – dort braucht es keine Aufhellung,
-     damit Monitor und Jackett vollständig sichtbar bleiben. */
-  .hero__wash {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: none;
-  }
-
-  /* --- Bildschirmfläche des Monitors -------------------------------------- */
-  .crt {
-    position: absolute;
-    inset-inline-start: 21.1%;
-    inset-block-start: 12.8%;
-    inline-size: 37%;
-    block-size: 34%;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    background: var(--ks-cyan);
-    border-radius: 9% / 11%;
-    box-shadow:
-      inset 0 0 2.5vw rgba(0, 60, 66, 0.4),
-      0 0 3vw rgba(0, 227, 242, 0.3);
-  }
-  .crt__word {
-    position: relative;
-    z-index: 2;
-    font-family: var(--font-mono);
-    font-weight: 600;
-    font-size: clamp(0.5rem, 2.4vw, 1.1rem);
-    letter-spacing: 0.12em;
-    line-height: 1.1;
-    color: var(--ks-black);
-    text-align: center;
-    padding-inline: 6%;
-    transition: opacity 240ms var(--ease-out);
-  }
-  .crt__word.is-out {
-    opacity: 0;
-  }
-  .crt__scan {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(0, 55, 60, 0.15) 0,
-      rgba(0, 55, 60, 0.15) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    mix-blend-mode: multiply;
-    opacity: 0.5;
-  }
-  .crt.is-live {
-    animation: crt-breathe 5s var(--ease-in-out) infinite;
-  }
-  @keyframes crt-breathe {
-    0%,
-    100% {
-      filter: brightness(1);
-    }
-    38% {
-      filter: brightness(1.05);
-    }
-    64% {
-      filter: brightness(0.975);
-    }
+  .hero__placeholder {
+    aspect-ratio: 1052 / 941;
+    background: var(--ks-surface);
   }
 
   /* --- Text --------------------------------------------------------------- */
-  .hero__text {
-    padding: clamp(2rem, 6vw, 3rem) var(--gutter) clamp(3rem, 8vw, 4.5rem);
-  }
-  .hero__eyebrow {
-    color: var(--accent-ink);
-  }
   .hero__title {
-    margin-block-start: var(--space-lg);
-    font-size: clamp(2.9rem, 11vw, 4.4rem);
-    line-height: 0.9;
-    letter-spacing: var(--track-hero);
+    font-size: clamp(2.75rem, 11.5vw, 4.25rem);
+    line-height: 0.93;
+    letter-spacing: -0.05em;
+    /* Keine Silbentrennung: „Unternehmen“ bleibt ganz. */
+    hyphens: none;
+    word-break: normal;
+    overflow-wrap: normal;
     text-wrap: initial;
   }
   .hero__lead {
@@ -279,74 +172,53 @@ const words = ['KERNSEITE', 'WEBSITES', 'SEO / GEO', 'GOOGLE', 'VIDEO', 'SOCIAL'
     color: var(--ks-black-soft);
     max-width: 46ch;
   }
+
   .hero__ctas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-md);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
     margin-block-start: var(--space-2xl);
   }
-  .hero__trust {
-    margin-block-start: var(--space-xl);
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: 0.06em;
-    color: var(--ks-black-soft);
+  @media (min-width: 32.5rem) {
+    .hero__ctas {
+      grid-template-columns: auto auto;
+      justify-content: start;
+      gap: var(--space-md);
+    }
   }
 
-  /* =========================== Desktop =================================== */
+  .hero__trust {
+    margin-block-start: var(--space-xl);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+
+  /* --- Desktop: klare Zweiteilung ---------------------------------------- */
   @media (min-width: 64rem) {
+    .hero__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: clamp(2.5rem, 5vw, 5.5rem);
+      min-block-size: 88svh;
+      padding-block: clamp(2rem, 4vh, 4rem);
+    }
     .hero__media {
-      aspect-ratio: 1672 / 941; /* volle Szene, Freifläche links */
-    }
-    .hero__wash {
-      background: linear-gradient(
-        to right,
-        var(--ks-paper) 0%,
-        rgba(244, 240, 231, 0.9) 26%,
-        rgba(244, 240, 231, 0.55) 40%,
-        rgba(244, 240, 231, 0) 52%
-      );
-    }
-    .crt {
-      inset-inline-start: 50.3%;
-      inset-block-start: 12.8%;
-      inline-size: 23.3%;
-      block-size: 34%;
-    }
-    .crt__word {
-      font-size: clamp(0.55rem, 1.05vw, 1.3rem);
-    }
-    /* Der Text liegt in der Freifläche, die das Bild links mitbringt. */
-    .hero__text {
-      position: absolute;
-      inset-block-end: clamp(2.5rem, 7%, 6rem);
-      inset-inline-start: 0;
-      inline-size: min(46%, 44rem);
-      padding: 0 var(--space-xl) 0 var(--gutter);
+      order: 0; /* rechts */
     }
     .hero__title {
-      font-size: clamp(2.8rem, 4.7vw, 5.6rem);
+      font-size: clamp(3rem, 4.9vw, 6rem);
+      line-height: 0.9;
+      letter-spacing: -0.055em;
     }
     .hero__lead {
-      max-width: 38ch;
+      max-width: 40ch;
     }
   }
 
   @media (min-width: 90rem) {
-    .hero__title {
-      font-size: clamp(3.4rem, 4.6vw, 6rem);
-    }
-  }
-
-  @media (max-width: 30rem) {
-    .hero__ctas .btn {
-      inline-size: 100%;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .crt {
-      animation: none !important;
+    .hero__inner {
+      grid-template-columns: 1fr 1.15fr;
     }
   }
 </style>

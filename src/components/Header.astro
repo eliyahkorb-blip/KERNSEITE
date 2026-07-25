@@ -83,7 +83,7 @@ function isActive(href: string): boolean {
     align-items: center;
     justify-content: space-between;
     gap: var(--space-lg);
-    min-height: 76px;
+    min-height: 60px;
   }
 
   .wordmark {
@@ -147,35 +147,36 @@ function isActive(href: string): boolean {
     font-size: var(--fs-small);
   }
 
+  /* 44 × 44 px Touchfläche, aber ohne sichtbaren Kasten */
   .burger {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    inline-size: 48px;
-    block-size: 48px;
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius-sm);
+    inline-size: 44px;
+    block-size: 44px;
+    margin-inline-end: -0.5rem;
+    border: 0;
     background: transparent;
   }
   .burger__box {
     display: grid;
-    gap: 5px;
-    inline-size: 22px;
+    gap: 4px;
+    inline-size: 20px;
   }
   .burger__line {
     display: block;
-    block-size: 2px;
+    block-size: 1.5px;
     background: var(--text);
     transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
   }
   .burger[aria-expanded='true'] .burger__line:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
+    transform: translateY(5.5px) rotate(45deg);
   }
   .burger[aria-expanded='true'] .burger__line:nth-child(2) {
     opacity: 0;
   }
   .burger[aria-expanded='true'] .burger__line:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+    transform: translateY(-5.5px) rotate(-45deg);
   }
 
   .mobile-menu {
@@ -212,6 +213,9 @@ function isActive(href: string): boolean {
   }
 
   @media (min-width: 64rem) {
+    .site-header__inner {
+      min-height: 76px;
+    }
     .primary-nav {
       display: block;
     }
