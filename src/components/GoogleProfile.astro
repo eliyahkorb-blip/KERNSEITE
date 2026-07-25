@@ -1,0 +1,218 @@
+---
+/**
+ * Sektion „Lokale Sichtbarkeit“ – Google-Unternehmensprofil.
+ *
+ * Ziel: verständlich machen, dass KERNSEITE nicht nur Websites baut, sondern auch
+ * dafür sorgt, dass ein Unternehmen dort gefunden wird, wo gesucht wird.
+ * Bewusst ruhig gehalten – keine SEO-Infografik, keine Rankingversprechen.
+ *
+ * Die Profilvorschau rechts ist eine schematische Darstellung (kein Screenshot
+ * eines fremden Dienstes, keine erfundenen Bewertungen oder Kennzahlen).
+ */
+const points = [
+  {
+    title: 'Sichtbar sein, wo gesucht wird',
+    body: 'Viele Anfragen entstehen nicht auf der Website, sondern direkt in der Google-Suche und in Google Maps. Genau dort muss das Unternehmen vollständig und richtig auftauchen.',
+  },
+  {
+    title: 'Profil sauber aufsetzen und pflegen',
+    body: 'Kategorien, Leistungen, Öffnungszeiten, Fotos und Kontaktwege werden korrekt hinterlegt und aufeinander abgestimmt – statt halb ausgefüllt zu bleiben.',
+  },
+  {
+    title: 'Website und Profil zusammen denken',
+    body: 'Angaben auf der Website und im Unternehmensprofil sagen dasselbe. Das macht es für Menschen wie für Google eindeutig, worum es geht und wo du bist.',
+  },
+  {
+    title: 'Lokales Vertrauen stärken',
+    body: 'Ein gepflegtes Profil, echte Fotos und ein sinnvoller Umgang mit Bewertungen machen den ersten Eindruck verlässlicher – lange bevor jemand anruft.',
+  },
+];
+---
+
+<section class="gbp section section--bright">
+  <div class="content gbp__inner">
+    <div class="gbp__text">
+      <p class="eyebrow">Lokale Sichtbarkeit</p>
+      <h2 class="section-title">Gefunden werden, bevor jemand deinen Namen kennt.</h2>
+      <p class="lead gbp__lead">
+        Website und Google-Unternehmensprofil gehören zusammen. Wir richten das Profil sauber ein,
+        stimmen es auf die Website ab und sorgen dafür, dass beide dieselbe Sprache sprechen.
+      </p>
+
+      <ul class="gbp__list" role="list">
+        {
+          points.map((p) => (
+            <li class="gbp__item">
+              <h3 class="gbp__item-title">{p.title}</h3>
+              <p class="gbp__item-body">{p.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="gbp__cta">
+        <a class="arrow-link" href="/leistungen/google-unternehmensprofil/">
+          Google-Unternehmensprofil ansehen <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </p>
+      <p class="gbp__note">
+        Sichtbarkeit lässt sich verbessern, aber nicht garantieren. Wir arbeiten an den Grundlagen,
+        die du selbst in der Hand hast – und nennen keine Platzierungen als Versprechen.
+      </p>
+    </div>
+
+    <!-- Schematische Profilvorschau (keine echten Daten, keine Bewertungen) -->
+    <div class="gbp__visual" aria-hidden="true">
+      <div class="gbp__panel">
+        <div class="gbp__panel-media"></div>
+        <div class="gbp__panel-body">
+          <p class="gbp__panel-name">Dein Unternehmen</p>
+          <p class="gbp__panel-cat">Kategorie · Ort</p>
+          <div class="gbp__chips">
+            <span class="gbp__chip">Website</span>
+            <span class="gbp__chip">Route</span>
+            <span class="gbp__chip">Anrufen</span>
+          </div>
+          <dl class="gbp__rows">
+            <div class="gbp__row"><dt>Adresse</dt><dd></dd></div>
+            <div class="gbp__row"><dt>Öffnungszeiten</dt><dd></dd></div>
+            <div class="gbp__row"><dt>Leistungen</dt><dd></dd></div>
+            <div class="gbp__row"><dt>Fotos</dt><dd></dd></div>
+          </dl>
+        </div>
+      </div>
+      <p class="gbp__caption">Schematische Darstellung eines vollständig gepflegten Profils</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gbp__inner {
+    display: grid;
+    gap: var(--space-3xl);
+    align-items: start;
+  }
+  .gbp__lead {
+    max-width: 48ch;
+  }
+
+  .gbp__list {
+    margin-block-start: clamp(2rem, 1rem + 3vw, 3.5rem);
+    display: grid;
+    gap: 0;
+    border-block-start: 1px solid var(--border);
+  }
+  .gbp__item {
+    padding-block: var(--space-xl);
+    border-block-end: 1px solid var(--border);
+  }
+  .gbp__item-title {
+    font-size: var(--fs-h4);
+  }
+  .gbp__item-body {
+    margin-block-start: var(--space-sm);
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    max-width: 56ch;
+  }
+  .gbp__cta {
+    margin-block-start: var(--space-xl);
+  }
+  .gbp__note {
+    margin-block-start: var(--space-lg);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    max-width: 56ch;
+  }
+
+  /* --- Profilvorschau ---------------------------------------------------- */
+  .gbp__visual {
+    position: sticky;
+    top: 7rem;
+  }
+  .gbp__panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bright);
+    overflow: hidden;
+  }
+  .gbp__panel-media {
+    aspect-ratio: 16 / 7;
+    background:
+      linear-gradient(120deg, var(--surface-muted) 0%, var(--color-paper) 100%),
+      var(--surface-muted);
+    border-block-end: 1px solid var(--border);
+  }
+  .gbp__panel-body {
+    padding: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  }
+  .gbp__panel-name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-h4);
+    letter-spacing: -0.01em;
+  }
+  .gbp__panel-cat {
+    margin-block-start: 0.2rem;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+  .gbp__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block-start: var(--space-lg);
+  }
+  .gbp__chip {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .gbp__rows {
+    margin-block-start: var(--space-lg);
+    display: grid;
+    gap: 0;
+  }
+  .gbp__row {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding-block: 0.7rem;
+    border-block-start: 1px solid var(--border);
+  }
+  .gbp__row dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  /* „ausgefüllt“ als ruhige Linie – ohne erfundene Inhalte */
+  .gbp__row dd {
+    margin: 0;
+    height: 6px;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--accent) 38%, var(--surface-muted));
+  }
+  .gbp__caption {
+    margin-block-start: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 64rem) {
+    .gbp__inner {
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--space-4xl);
+    }
+  }
+</style>

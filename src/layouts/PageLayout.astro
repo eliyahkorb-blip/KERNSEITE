@@ -14,7 +14,7 @@ interface Props {
   extraJsonLd?: Array<Record<string, unknown> | null>;
   noindex?: boolean;
   /** Header-Hintergrund. */
-  variant?: 'paper' | 'bright' | 'navy';
+  variant?: 'sand' | 'paper' | 'bright' | 'dark';
 }
 
 const {
@@ -26,14 +26,14 @@ const {
   breadcrumbs = [],
   extraJsonLd = [],
   noindex = false,
-  variant = 'paper',
+  variant = 'sand',
 } = Astro.props;
 
 const jsonLd = [breadcrumbJsonLd(breadcrumbs), ...extraJsonLd];
 ---
 
 <BaseLayout title={title ?? h1} description={description} noindex={noindex} jsonLd={jsonLd}>
-  <header class={`page-hero section--${variant}${variant === 'navy' ? ' on-dark' : ''}`}>
+  <header class={`page-hero section--${variant}${variant === 'dark' ? ' on-dark' : ''}`}>
     <div class="content">
       {breadcrumbs.length > 1 && <Breadcrumbs items={breadcrumbs} />}
       {eyebrow && <p class="eyebrow page-hero__eyebrow">{eyebrow}</p>}

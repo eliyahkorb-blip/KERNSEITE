@@ -1,13 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 780" width="390" height="780" role="img" aria-label="Platzhalter – Screenshot folgt: Kinderkörbchen (Mobil)">
-  <rect width="390" height="780" fill="#F4F1E8"/>
-  <rect x="0" y="0" width="390" height="44" fill="#ECEADF"/>
-  <rect x="120" y="16" width="150" height="12" rx="6" fill="#CBD4E3"/>
-  <g font-family="Inter, system-ui, sans-serif" text-anchor="middle">
-    <text x="195" y="330" font-size="12" letter-spacing="1.5" fill="#304FFE" font-family="'IBM Plex Mono', monospace">REFERENZ · DIENSTLEISTER</text>
-    <text x="195" y="392" font-size="34" font-weight="700" fill="#111318">Screenshot</text>
-    <text x="195" y="432" font-size="34" font-weight="700" fill="#111318">folgt</text>
-    <text x="195" y="480" font-size="16" fill="#4A4F5A">Kinderkörbchen</text>
-    <text x="195" y="512" font-size="12" fill="#8A8F9A">Mobiler Screenshot wird ergänzt</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 780" width="390" height="780" role="img" aria-label="Mobile Gestaltungsvorschau der Website von Anna-Lena’s Kinderkörbchen">
+  <rect width="390" height="780" fill="#FBF7EF"/>
+  <rect x="0" y="0" width="390" height="60" fill="#FDFBF6"/>
+  <line x1="0" y1="60" x2="390" y2="60" stroke="#E7E0D2"/>
+  <rect x="20" y="12" width="96" height="36" rx="8" fill="#FFFFFF" stroke="#D8CDB6" stroke-width="1.2"/>
+  <text x="68" y="28" text-anchor="middle" font-family="'Bricolage Grotesque', Inter, sans-serif" font-size="10" font-weight="700" fill="#4F7A46">Anna-Lena’s</text>
+  <text x="68" y="41" text-anchor="middle" font-family="'Bricolage Grotesque', Inter, sans-serif" font-size="11" font-weight="700" fill="#C08A3E">Kinderkörbchen</text>
+  <g fill="#4F7A46">
+    <rect x="340" y="22" width="26" height="2.5" rx="1.25"/>
+    <rect x="340" y="30" width="26" height="2.5" rx="1.25"/>
+    <rect x="340" y="38" width="26" height="2.5" rx="1.25"/>
   </g>
-  <rect x="1" y="1" width="388" height="778" fill="none" stroke="#DDD8C8" stroke-width="2"/>
+
+  <rect x="0" y="60" width="390" height="272" fill="#EADFCB"/>
+  <circle cx="195" cy="176" r="72" fill="#DCCDB2"/>
+  <path d="M123 300 C126 238 156 202 195 202 C234 202 264 238 267 300 Z" fill="#E4D8C0"/>
+  <text x="195" y="322" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10" letter-spacing="2" fill="#A2967E">PORTRÄTFOTO</text>
+
+  <rect x="0" y="332" width="390" height="448" fill="#F6EFE2"/>
+  <rect x="24" y="358" width="290" height="34" rx="17" fill="#FDFBF6" stroke="#E2D9C6"/>
+  <text x="169" y="380" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#4F7A46">Kindertagespflege in Eisingen bei Würzburg</text>
+
+  <g font-family="'Bricolage Grotesque', Inter, sans-serif" font-size="34" font-weight="700" fill="#4A3F2E" letter-spacing="-1">
+    <text x="23" y="440">Schön, dass</text>
+    <text x="23" y="478">du da bist.</text>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6B6455">
+    <text x="24" y="518">Manche Orte fühlen sich vom ersten</text>
+    <text x="24" y="540">Moment an richtig an. Im Kinderkörbchen</text>
+    <text x="24" y="562">erleben Kinder ein echtes Zuhause auf Zeit.</text>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif" font-size="12">
+    <text x="24" y="600" fill="#4F7A46">Geborgenheit</text>
+    <text x="112" y="600" fill="#A2967E">·</text>
+    <text x="126" y="600" fill="#B4736C">Vertrauen</text>
+    <text x="196" y="600" fill="#A2967E">·</text>
+    <text x="210" y="600" fill="#4F7A46">Zeit</text>
+  </g>
+  <rect x="24" y="626" width="342" height="48" rx="24" fill="#4F7A46"/>
+  <text x="195" y="656" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">Kinderkörbchen kennenlernen</text>
+  <rect x="24" y="686" width="342" height="48" rx="24" fill="none" stroke="#4F7A46" stroke-width="1.5"/>
+  <text x="195" y="716" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#4F7A46">Platz anfragen</text>
 </svg>

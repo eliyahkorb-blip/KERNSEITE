@@ -109,13 +109,13 @@ const projects: readonly ProjectWork[] = [
       src: '/assets/references/kaya-doener-desktop.svg',
       width: 1440,
       height: 900,
-      alt: 'Platzhalter für den Desktop-Screenshot der Website von Kaya Döner Himmelstadt – echter Screenshot folgt.',
+      alt: 'Gestaltungsvorschau der Website von Kaya Döner Himmelstadt: dunkler Kopfbereich, große Schlagzeile „Frischer Döner in Himmelstadt“ und Speisekarte.',
     },
     screenshotMobile: {
       src: '/assets/references/kaya-doener-mobile.svg',
       width: 390,
       height: 780,
-      alt: 'Platzhalter für den mobilen Screenshot der Website von Kaya Döner Himmelstadt – echter Screenshot folgt.',
+      alt: 'Mobile Gestaltungsvorschau der Website von Kaya Döner Himmelstadt mit Schlagzeile, Aktionsschaltflächen und Öffnungszeiten.',
     },
   },
   {
@@ -147,13 +147,13 @@ const projects: readonly ProjectWork[] = [
       src: '/assets/references/kinderkoerbchen-desktop.svg',
       width: 1440,
       height: 900,
-      alt: 'Platzhalter für den Desktop-Screenshot der Website von Kinderkörbchen – echter Screenshot folgt.',
+      alt: 'Gestaltungsvorschau der Website von Anna-Lena’s Kinderkörbchen: warme Farbwelt, Begrüßungstext und Porträtfläche.',
     },
     screenshotMobile: {
       src: '/assets/references/kinderkoerbchen-mobile.svg',
       width: 390,
       height: 780,
-      alt: 'Platzhalter für den mobilen Screenshot der Website von Kinderkörbchen – echter Screenshot folgt.',
+      alt: 'Mobile Gestaltungsvorschau der Website von Anna-Lena’s Kinderkörbchen mit Begrüßung und Kontaktschaltflächen.',
     },
   },
 ];

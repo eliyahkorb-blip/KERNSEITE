@@ -10,115 +10,97 @@ const num = String(index + 1).padStart(2, '0');
 ---
 
 <a class="service-card" href={service.href} data-core={service.isCore ? 'true' : undefined}>
-  <span class="service-card__num" aria-hidden="true">{num}</span>
-  <div class="service-card__body">
-    <h3 class="service-card__title">
-      {service.cardTitle}
-      {service.isCore && <span class="service-card__tag">Kern</span>}
-    </h3>
-    <p class="service-card__teaser">{service.teaser}</p>
-    <div class="service-card__example">
-      <div class="service-card__example-inner">
-        <p>{service.example}</p>
-      </div>
-    </div>
-    <span class="service-card__more arrow-link">
-      Mehr erfahren <span class="arrow" aria-hidden="true">→</span>
-    </span>
+  <div class="service-card__head">
+    <span class="service-card__num" aria-hidden="true">{num}</span>
+    {service.isCore && <span class="service-card__tag">Kernleistung</span>}
   </div>
+  <h3 class="service-card__title">{service.cardTitle}</h3>
+  <p class="service-card__teaser">{service.teaser}</p>
+  <p class="service-card__example">{service.example}</p>
+  <span class="service-card__more">
+    Mehr erfahren <span class="arrow" aria-hidden="true">→</span>
+  </span>
 </a>
 
 <style>
   .service-card {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: var(--space-md);
-    padding: clamp(1.25rem, 1rem + 1vw, 1.9rem);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
     background: var(--color-bright);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     text-decoration: none;
     color: var(--text);
-    transition:
-      border-color var(--dur-base) var(--ease-out),
-      transform var(--dur-base) var(--ease-out),
-      box-shadow var(--dur-base) var(--ease-out);
+    transition: border-color var(--dur-base) var(--ease-out);
   }
   .service-card:hover,
   .service-card:focus-visible {
-    border-color: var(--color-ultramarine);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    border-color: var(--color-ink);
   }
-  .service-card[data-core] {
-    background: color-mix(in srgb, var(--color-ultramarine) 5%, var(--color-bright));
-    border-color: color-mix(in srgb, var(--color-ultramarine) 30%, var(--border));
+
+  .service-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block-end: clamp(2rem, 1rem + 3vw, 3.5rem);
   }
   .service-card__num {
     font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--brand-strong);
-    padding-block-start: 0.35rem;
-  }
-  .service-card__title {
-    display: flex;
-    align-items: baseline;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-    font-size: var(--fs-h4);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
   }
   .service-card__tag {
     font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #fff;
-    background: var(--color-ultramarine);
-    border-radius: 4px;
-    padding: 0.1rem 0.4rem;
+    color: var(--brand);
+  }
+
+  /* Kernleistung: minimal hervorgehoben – über eine feine Cyan-Kante, nicht über Fläche. */
+  .service-card[data-core] {
+    border-block-start: 2px solid var(--accent);
+  }
+
+  .service-card__title {
+    font-size: var(--fs-h3);
+    max-width: 18ch;
+    /* lange Komposita (z. B. „Google-Unternehmensprofil“) dürfen umbrechen */
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
   .service-card__teaser {
-    margin-block-start: 0.5rem;
+    margin-block-start: var(--space-md);
     color: var(--text-muted);
   }
-  /* Redaktionelle Erweiterung bei Hover/Fokus (kein SaaS-Icon-Muster) */
+  /* Redaktionelle Ergänzung – dauerhaft sichtbar statt Hover-Spielerei. */
   .service-card__example {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows var(--dur-base) var(--ease-out);
-  }
-  .service-card__example-inner {
-    overflow: hidden;
-    opacity: 0;
-    transition: opacity var(--dur-base) var(--ease-out);
-  }
-  .service-card__example-inner p {
-    margin-block-start: 0.75rem;
-    color: var(--text);
+    margin-block-start: var(--space-lg);
+    padding-block-start: var(--space-lg);
+    border-block-start: 1px solid var(--border);
     font-size: var(--fs-small);
-    border-inline-start: 3px solid var(--color-cyan);
-    padding-inline-start: 0.75rem;
-  }
-  .service-card:hover .service-card__example,
-  .service-card:focus-visible .service-card__example,
-  .service-card:focus-within .service-card__example {
-    grid-template-rows: 1fr;
-  }
-  .service-card:hover .service-card__example-inner,
-  .service-card:focus-visible .service-card__example-inner,
-  .service-card:focus-within .service-card__example-inner {
-    opacity: 1;
+    color: var(--text-muted);
   }
   .service-card__more {
-    margin-block-start: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block-start: auto;
+    padding-block-start: var(--space-xl);
     font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
   }
-  @media (prefers-reduced-motion: reduce) {
-    .service-card__example {
-      grid-template-rows: 1fr;
-    }
-    .service-card__example-inner {
-      opacity: 1;
-    }
+  .service-card__more .arrow {
+    color: var(--brand);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .service-card:hover .service-card__more .arrow,
+  .service-card:focus-visible .service-card__more .arrow {
+    transform: translateX(4px);
   }
 </style>

@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
 const c = activeCompany;
 ---
 
-<footer class="site-footer section--navy on-dark">
+<footer class="site-footer section--dark on-dark">
   <div class="content">
     <div class="site-footer__top">
       <div class="site-footer__brand">
@@ -16,6 +16,9 @@ const c = activeCompany;
         </a>
         <p class="site-footer__claim">{site.claim}</p>
         <p class="site-footer__legalname">{c.legalDisplayName}</p>
+        <a class="site-footer__cta" href="/kontakt/">
+          Projekt besprechen <span class="arrow" aria-hidden="true">→</span>
+        </a>
       </div>
 
       <nav class="site-footer__nav" aria-label="Footer-Navigation">
@@ -38,8 +41,7 @@ const c = activeCompany;
 
     <div class="site-footer__bottom">
       <p class="site-footer__copy">
-        © {year}
-        {c.legalDisplayName} · {site.region.city}, {site.region.state}
+        {`© ${year} ${c.legalDisplayName} · ${site.region.city}, ${site.region.state}`}
       </p>
       <ul class="site-footer__meta" role="list">
         {canShowHostingClaim && <li>{site.hostingClaimText}</li>}
@@ -67,6 +69,31 @@ const c = activeCompany;
   .wordmark--footer {
     font-size: 1.6rem;
     color: var(--text-invert);
+    text-decoration: none;
+  }
+  .site-footer__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block-start: var(--space-xl);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-small);
+    text-decoration: none;
+    color: var(--text-invert);
+    border-block-end: 1px solid #3a4048;
+    padding-block-end: 0.3rem;
+    transition: border-color var(--dur-fast) var(--ease-out);
+  }
+  .site-footer__cta:hover {
+    color: var(--text-invert);
+    border-block-end-color: var(--color-cyan);
+  }
+  .site-footer__cta .arrow {
+    color: var(--color-cyan);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .site-footer__cta:hover .arrow {
+    transform: translateX(4px);
   }
   .site-footer__claim {
     margin-block-start: var(--space-md);

@@ -26,40 +26,44 @@ const { items, openFirst = false } = Astro.props;
 </div>
 
 <style>
+  /* Editorial statt Kachel-Akkordeon: feine Linien, viel Ruhe. */
   .faq {
     display: grid;
-    gap: 0.6rem;
+    gap: 0;
+    border-block-start: 1px solid var(--border);
   }
   .faq__item {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--color-bright);
-    overflow: hidden;
+    border-block-end: 1px solid var(--border);
   }
   .faq__summary {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
-    gap: var(--space-md);
-    padding: 1.1rem 1.25rem;
+    gap: var(--space-lg);
+    padding-block: clamp(1.1rem, 0.9rem + 0.8vw, 1.6rem);
     cursor: pointer;
     list-style: none;
     font-family: var(--font-display);
     font-weight: var(--fw-semibold);
     font-size: var(--fs-h4);
+    letter-spacing: -0.01em;
   }
   .faq__summary::-webkit-details-marker {
     display: none;
   }
   .faq__summary:focus-visible {
     outline: 3px solid var(--focus-ring);
-    outline-offset: -3px;
+    outline-offset: 3px;
+  }
+  .faq__q {
+    max-width: 46ch;
   }
   .faq__icon {
     position: relative;
     flex: none;
-    inline-size: 20px;
-    block-size: 20px;
+    inline-size: 18px;
+    block-size: 18px;
+    align-self: center;
   }
   .faq__icon::before,
   .faq__icon::after {
@@ -67,15 +71,15 @@ const { items, openFirst = false } = Astro.props;
     position: absolute;
     inset-block-start: 50%;
     inset-inline-start: 50%;
-    background: var(--brand-strong);
+    background: var(--brand);
     transform: translate(-50%, -50%);
   }
   .faq__icon::before {
     inline-size: 14px;
-    block-size: 2px;
+    block-size: 1.5px;
   }
   .faq__icon::after {
-    inline-size: 2px;
+    inline-size: 1.5px;
     block-size: 14px;
     transition: transform var(--dur-fast) var(--ease-out);
   }
@@ -83,8 +87,17 @@ const { items, openFirst = false } = Astro.props;
     transform: translate(-50%, -50%) scaleY(0);
   }
   .faq__answer {
-    padding: 0 1.25rem 1.25rem;
+    padding-block-end: clamp(1.1rem, 0.9rem + 0.8vw, 1.6rem);
     color: var(--text-muted);
     max-width: var(--measure);
+  }
+
+  .section--dark .faq,
+  .section--dark .faq__item {
+    border-color: var(--border-invert);
+  }
+  .section--dark .faq__icon::before,
+  .section--dark .faq__icon::after {
+    background: var(--color-cyan);
   }
 </style>

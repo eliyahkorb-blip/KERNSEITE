@@ -1,36 +1,41 @@
 /* =============================================================================
    KERNSEITE – Design-Tokens
-   Zentrale Design-Variablen (Farben, Typografie, Abstände, Layout).
+   Ruhige, hochwertige Agentur-Anmutung: warme, gebrochene Hellflächen,
+   Schwarz/Dunkelgrau für Typografie, Cyan/Türkis als EINZIGE Akzentfarbe.
    ========================================================================== */
 
 :root {
-  /* --- Grundpalette (exakt aus dem Markenbriefing) ----------------------- */
-  --color-paper: #f4f1e8; /* Warmweiß / Papier */
-  --color-bright: #fcfbf7; /* Reines Hell */
-  --color-graphite: #111318; /* Graphit (Haupttext) */
-  --color-ultramarine: #304ffe; /* Ultramarin (Markenfarbe) */
-  --color-cyan: #19e6f2; /* Electric Cyan (Akzent) */
-  --color-navy: #081b3a; /* Tiefes Marineblau */
-  --color-slate: #cbd4e3; /* gedämpftes Blau-Grau */
-  --color-alert: #ff5d45; /* Warn-/Kontrastfarbe */
+  /* --- Grundflächen (warm, gebrochen, ruhig) ----------------------------- */
+  --color-sand: #ede9e1; /* warmes Beige-Grau – ruhige Grundfläche */
+  --color-paper: #f6f4ef; /* Off-White */
+  --color-bright: #fdfcfa; /* hellste Fläche */
+  --color-ink: #14161a; /* Typografie (Schwarz/Dunkelgrau) */
+  --color-ink-deep: #0f1215; /* dunkle Sektionen */
+
+  /* --- Akzent: das einzige Farbmittel der Marke -------------------------- */
+  --color-cyan: #19e6f2; /* KERNSEITE-Cyan/Türkis (Flächen, Dunkelgrund) */
+  --color-accent-deep: #0a6a73; /* lesbare Cyan-Variante auf hellem Grund (AA) */
+
+  /* --- Signalfarbe: NUR Dev-/Vorschau-Hinweise, nie im Seiten-Design ----- */
+  --color-alert: #b4442f;
 
   /* --- Semantische Farbrollen ------------------------------------------- */
-  --bg: var(--color-paper);
+  --bg: var(--color-sand);
   --bg-bright: var(--color-bright);
-  --bg-invert: var(--color-navy);
+  --bg-invert: var(--color-ink-deep);
   --surface: var(--color-bright);
-  --surface-muted: #eceadf;
-  --text: var(--color-graphite);
-  --text-muted: #4a4f5a;
+  --surface-muted: #e6e1d8;
+  --text: var(--color-ink);
+  --text-muted: #565a63;
   --text-invert: var(--color-bright);
-  --text-invert-muted: #b8c4da;
-  --brand: var(--color-ultramarine);
-  --brand-strong: #223cd6;
+  --text-invert-muted: #a9b0b5;
+  --brand: var(--color-accent-deep);
+  --brand-strong: #086068;
   --accent: var(--color-cyan);
-  --border: #ddd8c8;
-  --border-strong: #c7c1ad;
-  --border-invert: #223a63;
-  --focus-ring: var(--color-ultramarine);
+  --border: #dcd6ca;
+  --border-strong: #c3bcab;
+  --border-invert: #2a2f35;
+  --focus-ring: var(--color-ink);
   --focus-ring-invert: var(--color-cyan);
 
   /* --- Typografie ------------------------------------------------------- */
@@ -44,23 +49,24 @@
   --fw-semibold: 600;
   --fw-bold: 700;
 
-  /* Responsive Typo-Skala via clamp() */
-  --fs-hero: clamp(2.75rem, 1rem + 8vw, 9.375rem); /* 44 → 150 px */
-  --fs-display: clamp(2.25rem, 1rem + 5.5vw, 5.5rem); /* 36 → 88 px */
-  --fs-h1: clamp(2rem, 1rem + 4vw, 4rem);
-  --fs-h2: clamp(1.6rem, 0.9rem + 2.6vw, 2.75rem);
-  --fs-h3: clamp(1.3rem, 0.95rem + 1.4vw, 1.9rem);
-  --fs-h4: clamp(1.1rem, 0.95rem + 0.7vw, 1.4rem);
-  --fs-lead: clamp(1.1rem, 0.98rem + 0.55vw, 1.35rem);
+  /* Responsive Typo-Skala – groß, selbstbewusst, ruhig */
+  --fs-hero: clamp(3rem, 1rem + 8.4vw, 10rem); /* 48 → 160 px */
+  --fs-display: clamp(2.5rem, 1rem + 6vw, 6rem); /* 40 → 96 px */
+  --fs-h1: clamp(2.25rem, 1.1rem + 4.6vw, 4.75rem);
+  --fs-h2: clamp(1.85rem, 1rem + 3.2vw, 3.5rem);
+  --fs-h3: clamp(1.35rem, 1rem + 1.6vw, 2.125rem);
+  --fs-h4: clamp(1.125rem, 0.98rem + 0.75vw, 1.5rem);
+  --fs-lead: clamp(1.125rem, 1rem + 0.62vw, 1.4rem);
   --fs-body: 1.0625rem; /* 17px */
   --fs-small: 0.9375rem; /* 15px */
   --fs-label: 0.8125rem; /* 13px */
 
-  --lh-tight: 1.04;
-  --lh-snug: 1.18;
-  --lh-normal: 1.6;
-  --tracking-tight: -0.02em;
-  --tracking-label: 0.12em;
+  --lh-tight: 0.98;
+  --lh-snug: 1.14;
+  --lh-normal: 1.62;
+  --tracking-tight: -0.025em;
+  --tracking-tighter: -0.035em;
+  --tracking-label: 0.14em;
 
   /* --- Abstände (8px-Basis) --------------------------------------------- */
   --space-2xs: 0.25rem;
@@ -73,32 +79,32 @@
   --space-3xl: 4.5rem;
   --space-4xl: 6.5rem;
   --space-5xl: 9rem;
-  /* vertikaler Sektionsabstand, responsiv */
-  --section-y: clamp(3.5rem, 2rem + 7vw, 8rem);
+  /* großzügiger vertikaler Sektionsabstand (mehr Ruhe) */
+  --section-y: clamp(4.5rem, 2.5rem + 9vw, 11rem);
 
   /* --- Layout ----------------------------------------------------------- */
   --container-max: 1600px;
-  --content-max: 1440px;
-  --measure: 68ch; /* Lesebreite Fließtext */
-  --gutter: clamp(1.25rem, 0.5rem + 3vw, 3rem);
+  --content-max: 1380px;
+  --measure: 62ch; /* Lesebreite Fließtext */
+  --gutter: clamp(1.25rem, 0.5rem + 3.2vw, 4rem);
   --grid-columns: 12;
-  --grid-gap: clamp(1rem, 0.5rem + 1.5vw, 2rem);
+  --grid-gap: clamp(1rem, 0.5rem + 1.8vw, 2.5rem);
 
-  /* --- Radien / Schatten (dezent) --------------------------------------- */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  /* --- Radien / Schatten (sehr zurückhaltend) --------------------------- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
   --radius-pill: 999px;
-  --shadow-sm: 0 1px 2px rgba(8, 27, 58, 0.06), 0 1px 3px rgba(8, 27, 58, 0.08);
-  --shadow-md: 0 8px 24px rgba(8, 27, 58, 0.08), 0 2px 6px rgba(8, 27, 58, 0.06);
-  --shadow-lg: 0 24px 60px rgba(8, 27, 58, 0.12), 0 6px 16px rgba(8, 27, 58, 0.08);
+  --shadow-sm: 0 1px 2px rgba(20, 22, 26, 0.05);
+  --shadow-md: 0 10px 30px rgba(20, 22, 26, 0.07);
+  --shadow-lg: 0 30px 70px rgba(20, 22, 26, 0.1);
 
-  /* --- Bewegung --------------------------------------------------------- */
+  /* --- Bewegung (dezent) ------------------------------------------------ */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 140ms;
-  --dur-base: 240ms;
-  --dur-slow: 480ms;
+  --dur-fast: 160ms;
+  --dur-base: 280ms;
+  --dur-slow: 620ms;
 
   /* --- Ebenen ----------------------------------------------------------- */
   --z-header: 100;

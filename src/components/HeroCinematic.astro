@@ -1,0 +1,540 @@
+---
+/**
+ * HeroCinematic – ruhige, hochwertige Hero-Inszenierung.
+ *
+ * Aufbau
+ *  - Hintergrund: dekoratives, stummes Loop-Video (cineastische Szene:
+ *    stilvoller Mann im Anzug + Retro-/Macintosh-Computer).
+ *  - Auf dem Monitor liegt eine Bildschirmfläche in KERNSEITE-Cyan mit sehr
+ *    dezenter CRT-Anmutung (Scanlines, minimale Helligkeitsschwankung) und dem
+ *    Wort „KERNSEITE“ – optional ruhig wechselnde Begriffe.
+ *  - Darüber ein weicher Verlauf (kein Kasten), damit der Text lesbar bleibt.
+ *
+ * Solange kein Video vorliegt, wird eine zurückhaltende, selbst gezeichnete
+ * Szene (dunkler Raum + Retro-Monitor) gezeigt. Bildschirmfläche und Monitor
+ * teilen sich dieselben Positions-Variablen und sitzen dadurch immer exakt
+ * aufeinander. Sobald das Video da ist, ersetzt es die Szene.
+ *
+ * Barrierefreiheit / Performance
+ *  - Szene ist rein dekorativ (aria-hidden), der Inhalt steht als echter Text daneben.
+ *  - `prefers-reduced-motion: reduce` → kein Autoplay, kein Flackern.
+ *  - Pause bei Offscreen (IntersectionObserver) und inaktivem Tab.
+ *  - Feste Flächen/Seitenverhältnisse verhindern Layout Shifts.
+ *
+ * Medien + Justage: siehe docs/HERO_VIDEO.md
+ */
+import { existsSync } from 'node:fs';
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  lead?: string;
+  primaryLabel?: string;
+  primaryHref?: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+  trust?: string;
+  /** Begriffe, die sehr ruhig auf dem Monitor wechseln. Erster Eintrag = Standard. */
+  screenWords?: readonly string[];
+}
+
+const {
+  eyebrow = 'Digitale Präsenz für Unternehmen mit Anspruch',
+  title = 'Dein Unternehmen kann mehr. Deine Website sollte es zeigen.',
+  lead = 'KERNSEITE entwickelt hochwertige Websites, lokale Sichtbarkeit und digitale Systeme für Unternehmen, die mehr Anfragen und weniger Aufwand wollen.',
+  primaryLabel = 'Kostenfreie Analyse',
+  primaryHref = '/kontakt/',
+  secondaryLabel = 'Arbeiten ansehen',
+  secondaryHref = '/arbeiten/',
+  trust = 'Direkter Ansprechpartner. Klare Prozesse. Keine unnötigen Spielereien.',
+  screenWords = ['KERNSEITE', 'WEBSITE', 'GOOGLE', 'SEO / GEO', 'VIDEO', 'SOCIAL', 'SYSTEME'],
+} = Astro.props;
+
+// Medien werden erst eingebunden, wenn sie tatsächlich vorliegen. So entstehen
+// weder 404-Requests noch tote Verweise, solange das finale Video fehlt.
+const mediaDir = new URL('../../public/assets/video/', import.meta.url);
+const hasFile = (name: string) => existsSync(new URL(name, mediaDir));
+
+const sources = [
+  { src: '/assets/video/hero-kernseite.webm', type: 'video/webm', file: 'hero-kernseite.webm' },
+  { src: '/assets/video/hero-kernseite.mp4', type: 'video/mp4', file: 'hero-kernseite.mp4' },
+].filter((s) => hasFile(s.file));
+
+const hasVideo = sources.length > 0;
+const posterFile = hasFile('hero-kernseite-poster.webp')
+  ? '/assets/video/hero-kernseite-poster.webp'
+  : undefined;
+---
+
+<section class="hero" data-hero>
+  <div class="hero__stage">
+    {
+      hasVideo ? (
+        <video
+          class="hero__video"
+          data-hero-video
+          poster={posterFile}
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+          aria-hidden="true"
+          tabindex="-1"
+        >
+          {sources.map((s) => (
+            <source src={s.src} type={s.type} />
+          ))}
+        </video>
+      ) : (
+        /* Platzhalter-Szene: dunkler Raum + Retro-Monitor (rein dekorativ) */
+        <div class="hero__scene" aria-hidden="true">
+          <div class="hero__scene-floor" />
+          <div class="hero__monitor">
+            <span class="hero__monitor-slot" />
+          </div>
+          <div class="hero__monitor-foot" />
+        </div>
+      )
+    }
+
+    <!-- Bildschirmfläche: Cyan + sehr dezente CRT-Anmutung -->
+    <div class="hero__screen" data-hero-screen aria-hidden="true">
+      <div class="hero__screen-glow"></div>
+      <div class="hero__screen-panel">
+        <div class="hero__screen-face"></div>
+        <span class="hero__screen-word" data-hero-word data-words={screenWords.join('|')}>
+          {screenWords[0]}
+        </span>
+        <div class="hero__screen-scan"></div>
+      </div>
+    </div>
+
+    <!-- Weiche Leseebene (kein Kasten, kein Glassmorphism) -->
+    <div class="hero__scrim" aria-hidden="true"></div>
+  </div>
+
+  <div class="hero__inner content">
+    <div class="hero__content">
+      <p class="hero__eyebrow">{eyebrow}</p>
+      <h1 class="hero__title">{title}</h1>
+      <p class="hero__lead">{lead}</p>
+      <div class="hero__ctas">
+        <a class="btn btn--primary" href={primaryHref}>{primaryLabel}</a>
+        <a class="btn btn--onmedia" href={secondaryHref}>{secondaryLabel}</a>
+      </div>
+      <p class="hero__trust">{trust}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('[data-hero]').forEach((hero) => {
+    const video = hero.querySelector<HTMLVideoElement>('[data-hero-video]');
+    const screen = hero.querySelector<HTMLElement>('[data-hero-screen]');
+    const wordEl = hero.querySelector<HTMLElement>('[data-hero-word]');
+    const words = (wordEl?.dataset.words ?? '').split('|').filter(Boolean);
+
+    let inView = true;
+    let wordTimer: number | undefined;
+
+    const motionOff = () => REDUCED.matches;
+
+    /** Bewegung nur, wenn sichtbar, Tab aktiv und Bewegung erlaubt. */
+    const sync = () => {
+      const active = inView && !document.hidden && !motionOff();
+      if (video) {
+        // Autoplay kann vom Browser abgelehnt werden -> Posterbild bleibt stehen.
+        if (active) void video.play().catch(() => {});
+        else video.pause();
+      }
+      hero.classList.toggle('is-static', motionOff());
+      screen?.classList.toggle('is-live', active);
+    };
+
+    /** Sehr ruhiger Wortwechsel auf dem Monitor. */
+    const cycle = () => {
+      if (!wordEl || words.length < 2) return;
+      let i = 0;
+      wordTimer = window.setInterval(() => {
+        if (!inView || document.hidden || motionOff()) return;
+        i = (i + 1) % words.length;
+        wordEl.classList.add('is-swapping');
+        window.setTimeout(() => {
+          wordEl.textContent = words[i];
+          wordEl.classList.remove('is-swapping');
+        }, 340);
+      }, 3600);
+    };
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) inView = e.isIntersecting;
+          sync();
+        },
+        { threshold: 0.15 },
+      ).observe(hero);
+    }
+
+    document.addEventListener('visibilitychange', sync);
+    REDUCED.addEventListener?.('change', sync);
+
+    sync();
+    if (!motionOff()) cycle();
+
+    window.addEventListener('pagehide', () => {
+      if (wordTimer) window.clearInterval(wordTimer);
+    });
+  });
+</script>
+
+<style>
+  .hero {
+    /* Geometrie der Bildschirmfläche – beim finalen Video nur diese Werte justieren.
+       Die Platzhalter-Szene leitet den Monitor aus denselben Werten ab. */
+    --screen-x: 62%;
+    --screen-y: 34%;
+    --screen-w: 19%;
+    --screen-h: 27%;
+    --screen-skew: -7deg;
+    --screen-rotate: -1deg;
+
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    min-height: clamp(600px, 82vh, 900px);
+    background: var(--color-ink-deep);
+    color: var(--text-invert);
+    overflow: hidden;
+  }
+
+  /* --- Szene ------------------------------------------------------------- */
+  .hero__stage {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .hero__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 68% center;
+    /* Ruhige, leicht entsättigte Anmutung – nie knallig. */
+    filter: saturate(0.72) contrast(1.04) brightness(0.82);
+  }
+
+  /* Platzhalter-Szene: dunkler Raum, weiches Licht, angedeuteter Retro-Monitor. */
+  .hero__scene {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(80% 60% at 68% 42%, rgba(25, 230, 242, 0.1) 0%, transparent 62%),
+      radial-gradient(120% 90% at 30% 10%, #23282e 0%, transparent 55%),
+      linear-gradient(160deg, #1b1f24 0%, #14171b 45%, #0b0d10 100%);
+  }
+  .hero__scene-floor {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 34%;
+    background: linear-gradient(to bottom, transparent, rgba(6, 8, 10, 0.85));
+  }
+  /* Monitorgehäuse: Bildschirmrechteck + Rahmen ringsum. */
+  .hero__monitor {
+    position: absolute;
+    inset-inline-start: calc(var(--screen-x) - 3.4%);
+    inset-block-start: calc(var(--screen-y) - 5%);
+    inline-size: calc(var(--screen-w) + 6.8%);
+    block-size: calc(var(--screen-h) + 13%);
+    border-radius: 16px 16px 12px 12px;
+    background: linear-gradient(155deg, #d6cfc1 0%, #b8b0a1 55%, #8b8477 100%);
+    box-shadow:
+      0 46px 100px rgba(0, 0, 0, 0.58),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      inset 0 -14px 26px rgba(0, 0, 0, 0.12);
+    transform: perspective(1100px) rotateY(var(--screen-skew)) rotate(var(--screen-rotate));
+  }
+  /* angedeutetes Laufwerk im unteren Gehäuseteil */
+  .hero__monitor-slot {
+    position: absolute;
+    inset-inline: 22% 22%;
+    inset-block-end: 7%;
+    block-size: 3.5%;
+    min-block-size: 3px;
+    border-radius: 999px;
+    background: rgba(70, 64, 55, 0.42);
+  }
+  .hero__monitor-foot {
+    position: absolute;
+    inset-inline-start: calc(var(--screen-x) - 1%);
+    inset-block-start: calc(var(--screen-y) + var(--screen-h) + 8%);
+    inline-size: calc(var(--screen-w) + 2%);
+    block-size: 1.6%;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    filter: blur(6px);
+  }
+
+  /* Weiche Leseebene: links dunkler, rechts offen für die Szene. */
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        100deg,
+        rgba(15, 18, 21, 0.95) 0%,
+        rgba(15, 18, 21, 0.88) 30%,
+        rgba(15, 18, 21, 0.55) 52%,
+        rgba(15, 18, 21, 0.22) 72%,
+        rgba(15, 18, 21, 0.38) 100%
+      ),
+      linear-gradient(to top, rgba(15, 18, 21, 0.7) 0%, rgba(15, 18, 21, 0) 42%);
+  }
+
+  /* --- Bildschirmfläche --------------------------------------------------- */
+  .hero__screen {
+    position: absolute;
+    inset-inline-start: var(--screen-x);
+    inset-block-start: var(--screen-y);
+    inline-size: var(--screen-w);
+    block-size: var(--screen-h);
+    transform: perspective(1100px) rotateY(var(--screen-skew)) rotate(var(--screen-rotate));
+    transform-origin: center;
+  }
+
+  /* Nur die Bildschirmfläche wird beschnitten – der Lichtschein darf hinaus. */
+  .hero__screen-panel {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .hero__screen-face {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        120% 90% at 50% 38%,
+        color-mix(in srgb, var(--color-cyan) 78%, #ffffff) 0%,
+        var(--color-cyan) 44%,
+        color-mix(in srgb, var(--color-cyan) 58%, #04333a) 100%
+      );
+    box-shadow: inset 0 0 26px rgba(4, 51, 58, 0.5);
+  }
+
+  .hero__screen-word {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: clamp(0.5rem, 0.95vw, 1.15rem);
+    letter-spacing: 0.18em;
+    color: #04333a;
+    text-align: center;
+    line-height: 1.2;
+    padding-inline: 6%;
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+  .hero__screen-word.is-swapping {
+    opacity: 0;
+  }
+
+  /* Feine Zeilenstruktur (CRT) – bewusst sehr schwach. */
+  .hero__screen-scan {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(4, 51, 58, 0.15) 0px,
+      rgba(4, 51, 58, 0.15) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+  }
+
+  /* Sanfter Lichtschein in den Raum – macht die Fläche glaubwürdig. */
+  .hero__screen-glow {
+    position: absolute;
+    inset: -150%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-cyan) 22%, transparent) 0%,
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+
+  /* Ruhiges „Atmen“ des Monitors – nur wenn wirklich aktiv. */
+  .hero__screen.is-live .hero__screen-face {
+    animation: screen-breathe 5.4s var(--ease-in-out) infinite;
+  }
+  .hero__screen.is-live .hero__screen-scan {
+    animation: screen-drift 9s linear infinite;
+  }
+
+  @keyframes screen-breathe {
+    0%,
+    100% {
+      filter: brightness(1);
+    }
+    38% {
+      filter: brightness(1.07);
+    }
+    62% {
+      filter: brightness(0.96);
+    }
+  }
+  @keyframes screen-drift {
+    from {
+      background-position-y: 0;
+    }
+    to {
+      background-position-y: 12px;
+    }
+  }
+
+  /* --- Inhalt ------------------------------------------------------------- */
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+    padding-block: clamp(4rem, 3rem + 6vw, 7rem);
+  }
+  .hero__content {
+    max-width: 40rem;
+  }
+
+  .hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-cyan);
+    margin-block-end: var(--space-lg);
+  }
+  .hero__eyebrow::before {
+    content: '';
+    inline-size: 1.75rem;
+    block-size: 2px;
+    background: var(--color-cyan);
+    flex: none;
+  }
+
+  .hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 1.1rem + 3.5vw, 4.25rem);
+    line-height: 1;
+    letter-spacing: var(--tracking-tighter);
+    color: var(--color-bright);
+    text-wrap: balance;
+  }
+
+  .hero__lead {
+    margin-block-start: var(--space-xl);
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+    color: #d4d8dc;
+    max-width: 44ch;
+  }
+
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-block-start: var(--space-2xl);
+  }
+
+  /* Primärer CTA auf dunklem Bewegtbild: Cyan trägt hier die Aufmerksamkeit. */
+  .hero__ctas .btn--primary {
+    background: var(--color-cyan);
+    color: var(--color-ink);
+  }
+  .hero__ctas .btn--primary:hover {
+    background: #5df0f8;
+    color: var(--color-ink);
+  }
+
+  /* Sekundärer CTA auf Bewegtbild: klarer Rand, kein Milchglas. */
+  .btn--onmedia {
+    background: transparent;
+    color: var(--color-bright);
+    border-color: rgba(253, 252, 250, 0.45);
+  }
+  .btn--onmedia:hover {
+    border-color: var(--color-cyan);
+    color: var(--color-bright);
+  }
+
+  .hero__trust {
+    margin-block-start: var(--space-xl);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: 0.03em;
+    color: #9aa1a8;
+  }
+
+  /* --- Responsiv ---------------------------------------------------------- */
+  @media (max-width: 63.99rem) {
+    .hero {
+      /* Mobil: Szene als eigene Fläche über dem Text – nichts überlagert sich. */
+      --screen-x: 40%;
+      --screen-y: 33%;
+      --screen-w: 26%;
+      --screen-h: 26%;
+
+      display: block;
+      min-height: 0;
+    }
+    .hero__stage {
+      position: relative;
+      aspect-ratio: 4 / 3;
+    }
+    .hero__scrim {
+      background: linear-gradient(
+        to bottom,
+        rgba(15, 18, 21, 0.2) 0%,
+        rgba(15, 18, 21, 0.12) 50%,
+        rgba(15, 18, 21, 0.95) 100%
+      );
+    }
+    .hero__inner {
+      padding-block: clamp(2rem, 1.5rem + 4vw, 3rem) clamp(3rem, 2rem + 6vw, 4.5rem);
+    }
+    .hero__content {
+      max-width: 100%;
+    }
+    .hero__screen-word {
+      font-size: clamp(0.5rem, 1.9vw, 1rem);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .hero__ctas .btn {
+      width: 100%;
+    }
+  }
+
+  /* --- Reduzierte Bewegung ------------------------------------------------ */
+  @media (prefers-reduced-motion: reduce) {
+    .hero__screen-face,
+    .hero__screen-scan {
+      animation: none !important;
+    }
+  }
+  .hero.is-static .hero__screen-face,
+  .hero.is-static .hero__screen-scan {
+    animation: none !important;
+  }
+</style>

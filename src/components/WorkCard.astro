@@ -31,19 +31,13 @@ const { work } = Astro.props;
         }
       </div>
       <div class="workcard__meta">
-        {
-          work.kind === 'project' ? (
-            <span class="badge badge--reference">Referenz</span>
-          ) : (
-            <span class="badge badge--concept">{work.badge}</span>
-          )
-        }
-        <h2 class="workcard__title">{work.title}</h2>
         <p class="workcard__cat">
           {work.kind === 'project' ? work.category : work.industryLabel}
         </p>
+        <h2 class="workcard__title">{work.title}</h2>
         <p class="workcard__tagline">{work.tagline}</p>
-        <span class="workcard__cta arrow-link">
+        {work.kind === 'concept' && <span class="badge badge--concept">{work.badge}</span>}
+        <span class="workcard__cta">
           {work.kind === 'project' ? 'Projekt ansehen' : 'Konzeptstudie ansehen'}{' '}
           <span class="arrow" aria-hidden="true">→</span>
         </span>
@@ -67,55 +61,66 @@ const { work } = Astro.props;
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    background: var(--surface-muted);
-    transition:
-      transform var(--dur-base) var(--ease-out),
-      border-color var(--dur-base) var(--ease-out),
-      box-shadow var(--dur-base) var(--ease-out);
-  }
-  .workcard:hover,
-  .workcard:focus-within {
-    transform: translateY(-4px);
-    border-color: var(--color-ultramarine);
-    box-shadow: var(--shadow-lg);
   }
   .workcard__link {
+    display: block;
     text-decoration: none;
     color: var(--text);
   }
-  .workcard__meta {
-    margin-block-start: var(--space-lg);
+  .workcard__media {
+    transition: transform var(--dur-slow) var(--ease-out);
   }
-  .workcard__title {
-    margin-block-start: 0.75rem;
-    font-size: var(--fs-h3);
+  .workcard__link:hover .workcard__media {
+    transform: translateY(-4px);
+  }
+  .workcard__meta {
+    margin-block-start: var(--space-xl);
   }
   .workcard__cat {
-    margin-block-start: 0.2rem;
     font-family: var(--font-mono);
-    font-size: var(--fs-small);
-    color: var(--brand-strong);
-  }
-  .workcard__tagline {
-    margin-block-start: 0.5rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: var(--text-muted);
   }
+  .workcard__title {
+    margin-block-start: var(--space-sm);
+    font-size: var(--fs-h3);
+    max-width: 22ch;
+  }
+  .workcard__tagline {
+    margin-block-start: var(--space-md);
+    color: var(--text-muted);
+    max-width: 46ch;
+  }
+  .workcard__meta .badge {
+    margin-block-start: var(--space-md);
+  }
   .workcard__cta {
-    margin-block-start: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block-start: var(--space-lg);
     font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    border-block-end: 1px solid var(--border-strong);
+    padding-block-end: 0.3rem;
+    transition: border-color var(--dur-fast) var(--ease-out);
+  }
+  .workcard__cta .arrow {
+    color: var(--brand);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .workcard__link:hover .workcard__cta {
+    border-block-end-color: var(--accent);
+  }
+  .workcard__link:hover .workcard__cta .arrow {
+    transform: translateX(4px);
   }
   .workcard__live {
     margin-block-start: var(--space-md);
     font-size: var(--fs-small);
-    color: var(--brand-strong);
     font-family: var(--font-mono);
-  }
-  .badge--reference {
-    border-color: var(--color-ultramarine);
-    color: #fff;
-    background: var(--color-ultramarine);
+    color: var(--brand);
   }
 </style>

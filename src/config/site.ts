@@ -20,11 +20,11 @@ export const site = {
 
   /** Kurzbeschreibung (Default-Meta, Organization-Schema). */
   shortDescription:
-    'KERNSEITE entwickelt individuelle Unternehmenswebsites für lokale Unternehmen und den Mittelstand – auf Wunsch verbunden mit Google-Sichtbarkeit, Unternehmensvideo, Social Media und Automatisierung.',
+    'KERNSEITE entwickelt hochwertige Websites, lokale Sichtbarkeit und digitale Systeme für Unternehmen, die mehr Anfragen und weniger Aufwand wollen – aus Würzburg, individuell statt aus dem Baukasten.',
 
   /** Marken-Claims. */
-  claim: 'Der digitale Kern deines Unternehmens.',
-  heroClaim: 'Dein Unternehmen ist besser als sein Internetauftritt.',
+  claim: 'Websites, die professionell wirken. Und genau deshalb funktionieren.',
+  heroClaim: 'Dein Unternehmen kann mehr. Deine Website sollte es zeigen.',
 
   // --- Feature-Flags --------------------------------------------------------
   /** Preise sind standardmäßig unveröffentlicht (siehe pricing.ts). */

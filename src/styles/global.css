@@ -1,5 +1,7 @@
 /* =============================================================================
    KERNSEITE – Globale Styles
+   Haltung: viel Ruhe, große Typografie, klare Hierarchien, hochwertige Flächen.
+   Farbe wird sparsam eingesetzt – Cyan/Türkis ist die einzige Akzentfarbe.
    ========================================================================== */
 
 /* --- Reset (schlank) ------------------------------------------------------ */
@@ -28,6 +30,7 @@ body {
   background-color: var(--bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 img,
@@ -74,6 +77,7 @@ h4 {
 
 h1 {
   font-size: var(--fs-h1);
+  letter-spacing: var(--tracking-tighter);
 }
 h2 {
   font-size: var(--fs-h2);
@@ -85,6 +89,7 @@ h3 {
 h4 {
   font-size: var(--fs-h4);
   line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
 }
 
 p {
@@ -92,13 +97,13 @@ p {
 }
 
 a {
-  color: var(--brand-strong);
+  color: var(--brand);
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.15em;
+  text-underline-offset: 0.18em;
 }
 
 a:hover {
-  color: var(--brand);
+  color: var(--brand-strong);
 }
 
 strong {
@@ -113,7 +118,7 @@ strong {
 }
 
 .on-dark :focus-visible,
-.section--navy :focus-visible {
+.section--dark :focus-visible {
   outline-color: var(--focus-ring-invert);
 }
 
@@ -137,7 +142,7 @@ strong {
   top: var(--space-md);
   z-index: var(--z-skiplink);
   transform: translateY(-150%);
-  background: var(--color-graphite);
+  background: var(--color-ink);
   color: var(--color-bright);
   padding: 0.75rem 1.25rem;
   border-radius: var(--radius-md);
@@ -170,9 +175,17 @@ strong {
 }
 
 .section--tight {
-  padding-block: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  padding-block: clamp(3rem, 2rem + 4vw, 5.5rem);
 }
 
+/* Direkt nach einem Seitenkopf braucht es keinen doppelten Abstand. */
+.page-hero + .section {
+  padding-block-start: clamp(2rem, 1.5rem + 2.5vw, 4rem);
+}
+
+.section--sand {
+  background: var(--color-sand);
+}
 .section--paper {
   background: var(--color-paper);
 }
@@ -182,17 +195,20 @@ strong {
 .section--muted {
   background: var(--surface-muted);
 }
-.section--navy {
-  background: var(--color-navy);
+.section--dark {
+  background: var(--color-ink-deep);
   color: var(--text-invert);
 }
-.section--navy h1,
-.section--navy h2,
-.section--navy h3,
-.section--navy h4 {
+.section--dark h1,
+.section--dark h2,
+.section--dark h3,
+.section--dark h4 {
   color: var(--text-invert);
 }
-.section--navy a {
+.section--dark a {
+  color: var(--color-cyan);
+}
+.section--dark a:hover {
   color: var(--color-cyan);
 }
 
@@ -230,22 +246,21 @@ strong {
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   font-family: var(--font-mono);
   font-size: var(--fs-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-block-end: var(--space-md);
+  margin-block-end: var(--space-lg);
 }
-.section--navy .eyebrow {
+.section--dark .eyebrow {
   color: var(--text-invert-muted);
 }
 .eyebrow::before {
   content: '';
-  inline-size: 0.5rem;
-  block-size: 0.5rem;
-  border-radius: 2px;
+  inline-size: 1.75rem;
+  block-size: 2px;
   background: var(--accent);
   flex: none;
 }
@@ -253,47 +268,63 @@ strong {
 .lead {
   font-size: var(--fs-lead);
   color: var(--text-muted);
-  line-height: 1.55;
+  line-height: 1.58;
 }
-.section--navy .lead {
+.section--dark .lead {
   color: var(--text-invert-muted);
+}
+
+/* Sektionskopf: einheitliche, ruhige Hierarchie auf allen Seiten */
+.section-head {
+  display: grid;
+  gap: var(--space-lg);
+  margin-block-end: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+}
+.section-head > .lead {
+  max-width: var(--measure);
 }
 
 .section-title {
   font-size: var(--fs-h2);
-  max-width: 20ch;
+  max-width: 18ch;
 }
 
 .section-title--wide {
   max-width: 26ch;
 }
 
-/* --- Badges --------------------------------------------------------------- */
+/* Feine Trennlinie statt Deko-Elementen */
+.hairline {
+  border: 0;
+  border-block-start: 1px solid var(--border);
+  margin: 0;
+}
+.section--dark .hairline {
+  border-color: var(--border-invert);
+}
+
+/* --- Badges (sehr zurückhaltend) ------------------------------------------ */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
   font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 0.35rem 0.7rem;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-strong);
-  background: var(--color-bright);
+  padding: 0.3rem 0;
   color: var(--text-muted);
 }
 .badge--concept {
-  border-color: var(--color-ultramarine);
-  color: var(--brand-strong);
-  background: color-mix(in srgb, var(--color-ultramarine) 8%, var(--color-bright));
+  color: var(--brand);
 }
 .badge--concept::before {
   content: '';
-  inline-size: 0.5rem;
-  block-size: 0.5rem;
+  inline-size: 0.45rem;
+  block-size: 0.45rem;
   border-radius: 50%;
-  background: var(--color-ultramarine);
+  background: var(--accent);
+  flex: none;
 }
 
 /* --- Buttons -------------------------------------------------------------- */
@@ -301,34 +332,36 @@ strong {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  min-height: 48px;
-  padding: 0.75rem 1.4rem;
+  gap: 0.55rem;
+  min-height: 52px;
+  padding: 0.85rem 1.6rem;
   border-radius: var(--radius-pill);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-small);
+  letter-spacing: 0.005em;
   text-decoration: none;
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   transition:
-    transform var(--dur-fast) var(--ease-out),
     background-color var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out),
     color var(--dur-fast) var(--ease-out);
 }
-.btn:hover {
-  transform: translateY(-1px);
-}
-.btn:active {
-  transform: translateY(0);
-}
 
 .btn--primary {
-  background: var(--color-ultramarine);
-  color: #fff;
+  background: var(--color-ink);
+  color: var(--color-bright);
 }
 .btn--primary:hover {
-  background: var(--brand-strong);
-  color: #fff;
+  background: #2b3037;
+  color: var(--color-bright);
+}
+.section--dark .btn--primary {
+  background: var(--color-cyan);
+  color: var(--color-ink);
+}
+.section--dark .btn--primary:hover {
+  background: #5df0f8;
+  color: var(--color-ink);
 }
 
 .btn--secondary {
@@ -337,14 +370,14 @@ strong {
   border-color: var(--border-strong);
 }
 .btn--secondary:hover {
-  border-color: var(--color-graphite);
+  border-color: var(--color-ink);
   color: var(--text);
 }
-.section--navy .btn--secondary {
+.section--dark .btn--secondary {
   color: var(--text-invert);
-  border-color: var(--border-invert);
+  border-color: #3a4048;
 }
-.section--navy .btn--secondary:hover {
+.section--dark .btn--secondary:hover {
   border-color: var(--color-cyan);
   color: var(--text-invert);
 }
@@ -353,23 +386,42 @@ strong {
   padding-inline: 0.25rem;
   min-height: auto;
   border-radius: 2px;
-  color: var(--brand-strong);
+  color: var(--brand);
 }
 
-/* Pfeil-Link */
+/* Pfeil-Link – ruhiger Standard-CTA im Fließtext */
 .arrow-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   font-weight: var(--fw-semibold);
   text-decoration: none;
-  color: var(--brand-strong);
+  color: var(--text);
+  border-block-end: 1px solid var(--border-strong);
+  padding-block-end: 0.3rem;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+.arrow-link:hover {
+  color: var(--text);
+  border-block-end-color: var(--accent);
 }
 .arrow-link .arrow {
-  transition: transform var(--dur-fast) var(--ease-out);
+  color: var(--brand);
+  transition: transform var(--dur-base) var(--ease-out);
 }
 .arrow-link:hover .arrow {
-  transform: translateX(3px);
+  transform: translateX(4px);
+}
+.section--dark .arrow-link {
+  color: var(--text-invert);
+  border-block-end-color: #3a4048;
+}
+.section--dark .arrow-link:hover {
+  color: var(--text-invert);
+  border-block-end-color: var(--color-cyan);
+}
+.section--dark .arrow-link .arrow {
+  color: var(--color-cyan);
 }
 
 /* --- Karten / Flächen ----------------------------------------------------- */
@@ -377,7 +429,7 @@ strong {
   background: var(--color-bright);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+  padding: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
 }
 
 /* --- Prose (Rechtstexte, Fließtext) --------------------------------------- */
@@ -403,10 +455,28 @@ strong {
   margin-block-start: 0.4em;
 }
 
+/* --- Dezentes Reveal beim Scrollen ---------------------------------------- */
+/* Standard: sichtbar. Erst wenn das Skript den Beobachter aktiviert, wird
+   ausgeblendet – ohne JS bleibt der Inhalt also immer lesbar. */
+.reveal {
+  opacity: 1;
+}
+html.has-reveal .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+}
+html.has-reveal .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
 /* --- Dev-Only Draft-Hinweis ----------------------------------------------- */
 .draft-notice {
-  border: 2px dashed var(--color-alert);
-  background: color-mix(in srgb, var(--color-alert) 8%, var(--color-bright));
+  border: 1px dashed var(--color-alert);
+  background: color-mix(in srgb, var(--color-alert) 6%, var(--color-bright));
   color: #7a2417;
   border-radius: var(--radius-md);
   padding: 1rem 1.25rem;
@@ -463,5 +533,9 @@ strong {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+  html.has-reveal .reveal {
+    opacity: 1;
+    transform: none;
   }
 }

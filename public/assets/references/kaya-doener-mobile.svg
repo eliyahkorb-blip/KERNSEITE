@@ -1,13 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 780" width="390" height="780" role="img" aria-label="Platzhalter – Screenshot folgt: Kaya Döner Himmelstadt (Mobil)">
-  <rect width="390" height="780" fill="#F4F1E8"/>
-  <rect x="0" y="0" width="390" height="44" fill="#ECEADF"/>
-  <rect x="120" y="16" width="150" height="12" rx="6" fill="#CBD4E3"/>
-  <g font-family="Inter, system-ui, sans-serif" text-anchor="middle">
-    <text x="195" y="330" font-size="13" letter-spacing="2" fill="#304FFE" font-family="'IBM Plex Mono', monospace">REFERENZ · GASTRONOMIE</text>
-    <text x="195" y="392" font-size="34" font-weight="700" fill="#111318">Screenshot</text>
-    <text x="195" y="432" font-size="34" font-weight="700" fill="#111318">folgt</text>
-    <text x="195" y="480" font-size="16" fill="#4A4F5A">Kaya Döner Himmelstadt</text>
-    <text x="195" y="512" font-size="12" fill="#8A8F9A">Mobiler Screenshot wird ergänzt</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 780" width="390" height="780" role="img" aria-label="Mobile Gestaltungsvorschau der Website von Kaya Döner Himmelstadt">
+  <rect width="390" height="780" fill="#F7F3EE"/>
+  <rect x="0" y="0" width="390" height="64" fill="#17181A"/>
+  <g font-family="'Bricolage Grotesque', Inter, sans-serif">
+    <text x="24" y="40" font-size="18" font-weight="700" fill="#FFFFFF">KAYA</text>
+    <circle cx="79" cy="34" r="3.5" fill="#D0402F"/>
+    <text x="88" y="40" font-size="18" font-weight="700" fill="#FFFFFF">DÖNER</text>
   </g>
-  <rect x="1" y="1" width="388" height="778" fill="none" stroke="#DDD8C8" stroke-width="2"/>
+  <g fill="#FFFFFF">
+    <rect x="336" y="26" width="26" height="2.5" rx="1.25"/>
+    <rect x="336" y="34" width="26" height="2.5" rx="1.25"/>
+    <rect x="336" y="42" width="26" height="2.5" rx="1.25"/>
+  </g>
+
+  <g font-family="Inter, system-ui, sans-serif" font-size="12">
+    <text x="24" y="112" fill="#E2A32B">★★★★★</text>
+    <text x="88" y="112" font-weight="700" fill="#17181A">4,9</text>
+    <text x="110" y="112" fill="#6B6E73">· 80+ Rezensionen</text>
+  </g>
+  <g font-family="'Bricolage Grotesque', Inter, sans-serif" font-size="40" font-weight="700" fill="#17181A" letter-spacing="-1">
+    <text x="23" y="164">Frischer</text>
+    <text x="23" y="206">Döner in</text>
+    <text x="23" y="248">Himmelstadt.</text>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6B6E73">
+    <text x="24" y="286">Knuspriges Fladenbrot, frische</text>
+    <text x="24" y="306">Zutaten und hausgemachte Soßen.</text>
+  </g>
+  <rect x="24" y="330" width="342" height="48" rx="10" fill="#B8362A"/>
+  <text x="195" y="360" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">Speisekarte ansehen</text>
+  <rect x="24" y="388" width="342" height="48" rx="10" fill="none" stroke="#C7C2BA" stroke-width="1.5"/>
+  <text x="195" y="418" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#17181A">Route starten</text>
+
+  <ellipse cx="195" cy="530" rx="150" ry="82" fill="#EDE4D6"/>
+  <ellipse cx="195" cy="520" rx="112" ry="56" fill="#DCCBAE"/>
+  <path d="M100 530 C132 496 258 496 290 530 C258 552 132 552 100 530 Z" fill="#B9814B"/>
+  <g fill="#7E9B4E"><circle cx="160" cy="516" r="7"/><circle cx="206" cy="510" r="6"/><circle cx="238" cy="520" r="6.5"/></g>
+  <g fill="#C0483A"><circle cx="182" cy="512" r="5.5"/><circle cx="222" cy="522" r="5"/></g>
+  <text x="195" y="632" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10" letter-spacing="2" fill="#A79E90">PRODUKTFOTO</text>
+
+  <rect x="0" y="660" width="390" height="120" fill="#17181A"/>
+  <g font-family="Inter, system-ui, sans-serif" font-size="12" fill="#D6D8DA" text-anchor="middle">
+    <text x="195" y="694">01590 1254030</text>
+    <text x="195" y="720">Täglich 11:00 – 20:00 Uhr</text>
+    <text x="195" y="746">Rote Wiese 2, Himmelstadt</text>
+  </g>
 </svg>

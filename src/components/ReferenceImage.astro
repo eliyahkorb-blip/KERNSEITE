@@ -6,7 +6,7 @@ interface Props {
   variant?: 'desktop' | 'phone';
   /** Above-the-fold -> eager laden; sonst lazy. */
   eager?: boolean;
-  /** Platzhalter-Kennzeichnung anzeigen (bis echter Screenshot vorliegt). */
+  /** Kennzeichnung anzeigen, solange kein finaler Screenshot vorliegt. */
   pending?: boolean;
   class?: string;
 }
@@ -15,17 +15,6 @@ const { shot, variant = 'desktop', eager = false, pending = true, class: classNa
 ---
 
 <figure class={`refimg refimg--${variant} ${className ?? ''}`}>
-  {
-    variant === 'desktop' && (
-      <div class="refimg__chrome" aria-hidden="true">
-        <span class="refimg__dots">
-          <i />
-          <i />
-          <i />
-        </span>
-      </div>
-    )
-  }
   <div class="refimg__screen">
     <img
       src={shot.src}
@@ -35,44 +24,29 @@ const { shot, variant = 'desktop', eager = false, pending = true, class: classNa
       loading={eager ? 'eager' : 'lazy'}
       decoding="async"
     />
-    {pending && <span class="refimg__tag">Screenshot folgt</span>}
   </div>
+  {
+    pending && (
+      <figcaption class="refimg__note">Gestaltungsvorschau – finaler Screenshot folgt</figcaption>
+    )
+  }
 </figure>
 
 <style>
   .refimg {
     margin: 0;
+  }
+  .refimg__screen {
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: 1px solid var(--border);
     background: var(--color-bright);
-    box-shadow: var(--shadow-md);
+    transition: border-color var(--dur-base) var(--ease-out);
   }
-  .refimg--phone {
-    border-radius: 28px;
-    max-width: 320px;
-    border-width: 8px;
-    border-color: var(--color-graphite);
-  }
-  .refimg__chrome {
-    display: flex;
-    align-items: center;
-    padding: 0.55rem 0.8rem;
-    background: var(--surface-muted);
-    border-block-end: 1px solid var(--border);
-  }
-  .refimg__dots {
-    display: inline-flex;
-    gap: 5px;
-  }
-  .refimg__dots i {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--border-strong);
-  }
-  .refimg__screen {
-    position: relative;
+  .refimg--phone .refimg__screen {
+    border-radius: 24px;
+    max-width: 300px;
+    border: 6px solid var(--color-ink);
   }
   .refimg__screen img {
     display: block;
@@ -80,17 +54,15 @@ const { shot, variant = 'desktop', eager = false, pending = true, class: classNa
     height: auto;
     background: var(--color-paper);
   }
-  .refimg__tag {
-    position: absolute;
-    inset-block-start: 0.6rem;
-    inset-inline-end: 0.6rem;
+  .refimg__note {
+    margin-block-start: var(--space-sm);
     font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.06em;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #fff;
-    background: var(--color-alert);
-    border-radius: 4px;
-    padding: 0.15rem 0.4rem;
+    color: var(--text-muted);
+  }
+  .section--dark .refimg__note {
+    color: var(--text-invert-muted);
   }
 </style>

@@ -14,76 +14,70 @@ const { steps, ariaLabel = 'Projektablauf' } = Astro.props;
           {String(i + 1).padStart(2, '0')}
         </span>
         <span class="process-band__label">{step}</span>
-        {i < steps.length - 1 && (
-          <span class="process-band__arrow" aria-hidden="true">
-            →
-          </span>
-        )}
       </li>
     ))
   }
 </ol>
 
 <style>
+  /* Ruhiges Band aus feinen Linien statt Kacheln mit Pfeilen. */
   .process-band {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-    gap: 0.5rem;
+    display: grid;
+    gap: 0;
     margin: 0;
     padding: 0;
     list-style: none;
-    counter-reset: step;
+    border-block-start: 1px solid var(--border);
   }
   .process-band__step {
-    position: relative;
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex: 1 1 auto;
-    min-width: max-content;
-    padding: 0.9rem 1.1rem;
-    background: var(--color-bright);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 1.1rem;
+    border-block-end: 1px solid var(--border);
   }
   .process-band__num {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--brand-strong);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    flex: none;
   }
   .process-band__label {
     font-family: var(--font-display);
     font-weight: var(--fw-semibold);
-    font-size: var(--fs-small);
-    white-space: nowrap;
+    font-size: var(--fs-h4);
+    letter-spacing: -0.01em;
   }
-  .process-band__arrow {
-    position: absolute;
-    right: -0.55rem;
-    color: var(--border-strong);
-    background: var(--bg);
-    z-index: 1;
-  }
-  .section--navy .process-band__step {
-    background: #0d244a;
+
+  .section--dark .process-band,
+  .section--dark .process-band__step {
     border-color: var(--border-invert);
   }
-  .section--navy .process-band__label {
+  .section--dark .process-band__label {
     color: var(--text-invert);
   }
-  .section--navy .process-band__num {
+  .section--dark .process-band__num {
     color: var(--color-cyan);
   }
-  @media (max-width: 47.99rem) {
+
+  @media (min-width: 48rem) {
     .process-band {
-      flex-direction: column;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: var(--grid-gap);
+    }
+  }
+  @media (min-width: 64rem) {
+    .process-band {
+      grid-template-columns: repeat(6, 1fr);
     }
     .process-band__step {
-      min-width: 0;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding-block: 1.25rem 1.5rem;
     }
-    .process-band__arrow {
-      display: none;
+    .process-band__label {
+      font-size: var(--fs-body);
     }
   }
 </style>
