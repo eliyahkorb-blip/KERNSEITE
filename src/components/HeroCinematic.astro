@@ -24,6 +24,7 @@
  * Medien + Justage: siehe docs/HERO_VIDEO.md
  */
 import { existsSync } from 'node:fs';
+import HeroFigure from './HeroFigure.astro';
 
 interface Props {
   eyebrow?: string;
@@ -87,28 +88,28 @@ const posterFile = hasFile('hero-kernseite-poster.webp')
           ))}
         </video>
       ) : (
-        /* Platzhalter-Szene: dunkler Raum + Retro-Monitor (rein dekorativ) */
-        <div class="hero__scene" aria-hidden="true">
-          <div class="hero__scene-floor" />
-          <div class="hero__monitor">
-            <span class="hero__monitor-slot" />
-          </div>
-          <div class="hero__monitor-foot" />
-        </div>
+        /* CRT-Head-Figur, solange kein finales Video vorliegt (rein dekorativ) */
+        <HeroFigure word={screenWords[0]} words={screenWords.join('|')} />
       )
     }
 
-    <!-- Bildschirmfläche: Cyan + sehr dezente CRT-Anmutung -->
-    <div class="hero__screen" data-hero-screen aria-hidden="true">
-      <div class="hero__screen-glow"></div>
-      <div class="hero__screen-panel">
-        <div class="hero__screen-face"></div>
-        <span class="hero__screen-word" data-hero-word data-words={screenWords.join('|')}>
-          {screenWords[0]}
-        </span>
-        <div class="hero__screen-scan"></div>
-      </div>
-    </div>
+    {
+      /* Bildschirmfläche für das gefilmte Material: legt Cyan + CRT-Anmutung
+         auf den Monitor im Video. Bei der gezeichneten Figur steckt der
+         Bildschirm bereits im SVG. */
+      hasVideo && (
+        <div class="hero__screen" data-hero-screen aria-hidden="true">
+          <div class="hero__screen-glow" />
+          <div class="hero__screen-panel">
+            <div class="hero__screen-face" />
+            <span class="hero__screen-word" data-hero-word data-words={screenWords.join('|')}>
+              {screenWords[0]}
+            </span>
+            <div class="hero__screen-scan" />
+          </div>
+        </div>
+      )
+    }
 
     <!-- Weiche Leseebene (kein Kasten, kein Glassmorphism) -->
     <div class="hero__scrim" aria-hidden="true"></div>
@@ -133,9 +134,11 @@ const posterFile = hasFile('hero-kernseite-poster.webp')
 
   document.querySelectorAll<HTMLElement>('[data-hero]').forEach((hero) => {
     const video = hero.querySelector<HTMLVideoElement>('[data-hero-video]');
+    const stage = hero.querySelector<HTMLElement>('.hero__stage');
     const screen = hero.querySelector<HTMLElement>('[data-hero-screen]');
-    const wordEl = hero.querySelector<HTMLElement>('[data-hero-word]');
-    const words = (wordEl?.dataset.words ?? '').split('|').filter(Boolean);
+    const wordEl = hero.querySelector<Element>('[data-hero-word]');
+    // SVG-Elemente haben kein `dataset`, deshalb über das Attribut lesen.
+    const words = (wordEl?.getAttribute('data-words') ?? '').split('|').filter(Boolean);
 
     let inView = true;
     let wordTimer: number | undefined;
@@ -152,6 +155,7 @@ const posterFile = hasFile('hero-kernseite-poster.webp')
       }
       hero.classList.toggle('is-static', motionOff());
       screen?.classList.toggle('is-live', active);
+      stage?.classList.toggle('is-live', active);
     };
 
     /** Sehr ruhiger Wortwechsel auf dem Monitor. */
@@ -227,58 +231,6 @@ const posterFile = hasFile('hero-kernseite-poster.webp')
     filter: saturate(0.72) contrast(1.04) brightness(0.82);
   }
 
-  /* Platzhalter-Szene: dunkler Raum, weiches Licht, angedeuteter Retro-Monitor. */
-  .hero__scene {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(80% 60% at 68% 42%, rgba(25, 230, 242, 0.1) 0%, transparent 62%),
-      radial-gradient(120% 90% at 30% 10%, #23282e 0%, transparent 55%),
-      linear-gradient(160deg, #1b1f24 0%, #14171b 45%, #0b0d10 100%);
-  }
-  .hero__scene-floor {
-    position: absolute;
-    inset-inline: 0;
-    inset-block-end: 0;
-    block-size: 34%;
-    background: linear-gradient(to bottom, transparent, rgba(6, 8, 10, 0.85));
-  }
-  /* Monitorgehäuse: Bildschirmrechteck + Rahmen ringsum. */
-  .hero__monitor {
-    position: absolute;
-    inset-inline-start: calc(var(--screen-x) - 3.4%);
-    inset-block-start: calc(var(--screen-y) - 5%);
-    inline-size: calc(var(--screen-w) + 6.8%);
-    block-size: calc(var(--screen-h) + 13%);
-    border-radius: 16px 16px 12px 12px;
-    background: linear-gradient(155deg, #d6cfc1 0%, #b8b0a1 55%, #8b8477 100%);
-    box-shadow:
-      0 46px 100px rgba(0, 0, 0, 0.58),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4),
-      inset 0 -14px 26px rgba(0, 0, 0, 0.12);
-    transform: perspective(1100px) rotateY(var(--screen-skew)) rotate(var(--screen-rotate));
-  }
-  /* angedeutetes Laufwerk im unteren Gehäuseteil */
-  .hero__monitor-slot {
-    position: absolute;
-    inset-inline: 22% 22%;
-    inset-block-end: 7%;
-    block-size: 3.5%;
-    min-block-size: 3px;
-    border-radius: 999px;
-    background: rgba(70, 64, 55, 0.42);
-  }
-  .hero__monitor-foot {
-    position: absolute;
-    inset-inline-start: calc(var(--screen-x) - 1%);
-    inset-block-start: calc(var(--screen-y) + var(--screen-h) + 8%);
-    inline-size: calc(var(--screen-w) + 2%);
-    block-size: 1.6%;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.45);
-    filter: blur(6px);
-  }
-
   /* Weiche Leseebene: links dunkler, rechts offen für die Szene. */
   .hero__scrim {
     position: absolute;
@@ -292,7 +244,7 @@ const posterFile = hasFile('hero-kernseite-poster.webp')
         rgba(15, 18, 21, 0.22) 72%,
         rgba(15, 18, 21, 0.38) 100%
       ),
-      linear-gradient(to top, rgba(15, 18, 21, 0.7) 0%, rgba(15, 18, 21, 0) 42%);
+      linear-gradient(to top, rgba(15, 18, 21, 0.45) 0%, rgba(15, 18, 21, 0) 38%);
   }
 
   /* --- Bildschirmfläche --------------------------------------------------- */

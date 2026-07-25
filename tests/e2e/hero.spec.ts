@@ -22,9 +22,10 @@ test.describe('Hero (HeroCinematic)', () => {
     const stage = page.locator('[data-hero] .hero__stage');
     await expect(stage).toBeVisible();
 
-    // Bildschirmfläche ist als dekorativ ausgezeichnet.
-    const screen = page.locator('[data-hero-screen]');
-    await expect(screen).toHaveAttribute('aria-hidden', 'true');
+    // Die Szene selbst (CRT-Figur bzw. Video + Overlay) ist als dekorativ
+    // ausgezeichnet und trägt keine Bedeutung für Screenreader.
+    const decorative = stage.locator('[aria-hidden="true"]');
+    expect(await decorative.count()).toBeGreaterThan(0);
 
     // Innerhalb der Szene gibt es keine Tastatur-Stopps.
     const focusables = stage.locator('a, button, input, select, textarea, [tabindex="0"]');
