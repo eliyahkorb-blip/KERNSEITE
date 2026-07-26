@@ -8,39 +8,48 @@
  * trägt die Fläche allein die Typografie (keine leeren Bildplatzhalter).
  */
 import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { industries } from '../config/industries';
+import { industryImages } from '../config/media';
 
-const imgDir = new URL('../../public/assets/branchen/', import.meta.url);
-const imageFor = (slug: string) =>
-  existsSync(new URL(`${slug}.webp`, imgDir)) ? `/assets/branchen/${slug}.webp` : null;
+// Auf das Projektverzeichnis beziehen – `import.meta.url` zeigt im Build
+// nicht zuverlässig auf die Komponentendatei.
+const publicDir = join(process.cwd(), 'public');
+const motifFor = (slug: string) => {
+  const motif = industryImages[slug];
+  if (!motif) return null;
+  return existsSync(join(publicDir, motif.src.replace(/^\//, ''))) ? motif : null;
+};
 
 // Feste Größenverteilung sorgt für die Asymmetrie.
 const spans = ['a', 'b', 'c', 'd', 'e'] as const;
 const items = industries.map((ind, i) => ({
   ...ind,
-  image: imageFor(ind.slug),
+  motif: motifFor(ind.slug),
   span: spans[i % spans.length],
 }));
 ---
 
 <ul class="igrid" role="list">
   {
-    items.map((ind, i) => (
+    items.map((ind) => (
       <li class:list={['igrid__cell', `igrid__cell--${ind.span}`]}>
         <a class="igrid__link" href={ind.href}>
-          {ind.image ? (
+          {ind.motif ? (
             <span class="igrid__media">
-              <img src={ind.image} alt="" width="1200" height="800" loading="lazy" decoding="async" />
+              <img
+                src={ind.motif.src}
+                alt={ind.motif.alt}
+                width={ind.motif.width}
+                height={ind.motif.height}
+                loading="lazy"
+                decoding="async"
+              />
             </span>
           ) : (
             <span class="igrid__rule" aria-hidden="true" />
           )}
-          <span class="igrid__meta">
-            <span class="igrid__num" aria-hidden="true">
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <span class="igrid__name">{ind.title}</span>
-          </span>
+          <span class="igrid__name">{ind.title}</span>
           <span class="igrid__arg">{ind.argument}</span>
           <span class="igrid__go" aria-hidden="true">
             →
@@ -72,16 +81,17 @@ const items = industries.map((ind, i) => ({
     color: var(--text);
   }
 
+  /* Kein Einheitszuschnitt: Jedes Motiv behält sein eigenes Format.
+     Daraus entsteht der Formatwechsel im Raster. */
   .igrid__media {
     display: block;
     overflow: hidden;
     background: var(--ks-surface);
-    aspect-ratio: 3 / 2;
   }
   .igrid__media img {
+    display: block;
     inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
+    block-size: auto;
     transition: transform var(--dur-slow) var(--ease-out);
   }
   .igrid__link:hover .igrid__media img {
@@ -100,19 +110,8 @@ const items = industries.map((ind, i) => ({
     background: var(--accent);
   }
 
-  .igrid__meta {
-    display: flex;
-    align-items: baseline;
-    gap: 0.9rem;
-  }
-  .igrid__num {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--track-label);
-    color: var(--accent-ink);
-    flex: none;
-  }
   .igrid__name {
+    display: block;
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
     font-size: clamp(1.6rem, 3vw, 2.75rem);
@@ -158,13 +157,6 @@ const items = industries.map((ind, i) => ({
     }
     .igrid__cell--e {
       grid-column: span 8;
-    }
-    .igrid__cell--b .igrid__media,
-    .igrid__cell--c .igrid__media {
-      aspect-ratio: 4 / 5;
-    }
-    .igrid__cell--e .igrid__media {
-      aspect-ratio: 16 / 9;
     }
   }
 </style>

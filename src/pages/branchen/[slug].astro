@@ -3,7 +3,9 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
 import AccentWord from '../../components/AccentWord.astro';
 import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { industries, type Industry } from '../../config/industries';
+import { industryImages } from '../../config/media';
 import { getService, type ServiceKey } from '../../config/services';
 import { works, type ProjectWork } from '../../config/cases';
 
@@ -27,8 +29,11 @@ const breadcrumbs = [
 const related = industry.relatedServices.map((key) => getService(key as ServiceKey));
 
 // Bild nur einbinden, wenn es tatsächlich vorliegt (keine leeren Platzhalter).
-const imgUrl = new URL(`../../../public/assets/branchen/${industry.slug}.webp`, import.meta.url);
-const image = existsSync(imgUrl) ? `/assets/branchen/${industry.slug}.webp` : null;
+const candidate = industryImages[industry.slug];
+const motif =
+  candidate && existsSync(join(process.cwd(), 'public', candidate.src.replace(/^\//, '')))
+    ? candidate
+    : null;
 
 // Branchentypische Referenz, wenn vorhanden.
 const projects = works.filter((w): w is ProjectWork => w.kind === 'project');
@@ -64,10 +69,17 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
   </h1>
 
   {
-    image && (
+    motif && (
       <section class="hero-img">
         <div class="content--wide content">
-          <img src={image} alt="" width="1600" height="900" loading="eager" decoding="async" />
+          <img
+            src={motif.src}
+            alt={motif.alt}
+            width={motif.width}
+            height={motif.height}
+            loading="eager"
+            decoding="async"
+          />
         </div>
       </section>
     )
@@ -77,21 +89,16 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
   <section class="section section--cream">
     <div class="content">
       <h2 class="sec">Worauf es hier ankommt</h2>
-      <ol class="focus" role="list">
+      <ul class="focus" role="list">
         {
-          industry.focus.map((f, i) => (
+          industry.focus.map((f) => (
             <li class="focus__item">
-              <span class="focus__num" aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <div class="focus__body">
-                <h3 class="focus__title">{f.title}</h3>
-                <p class="focus__text">{f.body}</p>
-              </div>
+              <h3 class="focus__title">{f.title}</h3>
+              <p class="focus__text">{f.body}</p>
             </li>
           ))
         }
-      </ol>
+      </ul>
     </div>
   </section>
 
@@ -105,7 +112,10 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
             <h2 class="ref__title">{reference.headline}</h2>
             <p class="ref__body">{reference.tagline}</p>
             <a class="link-arrow" href={reference.href}>
-              Projekt ansehen <span class="arrow" aria-hidden="true">→</span>
+              Projekt ansehen{' '}
+              <span class="arrow" aria-hidden="true">
+                →
+              </span>
             </a>
           </div>
           <span class="ref__media" aria-hidden="true">
@@ -131,12 +141,9 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
       <h2 class="sec">Das bringt dich hier weiter</h2>
       <ul class="rel" role="list">
         {
-          related.map((r, i) => (
+          related.map((r) => (
             <li>
               <a class="rel__link" href={r.href}>
-                <span class="rel__num" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
                 <span class="rel__main">
                   <span class="rel__name">{r.cardTitle}</span>
                   <span class="rel__teaser">{r.teaser}</span>
@@ -159,12 +166,14 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
 </PageLayout>
 
 <style>
+  /* Das Motiv behält sein echtes Format – kein Zwangszuschnitt. */
   .hero-img img {
     inline-size: 100%;
     block-size: auto;
     display: block;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
+    max-block-size: 80svh;
+    object-fit: contain;
+    object-position: left top;
   }
 
   .sec {
@@ -180,18 +189,8 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
     border-block-start: 1px solid var(--line);
   }
   .focus__item {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 1rem clamp(1rem, 3vw, 2.5rem);
     padding-block: clamp(1.25rem, 1rem + 1.4vw, 2rem);
     border-block-end: 1px solid var(--line);
-  }
-  .focus__num {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--track-label);
-    color: var(--accent-ink);
-    padding-block-start: 0.3em;
   }
   .focus__title {
     font-size: clamp(1.2rem, 2.2vw, 1.8rem);
@@ -237,20 +236,13 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
   }
   .rel__link {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto;
     gap: 0.6rem clamp(1rem, 3vw, 2.5rem);
     align-items: start;
     padding-block: clamp(1.25rem, 1rem + 1.4vw, 2rem);
     border-block-end: 1px solid var(--line);
     text-decoration: none;
     color: var(--text);
-  }
-  .rel__num {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--track-label);
-    color: var(--accent-ink);
-    padding-block-start: 0.45em;
   }
   .rel__name {
     display: block;

@@ -23,14 +23,6 @@ const jobs = [
   ['@fontsource/inter/files/inter-latin-600-normal.woff2', 'inter-latin-600.woff2'],
   ['@fontsource/inter/files/inter-latin-700-normal.woff2', 'inter-latin-700.woff2'],
   [
-    '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2',
-    'ibm-plex-mono-latin-400.woff2',
-  ],
-  [
-    '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2',
-    'ibm-plex-mono-latin-500.woff2',
-  ],
-  [
     '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2',
     'bricolage-grotesque-latin-var.woff2',
   ],
@@ -52,7 +44,6 @@ for (const [src, dest] of jobs) {
 // Lizenzen zusammenführen (OFL) – Nachweis im Repo.
 const licenseSources = [
   ['Inter', '@fontsource/inter/LICENSE'],
-  ['IBM Plex Mono', '@fontsource/ibm-plex-mono/LICENSE'],
   ['Bricolage Grotesque', '@fontsource-variable/bricolage-grotesque/LICENSE'],
 ];
 let combined =

@@ -53,3 +53,51 @@ pnpm build:production # echter Build (bricht bei fehlenden Pflichtdaten ab)
 - Reale Lighthouse-Werte (Ziel ≥ 95) auf dem Produktionsserver mit echten Assets.
 - Echter SMTP-Versand (benötigt produktive `.env`).
 - Kontrast-/Screenreader-Detailprüfung mit echten Assets.
+
+---
+
+## Relaunch-Runde: CRT-Motiv, Nummern, Metadaten (2026-07-26)
+
+### Automatisierte Prüfungen
+
+| Prüfung | Befehl | Ergebnis |
+| ------- | ------ | -------- |
+| Typen | `pnpm typecheck` | 0 Fehler, 0 Warnungen (58 Dateien) |
+| Lint | `pnpm lint` | keine Befunde |
+| Fixture-Build | `pnpm build:ci` | 27 Seiten |
+| Inline-Code | `check-no-inline` | keine ausführbaren Inline-Scripts/-Styles |
+| Externe Ressourcen | `check-external` | 0 |
+| Interne Links | `check-links` | 1688 Links, keine defekten |
+| Statische A11y | `check-a11y-static` | bestanden (H1, Hierarchie, Alt, Namen, lang) |
+| Secrets | `check-secrets` | keine Funde in 143 Dateien |
+| E2E | `pnpm test:e2e` | 42 bestanden, 1 übersprungen (Preview-Badge nur im Preview-Build) |
+| Sichtprüfung | `node scripts/visual-qa.mjs` | 12 Seiten × 5 Breiten: kein Überlauf, alle Bilder geladen |
+
+### Suchlauf über entfernte Muster
+
+`chapter-num`, `rows__num`, `igrid__num`, `tl__num`, `plist__num`, `gbp__point-num`,
+`scope__num`, `steps__n`, `focus__num`, `rel__num`, `wf__meta`, `wf__cat`,
+`label--meta`, `beat__n`, `chain__n`, `padStart(2, '0')`, `font-mono`, `fs-label`,
+`track-label`, `text-transform: uppercase` → **keine Treffer** in `src/` und `scripts/`.
+Der Build wird zusätzlich durch `tests/e2e/visual-relaunch.spec.ts` dagegen abgesichert.
+
+### Sichtprüfung 1920 / 1440 / 768 / 430 / 390 px
+
+Geprüft: `/`, `/arbeiten/`, `/arbeiten/kaya-doener-himmelstadt/`, `/leistungen/`,
+`/branchen/`, `/branchen/gastronomie-hotels/`, `/branchen/lokale-dienstleister/`,
+`/agentur/`, `/prozess/`, `/kontakt/`, `/leistungen/seo-geo/`, `/agb/`.
+
+Kein horizontaler Überlauf, kein Bild ohne Inhalt, keine leere graue Fläche.
+Für die Aufnahme wird `has-reveal` abgeschaltet, damit der Endzustand geprüft wird;
+dass die Reveal-Abschnitte beim echten Scrollen sichtbar werden, prüft ein eigener
+E2E-Test.
+
+### Bekannt und offen
+
+- Unsplash ist aus dieser Umgebung nicht erreichbar (Egress-Proxy, HTTP 403 beim
+  CONNECT). Vier Methoden geprüft, Details in `docs/IMAGE_PLAN.md`. Branchenbilder für
+  Handwerk, Zahnarztpraxen und B2B-Mittelstand fehlen deshalb weiterhin; diese Flächen
+  tragen reine Typografie statt eines Platzhalters.
+- `pnpm format:check` scheitert an `src/pages/cookie-einstellungen.astro`: Prettier kann
+  das `<script>` innerhalb des JSX-Ausdrucks nicht parsen. Bestand vor dieser Runde,
+  betrifft nur die Formatierung, nicht den Build.

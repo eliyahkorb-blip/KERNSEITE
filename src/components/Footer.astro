@@ -16,7 +16,7 @@ const c = activeCompany;
 
     <div class="ft__grid">
       <div class="ft__contact">
-        <p class="label--meta ft__label">Kontakt</p>
+        <p class="ft__label">Kontakt</p>
         <p class="ft__lines">
           <a href={`mailto:${c.email}`}>{c.email}</a><br />
           <a href={`tel:${c.phone.replace(/[^+\d]/g, '')}`}>{c.phone}</a>
@@ -31,7 +31,7 @@ const c = activeCompany;
         {
           footerNav.map((group) => (
             <div class="ft__group">
-              <h2 class="label--meta ft__label">{group.title}</h2>
+              <h2 class="ft__label">{group.title}</h2>
               <ul role="list">
                 {group.items.map((item) => (
                   <li>
@@ -96,6 +96,8 @@ const c = activeCompany;
   }
 
   .ft__label {
+    font-size: var(--fs-small);
+    font-weight: var(--fw-medium);
     color: var(--accent);
     margin-block-end: var(--space-md);
   }

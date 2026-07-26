@@ -1,50 +1,54 @@
 ---
 /**
  * WorkFeature – großflächige Inszenierung eines echten Projekts.
- * Keine Karte, keine Box: großer Screenshot, große Headline, feine Linien.
- * Die Ausrichtung wechselt je Projekt (`flip`), damit keine Reihe entsteht.
+ *
+ * Keine Karte, keine Box, keine Kapitelnummer: großer Screenshot, große
+ * Headline, feine Linien. Die Ausrichtung wechselt je Projekt (`flip`), damit
+ * keine gleichförmige Reihe entsteht. Die Einordnung des Projekts steht als
+ * ruhige Schlagworte unter der Beschreibung – in normaler Schreibweise.
  */
 import type { ProjectWork } from '../config/cases';
 
 interface Props {
   work: ProjectWork;
-  index: number;
   /** true = Text links, Bild rechts. */
   flip?: boolean;
   /** Dunkle Bühne (passend zu Projekten mit dunklem Kopfbereich). */
   tone?: 'light' | 'dark';
 }
-const { work, index, flip = false, tone = 'light' } = Astro.props;
-const num = String(index + 1).padStart(2, '0');
+const { work, flip = false, tone = 'light' } = Astro.props;
+
+/** „Gastronomie · Website · digitale Speisekarte“ → einzelne Schlagworte. */
+const tags = work.category
+  .split('·')
+  .map((part) => part.trim())
+  .filter(Boolean);
 ---
 
 <article class:list={['wf', { 'wf--flip': flip, 'wf--dark': tone === 'dark' }]}>
   <div class="wf__inner content--wide content">
     <div class="wf__media">
-      <div class="wf__media-link">
-        <img
-          src={work.screenshotDesktop.src}
-          srcset={work.screenshotDesktop.srcset}
-          sizes="(min-width: 64rem) 62vw, 100vw"
-          width={work.screenshotDesktop.width}
-          height={work.screenshotDesktop.height}
-          alt={work.screenshotDesktop.alt}
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
+      <img
+        src={work.screenshotDesktop.src}
+        srcset={work.screenshotDesktop.srcset}
+        sizes="(min-width: 64rem) 62vw, 100vw"
+        width={work.screenshotDesktop.width}
+        height={work.screenshotDesktop.height}
+        alt={work.screenshotDesktop.alt}
+        loading="lazy"
+        decoding="async"
+      />
     </div>
 
     <div class="wf__text">
-      <p class="wf__meta">
-        <span class="chapter-num">{num}</span>
-        <span class="wf__cat">{work.category}</span>
-      </p>
       <h2 class="wf__title">
         <a class="wf__link" href={work.href}>{work.headline}</a>
       </h2>
       <p class="wf__client">{work.title}</p>
       <p class="wf__body">{work.tagline}</p>
+      <ul class="wf__tags" role="list">
+        {tags.map((tag) => <li class="tag">{tag}</li>)}
+      </ul>
       <div class="wf__actions">
         <a class="link-arrow" href={work.href}>
           Projekt ansehen <span class="arrow" aria-hidden="true">→</span>
@@ -60,7 +64,7 @@ const num = String(index + 1).padStart(2, '0');
 
 <style>
   .wf {
-    padding-block: clamp(3rem, 2rem + 5vw, 7rem);
+    padding-block: clamp(3.5rem, 2rem + 6vw, 8rem);
     background: var(--ks-cream);
   }
   .wf--dark {
@@ -69,6 +73,7 @@ const num = String(index + 1).padStart(2, '0');
   }
 
   .wf__inner {
+    position: relative;
     display: grid;
     gap: clamp(1.75rem, 1rem + 3vw, 3.5rem);
     align-items: center;
@@ -92,25 +97,7 @@ const num = String(index + 1).padStart(2, '0');
     background: var(--ks-black-soft);
   }
 
-  .wf__meta {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .wf__cat {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--track-label);
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-  .wf--dark .wf__cat {
-    color: var(--text-muted);
-  }
-
   .wf__title {
-    margin-block-start: var(--space-lg);
     font-size: var(--fs-h3);
     line-height: 0.94;
     letter-spacing: var(--track-display);
@@ -134,9 +121,6 @@ const num = String(index + 1).padStart(2, '0');
     position: absolute;
     inset: 0;
   }
-  .wf__inner {
-    position: relative;
-  }
 
   .wf__client {
     margin-block-start: var(--space-md);
@@ -147,8 +131,13 @@ const num = String(index + 1).padStart(2, '0');
     color: var(--text-muted);
     max-width: 44ch;
   }
-  .wf--dark .wf__body {
-    color: var(--text-muted);
+
+  .wf__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin: var(--space-lg) 0 0;
+    padding: 0;
   }
 
   .wf__actions {
@@ -161,13 +150,9 @@ const num = String(index + 1).padStart(2, '0');
   .wf__live {
     position: relative;
     z-index: 1;
-    font-family: var(--font-mono);
     font-size: var(--fs-small);
     color: var(--accent-ink);
     text-underline-offset: 0.25em;
-  }
-  .wf--dark .wf__live {
-    color: var(--accent);
   }
 
   @media (min-width: 64rem) {

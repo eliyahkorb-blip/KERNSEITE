@@ -46,9 +46,7 @@ const points = [
         loading="lazy"
         decoding="async"
       />
-      <figcaption class="gbp__cap">
-        Echtes Unternehmensprofil eines KERNSEITE-Projekts
-      </figcaption>
+      <figcaption class="gbp__cap">Echtes Unternehmensprofil eines KERNSEITE-Projekts</figcaption>
     </figure>
 
     <div class="gbp__text">
@@ -60,21 +58,16 @@ const points = [
         Maps. Wir richten das Profil ein, pflegen es und stimmen es auf die Website ab.
       </p>
 
-      <ol class="gbp__points" role="list">
+      <ul class="gbp__points" role="list">
         {
-          points.map((p, i) => (
+          points.map((p) => (
             <li class="gbp__point">
-              <span class="gbp__point-num" aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <div>
-                <h3 class="gbp__point-title">{p.title}</h3>
-                <p class="gbp__point-body">{p.body}</p>
-              </div>
+              <h3 class="gbp__point-title">{p.title}</h3>
+              <p class="gbp__point-body">{p.body}</p>
             </li>
           ))
         }
-      </ol>
+      </ul>
 
       <p class="gbp__cta">
         <a class="link-arrow" href="/leistungen/google-unternehmensprofil/">
@@ -109,9 +102,7 @@ const points = [
   }
   .gbp__cap {
     margin-block-start: var(--space-sm);
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: 0.06em;
+    font-size: var(--fs-small);
     color: var(--text-muted);
   }
 
@@ -131,18 +122,8 @@ const points = [
     border-block-start: 1px solid var(--line);
   }
   .gbp__point {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 1rem clamp(1rem, 2vw, 2rem);
     padding-block: clamp(1.1rem, 0.9rem + 1vw, 1.75rem);
     border-block-end: 1px solid var(--line);
-  }
-  .gbp__point-num {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--track-label);
-    color: var(--accent-ink);
-    padding-block-start: 0.3em;
   }
   .gbp__point-title {
     font-size: clamp(1.15rem, 1.6vw, 1.5rem);

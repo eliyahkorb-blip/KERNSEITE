@@ -58,10 +58,17 @@ const project = works.find((w) => w.kind === 'project');
             <h2 class="proof__title">{project.headline}</h2>
             <p class="proof__body">{project.tagline}</p>
             <a class="link-arrow" href={project.href}>
-              Projekt ansehen <span class="arrow" aria-hidden="true">→</span>
+              Projekt ansehen{' '}
+              <span class="arrow" aria-hidden="true">
+                →
+              </span>
             </a>
           </div>
-          <a class="proof__media" href={project.href} aria-label={`Projekt ${project.title} ansehen`}>
+          <a
+            class="proof__media"
+            href={project.href}
+            aria-label={`Projekt ${project.title} ansehen`}
+          >
             <img
               src={project.screenshotDesktop.src}
               srcset={project.screenshotDesktop.srcset}

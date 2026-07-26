@@ -37,7 +37,6 @@
   --font-display:
     'Bricolage Grotesque', 'Inter', system-ui, -apple-system, 'Segoe UI', roboto, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', roboto, helvetica, arial, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
 
   --fw-regular: 400;
   --fw-medium: 500;
@@ -54,14 +53,12 @@
   --fs-lead: clamp(1.15rem, 1.4vw, 1.5rem);
   --fs-body: 1.0625rem;
   --fs-small: 0.9375rem;
-  --fs-label: 0.8125rem;
 
   --lh-display: 0.9;
   --lh-snug: 1.12;
   --lh-normal: 1.62;
   --track-display: -0.055em;
   --track-hero: -0.065em;
-  --track-label: 0.16em;
 
   /* --- Abstände ---------------------------------------------------------- */
   --space-2xs: 0.25rem;

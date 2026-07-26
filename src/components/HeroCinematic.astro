@@ -2,10 +2,11 @@
 /**
  * HeroCinematic – zweigeteilter Hero: Text links, CRT-Motiv rechts.
  *
- * Das Bild ist die visuelle Grundlage und wird NICHT übermalt: Der cyanfarbene
- * Bildschirm samt Schriftzug „KERNSEITE“, die Glaswölbung, die Reflexionen und
- * die Gehäusetiefe stammen aus dem Originalmotiv. Es liegt kein CSS-Overlay
- * darüber, es gibt keinen zweiten Schriftzug und keinen Wortwechsel.
+ * Ausgeliefert wird eine fertige Rasterdatei (`hero-kernseite-final*.webp`),
+ * die aus dem Originalfoto erzeugt wurde (`scripts/build-hero-crt.py`):
+ * ohne Augen, mit cyanfarbenem Bildschirm und eingebranntem Schriftzug
+ * „KERNSEITE“. Es liegt kein CSS-Overlay darüber, es gibt keinen zweiten
+ * Schriftzug und keinen Wortwechsel.
  *
  * Das Motiv wird vollständig gezeigt (`height: auto`), damit weder die obere
  * Bildschirmkante noch die rechte Gehäuseseite beschnitten wird.
@@ -29,12 +30,12 @@ const sources = [
 const hasVideo = sources.length > 0;
 
 /** Figurbetonter Zuschnitt – zeigt Monitor, Hemd und Jackett vollständig. */
-const POSTER = '/assets/video/hero-kernseite-poster-portrait.webp';
-const POSTER_WIDE = '/assets/video/hero-kernseite-poster.webp';
-const hasPoster = hasFile('hero-kernseite-poster-portrait.webp');
+const POSTER = '/assets/video/hero-kernseite-final-portrait.webp';
+const POSTER_WIDE = '/assets/video/hero-kernseite-final.webp';
+const hasPoster = hasFile('hero-kernseite-final-portrait.webp');
 
 const ALT =
-  'Person im schwarzen Anzug mit weißem Hemd, deren Kopf ein alter Röhrenmonitor mit cyanfarbenem Bildschirm und dem Schriftzug KERNSEITE ist.';
+  'Person im dunklen Anzug mit weißem Hemd, deren Kopf ein alter Röhrenmonitor ist. Auf dem cyanfarbenen Bildschirm steht in schwarzen Buchstaben KERNSEITE.';
 ---
 
 <section class="hero" data-hero>

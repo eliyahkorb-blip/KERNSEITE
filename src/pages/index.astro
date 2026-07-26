@@ -52,7 +52,7 @@ const timelineHome = processTimeline.slice(0, 4);
 
   {
     featuredProjects.map((project, i) => (
-      <WorkFeature work={project} index={i} flip={i % 2 === 1} tone={i === 0 ? 'dark' : 'light'} />
+      <WorkFeature work={project} flip={i % 2 === 1} tone={i === 0 ? 'dark' : 'light'} />
     ))
   }
 

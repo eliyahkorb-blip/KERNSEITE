@@ -2,6 +2,7 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import CtaBanner from '../components/CtaBanner.astro';
 import { site } from '../config/site';
+import { crtSquare } from '../config/media';
 
 const breadcrumbs = [
   { name: 'Start', path: '/' },
@@ -67,17 +68,15 @@ const roles = [
   <!-- Person / Porträt -->
   <section class="section section--paper section--tight">
     <div class="content person">
-      <figure class="person__portrait">
-        <img
-          src="/assets/team/eliyah-portrait.svg"
-          width="800"
-          height="1000"
-          alt="Platzhalter für ein Porträt von Eliyah Korb – echtes Foto folgt."
-          loading="lazy"
-          decoding="async"
-        />
-        <figcaption class="person__cap">Porträt folgt</figcaption>
-      </figure>
+      <img
+        class="person__motif"
+        src={crtSquare.src}
+        width={crtSquare.width}
+        height={crtSquare.height}
+        alt={crtSquare.alt}
+        loading="lazy"
+        decoding="async"
+      />
       <div class="person__text">
         <h2 class="head__title">Eliyah Korb – dein Ansprechpartner.</h2>
         <p class="lead">
@@ -174,36 +173,18 @@ const roles = [
     gap: var(--space-2xl);
     align-items: center;
   }
-  .person__portrait {
-    margin: 0;
-    position: relative;
-    max-width: 340px;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    border: 1px solid var(--line);
-    box-shadow: var(--shadow-md);
-  }
-  .person__portrait img {
+  /* Eigenes Markenmotiv statt Porträt-Platzhalter – ein echtes Foto der
+     Person folgt, bis dahin steht hier kein erfundenes Bild. */
+  .person__motif {
+    inline-size: 100%;
+    max-inline-size: 22rem;
+    block-size: auto;
     display: block;
-    width: 100%;
-    height: auto;
-  }
-  .person__cap {
-    position: absolute;
-    inset-block-end: 0.6rem;
-    inset-inline-start: 0.6rem;
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ks-black);
-    background: var(--accent);
-    padding: 0.15rem 0.45rem;
   }
   @media (min-width: 48rem) {
     .person {
-      grid-template-columns: auto 1fr;
-      gap: var(--space-4xl);
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
     }
   }
   .values {
@@ -213,11 +194,10 @@ const roles = [
     padding: 0;
     list-style: none;
   }
+  /* Keine Kacheln: nur eine feine Linie trennt die Haltungen. */
   .values__item {
-    padding: var(--space-lg);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    background: var(--ks-cream);
+    padding-block: var(--space-lg);
+    border-block-start: 1px solid var(--line);
   }
   .values__title {
     font-size: var(--fs-h4);
@@ -247,7 +227,6 @@ const roles = [
     font-size: var(--fs-h4);
   }
   .roles__who {
-    font-family: var(--font-mono);
     font-size: var(--fs-small);
     color: var(--accent-ink);
   }
@@ -268,7 +247,8 @@ const roles = [
 
   @media (min-width: 48rem) {
     .values {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2rem, 4vw, 4.5rem);
     }
   }
   @media (min-width: 64rem) {

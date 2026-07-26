@@ -21,8 +21,9 @@ test.describe('Hero (HeroCinematic)', () => {
     const asset = page.locator('[data-hero] .hero__asset');
     await expect(asset).toHaveCount(1);
 
+    // Das bearbeitete Motiv (ohne Augen, mit eingebranntem Schriftzug).
     const src = await asset.getAttribute('src');
-    expect(src).toContain('hero-kernseite-poster');
+    expect(src).toContain('hero-kernseite-final');
 
     // Das Bild lädt tatsächlich (kein 404, keine Nullgröße).
     const ok = await asset.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0);
@@ -62,18 +63,16 @@ test.describe('Hero (HeroCinematic)', () => {
   test('Keine dekorative Vorzeile über der H1', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('[data-hero] .hero__eyebrow')).toHaveCount(0);
-    await expect(
-      page.getByText('Digitalagentur für Websites, Sichtbarkeit & Systeme'),
-    ).toHaveCount(0);
+    await expect(page.getByText('Digitalagentur für Websites, Sichtbarkeit & Systeme')).toHaveCount(
+      0,
+    );
   });
 
   test('„Unternehmen“ wird nicht getrennt', async ({ page }) => {
     for (const w of [390, 430]) {
       await page.setViewportSize({ width: w, height: 900 });
       await page.goto('/');
-      const style = await page
-        .locator('h1')
-        .evaluate((el) => getComputedStyle(el).hyphens);
+      const style = await page.locator('h1').evaluate((el) => getComputedStyle(el).hyphens);
       expect(style, `hyphens bei ${w}px`).toBe('none');
     }
   });

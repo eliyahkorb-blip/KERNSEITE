@@ -1,8 +1,10 @@
 ---
 /**
  * ProcessTimeline – editoriale, vertikale Zeitachse.
- * Ersetzt die frühere Reihe aus sechs Kästen: große Nummern, feine Linien,
- * wechselnde Ausrichtung auf Desktop.
+ *
+ * Ohne Kästen und ohne dekorative Nummern: Eine durchgehende Linie trägt die
+ * Schritte, die Reihenfolge ergibt sich aus der Leserichtung. Wer was
+ * beiträgt, steht als ganzer Satz da – nicht als technisches Mini-Label.
  */
 export interface ProcessStep {
   readonly title: string;
@@ -27,28 +29,23 @@ const Tag = headingLevel;
 
 <ol class="tl" role="list">
   {
-    steps.map((s, i) => (
-      <li class:list={['tl__step', { 'tl__step--alt': i % 2 === 1 }]}>
-        <div class="tl__num" aria-hidden="true">
-          {String(i + 1).padStart(2, '0')}
-        </div>
+    steps.map((s) => (
+      <li class="tl__step">
+        <div class="tl__mark" aria-hidden="true" />
         <div class="tl__body">
           <Tag class="tl__title">{s.title}</Tag>
           <p class="tl__what">{s.what}</p>
-          <dl class="tl__facts">
-            <div class="tl__fact">
-              <dt>Du lieferst</dt>
-              <dd>{s.you}</dd>
-            </div>
-            <div class="tl__fact">
-              <dt>Wir übernehmen</dt>
-              <dd>{s.us}</dd>
-            </div>
-            <div class="tl__fact">
-              <dt>Es entsteht</dt>
-              <dd>{s.result}</dd>
-            </div>
-          </dl>
+          <ul class="tl__share" role="list">
+            <li>
+              <span class="tl__who">Du bringst mit:</span> {s.you}
+            </li>
+            <li>
+              <span class="tl__who">Wir übernehmen:</span> {s.us}
+            </li>
+            <li>
+              <span class="tl__who">Am Ende steht:</span> {s.result}
+            </li>
+          </ul>
         </div>
       </li>
     ))
@@ -57,31 +54,40 @@ const Tag = headingLevel;
 
 <style>
   .tl {
+    position: relative;
     margin: 0;
     padding: 0;
     list-style: none;
-    position: relative;
   }
   .tl__step {
     position: relative;
     display: grid;
-    grid-template-columns: auto 1fr;
-    column-gap: clamp(1rem, 3vw, 2.5rem);
-    padding-block: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: clamp(1.25rem, 3vw, 2.5rem);
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
     border-block-start: 1px solid var(--line);
   }
   .tl__step:last-child {
     border-block-end: 1px solid var(--line);
   }
 
-  .tl__num {
-    font-family: var(--font-display);
-    font-weight: var(--fw-bold);
-    font-size: clamp(2.5rem, 6vw, 5.5rem);
-    line-height: 0.85;
-    letter-spacing: -0.06em;
-    color: var(--accent);
-    -webkit-text-stroke: 0;
+  /* Durchgehende Achse: feine Linie mit Punkt auf Höhe der Überschrift. */
+  .tl__mark {
+    position: relative;
+    inline-size: 1px;
+    background: var(--line);
+    margin-block-start: 0.5rem;
+  }
+  .tl__mark::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0.15em;
+    inset-inline-start: 50%;
+    inline-size: 9px;
+    block-size: 9px;
+    margin-inline-start: -4.5px;
+    border-radius: 50%;
+    background: var(--accent-ink);
   }
 
   .tl__title {
@@ -95,75 +101,38 @@ const Tag = headingLevel;
     max-width: 52ch;
   }
 
-  .tl__facts {
+  .tl__share {
     display: grid;
-    gap: 0;
-    margin-block-start: var(--space-lg);
-    max-width: 60ch;
-  }
-  .tl__fact {
-    display: grid;
-    grid-template-columns: 9.5rem 1fr;
-    gap: 0.5rem 1rem;
-    padding-block: 0.65rem;
-    border-block-start: 1px solid var(--line);
-  }
-  .tl__fact dt {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-  .tl__fact dd {
-    margin: 0;
+    gap: 0.5rem;
+    margin: var(--space-lg) 0 0;
+    padding: 0;
+    list-style: none;
+    max-width: 56ch;
     font-size: var(--fs-small);
-  }
-
-  .section--dark .tl__step,
-  .section--dark .tl__step:last-child,
-  .section--dark .tl__fact {
-    border-color: var(--line-invert);
-  }
-  .section--dark .tl__what {
     color: var(--text-muted);
   }
+  .tl__who {
+    color: var(--text);
+    font-weight: var(--fw-medium);
+  }
 
-  /* Wechselnde Ausrichtung auf großen Displays */
   @media (min-width: 64rem) {
     .tl__step {
-      grid-template-columns: 8rem minmax(0, 30rem) 1fr;
+      grid-template-columns: auto minmax(0, 30rem) minmax(0, 1fr);
       column-gap: clamp(2rem, 4vw, 4rem);
       align-items: start;
     }
     .tl__body {
       display: contents;
     }
-    .tl__title {
-      grid-column: 2;
-    }
+    .tl__title,
     .tl__what {
       grid-column: 2;
-      margin-block-start: var(--space-md);
     }
-    .tl__facts {
+    .tl__share {
       grid-column: 3;
       grid-row: 1 / span 2;
       margin-block-start: 0;
-    }
-    .tl__step--alt .tl__num {
-      justify-self: end;
-      text-align: right;
-    }
-    .tl__step--alt .tl__facts {
-      grid-column: 3;
-    }
-  }
-
-  @media (max-width: 47.99rem) {
-    .tl__fact {
-      grid-template-columns: 1fr;
-      gap: 0.2rem;
     }
   }
 </style>

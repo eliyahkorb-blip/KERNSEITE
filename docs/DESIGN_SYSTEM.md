@@ -10,17 +10,17 @@ Formularfelder, Filter und Dialoge.
 
 ## Farben (`src/styles/tokens.css`)
 
-| Token             | Wert      | Rolle                                        |
-| ----------------- | --------- | -------------------------------------------- |
-| `--ks-cyan`       | `#00E3F2` | **einzige kräftige Akzentfarbe**              |
-| `--ks-cyan-dark`  | `#006B73` | Cyan für kleine Texte auf hellem Grund (AA)   |
-| `--ks-black`      | `#101214` | Typografie, dunkle Flächen                    |
-| `--ks-black-soft` | `#25282B` | abgesetzte dunkle Flächen                     |
-| `--ks-paper`      | `#F4F0E7` | warme Grundfläche                             |
-| `--ks-cream`      | `#FCFAF5` | hellste Fläche                                |
-| `--ks-surface`    | `#EAE5DB` | abgesetzte helle Fläche                       |
-| `--ks-line`       | `#D5CFC2` | Trennlinien                                   |
-| `--ks-muted`      | `#60646B` | Sekundärtext                                  |
+| Token             | Wert      | Rolle                                       |
+| ----------------- | --------- | ------------------------------------------- |
+| `--ks-cyan`       | `#00E3F2` | **einzige kräftige Akzentfarbe**            |
+| `--ks-cyan-dark`  | `#006B73` | Cyan für kleine Texte auf hellem Grund (AA) |
+| `--ks-black`      | `#101214` | Typografie, dunkle Flächen                  |
+| `--ks-black-soft` | `#25282B` | abgesetzte dunkle Flächen                   |
+| `--ks-paper`      | `#F4F0E7` | warme Grundfläche                           |
+| `--ks-cream`      | `#FCFAF5` | hellste Fläche                              |
+| `--ks-surface`    | `#EAE5DB` | abgesetzte helle Fläche                     |
+| `--ks-line`       | `#D5CFC2` | Trennlinien                                 |
+| `--ks-muted`      | `#60646B` | Sekundärtext                                |
 
 Entfernt: `#19E6F2`, Ultramarin, Marineblau, Blau-Grau, Signalrot als UI-Farbe.
 Blau, Lila, Orange, Grün und Gelb kommen im Interface nicht vor.
@@ -44,14 +44,23 @@ Variante `underline` für kräftige Unterstreichung statt Fläche.
 
 ## Typografie
 
-- Display: Bricolage Grotesque · Text: Inter · Labels: IBM Plex Mono — alle lokal (SIL OFL)
+- Display: Bricolage Grotesque · Text: Inter — beide lokal (SIL OFL). **Keine
+  Monospace-Schrift mehr**: IBM Plex Mono ist aus Tokens, `@font-face`, Abhängigkeiten
+  und `public/fonts/` entfernt.
 - Hero-H1 `clamp(3.8rem, 8.5vw, 9.5rem)`, `line-height: .88`, `letter-spacing: -.065em`
 - H2 `clamp(2.2rem, 6vw, 7rem)` · Projektüberschriften `clamp(2rem, 4.6vw, 5.8rem)`
 - Fließtext max. `58ch`
 - Überschriften mit `overflow-wrap: break-word` und `hyphens: auto` — lange deutsche
   Komposita sprengen sonst auf 390 px die Zeile.
-- Keine Monospace-Eyebrows vor jedem Abschnitt. `.label` nur bei Projektkategorie,
-  Branche, Abschnittsnummer, technischen Angaben und im Footer.
+- **Keine dekorativen Nummern.** Es gibt keine `01`/`02`-Zähler vor Kapiteln, Zeilen,
+  Rasterfeldern, Prozessschritten oder Aufzählungen. Reihenfolge entsteht durch die
+  Leserichtung, Blickanker durch feine Linien und Punkte.
+- **Keine gesperrten Mini-Versalien.** Kein `text-transform: uppercase`, kein
+  `letter-spacing` über 0 für Kleintext, kein Monospace. Alles in normaler
+  Schreibweise und normaler Body-Schrift.
+- `.label` ist eine ruhige Zwischenzeile in Body-Schrift (Sentence Case).
+- `.tag` ordnet ein (Projektkategorie, Branche): kleine Schrift, feine Kontur,
+  Pillenform, normale Schreibweise. Steht **unter** der Beschreibung, nicht darüber.
 
 ## Bausteine
 
@@ -66,8 +75,9 @@ Entfernt: `ServiceCard`, `WorkCard`, `ProcessBand`, `IndustryList`, `CaseMockup`
 
 Nur `transform`/`opacity`. `.reveal` blendet erst ein, wenn das Skript den Beobachter
 aktiviert (`html.has-reveal`) — ohne JS und bei `prefers-reduced-motion` ist alles
-sofort sichtbar. Der CRT-Bildschirm flackert dezent und steht bei reduzierter Bewegung
-still. Das Statement-Band läuft langsam und hält bei reduzierter Bewegung an.
+sofort sichtbar. Der CRT-Bildschirm ist ein fertiges Standbild – kein Overlay, kein Flackern,
+kein Wortwechsel. Das Aussagenband unter dem Hero steht still; die Scrollmotivation
+kommt aus dem Text und einem Weiterlese-Hinweis, nicht aus einer Animation.
 
 ## Barrierefreiheit
 

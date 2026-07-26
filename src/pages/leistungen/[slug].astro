@@ -149,15 +149,7 @@ const videoBeats = [
           <ul class="qa" role="list">
             {geoQuestions.map((q) => (
               <li class="qa__row">
-                <span class="qa__q">
-                  <span class="qa__mark" aria-hidden="true">
-                    ?
-                  </span>
-                  {q}
-                </span>
-                <span class="qa__a" aria-hidden="true">
-                  <span class="qa__bar" />
-                </span>
+                <span class="qa__q">{q}</span>
               </li>
             ))}
           </ul>
@@ -180,10 +172,6 @@ const videoBeats = [
           <ol class="beats" role="list">
             {videoBeats.map((b) => (
               <li class="beat">
-                <span class="beat__n" aria-hidden="true">
-                  {b.n}
-                </span>
-                <span class="beat__frame" aria-hidden="true" />
                 <h3 class="beat__t">{b.t}</h3>
                 <p class="beat__b">{b.b}</p>
               </li>
@@ -207,8 +195,8 @@ const videoBeats = [
             ))}
           </ul>
           <p class="qa__note qa__note--light">
-            Eine Marke muss nicht jeden Tag posten. Sie muss erkennbar bleiben – gleiche Bildsprache,
-            gleiche Tonlage, verlässlicher Rhythmus.
+            Eine Marke muss nicht jeden Tag posten. Sie muss erkennbar bleiben – gleiche
+            Bildsprache, gleiche Tonlage, verlässlicher Rhythmus.
           </p>
         </div>
       </section>
@@ -221,11 +209,8 @@ const videoBeats = [
         <div class="content">
           <h2 class="vis__title">Automatisiert wird die Arbeit. Nicht das Gespräch.</h2>
           <ol class="chain" role="list">
-            {kiChain.map((c, i) => (
+            {kiChain.map((c) => (
               <li class="chain__step">
-                <span class="chain__n" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
                 <h3 class="chain__t">{c.label}</h3>
                 <p class="chain__b">{c.body}</p>
               </li>
@@ -264,11 +249,8 @@ const videoBeats = [
       <h2 class="sub sub--wide">So läuft es ab</h2>
       <ol class="steps" role="list">
         {
-          service.steps.map((s, i) => (
+          service.steps.map((s) => (
             <li class="steps__item">
-              <span class="steps__n" aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
               <span class="steps__t">{s}</span>
             </li>
           ))
@@ -304,7 +286,10 @@ const videoBeats = [
             <h2 class="ref__title">{relatedProject.headline}</h2>
             <p class="ref__body">{relatedProject.tagline}</p>
             <a class="link-arrow" href={relatedProject.href}>
-              Projekt ansehen <span class="arrow" aria-hidden="true">→</span>
+              Projekt ansehen{' '}
+              <span class="arrow" aria-hidden="true">
+                →
+              </span>
             </a>
           </div>
           <span class="ref__media" aria-hidden="true">
@@ -410,7 +395,6 @@ const videoBeats = [
   }
   .browser__url {
     margin-inline-start: 0.75rem;
-    font-family: var(--font-mono);
     font-size: 0.72rem;
     color: var(--text-muted);
   }
@@ -450,31 +434,6 @@ const videoBeats = [
     letter-spacing: -0.025em;
     color: var(--text-invert);
   }
-  .qa__mark {
-    font-family: var(--font-mono);
-    color: var(--accent);
-    flex: none;
-  }
-  .qa__a {
-    display: block;
-    block-size: 8px;
-    background: var(--ks-black-soft);
-  }
-  .qa__bar {
-    display: block;
-    block-size: 100%;
-    background: var(--accent);
-    inline-size: 72%;
-  }
-  .qa__row:nth-child(2) .qa__bar {
-    inline-size: 54%;
-  }
-  .qa__row:nth-child(3) .qa__bar {
-    inline-size: 88%;
-  }
-  .qa__row:nth-child(4) .qa__bar {
-    inline-size: 66%;
-  }
   .qa__note {
     margin-block-start: var(--space-2xl);
     color: var(--text-invert-muted);
@@ -492,17 +451,8 @@ const videoBeats = [
     padding: 0;
     list-style: none;
   }
-  .beat__n {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--track-label);
-    color: var(--accent);
-  }
-  .beat__frame {
-    display: block;
-    margin-block: var(--space-md);
-    aspect-ratio: 16 / 9;
-    background: var(--ks-black-soft);
+  .beat {
+    padding-block-start: var(--space-lg);
     border-block-start: 2px solid var(--accent);
   }
   .beat__t {
@@ -560,14 +510,7 @@ const videoBeats = [
     padding-block: clamp(1.25rem, 1rem + 1.5vw, 2rem);
     border-block-end: 1px solid var(--line-invert);
   }
-  .chain__n {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--track-label);
-    color: var(--accent);
-  }
   .chain__t {
-    margin-block-start: 0.5rem;
     font-size: clamp(1.3rem, 2.4vw, 2rem);
     letter-spacing: -0.03em;
   }
@@ -621,20 +564,11 @@ const videoBeats = [
     border-block-start: 1px solid var(--line);
   }
   .steps__item {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 1rem clamp(1rem, 3vw, 2.5rem);
-    align-items: baseline;
     padding-block: clamp(1rem, 0.9rem + 1vw, 1.6rem);
     border-block-end: 1px solid var(--line);
   }
-  .steps__n {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--track-label);
-    color: var(--accent-ink);
-  }
   .steps__t {
+    display: block;
     font-family: var(--font-display);
     font-weight: var(--fw-semibold);
     font-size: clamp(1.05rem, 1.8vw, 1.5rem);
@@ -755,9 +689,6 @@ const videoBeats = [
     .steps {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       column-gap: clamp(2rem, 4vw, 4rem);
-    }
-    .qa__row {
-      grid-template-columns: 1.6fr 1fr;
     }
     .ref {
       grid-template-columns: 0.85fr 1.15fr;

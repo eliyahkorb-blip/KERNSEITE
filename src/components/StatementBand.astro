@@ -1,81 +1,84 @@
 ---
 /**
- * StatementBand – reduziertes Laufband direkt unter dem Hero.
- * Keine Karten, nur Typografie. Bei reduzierter Bewegung steht es still.
+ * StatementBand – ruhiges Aussagenband direkt unter dem Hero.
+ *
+ * Kein Laufband und keine Wortkette: Eine Aussage, groß gesetzt, dazu ein
+ * kurzer Hinweis auf das, was direkt darunter kommt. Das gibt der Startseite
+ * einen Grund weiterzuscrollen, ohne Animationstrick.
  */
-interface Props {
-  items?: readonly string[];
-}
-const {
-  items = ['Websites', 'Sichtbarkeit', 'SEO / GEO', 'Video', 'Automation'],
-} = Astro.props;
+import AccentWord from './AccentWord.astro';
 
-// Zweimal ausgeben, damit die Schleife nahtlos wirkt.
-const run = [...items, ...items];
+interface Props {
+  /** Ziel des Weiterlesen-Hinweises. */
+  nextId?: string;
+  nextLabel?: string;
+}
+const { nextId = 'arbeiten', nextLabel = 'Zwei Projekte ansehen' } = Astro.props;
 ---
 
-<section class="band section--dark" aria-label="Leistungsschwerpunkte">
-  <div class="band__track" data-band>
-    {
-      run.map((item, i) => (
-        <span class="band__item" aria-hidden={i >= items.length ? 'true' : undefined}>
-          {item}
-          <i class="band__dot" aria-hidden="true" />
-        </span>
-      ))
-    }
+<section class="band section--dark" aria-label="Anspruch">
+  <div class="band__inner content">
+    <p class="band__text">
+      Eine Website ist kein Ordnungspunkt auf einer Liste. Sie ist der Ort, an dem Fremde
+      entscheiden, ob sie dir <AccentWord>zutrauen</AccentWord>, was du kannst.
+    </p>
+    <a class="band__next" href={`#${nextId}`}>
+      {nextLabel}
+      <span class="band__arrow" aria-hidden="true">↓</span>
+    </a>
   </div>
 </section>
 
 <style>
   .band {
-    overflow: hidden;
-    padding-block: clamp(1.5rem, 1rem + 2vw, 2.75rem);
-    border-block: 1px solid var(--line-invert);
+    padding-block: clamp(3rem, 2rem + 5vw, 6.5rem);
+    border-block-end: 1px solid var(--line);
   }
-  .band__track {
-    display: flex;
-    align-items: center;
-    gap: clamp(1.5rem, 3vw, 3.5rem);
-    width: max-content;
-    animation: band-run 42s linear infinite;
+  .band__inner {
+    display: grid;
+    gap: clamp(2rem, 1.5rem + 2vw, 3.5rem);
   }
-  .band__item {
-    display: inline-flex;
-    align-items: center;
-    gap: clamp(1.5rem, 3vw, 3.5rem);
+  .band__text {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: clamp(1.6rem, 4vw, 3.25rem);
-    letter-spacing: -0.03em;
-    line-height: 1;
+    font-size: clamp(1.9rem, 4.6vw, 4.25rem);
+    line-height: 1.03;
+    letter-spacing: var(--track-display);
     color: var(--text-invert);
-    white-space: nowrap;
+    max-width: 22ch;
+    text-wrap: balance;
   }
-  .band__dot {
-    inline-size: 0.4em;
-    block-size: 0.4em;
-    border-radius: 50%;
-    background: var(--accent);
-    flex: none;
+  .band__next {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: var(--fs-small);
+    color: var(--accent);
+    text-decoration: none;
+    border-block-end: 1px solid currentcolor;
+    padding-block-end: 0.25rem;
+  }
+  .band__next:hover {
+    color: var(--accent);
+  }
+  .band__arrow {
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .band__next:hover .band__arrow,
+  .band__next:focus-visible .band__arrow {
+    transform: translateY(4px);
   }
 
-  @keyframes band-run {
-    from {
-      transform: translateX(0);
+  @media (min-width: 64rem) {
+    .band__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: clamp(2.5rem, 5vw, 6rem);
     }
-    to {
-      transform: translateX(-50%);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .band__track {
-      animation: none;
-      width: 100%;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding-inline: var(--gutter);
+    .band__next {
+      justify-self: end;
+      margin-block-end: 0.5rem;
     }
   }
 </style>

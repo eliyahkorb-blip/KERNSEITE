@@ -167,7 +167,9 @@ function isActive(href: string): boolean {
     display: block;
     block-size: 1.5px;
     background: var(--text);
-    transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      opacity var(--dur-fast) var(--ease-out);
   }
   .burger[aria-expanded='true'] .burger__line:nth-child(1) {
     transform: translateY(5.5px) rotate(45deg);

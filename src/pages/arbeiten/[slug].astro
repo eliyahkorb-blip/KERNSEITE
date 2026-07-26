@@ -17,6 +17,12 @@ interface Props {
 }
 const { work } = Astro.props;
 
+/** „Gastronomie · Website · digitale Speisekarte“ → einzelne Schlagworte. */
+const tags = work.category
+  .split('·')
+  .map((part) => part.trim())
+  .filter(Boolean);
+
 const breadcrumbs = [
   { name: 'Start', path: '/' },
   { name: 'Arbeiten', path: '/arbeiten/' },
@@ -24,8 +30,7 @@ const breadcrumbs = [
 ];
 
 const other = works.find((w) => w.kind === 'project' && w.slug !== work.slug) as
-  | ProjectWork
-  | undefined;
+  ProjectWork | undefined;
 
 // Nur beim Kindertagespflege-Projekt gehört das echte Google-Profil dazu.
 const showGoogleProfile = work.slug === 'kinderkoerbchen';
@@ -39,10 +44,12 @@ const showGoogleProfile = work.slug === 'kinderkoerbchen';
   <header class="chero section--paper">
     <div class="content">
       <Breadcrumbs items={breadcrumbs} />
-      <p class="label chero__cat">{work.category}</p>
       <h1 class="chero__title">{work.headline}</h1>
       <p class="chero__client">{work.title}</p>
       <p class="lead chero__lead">{work.tagline}</p>
+      <ul class="chero__tags" role="list">
+        {tags.map((tag) => <li class="tag">{tag}</li>)}
+      </ul>
       <div class="chero__actions">
         <a class="btn btn--primary" href={work.liveUrl} target="_blank" rel="noopener noreferrer">
           Website ansehen
@@ -86,18 +93,15 @@ const showGoogleProfile = work.slug === 'kinderkoerbchen';
   <section class="section section--paper">
     <div class="content">
       <h2 class="sec-title">Was umgesetzt wurde</h2>
-      <ol class="scope" role="list">
+      <ul class="scope" role="list">
         {
-          work.scope.map((item, i) => (
+          work.scope.map((item) => (
             <li class="scope__item">
-              <span class="scope__num" aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
               <span class="scope__text">{item}</span>
             </li>
           ))
         }
-      </ol>
+      </ul>
     </div>
   </section>
 
@@ -111,9 +115,14 @@ const showGoogleProfile = work.slug === 'kinderkoerbchen';
           <h2 class="nextwork__title">
             <a href={other.href}>{other.headline}</a>
           </h2>
-          <p class="nextwork__meta">{other.title} · {other.category}</p>
+          <p class="nextwork__meta">
+            {other.title} · {other.category}
+          </p>
           <a class="link-arrow" href={other.href}>
-            Projekt ansehen <span class="arrow" aria-hidden="true">→</span>
+            Projekt ansehen{' '}
+            <span class="arrow" aria-hidden="true">
+              →
+            </span>
           </a>
         </div>
       </section>
@@ -127,12 +136,8 @@ const showGoogleProfile = work.slug === 'kinderkoerbchen';
   .chero {
     padding-block: clamp(2rem, 1.5rem + 3vw, 4rem) clamp(2.5rem, 2rem + 3vw, 4rem);
   }
-  .chero__cat {
-    display: block;
-    margin-block-start: var(--space-xl);
-  }
   .chero__title {
-    margin-block-start: var(--space-md);
+    margin-block-start: var(--space-xl);
     font-size: var(--fs-h1);
     line-height: 0.9;
     letter-spacing: var(--track-hero);
@@ -146,6 +151,13 @@ const showGoogleProfile = work.slug === 'kinderkoerbchen';
   .chero__lead {
     margin-block-start: var(--space-md);
   }
+  .chero__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin: var(--space-lg) 0 0;
+    padding: 0;
+  }
   .chero__actions {
     display: flex;
     flex-wrap: wrap;
@@ -154,7 +166,6 @@ const showGoogleProfile = work.slug === 'kinderkoerbchen';
     margin-block-start: var(--space-2xl);
   }
   .chero__domain {
-    font-family: var(--font-mono);
     font-size: var(--fs-small);
     color: var(--text-muted);
   }
@@ -192,20 +203,11 @@ const showGoogleProfile = work.slug === 'kinderkoerbchen';
     border-block-start: 1px solid var(--line);
   }
   .scope__item {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    column-gap: clamp(1rem, 3vw, 2.5rem);
-    align-items: baseline;
     padding-block: clamp(1.1rem, 0.9rem + 1.2vw, 1.9rem);
     border-block-end: 1px solid var(--line);
   }
-  .scope__num {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--track-label);
-    color: var(--accent-ink);
-  }
   .scope__text {
+    display: block;
     font-family: var(--font-display);
     font-weight: var(--fw-semibold);
     font-size: clamp(1.2rem, 2.2vw, 1.9rem);

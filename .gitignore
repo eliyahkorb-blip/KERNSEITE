@@ -39,3 +39,4 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 scripts/screenshot.mjs
+.visual-qa/

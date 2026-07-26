@@ -113,10 +113,7 @@ const phoneHref = 'tel:' + c.phone.replace(/[^\d+]/g, '');
     border-block-end: 1px solid var(--line);
   }
   .channel__label {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: var(--fs-small);
     color: var(--text-muted);
   }
   .channel__value {
@@ -132,7 +129,6 @@ const phoneHref = 'tel:' + c.phone.replace(/[^\d+]/g, '');
   .channel__value--todo {
     color: var(--text-muted);
     font-size: var(--fs-small);
-    font-family: var(--font-mono);
   }
   .kontakt__note {
     margin-block-start: var(--space-xl);

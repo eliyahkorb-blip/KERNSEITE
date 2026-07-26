@@ -56,8 +56,13 @@ test.describe('Relaunch – Inhalte und Medien', () => {
       'public/assets/references/kaya-doener-desktop.webp',
       'public/assets/references/kinderkoerbchen-desktop.webp',
       'public/assets/references/google-business-profile-kinderkoerbchen.webp',
-      'public/assets/video/hero-kernseite-poster.webp',
-      'public/assets/video/hero-kernseite-poster-portrait.webp',
+      'public/assets/video/hero-kernseite-final.webp',
+      'public/assets/video/hero-kernseite-final-900.webp',
+      'public/assets/video/hero-kernseite-final-1280.webp',
+      'public/assets/video/hero-kernseite-final-portrait.webp',
+      'public/assets/references/kernseite-crt-square.webp',
+      'public/assets/branchen/gastronomie-hotels.webp',
+      'public/assets/branchen/lokale-dienstleister.webp',
     ];
     for (const rel of required) {
       expect(existsSync(join(ROOT, rel)), `${rel} fehlt`).toBe(true);
@@ -108,7 +113,7 @@ test.describe('Relaunch – Struktur', () => {
     const media = page.locator('[data-hero] .hero__asset');
     await expect(media).toHaveCount(1);
     const src = await media.getAttribute('src');
-    expect(src).toContain('hero-kernseite-poster');
+    expect(src).toContain('hero-kernseite-final');
   });
 
   test('AccentWord besitzt keine Hintergrundfläche', async ({ page }) => {

@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000" role="img" aria-label="Platzhalter für das Porträt von Eliyah Korb">
-  <rect width="800" height="1000" fill="#E6E1D8"/>
-  <circle cx="400" cy="420" r="150" fill="#D3CCBE"/>
-  <path d="M180 880 C186 700 276 606 400 606 C524 606 614 700 620 880 Z" fill="#D3CCBE"/>
-  <g font-family="'IBM Plex Mono', monospace" text-anchor="middle">
-    <text x="400" y="112" font-size="17" letter-spacing="4" fill="#0A6A73">PLATZHALTER</text>
-    <text x="400" y="944" font-size="15" letter-spacing="1" fill="#7A7466">Porträt Eliyah Korb – echtes Foto folgt</text>
-  </g>
-</svg>

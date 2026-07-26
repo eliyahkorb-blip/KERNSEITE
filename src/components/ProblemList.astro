@@ -1,7 +1,8 @@
 ---
 /**
  * ProblemList – große typografische Liste mit feinen Linien.
- * Ersetzt die frühere Reihe aus fünf Boxen. Nummern in Cyan.
+ * Ersetzt die frühere Reihe aus fünf Boxen. Ohne Nummern: Die Aussagen sind
+ * keine Reihenfolge, sondern gleichrangige Beobachtungen.
  */
 interface Props {
   items: readonly string[];
@@ -9,18 +10,16 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<ol class="plist" role="list">
+<ul class="plist" role="list">
   {
-    items.map((item, i) => (
+    items.map((item) => (
       <li class="plist__item">
-        <span class="plist__num" aria-hidden="true">
-          {String(i + 1).padStart(2, '0')}
-        </span>
+        <span class="plist__mark" aria-hidden="true" />
         <span class="plist__text">{item}</span>
       </li>
     ))
   }
-</ol>
+</ul>
 
 <style>
   .plist {
@@ -37,11 +36,12 @@ const { items } = Astro.props;
     padding-block: clamp(1.25rem, 1rem + 1.6vw, 2.25rem);
     border-block-end: 1px solid var(--line);
   }
-  .plist__num {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--track-label);
-    color: var(--accent-ink);
+  /* Feine Cyan-Linie statt Nummer – nur ein Blickanker, kein Zähler. */
+  .plist__mark {
+    inline-size: clamp(1.25rem, 3vw, 2.5rem);
+    block-size: 2px;
+    background: var(--accent-ink);
+    transform: translateY(-0.4em);
   }
   .plist__text {
     font-family: var(--font-display);
@@ -52,11 +52,7 @@ const { items } = Astro.props;
     max-width: 26ch;
   }
 
-  .section--dark .plist,
-  .section--dark .plist__item {
-    border-color: var(--line-invert);
-  }
-  .section--dark .plist__num {
-    color: var(--accent);
+  .plist__text {
+    color: var(--text);
   }
 </style>
