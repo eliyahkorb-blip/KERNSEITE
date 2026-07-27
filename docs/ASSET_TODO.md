@@ -1,84 +1,59 @@
-# Offene Bildbeschaffung – Branchenmotive
+# Offene Bildbeschaffung
 
-Fünf Branchenmotive fehlen. Sie konnten in dieser Entwicklungsumgebung nicht
-beschafft werden, weil der ausgehende Netzwerkzugriff auf Unsplash gesperrt ist.
+## 1. Zahnarztpraxen & medizinische Praxen
 
-## Warum die Bilder fehlen
+**Es fehlt genau ein Branchenmotiv.**
 
-Der Download wurde am 2026-07-26 mit vier Werkzeugen über sechs Unsplash-Hosts
-versucht. Jeder Versuch wurde vom vorgeschalteten Egress-Proxy abgewiesen –
-nicht von Unsplash selbst:
+Die Lieferung `KERNSEITE_branchenbilder_4zu3.zip` enthielt zwar eine Datei
+`zahnarztpraxen.jpg`, sie ist aber **byte-identisch mit `handwerk.jpg`**
+(MD5 `96484aad8868e10d38508b9df6580933`) und zeigt eine Schleifmaschine auf
+einer Holzplatte – keine Praxis.
 
-| # | Werkzeug | Ziel | Ergebnis |
-| - | -------- | ---- | -------- |
-| 1 | `curl -L` | `https://unsplash.com/` | `curl: (56) CONNECT tunnel failed, response 403` |
-| 2 | `curl -L` | `https://unsplash.com/s/photos/craftsman-workshop` | `curl: (56) CONNECT tunnel failed, response 403` |
-| 3 | `curl -L` | `https://images.unsplash.com/photo-…` | `curl: (56) CONNECT tunnel failed, response 403` |
-| 4 | `curl -L` | `https://source.unsplash.com/1600x1200/?workshop` | `curl: (56) CONNECT tunnel failed, response 403` |
-| 5 | `curl -L` | `https://api.unsplash.com/photos/random` | `curl: (56) CONNECT tunnel failed, response 403` |
-| 6 | `wget --max-redirect=10` | `https://unsplash.com/photos/<id>/download?force=true` | Abbruch, 0 Byte |
-| 7 | `fetch()` (Node 22) | `https://unsplash.com/` | HTTP 403 vom Proxy |
-| 8 | `fetch()` (Node 22) | `https://images.unsplash.com/photo-…` | HTTP 403 vom Proxy |
-| 9 | `fetch()` (Node 22) | `https://source.unsplash.com/…` | HTTP 403 vom Proxy |
+Ein Handwerksfoto als Praxisbild auszugeben wäre eine falsche Darstellung.
+Die Datei wurde deshalb nicht übernommen. Die Branche erscheint im Raster und
+auf ihrer Detailseite ohne Bildfläche – kein grauer Platzhalter, keine
+Ersatzlinie, kein zweckentfremdetes Motiv.
 
-Proxy-Status (`$HTTPS_PROXY/__agentproxy/status`): `enabled: true`,
-`selective: false`. Die `noProxy`-Liste enthält ausschließlich Paketregistries
-(npm, PyPI, crates.io, Go-Proxy) – keine Bildquellen.
+### Gesuchtes Motiv
 
-**Wichtig:** Weil unsplash.com nicht erreichbar ist, konnten auch keine
-konkreten Fotos ausgewählt werden. Es stehen deshalb hier bewusst **keine
-Photo-IDs und keine Fotografennamen** – erfundene Angaben wären schlimmer als
-gar keine. Was feststeht, ist das gesuchte Motiv je Branche.
+Helle, moderne Praxis; ruhiges Gespräch zwischen medizinischem Personal und
+Patient; vertrauensvolle Atmosphäre.
 
-## Was fehlt
+**Nicht:** Nahaufnahme eines Mundes, sichtbare Behandlung, Zahnbürsten-Stock,
+künstlich lachendes Stockteam, Heilversprechen.
 
-Ablage der Originaldatei: `public/assets/branchen/source/<slug>.jpg`
+Suchbegriffe: `dentist patient modern clinic`, `dental practice interior`,
+`doctor patient consultation`, `modern medical practice`,
+`friendly dentist consultation`
 
-| Branche | Datei | Gesuchtes Motiv |
-| ------- | ----- | --------------- |
-| Handwerk | `handwerk.jpg` | Echter Handwerksbetrieb: Werkstatt, Schreinerei, Elektro, Metallbau, arbeitende Fachkraft in authentischer Umgebung |
-| Zahnarztpraxen & medizinische Praxen | `zahnarztpraxen.jpg` | Helle moderne Praxis, ruhiges Gespräch zwischen Personal und Patient |
-| Gastronomie & Hotels | `gastronomie-hotels.jpg` | Küchenteam bei echter Arbeit, Restaurantküche, Gastfreundschaft, Hotelempfang |
-| Lokale Dienstleister | `lokale-dienstleister.jpg` | Kleiner Betrieb, Beratung, persönlicher Service, regionale Nähe |
-| B2B-Mittelstand | `b2b-mittelstand.jpg` | Mittelständische Fertigung, technisches Team, Produktionsbetrieb, Maschinenbau |
+### Einsetzen
 
-### Suchbegriffe
+1. Foto auf <https://unsplash.com/> auswählen – kostenlos, **kein Unsplash+**,
+   keine KI-Bilder, keine fremden Marken.
+2. Als `public/assets/branchen/source/zahnarztpraxen.jpg` ablegen (4:3).
+3. `pnpm assets:images` ausführen. Das Skript beschneidet mittig auf 4:3 und
+   schreibt 640/960/1280/1600 px als WebP und AVIF.
+4. Fotograf, Photo-ID, Quell-URL und Datum in `docs/ASSET_LICENSES.md`
+   eintragen, diesen Abschnitt entfernen.
+5. `pnpm build:ci && pnpm qa && pnpm test:e2e`. Der Test
+   `tests/e2e/branchen.spec.ts` prüft, dass das Motiv geladen wird und
+   dasselbe Seitenverhältnis hat wie die übrigen.
 
-- **Handwerk:** `craftsman workshop`, `carpenter workshop`, `German tradesman`,
-  `electrician working`, `metal workshop`, `construction craftsman`
-- **Praxen:** `dentist patient modern clinic`, `dental practice interior`,
-  `doctor patient consultation`, `modern medical practice`
-- **Gastronomie:** `restaurant kitchen chef`, `hospitality team`,
-  `modern restaurant interior`, `hotel lobby`, `boutique hotel interior`
-- **Lokale Dienstleister:** `small business owner customer`,
-  `local business service`, `consultant client meeting`, `local shop owner`
-- **B2B:** `industrial manufacturing team`, `engineers factory`,
-  `manufacturing company`, `mechanical engineering factory`
+## 2. Nachzutragende Bildnachweise
 
-### Nicht verwenden
+Für die fünf Branchenmotive lagen Fotograf und Photo-ID nicht bei. Beides ist
+in `docs/ASSET_LICENSES.md` nachzutragen, bevor die Website produktiv geht:
 
-Gestellte Handschlag-Szenen, KI-generierte Menschen, Nahaufnahmen von
-Behandlungen, einzelne Teller auf weißem Grund, Skylines, Hochhausfassaden,
-generische Laptop-Schreibtische, fremde Marken und Logos.
+- `handwerk.jpg`
+- `gastronomie-hotels.jpg`
+- `lokale-dienstleister.jpg`
+- `b2b-mittelstand.jpg`
+- `restaurant-ambiente.jpg`, `hotelzimmer.jpg`, `garten-landschaftsbau.jpg`
 
-## Einsetzen
+Für die vier Leistungsbilder liegen die Fotografennamen vor (siehe
+`docs/ASSET_LICENSES.md`); dort fehlen noch die Unsplash-Seitenadressen.
 
-1. Foto auf <https://unsplash.com/> auswählen – nur kostenlose Bilder,
-   **kein Unsplash+**, keine KI-Bilder, keine fremden Logos.
-2. Als `public/assets/branchen/source/<slug>.jpg` ablegen.
-3. `pnpm assets:branchen` ausführen. Das Skript beschneidet mittig auf 4:3 und
-   schreibt je Motiv 640/960/1280/1600 px als WebP (und AVIF, sofern der
-   Encoder vorhanden ist).
-4. Fotograf, Photo-ID, Unsplash-Seitenadresse, Einsatzort, Download-Datum und
-   Lizenzquelle in `docs/ASSET_LICENSES.md` eintragen.
-5. Zeile aus dieser Datei entfernen.
-6. `pnpm build:ci && pnpm qa && pnpm test:e2e` – der Test
-   `tests/e2e/branchen.spec.ts` prüft, dass alle Motive dasselbe
-   Seitenverhältnis besitzen und tatsächlich laden.
+## 3. Weiterhin offen
 
-## Bis dahin
-
-Das Branchenraster rendert die Einträge **ohne Bildfläche**. Es gibt keine
-grauen Platzhalter, keine schwarzen Ersatzlinien und keine zweckentfremdeten
-Kunden-Screenshots. Alle fünf Einträge haben denselben Aufbau, damit das
-Raster auch ohne Bilder ruhig und gleichmäßig bleibt.
+- Ein echtes Porträt von Eliyah Korb für `/agentur/`. Bis dahin steht dort das
+  eigene CRT-Markenmotiv – keine gezeichnete Ersatzfigur.

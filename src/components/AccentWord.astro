@@ -2,18 +2,17 @@
 /**
  * AccentWord – markiert ein einzelnes Wort in einer großen Headline.
  *
- * Schwarzer Text auf cyanfarbener Markerfläche (oder mit kräftiger
- * Unterstreichung). Die Markierung trägt keine eigene Bedeutung – die Aussage
- * steht vollständig im Text, damit nichts allein über Farbe transportiert wird.
+ * Das Wort selbst steht in KERNSEITE-Cyan (#00E3F2). Keine Unterstreichung,
+ * keine Markerfläche, kein Rahmen, kein Verlauf. Die Markierung trägt keine
+ * eigene Bedeutung – die Aussage steht vollständig im Text, damit nichts
+ * allein über Farbe transportiert wird.
+ *
+ * Kontrast: Cyan braucht einen dunklen Untergrund. Abschnitte mit markiertem
+ * Wort werden deshalb auf `.section--dark` gestellt, statt einen zweiten,
+ * abgeschwächten Türkiston einzuführen.
  *
  * Regel: maximal ein bis zwei markierte Begriffe pro großer Headline.
  */
-interface Props {
-  /** `mark` = Markerfläche (Standard), `underline` = kräftige Unterstreichung. */
-  variant?: 'mark' | 'underline';
-}
-const { variant = 'mark' } = Astro.props;
-const cls = variant === 'underline' ? 'accent-word accent-word--underline' : 'accent-word';
 ---
 
-<span class={cls}><slot /></span>
+<span class="accent-word"><slot /></span>

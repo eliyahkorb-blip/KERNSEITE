@@ -16,6 +16,9 @@ export const site = {
     area: 'Unterfranken',
     state: 'Bayern',
     country: 'Deutschland',
+    /** Einheitliche Standortaussage für sichtbare Texte. */
+    claim: 'Würzburg. Projekte bundesweit.',
+    sentence: 'KERNSEITE sitzt in Würzburg und betreut Unternehmen bundesweit.',
   },
 
   /** Kurzbeschreibung (Default-Meta, Organization-Schema). */

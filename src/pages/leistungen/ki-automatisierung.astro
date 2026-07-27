@@ -1,0 +1,269 @@
+---
+/**
+ * KI & Automatisierung – prozessorientierter Aufbau.
+ *
+ * Eigene Komposition: dunkler Textkopf ohne Foto (keine Roboterbilder, keine
+ * Netzwerkgrafiken), danach die Anfragekette als waagerechter Ablauf,
+ * konkrete Einsatzfälle als Liste, ein klarer Abschnitt zu den Grenzen und
+ * ein kurzer Projektablauf.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import RelatedServices from '../../components/RelatedServices.astro';
+import AccentWord from '../../components/AccentWord.astro';
+import { getService } from '../../config/services';
+import { serviceJsonLd, breadcrumbJsonLd } from '../../lib/jsonld';
+
+const service = getService('ki');
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Leistungen', path: '/leistungen/' },
+  { name: service.label, path: service.href },
+];
+
+const chain = [
+  { t: 'Anfrage', b: 'Formular, Anruf oder Chat' },
+  { t: 'Vorqualifizierung', b: 'Standardfragen werden automatisch geklärt' },
+  { t: 'Übergabe', b: 'Strukturierte Daten ins Postfach' },
+  { t: 'Gespräch', b: 'Die Beratung übernimmst du' },
+];
+
+const cases = [
+  {
+    t: 'Rückrufannahme',
+    b: 'Anrufe außerhalb der Geschäftszeit werden aufgenommen statt verpasst.',
+  },
+  {
+    t: 'Terminvorqualifizierung',
+    b: 'Anliegen, Zeitfenster und Kontaktdaten stehen vor dem Gespräch fest.',
+  },
+  { t: 'Interne Übergabe', b: 'Anfragen landen strukturiert dort, wo sie bearbeitet werden.' },
+  {
+    t: 'Häufige Kundenfragen',
+    b: 'Öffnungszeiten, Anfahrt, Ablauf – beantwortet, ohne dass jemand tippt.',
+  },
+  {
+    t: 'Wiederkehrende Abläufe',
+    b: 'Bestätigungen, Erinnerungen und Weiterleitungen laufen automatisch.',
+  },
+];
+
+const steps = [
+  'Ablauf aufnehmen',
+  'Einsatz festlegen',
+  'Aufbau und Test',
+  'Übergabe',
+  'Nachjustieren',
+];
+---
+
+<BaseLayout
+  title={service.label}
+  description="KI und Automatisierung aus Würzburg: wiederkehrende Arbeit abnehmen, ohne den persönlichen Kontakt zu ersetzen."
+  jsonLd={[breadcrumbJsonLd(breadcrumbs), serviceJsonLd(service)]}
+>
+  <!-- Dunkler Textkopf: bewusst ohne KI-Bildsprache -->
+  <header class="khero section--dark on-dark">
+    <div class="content">
+      <Breadcrumbs items={breadcrumbs} />
+      <h1 class="khero__title">
+        Automatisiere <AccentWord>Arbeit</AccentWord>.<br />
+        Nicht die Beziehung zum Kunden.
+      </h1>
+      <p class="khero__lead">
+        KI ist ein Werkzeug, keine Marke. Sinnvoll eingesetzt nimmt sie Routine ab – den Kontakt
+        ersetzt sie nicht.
+      </p>
+    </div>
+  </header>
+
+  <!-- Die Kette: was automatisch läuft und wo der Mensch übernimmt -->
+  <section class="section section--paper">
+    <div class="content">
+      <h2 class="k__h2">Vom Kontakt bis zum Gespräch.</h2>
+      <ol class="chain" role="list">
+        {
+          chain.map((c, i) => (
+            <li class:list={['chain__step', { 'chain__step--human': i === chain.length - 1 }]}>
+              <h3 class="chain__title">{c.t}</h3>
+              <p class="chain__body">{c.b}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Einsatzfälle -->
+  <section class="section section--cream">
+    <div class="content kcases">
+      <h2 class="k__h2">Wo es sich wirklich lohnt.</h2>
+      <ul class="kcases__list" role="list">
+        {
+          cases.map((c) => (
+            <li class="kcases__item">
+              <h3 class="kcases__title">{c.t}</h3>
+              <p class="kcases__body">{c.b}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Grenzen -->
+  <section class="limits section--dark on-dark">
+    <div class="content">
+      <p class="limits__text">
+        Automatisiert wird die wiederkehrende Arbeit. Entscheidungen und persönliche Beratung
+        bleiben beim Menschen.
+      </p>
+    </div>
+  </section>
+
+  <!-- Ablauf -->
+  <section class="section section--surface">
+    <div class="content kflowwrap">
+      <h2 class="k__h2">So gehen wir vor.</h2>
+      <ol class="kflow" role="list">
+        {steps.map((s) => <li class="kflow__step">{s}</li>)}
+      </ol>
+    </div>
+  </section>
+
+  <RelatedServices exclude="ki" only={['websites', 'google', 'seo-geo']} />
+  <CtaBanner />
+</BaseLayout>
+
+<style>
+  .khero {
+    padding-block: clamp(1.5rem, 1rem + 2vw, 3rem) clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+  .khero__title {
+    margin-block-start: var(--space-lg);
+    font-size: var(--fs-h2);
+    max-width: min(16ch, 100%);
+    color: var(--text-invert);
+  }
+  .khero__lead {
+    margin-block-start: var(--space-lg);
+    font-size: var(--fs-lead);
+    color: var(--text-invert-muted);
+    max-width: min(46ch, 100%);
+  }
+
+  .k__h2 {
+    font-size: var(--fs-h3);
+    max-width: min(15ch, 100%);
+    margin-block-end: clamp(1.75rem, 1.5rem + 2vw, 3rem);
+  }
+
+  /* --- Kette --------------------------------------------------------------- */
+  .chain {
+    display: grid;
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .chain__step {
+    padding-block-start: var(--space-md);
+    border-block-start: 2px solid var(--line-strong);
+  }
+  /* Der letzte Schritt ist der Mensch – er wird hervorgehoben. */
+  .chain__step--human {
+    border-block-start-color: var(--accent-mark);
+  }
+  .chain__title {
+    font-size: var(--fs-h5);
+  }
+  .chain__body {
+    margin-block-start: 0.35rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  @media (min-width: 48rem) {
+    .chain {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 3vw, 3rem);
+    }
+  }
+
+  /* --- Einsatzfälle -------------------------------------------------------- */
+  .kcases__list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .kcases__item {
+    padding-block: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+    border-block-end: 1px solid var(--line);
+  }
+  .kcases__title {
+    font-size: var(--fs-h5);
+  }
+  .kcases__body {
+    margin-block-start: 0.3rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    max-width: min(58ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    .kcases {
+      display: grid;
+      grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
+      align-items: start;
+    }
+    .k__h2 {
+      margin-block-end: 0;
+    }
+  }
+
+  /* --- Grenzen ------------------------------------------------------------- */
+  .limits {
+    padding-block: clamp(3rem, 2rem + 4vw, 5rem);
+  }
+  .limits__text {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.35rem, 2.8vw, 2.6rem);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--text-invert);
+    max-width: min(30ch, 100%);
+  }
+
+  /* --- Ablauf -------------------------------------------------------------- */
+  .kflowwrap {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+  .kflow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem clamp(1rem, 2vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .kflow__step {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.05rem, 1.7vw, 1.4rem);
+    letter-spacing: -0.02em;
+    padding-block-end: 0.3rem;
+    border-block-end: 2px solid var(--accent-mark);
+  }
+  @media (min-width: 64rem) {
+    .kflowwrap {
+      grid-template-columns: minmax(0, 0.6fr) minmax(0, 1.4fr);
+      align-items: start;
+      gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+</style>

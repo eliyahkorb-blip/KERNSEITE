@@ -60,18 +60,18 @@ pnpm build:production # echter Build (bricht bei fehlenden Pflichtdaten ab)
 
 ### Automatisierte Prüfungen
 
-| Prüfung | Befehl | Ergebnis |
-| ------- | ------ | -------- |
-| Typen | `pnpm typecheck` | 0 Fehler, 0 Warnungen (58 Dateien) |
-| Lint | `pnpm lint` | keine Befunde |
-| Fixture-Build | `pnpm build:ci` | 27 Seiten |
-| Inline-Code | `check-no-inline` | keine ausführbaren Inline-Scripts/-Styles |
-| Externe Ressourcen | `check-external` | 0 |
-| Interne Links | `check-links` | 1688 Links, keine defekten |
-| Statische A11y | `check-a11y-static` | bestanden (H1, Hierarchie, Alt, Namen, lang) |
-| Secrets | `check-secrets` | keine Funde in 143 Dateien |
-| E2E | `pnpm test:e2e` | 42 bestanden, 1 übersprungen (Preview-Badge nur im Preview-Build) |
-| Sichtprüfung | `node scripts/visual-qa.mjs` | 12 Seiten × 5 Breiten: kein Überlauf, alle Bilder geladen |
+| Prüfung            | Befehl                       | Ergebnis                                                          |
+| ------------------ | ---------------------------- | ----------------------------------------------------------------- |
+| Typen              | `pnpm typecheck`             | 0 Fehler, 0 Warnungen (58 Dateien)                                |
+| Lint               | `pnpm lint`                  | keine Befunde                                                     |
+| Fixture-Build      | `pnpm build:ci`              | 27 Seiten                                                         |
+| Inline-Code        | `check-no-inline`            | keine ausführbaren Inline-Scripts/-Styles                         |
+| Externe Ressourcen | `check-external`             | 0                                                                 |
+| Interne Links      | `check-links`                | 1688 Links, keine defekten                                        |
+| Statische A11y     | `check-a11y-static`          | bestanden (H1, Hierarchie, Alt, Namen, lang)                      |
+| Secrets            | `check-secrets`              | keine Funde in 143 Dateien                                        |
+| E2E                | `pnpm test:e2e`              | 42 bestanden, 1 übersprungen (Preview-Badge nur im Preview-Build) |
+| Sichtprüfung       | `node scripts/visual-qa.mjs` | 12 Seiten × 5 Breiten: kein Überlauf, alle Bilder geladen         |
 
 ### Suchlauf über entfernte Muster
 
@@ -108,16 +108,16 @@ E2E-Test.
 
 ### Automatisierte Prüfungen
 
-| Prüfung | Befehl | Ergebnis |
-| ------- | ------ | -------- |
-| Typen | `pnpm typecheck` | 0 Fehler, 0 Warnungen (59 Dateien) |
-| Lint | `pnpm lint` | keine Befunde |
-| Fixture-Build | `pnpm build:ci` | 27 Seiten |
-| Vorschau-Build | `pnpm build:preview` | 27 Seiten |
-| QA-Skripte | `pnpm qa` | alle fünf Prüfungen bestanden |
-| E2E | `pnpm test:e2e` | 64 bestanden, 1 übersprungen |
-| Überschriften | `pnpm check:headings` | 360 Seitenaufrufe: keine Überschneidung, kein Beschnitt, kein Überlauf, keine Silbentrennung |
-| Sichtprüfung | `pnpm visual-qa` | 7 Seiten × 7 Breiten: kein Überlauf, alle Bilder geladen |
+| Prüfung        | Befehl                | Ergebnis                                                                                     |
+| -------------- | --------------------- | -------------------------------------------------------------------------------------------- |
+| Typen          | `pnpm typecheck`      | 0 Fehler, 0 Warnungen (59 Dateien)                                                           |
+| Lint           | `pnpm lint`           | keine Befunde                                                                                |
+| Fixture-Build  | `pnpm build:ci`       | 27 Seiten                                                                                    |
+| Vorschau-Build | `pnpm build:preview`  | 27 Seiten                                                                                    |
+| QA-Skripte     | `pnpm qa`             | alle fünf Prüfungen bestanden                                                                |
+| E2E            | `pnpm test:e2e`       | 64 bestanden, 1 übersprungen                                                                 |
+| Überschriften  | `pnpm check:headings` | 360 Seitenaufrufe: keine Überschneidung, kein Beschnitt, kein Überlauf, keine Silbentrennung |
+| Sichtprüfung   | `pnpm visual-qa`      | 7 Seiten × 7 Breiten: kein Überlauf, alle Bilder geladen                                     |
 
 ### Überschriftenprüfung
 
@@ -125,8 +125,7 @@ E2E-Test.
 Überschriften und meldet Überlappung, Beschnitt (`scrollWidth > clientWidth`),
 Austritt aus dem Viewport, aktive Silbentrennung und horizontalen Überlauf.
 
-Matrix: 10 Seiten × 9 Breiten (1920, 1680, 1440, 1280, 1024, 768, 430, 390,
-360) × 4 Zoomstufen (100 %, 125 %, 150 %, 200 %) = 360 Seitenaufrufe.
+Matrix: 10 Seiten × 9 Breiten (1920, 1680, 1440, 1280, 1024, 768, 430, 390, 360) × 4 Zoomstufen (100 %, 125 %, 150 %, 200 %) = 360 Seitenaufrufe.
 
 Dabei gefundene und behobene Fehler:
 
@@ -151,3 +150,66 @@ Dabei gefundene und behobene Fehler:
 - `pnpm format:check` scheitert weiterhin an
   `src/pages/cookie-einstellungen.astro` (Prettier kann das `<script>` im
   JSX-Ausdruck nicht parsen). Bestand vor dieser Runde.
+
+---
+
+## Überarbeitung: Leistungsseiten, Bilder, Standort (2026-07-27)
+
+| Prüfung | Befehl | Ergebnis |
+| ------- | ------ | -------- |
+| Typen | `pnpm typecheck` | 0 Fehler (67 Dateien) |
+| Lint | `pnpm lint` | keine Befunde |
+| Formatierung | `pnpm format:check` | alle Dateien konform |
+| Fixture-Build | `pnpm build:ci` | 32 Seiten |
+| Vorschau-Build | `pnpm build:preview` | 32 Seiten |
+| QA-Skripte | `pnpm qa` | alle fünf Prüfungen bestanden |
+| E2E | `pnpm test:e2e` | 82 bestanden, 1 übersprungen |
+| Überschriften | `pnpm check:headings` | 612 Seitenaufrufe (17 Seiten × 9 Breiten × 4 Zoomstufen) sauber |
+| Sichtprüfung | `pnpm visual-qa` | 10 Seiten × 7 Breiten: kein Überlauf, alle Bilder geladen |
+
+`pnpm format:check` läuft erstmals durch: Das `<script>` in
+`cookie-einstellungen.astro` stand in einem JSX-Ausdruck und war für Prettier
+nicht parsbar. Es liegt jetzt auf oberster Ebene und prüft selbst, ob die
+Schaltfläche existiert.
+
+### Seitenlänge auf 390 px (vorher 9.000–12.000 px)
+
+| Seite | Höhe |
+| ----- | ---- |
+| `/leistungen/websites/` | 6.106 px |
+| `/leistungen/google-unternehmensprofil/` | 5.609 px |
+| `/leistungen/unternehmensvideo/` | 5.056 px |
+| `/leistungen/social-media/` | 4.962 px |
+| `/leistungen/seo-geo/` | 4.944 px |
+| `/leistungen/ki-automatisierung/` | 4.665 px |
+
+### Neue Tests
+
+`tests/e2e/inhalt-bilder.spec.ts` prüft: kein „Regensburg“ im Build, keine
+Vorschau- oder Entwurfshinweise, alle gelieferten Bilder werden verwendet,
+AVIF und WebP mit `srcset`, keine fremden Bildquellen, feste Bildmaße,
+unterschiedliche Abschnittsfolge je Leistungsseite, eigener Abschnittstyp je
+Seite, Seitenlänge unter 8.000 px, keine `vh`-Höhen in Inhaltsabschnitten,
+höchstens drei FAQ und vier Verweise je Seite, überschneidungsfreier
+Würzburg-Abschnitt.
+
+`tests/e2e/farben-formen.spec.ts` prüft zusätzlich: markierte Wörter sind
+selbst `#00E3F2`, ohne Unterstreichung, Fläche, Verlauf, Schatten oder
+Pseudo-Element – und stehen immer auf ausreichend dunklem Grund.
+
+### Dabei gefundene und behobene Fehler
+
+- `.section--dark a` überschrieb die Textfarbe des primären CTA: Auf dem neu
+  dunklen Hero wurde der Neon-Button neon beschriftet und damit unlesbar.
+  Behoben mit `:not(.btn)`.
+- `.sscope__title` war in der schmalen Rasterspalte bei 1920 px breiter als
+  ihr Container („übernehmen.“ ließ sich nicht umbrechen).
+- Der Würzburg-Abschnitt dehnte die Textzeile bis auf Bildhöhe und riss eine
+  leere Fläche auf (`align-content: start` fehlte).
+
+### Offen
+
+- Ein Branchenmotiv fehlt: Die gelieferte `zahnarztpraxen.jpg` ist
+  byte-identisch mit `handwerk.jpg` und zeigt kein Praxisumfeld. Details in
+  `docs/ASSET_TODO.md`.
+- Fotografennamen und Photo-IDs der Branchenbilder sind nachzutragen.

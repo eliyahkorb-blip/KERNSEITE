@@ -76,29 +76,64 @@ test.describe('Marke – nur das helle Neon-Türkis', () => {
     await expect(cta).toHaveCSS('color', 'rgb(16, 18, 20)');
   });
 
-  test('Markierte Wörter sind auf hellem Grund schwarz mit Neon-Linie', async ({ page }) => {
-    await page.goto('/');
-    const word = page.locator('h1 .accent-word').first();
-    const s = await word.evaluate((el) => {
-      const cs = getComputedStyle(el);
-      return {
-        color: cs.color,
-        line: cs.textDecorationLine,
-        deco: cs.textDecorationColor,
-        bg: cs.backgroundColor,
-      };
-    });
-    expect(s.color).toBe('rgb(16, 18, 20)');
-    expect(s.line).toContain('underline');
-    expect(s.deco).toBe(NEON);
-    // Weiterhin keine Markerfläche hinter dem Wort.
-    expect(s.bg).toBe('rgba(0, 0, 0, 0)');
+  test('Markierte Wörter sind selbst cyan – ohne Linie und ohne Fläche', async ({ page }) => {
+    for (const path of ['/', '/leistungen/', '/branchen/', '/prozess/']) {
+      await page.goto(path);
+      const words = page.locator('.accent-word');
+      const count = await words.count();
+      expect(count, `${path} ohne markiertes Wort`).toBeGreaterThan(0);
+
+      for (let i = 0; i < count; i++) {
+        const s = await words.nth(i).evaluate((el) => {
+          const cs = getComputedStyle(el);
+          const before = getComputedStyle(el, '::before');
+          const after = getComputedStyle(el, '::after');
+          return {
+            color: cs.color,
+            line: cs.textDecorationLine,
+            bg: cs.backgroundColor,
+            bgImage: cs.backgroundImage,
+            shadow: cs.boxShadow,
+            borderBottom: cs.borderBottomWidth,
+            beforeContent: before.content,
+            afterContent: after.content,
+          };
+        });
+        expect(s.color, `${path}: Wort ${i} nicht cyan`).toBe(NEON);
+        expect(s.line, `${path}: Wort ${i} unterstrichen`).toBe('none');
+        expect(s.bg, `${path}: Wort ${i} mit Fläche`).toBe('rgba(0, 0, 0, 0)');
+        expect(s.bgImage, `${path}: Wort ${i} mit Verlauf`).toBe('none');
+        expect(s.shadow, `${path}: Wort ${i} mit Schatten`).toBe('none');
+        expect(s.borderBottom, `${path}: Wort ${i} mit Unterkante`).toBe('0px');
+        expect(['none', 'normal']).toContain(s.beforeContent);
+        expect(['none', 'normal']).toContain(s.afterContent);
+      }
+    }
   });
 
-  test('Auf dunklem Grund darf das Neon direkt Schriftfarbe sein', async ({ page }) => {
-    await page.goto('/');
-    const word = page.locator('.section--dark .accent-word, .wf--dark .accent-word').first();
-    await expect(word).toHaveCSS('color', NEON);
+  test('Markierte Wörter stehen auf ausreichend dunklem Grund', async ({ page }) => {
+    for (const path of ['/', '/leistungen/', '/branchen/', '/prozess/']) {
+      await page.goto(path);
+      const dark = await page.evaluate(() => {
+        const out: string[] = [];
+        for (const el of document.querySelectorAll('.accent-word')) {
+          // Nächste Fläche mit gesetztem Hintergrund suchen.
+          let node: HTMLElement | null = el as HTMLElement;
+          let bg = 'rgba(0, 0, 0, 0)';
+          while (node && bg === 'rgba(0, 0, 0, 0)') {
+            bg = getComputedStyle(node).backgroundColor;
+            node = node.parentElement;
+          }
+          const m = bg.match(/\d+/g);
+          if (!m) continue;
+          const [r, g, b] = m.map(Number);
+          const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+          if (lum > 0.35) out.push(`${el.textContent} auf ${bg}`);
+        }
+        return out;
+      });
+      expect(dark, `${path}: Cyan auf zu heller Fläche`).toEqual([]);
+    }
   });
 });
 
@@ -119,9 +154,9 @@ test.describe('Formen – keine Pillen und keine kreisigen Chips', () => {
     const count = await buttons.count();
     expect(count).toBeGreaterThan(0);
     for (let i = 0; i < count; i++) {
-      const radius = await buttons.nth(i).evaluate((el) =>
-        parseFloat(getComputedStyle(el).borderTopLeftRadius),
-      );
+      const radius = await buttons
+        .nth(i)
+        .evaluate((el) => parseFloat(getComputedStyle(el).borderTopLeftRadius));
       expect(radius, `Button ${i} zu rund`).toBeLessThanOrEqual(8);
     }
   });

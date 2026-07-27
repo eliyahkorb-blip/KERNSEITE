@@ -12,9 +12,16 @@
  * Platzhalter noch schwarze Ersatzlinien.
  */
 import { industries } from '../config/industries';
-import { resolveIndustryMotif } from '../lib/industry-media';
+import Photo from './Photo.astro';
+import { photos, type PhotoKey } from '../config/photos';
+import { resolvePhoto } from '../lib/photo';
 
-const items = industries.map((ind) => ({ ...ind, motif: resolveIndustryMotif(ind.slug) }));
+const items = industries.map((ind) => ({
+  ...ind,
+  photo: (ind.slug in photos && resolvePhoto(ind.slug as PhotoKey)
+    ? ind.slug
+    : null) as PhotoKey | null,
+}));
 ---
 
 <ul class="igrid" role="list">
@@ -22,23 +29,13 @@ const items = industries.map((ind) => ({ ...ind, motif: resolveIndustryMotif(ind
     items.map((ind) => (
       <li class="igrid__cell">
         <a class="igrid__link" href={ind.href}>
-          {ind.motif && (
-            <span class="igrid__media">
-              <picture>
-                {ind.motif.avifSrcset && (
-                  <source type="image/avif" srcset={ind.motif.avifSrcset} sizes={ind.motif.sizes} />
-                )}
-                <source type="image/webp" srcset={ind.motif.webpSrcset} sizes={ind.motif.sizes} />
-                <img
-                  src={ind.motif.src}
-                  alt={ind.motif.alt}
-                  width={ind.motif.width}
-                  height={ind.motif.height}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </picture>
-            </span>
+          {ind.photo && (
+            <Photo
+              photo={ind.photo}
+              ratio="4x3"
+              sizes="(min-width: 69rem) 30vw, (min-width: 48rem) 46vw, 100vw"
+              class="igrid__media"
+            />
           )}
           <span class="igrid__name">{ind.title}</span>
           <span class="igrid__arg">{ind.argument}</span>
@@ -75,22 +72,13 @@ const items = industries.map((ind) => ({ ...ind, motif: resolveIndustryMotif(ind
 
   /* Einheitliches Bildfenster für alle Branchen. */
   .igrid__media {
-    display: block;
-    overflow: hidden;
-    aspect-ratio: 4 / 3;
-    border-radius: var(--radius-image);
-    background: var(--ks-surface);
     margin-block-end: 1.5rem;
   }
-  .igrid__media img {
-    display: block;
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
+  .igrid__media :global(img) {
     transition: transform var(--dur-slow) var(--ease-out);
   }
-  .igrid__link:hover .igrid__media img,
-  .igrid__link:focus-visible .igrid__media img {
+  .igrid__link:hover .igrid__media :global(img),
+  .igrid__link:focus-visible .igrid__media :global(img) {
     transform: scale(1.025);
   }
 

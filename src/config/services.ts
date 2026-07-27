@@ -137,7 +137,7 @@ export const services: readonly Service[] = [
       'Technische Grundlagen: Ladezeit, semantisches HTML, Sitemap, Canonicals',
       'Strukturierte Daten für Unternehmen, Leistungen und FAQ',
       'Verständliche, beantwortende Textstruktur (GEO-tauglich)',
-      'Lokale Signale für Würzburg, Regensburg und die Region',
+      'Lokale Signale für Würzburg und die Region',
     ],
     benefits: [
       'Deine Seiten sind für Menschen und Maschinen eindeutig',

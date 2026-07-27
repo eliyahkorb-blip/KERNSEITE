@@ -120,14 +120,6 @@ const timings = [
     Informationen findest du in der <a href="/datenschutz/">Datenschutzerklärung</a>.
   </p>
 
-  {
-    IS_PREVIEW && (
-      <p class="cform__preview-note">
-        Vorschaumodus: Das Formular dient nur zur Ansicht. Es wird keine Nachricht gesendet.
-      </p>
-    )
-  }
-
   <div class="cform__actions">
     <button type="submit" class="btn btn--primary" data-submit>Anfrage senden</button>
   </div>
@@ -205,15 +197,7 @@ const timings = [
     color: var(--text-muted);
     max-width: 60ch;
   }
-  .cform__preview-note {
-    margin-block-start: var(--space-md);
-    padding: 0.6rem 0.9rem;
-    border-radius: var(--radius-md);
-    border: 1px dashed var(--accent-ink);
-    background: color-mix(in srgb, var(--accent-ink) 8%, var(--ks-cream));
-    color: #7a2417;
-    font-size: var(--fs-small);
-  }
+
   .cform__actions {
     margin-block-start: var(--space-lg);
   }

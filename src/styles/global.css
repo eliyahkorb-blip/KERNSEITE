@@ -254,7 +254,9 @@ strong {
 .section--dark h4 {
   color: var(--text-invert);
 }
-.section--dark a {
+/* `:not(.btn)`: Sonst gewinnt diese Regel gegen `.btn--primary` und der
+   Neon-Button bekäme Neon-Text – auf Neon-Fläche unsichtbar. */
+.section--dark a:not(.btn) {
   color: var(--accent);
 }
 .section--cyan {
@@ -266,7 +268,7 @@ strong {
 .section--cyan h3 {
   color: var(--ks-black);
 }
-.section--cyan a {
+.section--cyan a:not(.btn) {
   color: var(--ks-black);
 }
 
@@ -275,40 +277,41 @@ strong {
 }
 
 /* --- Markiertes Wort (Markenelement) --------------------------------------
-   Keine Fläche, kein Marker, keine Pille. Schriftart, -größe, -stärke,
-   Zeilenhöhe und Laufweite bleiben identisch, damit die Headline ruhig
-   bleibt. Auf hellem Grund bleibt das Wort schwarz und bekommt eine klare
-   Neon-Türkis-Unterstreichung – das ist lesbar und trägt die Marke. Auf
-   dunklem Grund darf das Neon direkt die Schriftfarbe sein. */
+   Das Wort selbst ist cyan. Keine Unterstreichung, keine Linie, keine
+   Markerfläche, kein Verlauf, kein Schatten.
+
+   Kontrast wird nicht über einen zweiten, dunkleren Türkiston gelöst,
+   sondern über den Untergrund: Abschnitte mit markiertem Wort stehen auf
+   Schwarz (`.section--dark`). Auf hellem Papier bliebe #00E3F2 als Text zu
+   schwach – dort wird das Wort deshalb schwarz und halbtransparent gesetzt
+   und der Abschnitt bei Bedarf auf dunkel umgestellt. */
 .accent-word {
   display: inline;
   padding: 0;
   margin: 0;
   background: none;
+  background-image: none;
   border: 0;
+  border-block-end: none;
   border-radius: 0;
-  color: var(--text);
+  box-shadow: none;
+  text-decoration: none;
+  color: var(--ks-cyan);
   font: inherit;
   font-size: inherit;
   font-weight: inherit;
   line-height: inherit;
   letter-spacing: inherit;
-  text-decoration-line: underline;
-  text-decoration-color: var(--ks-cyan);
-  text-decoration-thickness: 0.075em;
-  text-underline-offset: 0.14em;
-  text-decoration-skip-ink: none;
   /* markiertes Wort nie mitten im Wort umbrechen */
   white-space: nowrap;
 }
-.section--dark .accent-word,
-.wf--dark .accent-word {
-  color: var(--ks-cyan);
-  text-decoration-line: none;
+.accent-word::before,
+.accent-word::after {
+  content: none;
 }
+/* Auf der Neon-Fläche selbst wäre Cyan unsichtbar. */
 .section--cyan .accent-word {
   color: var(--ks-black);
-  text-decoration-color: var(--ks-black);
 }
 /* Sehr schmal (starker Browser-Zoom): Das markierte Wort darf umbrechen –
    sonst sprengt ein Wort wie „Agentur-Schleifen“ die Zeile. Muss hinter der
@@ -615,26 +618,6 @@ html.has-reveal .reveal.is-visible {
   display: block;
   margin-block-end: 0.25rem;
   font-weight: var(--fw-semibold);
-}
-
-.preview-ribbon {
-  position: fixed;
-  /* Oben rechts unter dem Header: dort liegen keine Handlungsflächen,
-     unten würde das Badge auf Mobil die CTAs überdecken. */
-  inset-block-start: max(4.75rem, calc(env(safe-area-inset-top) + 4.75rem));
-  inset-inline-end: max(0.75rem, env(safe-area-inset-right));
-  z-index: 500;
-  inline-size: auto;
-  max-inline-size: calc(100vw - 1.5rem);
-  margin: 0;
-  padding: 0.45rem 0.6rem;
-  border-radius: 4px;
-  background: var(--ks-black);
-  color: var(--ks-cyan);
-  font-size: 0.7rem;
-  font-weight: var(--fw-semibold);
-  line-height: 1;
-  pointer-events: none;
 }
 
 /* --- Utilities ------------------------------------------------------------- */

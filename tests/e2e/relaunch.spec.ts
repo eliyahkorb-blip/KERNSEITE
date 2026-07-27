@@ -135,9 +135,8 @@ test.describe('Relaunch – Struktur', () => {
     expect(s.bgImage).toBe('none');
     expect(s.radius).toBe('0px');
     expect(s.padding).toBe('0px0px');
-    // Auf hellem Grund schwarz – die Marke trägt die Neon-Unterstreichung,
-    // nicht ein abgeschwächter Türkiston (siehe farben-formen.spec.ts).
-    expect(s.color).toBe('rgb(16, 18, 20)');
+    // Das Wort selbst ist cyan (siehe farben-formen.spec.ts).
+    expect(s.color).toBe('rgb(0, 227, 242)');
     // keine Pseudo-Element-Markerfläche
     expect(['none', 'normal']).toContain(s.beforeContent);
     expect(['none', 'normal']).toContain(s.afterContent);

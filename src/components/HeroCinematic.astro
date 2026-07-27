@@ -38,7 +38,7 @@ const ALT =
   'Person im dunklen Anzug mit weißem Hemd, deren Kopf ein alter Röhrenmonitor ist. Auf dem cyanfarbenen Bildschirm steht in schwarzen Buchstaben KERNSEITE.';
 ---
 
-<section class="hero" data-hero>
+<section class="hero section--dark on-dark" data-hero>
   <div class="hero__inner content">
     <div class="hero__text">
       <h1 class="hero__title">
@@ -53,7 +53,7 @@ const ALT =
         <a class="btn btn--primary" href="/kontakt/">Projekt besprechen</a>
         <a class="btn btn--secondary" href="/arbeiten/">Arbeiten ansehen</a>
       </div>
-      <p class="hero__trust">Würzburg · Regensburg · Bayern · deutschlandweit</p>
+      <p class="hero__trust">Persönlich in Würzburg. Digital bundesweit.</p>
     </div>
 
     <div class="hero__media">
@@ -129,8 +129,11 @@ const ALT =
 </script>
 
 <style>
+  /* Dunkle Bühne: Nur so trägt das Cyan der markierten Wörter genug
+     Kontrast – ein zweiter, abgeschwächter Türkiston kommt nicht in Frage.
+     Das CRT-Motiv gewinnt auf Schwarz zusätzlich an Tiefe. */
   .hero {
-    background: var(--ks-paper);
+    background: var(--ks-black);
   }
 
   /* Mobil: normaler Dokumentfluss – Bild, dann Text, dann CTAs. */
@@ -152,7 +155,7 @@ const ALT =
   }
   .hero__placeholder {
     aspect-ratio: 1052 / 941;
-    background: var(--ks-surface);
+    background: var(--ks-black-soft);
   }
 
   /* --- Text --------------------------------------------------------------- */
@@ -180,8 +183,8 @@ const ALT =
     margin-block-start: var(--space-xl);
     font-size: var(--fs-lead);
     line-height: 1.5;
-    color: var(--ks-black-soft);
-    max-width: 46ch;
+    color: var(--text-invert-muted);
+    max-width: min(46ch, 100%);
   }
 
   .hero__ctas {

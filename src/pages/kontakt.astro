@@ -1,5 +1,6 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+import Photo from '../components/Photo.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { site } from '../config/site';
 import { activeCompany, isPlaceholder } from '../lib/config-validation';
@@ -87,6 +88,19 @@ const phoneHref = 'tel:' + c.phone.replace(/[^\d+]/g, '');
       </aside>
     </div>
   </section>
+  <!-- Standort -->
+  <section class="section section--surface">
+    <div class="content place">
+      <div class="place__text">
+        <h2 class="place__title">Würzburg. Projekte bundesweit.</h2>
+        <p class="place__body">
+          Persönliche Termine sind in der Region möglich. Vieles lässt sich zugleich schnell und
+          unkompliziert digital abstimmen.
+        </p>
+      </div>
+      <Photo photo="standort-wuerzburg" ratio="16x9" sizes="(min-width: 64rem) 55vw, 100vw" />
+    </div>
+  </section>
 </PageLayout>
 
 <style>
@@ -95,6 +109,27 @@ const phoneHref = 'tel:' + c.phone.replace(/[^\d+]/g, '');
     gap: var(--space-3xl);
     align-items: start;
   }
+  .place {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    align-items: center;
+  }
+  .place__title {
+    font-size: var(--fs-h3);
+    max-width: min(14ch, 100%);
+  }
+  .place__body {
+    margin-block-start: var(--space-md);
+    color: var(--text-muted);
+    max-width: min(44ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    .place {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+
   .kontakt__aside-title {
     font-size: var(--fs-h3);
     margin-block-end: var(--space-lg);

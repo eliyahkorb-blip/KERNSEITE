@@ -3,7 +3,9 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
 import AccentWord from '../../components/AccentWord.astro';
 import { industries, type Industry } from '../../config/industries';
-import { resolveIndustryMotif } from '../../lib/industry-media';
+import Photo from '../../components/Photo.astro';
+import { photos, type PhotoKey } from '../../config/photos';
+import { resolvePhoto } from '../../lib/photo';
 import { getService, type ServiceKey } from '../../config/services';
 import { works, type ProjectWork } from '../../config/cases';
 
@@ -26,8 +28,21 @@ const breadcrumbs = [
 ];
 const related = industry.relatedServices.map((key) => getService(key as ServiceKey));
 
-// Bild nur einbinden, wenn es tatsächlich vorliegt (keine leeren Platzhalter).
-const motif = resolveIndustryMotif(industry.slug);
+// Hauptmotiv der Branche – nur, wenn die Datei tatsächlich vorliegt.
+const heroPhoto = (
+  industry.slug in photos && resolvePhoto(industry.slug as PhotoKey) ? industry.slug : null
+) as PhotoKey | null;
+
+/**
+ * Zweites Motiv je Branche. Es sorgt dafür, dass die Detailseiten nicht
+ * denselben Aufbau zeigen: mal ein breiter Bildstreifen, mal zwei Bilder
+ * nebeneinander, mal gar keines.
+ */
+const secondBySlug: Partial<Record<string, PhotoKey[]>> = {
+  'gastronomie-hotels': ['restaurant-ambiente', 'hotelzimmer'],
+  'lokale-dienstleister': ['garten-landschaftsbau'],
+};
+const secondPhotos = (secondBySlug[industry.slug] ?? []).filter((k) => resolvePhoto(k));
 
 // Branchentypische Referenz, wenn vorhanden.
 const projects = works.filter((w): w is ProjectWork => w.kind === 'project');
@@ -55,6 +70,7 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
   title={industry.title}
   description={industry.intro.slice(0, 155)}
   h1Slot
+  variant="dark"
   lead={industry.intro}
   breadcrumbs={breadcrumbs}
 >
@@ -63,23 +79,10 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
   </h1>
 
   {
-    motif && (
+    heroPhoto && (
       <section class="hero-img">
         <div class="content--wide content">
-          <picture>
-            {motif.avifSrcset && (
-              <source type="image/avif" srcset={motif.avifSrcset} sizes="100vw" />
-            )}
-            <source type="image/webp" srcset={motif.webpSrcset} sizes="100vw" />
-            <img
-              src={motif.src}
-              alt={motif.alt}
-              width={motif.width}
-              height={motif.height}
-              fetchpriority="high"
-              decoding="async"
-            />
-          </picture>
+          <Photo photo={heroPhoto} ratio="21x9" sizes="100vw" priority />
         </div>
       </section>
     )
@@ -159,6 +162,24 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
     </div>
   </section>
 
+  {
+    secondPhotos.length > 0 && (
+      <section class="section section--cream">
+        <div class="content--wide content">
+          <div class:list={['gallery', { 'gallery--pair': secondPhotos.length > 1 }]}>
+            {secondPhotos.map((key, i) => (
+              <Photo
+                photo={key}
+                ratio={secondPhotos.length > 1 ? (i === 0 ? '4x3' : '3x4') : '21x9'}
+                sizes={secondPhotos.length > 1 ? '(min-width: 48rem) 48vw, 100vw' : '100vw'}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   <CtaBanner
     title={`Bereit für einen Auftritt, der zu ${industry.label} passt?`}
     text="Im ersten Gespräch klären wir, was für dein Geschäft wirklich zählt."
@@ -166,14 +187,20 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
 </PageLayout>
 
 <style>
-  /* Gleiches Format wie im Branchenraster. */
-  .hero-img img {
-    inline-size: 100%;
-    block-size: auto;
-    display: block;
-    aspect-ratio: 16 / 7;
-    object-fit: cover;
-    border-radius: var(--radius-image);
+  .hero-img {
+    padding-block-end: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    background: var(--ks-paper);
+  }
+
+  .gallery {
+    display: grid;
+    gap: clamp(1rem, 0.75rem + 1.5vw, 2rem);
+  }
+  @media (min-width: 48rem) {
+    .gallery--pair {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      align-items: start;
+    }
   }
 
   .sec {

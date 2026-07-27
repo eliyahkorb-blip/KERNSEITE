@@ -113,13 +113,13 @@ Erfundene Angaben wären schlimmer als eine offene Lücke.
 Motivbeschreibung, Suchbegriffe, Ablagepfade und der Ablauf beim Einsetzen
 stehen in `docs/ASSET_TODO.md`.
 
-| Branche | Datei (nach Aufbereitung) | Fotograf | Photo-ID | Quelle | Datum |
-| ------- | ------------------------- | -------- | -------- | ------ | ----- |
-| Handwerk | `assets/branchen/handwerk-{640,960,1280,1600}.{webp,avif}` | *(offen)* | *(offen)* | *(offen)* | *(offen)* |
-| Zahnarztpraxen | `assets/branchen/zahnarztpraxen-…` | *(offen)* | *(offen)* | *(offen)* | *(offen)* |
-| Gastronomie & Hotels | `assets/branchen/gastronomie-hotels-…` | *(offen)* | *(offen)* | *(offen)* | *(offen)* |
-| Lokale Dienstleister | `assets/branchen/lokale-dienstleister-…` | *(offen)* | *(offen)* | *(offen)* | *(offen)* |
-| B2B-Mittelstand | `assets/branchen/b2b-mittelstand-…` | *(offen)* | *(offen)* | *(offen)* | *(offen)* |
+| Branche              | Datei (nach Aufbereitung)                                  | Fotograf  | Photo-ID  | Quelle    | Datum     |
+| -------------------- | ---------------------------------------------------------- | --------- | --------- | --------- | --------- |
+| Handwerk             | `assets/branchen/handwerk-{640,960,1280,1600}.{webp,avif}` | _(offen)_ | _(offen)_ | _(offen)_ | _(offen)_ |
+| Zahnarztpraxen       | `assets/branchen/zahnarztpraxen-…`                         | _(offen)_ | _(offen)_ | _(offen)_ | _(offen)_ |
+| Gastronomie & Hotels | `assets/branchen/gastronomie-hotels-…`                     | _(offen)_ | _(offen)_ | _(offen)_ | _(offen)_ |
+| Lokale Dienstleister | `assets/branchen/lokale-dienstleister-…`                   | _(offen)_ | _(offen)_ | _(offen)_ | _(offen)_ |
+| B2B-Mittelstand      | `assets/branchen/b2b-mittelstand-…`                        | _(offen)_ | _(offen)_ | _(offen)_ | _(offen)_ |
 
 Beim Einsetzen je Bild eintragen: Fotograf, Unsplash-Seitenadresse, Photo-ID,
 Einsatzort, Download-Datum und Lizenzquelle (Unsplash-Lizenz, kein Unsplash+).
@@ -129,3 +129,39 @@ Screenshots der Kundenprojekte Kaya Döner und Kinderkörbchen. Das war eine
 Zweckentfremdung – ein Website-Ausschnitt zeigt nicht das Gewerk. Diese
 Dateien wurden gelöscht; die Screenshots erscheinen nur noch im Bereich
 „Arbeiten“.
+
+---
+
+## Gelieferte Fotos (2026-07-27)
+
+Die Motive wurden vom Auftraggeber als aufbereitete 4:3-Dateien (1600 × 1200)
+bereitgestellt. Quelle laut mitgelieferter `BILDZUORDNUNG.txt`: Unsplash.
+
+### Leistungsbilder
+
+| Datei | Fotograf | Original | Einsatzort |
+| ----- | -------- | -------- | ---------- |
+| `assets/leistungen/social-media-*` | Berke Citak | `berke-citak-0cpyFsSUiSc-unsplash.jpg` | Hero `/leistungen/social-media/` |
+| `assets/leistungen/unternehmensvideo-*` | Joao Marinho | `joao-marinho-5o0vN9pDwuY-unsplash.jpg` | Hero `/leistungen/unternehmensvideo/` |
+| `assets/leistungen/seo-geo-*` | Growtika | `growtika-ANqHO-Jxkj8-unsplash.jpg` | Split `/leistungen/seo-geo/` |
+| `assets/leistungen/standort-wuerzburg-*` | Daniel Sessler | `daniel-sessler-bN3WvTQQhFk-unsplash.jpg` | `/agentur/` (Verwurzelt in Würzburg), `/kontakt/` (Standort) |
+
+### Branchenbilder
+
+| Datei | Motiv | Einsatzort |
+| ----- | ----- | ---------- |
+| `assets/branchen/handwerk-*` | Schleifarbeit an einer Holzplatte | Branchenraster + `/branchen/handwerk/` |
+| `assets/branchen/gastronomie-hotels-*` | Koch beim Anrichten | Branchenraster + `/branchen/gastronomie-hotels/` |
+| `assets/branchen/lokale-dienstleister-*` | Fassadenreinigung | Branchenraster + `/branchen/lokale-dienstleister/` |
+| `assets/branchen/b2b-mittelstand-*` | Zuschnitt von Bauholz in einer Halle | Branchenraster + `/branchen/b2b-mittelstand/` |
+| `assets/branchen/restaurant-ambiente-*` | Restaurant von oben | `/branchen/gastronomie-hotels/` (Galerie) |
+| `assets/branchen/hotelzimmer-*` | Hotelzimmer | `/branchen/gastronomie-hotels/` (Galerie) |
+| `assets/branchen/garten-landschaftsbau-*` | Angelegter Garten | `/branchen/lokale-dienstleister/` (Bildstreifen) |
+
+Fotografennamen und Photo-IDs der Branchenbilder lagen der Lieferung nicht bei
+und sind nachzutragen (siehe `docs/ASSET_TODO.md`).
+
+Aufbereitung: `pnpm assets:images` (`scripts/build-images.py`) beschneidet
+mittig auf 4:3 und schreibt je Motiv 640/960/1280/1600 px als WebP und AVIF.
+Die Originaldateien liegen unter `public/assets/<gruppe>/source/` und werden
+nicht ausgeliefert.

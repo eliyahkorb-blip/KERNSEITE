@@ -51,17 +51,18 @@ const breadcrumbs = [
   </section>
 </PageLayout>
 
-{
-  site.consentRequired && (
-    <script>
-      const btn = document.querySelector('[data-consent-reset]');
-      const status = document.querySelector('[data-reset-status]');
-      if (btn && status) {
-        btn.addEventListener('click', () => {
-          localStorage.removeItem('kernseite-consent');
-          status.textContent = 'Deine Auswahl wurde zurückgesetzt. Beim nächsten Seitenaufruf wirst du erneut gefragt.';
-        });
-      }
-    </script>
-  )
-}
+<script>
+  // Auf oberster Ebene statt in einem JSX-Ausdruck: Ein `<script>` innerhalb
+  // eines Ausdrucks kann Prettier nicht parsen. Der Code prüft selbst, ob die
+  // Schaltfläche existiert – ohne Einwilligungspflicht passiert nichts.
+  const resetBtn = document.querySelector('[data-consent-reset]');
+  const resetStatus = document.querySelector('[data-reset-status]');
+
+  resetBtn?.addEventListener('click', () => {
+    localStorage.removeItem('kernseite-consent');
+    if (resetStatus) {
+      resetStatus.textContent =
+        'Deine Auswahl wurde zurückgesetzt. Beim nächsten Seitenaufruf wirst du erneut gefragt.';
+    }
+  });
+</script>

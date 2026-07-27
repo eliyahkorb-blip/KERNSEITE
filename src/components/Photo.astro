@@ -1,0 +1,128 @@
+---
+/**
+ * Photo – ein Motiv aus dem Fotoregister, responsiv ausgeliefert.
+ *
+ * Liefert `<picture>` mit AVIF- und WebP-Quellen, `srcset`, `sizes` sowie
+ * festen `width`/`height` (kein Layout Shift). Liegt das Motiv nicht vor,
+ * wird nichts gerendert – kein Platzhalter, keine graue Fläche.
+ *
+ * `ratio` bestimmt das Bildfenster. Die Datei ist immer 4:3, das Fenster
+ * darf abweichen: Bildstreifen, Hochformat, Vollbild. Dadurch entstehen aus
+ * demselben Material unterschiedliche Bildformen statt überall derselben
+ * Kachel. Die Werte sind feste Klassen, damit ohne JavaScript und ohne
+ * inline-`style` (CSP) sofort das richtige Format steht.
+ */
+import { resolvePhoto } from '../lib/photo';
+import type { PhotoKey } from '../config/photos';
+
+export type PhotoRatio = '4x3' | '3x4' | '1x1' | '16x9' | '21x9' | '5x7' | 'fill';
+
+interface Props {
+  photo: PhotoKey;
+  ratio?: PhotoRatio;
+  /** `sizes`-Angabe passend zur Platzierung. */
+  sizes?: string;
+  /** Über dem Falz: sofort laden. */
+  priority?: boolean;
+  /** Alternativtext überschreiben, wenn der Kontext es verlangt. */
+  alt?: string;
+  /** Bildausschnitt verschieben. */
+  position?: 'center' | 'top' | 'bottom';
+  class?: string;
+}
+
+const {
+  photo,
+  ratio = '4x3',
+  sizes = '100vw',
+  priority = false,
+  alt,
+  position = 'center',
+  class: className,
+} = Astro.props;
+
+const resolved = resolvePhoto(photo, alt);
+---
+
+{
+  resolved && (
+    <figure class:list={['photo', `photo--${ratio}`, `photo--${position}`, className]}>
+      <picture>
+        {resolved.avifSrcset && (
+          <source type="image/avif" srcset={resolved.avifSrcset} sizes={sizes} />
+        )}
+        <source type="image/webp" srcset={resolved.webpSrcset} sizes={sizes} />
+        <img
+          src={resolved.src}
+          alt={resolved.alt}
+          width={resolved.width}
+          height={resolved.height}
+          loading={priority ? 'eager' : 'lazy'}
+          fetchpriority={priority ? 'high' : undefined}
+          decoding="async"
+        />
+      </picture>
+    </figure>
+  )
+}
+
+<style>
+  .photo {
+    margin: 0;
+    display: block;
+    overflow: hidden;
+    background: var(--ks-surface);
+    border-radius: var(--radius-image);
+  }
+  .photo img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .photo--4x3 {
+    aspect-ratio: 4 / 3;
+  }
+  .photo--3x4 {
+    aspect-ratio: 3 / 4;
+  }
+  .photo--5x7 {
+    aspect-ratio: 5 / 7;
+  }
+  .photo--1x1 {
+    aspect-ratio: 1 / 1;
+  }
+  .photo--16x9 {
+    aspect-ratio: 16 / 9;
+  }
+  .photo--21x9 {
+    aspect-ratio: 21 / 9;
+  }
+  /* Füllt die Höhe des Elternelements (Split-Layouts). */
+  .photo--fill {
+    block-size: 100%;
+    min-block-size: 18rem;
+  }
+
+  .photo--center img {
+    object-position: center;
+  }
+  .photo--top img {
+    object-position: center top;
+  }
+  .photo--bottom img {
+    object-position: center bottom;
+  }
+
+  /* Sehr schmale Displays: extreme Formate werden ruhiger. */
+  @media (max-width: 40rem) {
+    .photo--21x9 {
+      aspect-ratio: 16 / 9;
+    }
+    .photo--3x4,
+    .photo--5x7 {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>

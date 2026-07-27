@@ -65,9 +65,10 @@ test.describe('Branchen – Bilder und Herkunft', () => {
   test('Keine schwarze Ersatzlinie und kein grauer Platzhalter', async ({ page }) => {
     await page.goto('/branchen/');
     await expect(page.locator('.igrid__rule')).toHaveCount(0);
-    const filled = await page.evaluate(() =>
-      [...document.querySelectorAll('.igrid__media')].filter((el) => !el.querySelector('img'))
-        .length,
+    const filled = await page.evaluate(
+      () =>
+        [...document.querySelectorAll('.igrid__media')].filter((el) => !el.querySelector('img'))
+          .length,
     );
     expect(filled, 'Bildfläche ohne Bild').toBe(0);
   });
@@ -125,7 +126,8 @@ test.describe('Branchen – geordnetes Raster', () => {
     await page.goto('/branchen/');
     const cols = async () =>
       page.evaluate(
-        () => getComputedStyle(document.querySelector('.igrid')!).gridTemplateColumns.split(' ').length,
+        () =>
+          getComputedStyle(document.querySelector('.igrid')!).gridTemplateColumns.split(' ').length,
       );
     expect(await cols()).toBe(3);
 

@@ -86,7 +86,9 @@
   --space-3xl: 4.5rem;
   --space-4xl: 7rem;
   --space-5xl: 10rem;
-  --section-y: clamp(5rem, 3rem + 9vw, 12rem);
+  /* Abschnittsabstand: 56–88px mobil, 88–144px auf Desktop. Vorher bis
+     192px – dadurch entstanden große, inhaltslose Flächen. */
+  --section-y: clamp(3.5rem, 2rem + 5vw, 9rem);
 
   /* --- Layout ------------------------------------------------------------ */
   --container-max: 1720px;
