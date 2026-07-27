@@ -92,7 +92,7 @@ const steps = ['Analyse', 'Seitenstruktur', 'Inhalte', 'Technische Umsetzung', '
   <section class="terms section--dark on-dark">
     <div class="content">
       <p class="terms__text">
-        <AccentWord>SEO</AccentWord> hilft Suchmaschinen, deine Seite zu verstehen.
+        <AccentWord>SEO</AccentWord> hilft Suchmaschinen, deine Seite zu verstehen.{' '}
         <AccentWord>GEO</AccentWord> sorgt dafür, dass auch KI-Antwortsysteme deine Informationen korrekt
         einordnen können.
       </p>
@@ -222,8 +222,10 @@ const steps = ['Analyse', 'Seitenstruktur', 'Inhalte', 'Technische Umsetzung', '
     font-weight: var(--fw-semibold);
     font-size: clamp(1.1rem, 1.8vw, 1.5rem);
     letter-spacing: -0.02em;
-    padding-block-end: 0.3rem;
-    border-block-end: 2px solid var(--accent-mark);
+    /* Die Neon-Linie steht über dem Wort. Unter dem Wort sähe sie aus wie
+       eine Unterstreichung und damit wie ein Link – das ist keiner. */
+    padding-block-start: 0.45rem;
+    border-block-start: 2px solid var(--accent-mark);
   }
   @media (min-width: 64rem) {
     .seo__flowwrap {

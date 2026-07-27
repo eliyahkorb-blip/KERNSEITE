@@ -155,17 +155,17 @@ Dabei gefundene und behobene Fehler:
 
 ## Überarbeitung: Leistungsseiten, Bilder, Standort (2026-07-27)
 
-| Prüfung | Befehl | Ergebnis |
-| ------- | ------ | -------- |
-| Typen | `pnpm typecheck` | 0 Fehler (67 Dateien) |
-| Lint | `pnpm lint` | keine Befunde |
-| Formatierung | `pnpm format:check` | alle Dateien konform |
-| Fixture-Build | `pnpm build:ci` | 32 Seiten |
-| Vorschau-Build | `pnpm build:preview` | 32 Seiten |
-| QA-Skripte | `pnpm qa` | alle fünf Prüfungen bestanden |
-| E2E | `pnpm test:e2e` | 82 bestanden, 1 übersprungen |
-| Überschriften | `pnpm check:headings` | 612 Seitenaufrufe (17 Seiten × 9 Breiten × 4 Zoomstufen) sauber |
-| Sichtprüfung | `pnpm visual-qa` | 10 Seiten × 7 Breiten: kein Überlauf, alle Bilder geladen |
+| Prüfung        | Befehl                | Ergebnis                                                        |
+| -------------- | --------------------- | --------------------------------------------------------------- |
+| Typen          | `pnpm typecheck`      | 0 Fehler (67 Dateien)                                           |
+| Lint           | `pnpm lint`           | keine Befunde                                                   |
+| Formatierung   | `pnpm format:check`   | alle Dateien konform                                            |
+| Fixture-Build  | `pnpm build:ci`       | 32 Seiten                                                       |
+| Vorschau-Build | `pnpm build:preview`  | 32 Seiten                                                       |
+| QA-Skripte     | `pnpm qa`             | alle fünf Prüfungen bestanden                                   |
+| E2E            | `pnpm test:e2e`       | 82 bestanden, 1 übersprungen                                    |
+| Überschriften  | `pnpm check:headings` | 612 Seitenaufrufe (17 Seiten × 9 Breiten × 4 Zoomstufen) sauber |
+| Sichtprüfung   | `pnpm visual-qa`      | 10 Seiten × 7 Breiten: kein Überlauf, alle Bilder geladen       |
 
 `pnpm format:check` läuft erstmals durch: Das `<script>` in
 `cookie-einstellungen.astro` stand in einem JSX-Ausdruck und war für Prettier
@@ -174,14 +174,14 @@ Schaltfläche existiert.
 
 ### Seitenlänge auf 390 px (vorher 9.000–12.000 px)
 
-| Seite | Höhe |
-| ----- | ---- |
-| `/leistungen/websites/` | 6.106 px |
+| Seite                                    | Höhe     |
+| ---------------------------------------- | -------- |
+| `/leistungen/websites/`                  | 6.106 px |
 | `/leistungen/google-unternehmensprofil/` | 5.609 px |
-| `/leistungen/unternehmensvideo/` | 5.056 px |
-| `/leistungen/social-media/` | 4.962 px |
-| `/leistungen/seo-geo/` | 4.944 px |
-| `/leistungen/ki-automatisierung/` | 4.665 px |
+| `/leistungen/unternehmensvideo/`         | 5.056 px |
+| `/leistungen/social-media/`              | 4.962 px |
+| `/leistungen/seo-geo/`                   | 4.944 px |
+| `/leistungen/ki-automatisierung/`        | 4.665 px |
 
 ### Neue Tests
 
@@ -212,4 +212,80 @@ Pseudo-Element – und stehen immer auf ausreichend dunklem Grund.
 - Ein Branchenmotiv fehlt: Die gelieferte `zahnarztpraxen.jpg` ist
   byte-identisch mit `handwerk.jpg` und zeigt kein Praxisumfeld. Details in
   `docs/ASSET_TODO.md`.
+- Fotografennamen und Photo-IDs der Branchenbilder sind nachzutragen.
+
+## Runde: abschließende visuelle Qualitätsprüfung
+
+Geprüft wurden 16 Seiten in vier Ansichten (1440×900, 1920×1080, 390×844,
+430×932) anhand der zwölf vorgegebenen Kriterien. Es wurden ausschließlich
+eindeutig sichtbare Fehler behoben – keine neuen Texte, keine neuen
+Komponenten, keine Umgestaltung funktionierender Abschnitte.
+
+### Nachweise
+
+| Prüfung                                | Ergebnis                                                  |
+| -------------------------------------- | --------------------------------------------------------- |
+| `pnpm typecheck`                       | 0 Fehler, 0 Warnungen (67 Dateien)                        |
+| `pnpm lint`                            | ohne Befund                                               |
+| `pnpm format:check`                    | ohne Befund                                               |
+| `pnpm build:ci` / `pnpm build:preview` | je 27 Seiten                                              |
+| `pnpm qa`                              | alle fünf Prüfungen bestanden, 1.693 interne Links        |
+| `pnpm test:e2e`                        | 90 bestanden, 1 übersprungen                              |
+| `pnpm check:headings`                  | 136 Seitenaufrufe über 8 Breiten ohne Befund              |
+| `pnpm visual-qa`                       | 17 Seiten × 4 Breiten, kein Überlauf, alle Bilder geladen |
+
+### Behobene Fehler
+
+- `/leistungen/seo-geo/`: Zwischen „…zu verstehen.“ und „GEO“ fehlte das
+  Leerzeichen – die beiden Sätze klebten im dunklen Band aneinander.
+- `/leistungen/seo-geo/`, `/leistungen/ki-automatisierung/`,
+  `/leistungen/unternehmensvideo/`: Die Ablauf- und Produktionsschritte
+  trugen eine türkise Linie **unter** dem Wort. Das sah aus wie ein Link und
+  verstieß gegen die Regel „keine türkisen Unterstreichungen“. Die Linie
+  steht jetzt über dem Wort – wie bereits bei `.needs__item` und `.flow`.
+- `/agentur/`: Zwischen „Verwurzelt in Würzburg.“ und dem zugehörigen Text
+  klaffte eine leere Fläche von rund 300 px. Ursache war das über zwei
+  Rasterzeilen gespannte Bild, das seine Höhe auf beide Zeilen verteilte.
+  Überschrift und Text stehen jetzt in einer gemeinsamen Rasterzelle.
+- `/leistungen/social-media/`: Unter der kurzen Überschrift „Was wir
+  übernehmen.“ blieb die linke Spalte über rund 350 px leer, weil der
+  einordnende Satz rechts unter der Liste stand. Der Satz steht jetzt unter
+  der Überschrift – wie im gleichartigen Abschnitt auf `/leistungen/websites/`.
+- Branchenraster (`/` und `/branchen/`): Der Eintrag ohne Bildmotiv
+  (Zahnarztpraxen) begann am oberen Rand der Rasterzeile, während die
+  Nachbarn erst unter ihrem Bild anfingen. Name, Argument und Pfeil sprangen
+  dadurch aus der Reihe. Einträge ohne Motiv richten sich jetzt an der
+  Unterkante aus und stehen mit den übrigen auf einer Linie – weiterhin ohne
+  graue Fläche, ohne Rahmen und ohne Ersatzmotiv.
+
+### Neue Tests
+
+`tests/e2e/feinschliff.spec.ts` sichert die Korrekturen ab: keine türkise
+Linie unter Textzeilen auf allen 16 Seiten, Linie über den Ablaufschritten,
+Leerzeichen zwischen „SEO“ und „GEO“, gemeinsame Grundlinie im
+Branchenraster (Name und Pfeil, Toleranz 4 px), Eintrag ohne Motiv ohne
+Rahmen und Fläche, sowie Höchstabstand zwischen kurzer Überschrift und
+zugehörigem Text auf `/agentur/` und `/leistungen/social-media/`.
+
+### Geprüft, aber bewusst nicht geändert
+
+- Der Screenshot im Google-Abschnitt der Startseite ist auf Desktop
+  `position: sticky`. Im Ganzseiten-Screenshot wirkt die Spalte darunter leer,
+  beim Scrollen bleibt das Bild jedoch stehen. Kein Fehler.
+- Die großen Aussagenbänder (`Eine schwache Website kostet mehr…`,
+  `Profil und Website müssen dasselbe sagen…`) lassen rechts Fläche frei.
+  Das ist die gewollte redaktionelle Setzung, keine Lücke.
+- Cyanfarbene Unterstreichungen an Links auf dunklem Grund bleiben: Sie sind
+  Bedienhilfe, nicht Dekoration.
+
+### Offen
+
+- Das Motiv für `b2b-mittelstand` zeigt eine Bauzimmerei (Zuschnitt von
+  Bauholz, Helm und Warnweste). Es liest sich als Handwerk und Baustelle,
+  nicht als mittelständisches Produktionsunternehmen – und liegt damit
+  visuell zu nah am Motiv für „Handwerk“. Ein passenderes Motiv steht in
+  `docs/ASSET_TODO.md`. Das gelieferte Bild wurde nicht eigenmächtig
+  entfernt.
+- Ein Branchenmotiv fehlt weiterhin: Die gelieferte `zahnarztpraxen.jpg` ist
+  byte-identisch mit `handwerk.jpg`.
 - Fotografennamen und Photo-IDs der Branchenbilder sind nachzutragen.

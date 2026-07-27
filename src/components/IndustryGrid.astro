@@ -28,7 +28,7 @@ const items = industries.map((ind) => ({
   {
     items.map((ind) => (
       <li class="igrid__cell">
-        <a class="igrid__link" href={ind.href}>
+        <a class:list={['igrid__link', !ind.photo && 'igrid__link--nomedia']} href={ind.href}>
           {ind.photo && (
             <Photo
               photo={ind.photo}
@@ -57,14 +57,32 @@ const items = industries.map((ind) => ({
     list-style: none;
   }
 
-  .igrid__link {
+  .igrid__cell {
+    /* Macht die Zelle zum Container, damit der Link die volle Zeilenhöhe
+       bekommt und die Pfeile aller Einträge auf einer Linie stehen. */
     display: grid;
-    /* Bild – Name – Argument – Pfeil, in festen Abständen. */
-    grid-template-rows: auto auto 1fr auto;
+  }
+
+  .igrid__link {
+    display: flex;
+    flex-direction: column;
     gap: 0;
     text-decoration: none;
     color: var(--text);
-    block-size: 100%;
+  }
+  /* Der Pfeil sitzt am unteren Rand der Zelle. */
+  .igrid__arg {
+    margin-block-end: auto;
+  }
+  /* Einträge ohne Motiv rutschen nach unten: Name, Argument und Pfeil stehen
+     dadurch auf derselben Linie wie bei den Einträgen mit Bild. Der freie
+     Raum liegt oben, wo die anderen ihr Bildfenster haben – keine graue
+     Fläche, kein Rahmen, kein Ersatzmotiv. */
+  .igrid__link--nomedia {
+    justify-content: flex-end;
+  }
+  .igrid__link--nomedia .igrid__arg {
+    margin-block-end: 0;
   }
   .igrid__link:hover {
     color: var(--text);
@@ -108,7 +126,7 @@ const items = industries.map((ind) => ({
   }
 
   .igrid__go {
-    justify-self: start;
+    align-self: flex-start;
     margin-block-start: 1.5rem;
     font-size: 1.25rem;
     line-height: 1;

@@ -139,17 +139,20 @@ const roles = [
   <!-- Region: Überschrift links, Bild rechts, Text darunter -->
   <section class="section section--surface">
     <div class="content region">
-      <h2 class="region__title">Verwurzelt in Würzburg.</h2>
+      <div class="region__body">
+        <h2 class="region__title">Verwurzelt in Würzburg.</h2>
+        <p class="region__text">
+          KERNSEITE sitzt in Würzburg und betreut Unternehmen bundesweit. Persönliche Termine sind
+          in der Region möglich – vieles lässt sich zugleich schnell und unkompliziert digital
+          abstimmen.
+        </p>
+      </div>
       <Photo
         photo="standort-wuerzburg"
         ratio="4x3"
         sizes="(min-width: 64rem) 50vw, 100vw"
         class="region__photo"
       />
-      <p class="region__text">
-        KERNSEITE sitzt in Würzburg und betreut Unternehmen bundesweit. Persönliche Termine sind in
-        der Region möglich – vieles lässt sich zugleich schnell und unkompliziert digital abstimmen.
-      </p>
     </div>
   </section>
 
@@ -243,8 +246,10 @@ const roles = [
     max-width: min(64ch, 100%);
   }
 
-  /* Klares Raster statt frei schwebender Spalten: Überschrift, Bild, Text.
-     Keine absolute Positionierung, keine Überschneidung. */
+  /* Zwei Spalten, zwei Zellen: links Überschrift samt Text, rechts das Bild.
+     Text und Überschrift stehen bewusst in derselben Zelle. Lagen sie in
+     zwei Rasterzeilen, verteilte das über beide Zeilen gespannte Bild seine
+     Höhe auf die Zeilen und riss eine leere Fläche dazwischen auf. */
   .region {
     display: grid;
     gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
@@ -254,6 +259,7 @@ const roles = [
     max-width: min(12ch, 100%);
   }
   .region__text {
+    margin-block-start: clamp(1.25rem, 1rem + 1vw, 2rem);
     font-size: var(--fs-lead);
     line-height: 1.5;
     color: var(--text-muted);
@@ -275,22 +281,6 @@ const roles = [
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       column-gap: clamp(2.5rem, 5vw, 5rem);
       align-items: start;
-      /* Ohne `align-content` dehnt die zweite Zeile bis zur Bildhöhe und
-         reißt eine leere Fläche zwischen Überschrift und Text auf. */
-      align-content: start;
-      grid-template-rows: auto auto;
-    }
-    .region__title {
-      grid-column: 1;
-      grid-row: 1;
-    }
-    .region__photo {
-      grid-column: 2;
-      grid-row: 1 / span 2;
-    }
-    .region__text {
-      grid-column: 1;
-      grid-row: 2;
     }
   }
 </style>

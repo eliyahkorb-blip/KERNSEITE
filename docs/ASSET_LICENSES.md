@@ -139,24 +139,24 @@ bereitgestellt. Quelle laut mitgelieferter `BILDZUORDNUNG.txt`: Unsplash.
 
 ### Leistungsbilder
 
-| Datei | Fotograf | Original | Einsatzort |
-| ----- | -------- | -------- | ---------- |
-| `assets/leistungen/social-media-*` | Berke Citak | `berke-citak-0cpyFsSUiSc-unsplash.jpg` | Hero `/leistungen/social-media/` |
-| `assets/leistungen/unternehmensvideo-*` | Joao Marinho | `joao-marinho-5o0vN9pDwuY-unsplash.jpg` | Hero `/leistungen/unternehmensvideo/` |
-| `assets/leistungen/seo-geo-*` | Growtika | `growtika-ANqHO-Jxkj8-unsplash.jpg` | Split `/leistungen/seo-geo/` |
+| Datei                                    | Fotograf       | Original                                  | Einsatzort                                                   |
+| ---------------------------------------- | -------------- | ----------------------------------------- | ------------------------------------------------------------ |
+| `assets/leistungen/social-media-*`       | Berke Citak    | `berke-citak-0cpyFsSUiSc-unsplash.jpg`    | Hero `/leistungen/social-media/`                             |
+| `assets/leistungen/unternehmensvideo-*`  | Joao Marinho   | `joao-marinho-5o0vN9pDwuY-unsplash.jpg`   | Hero `/leistungen/unternehmensvideo/`                        |
+| `assets/leistungen/seo-geo-*`            | Growtika       | `growtika-ANqHO-Jxkj8-unsplash.jpg`       | Split `/leistungen/seo-geo/`                                 |
 | `assets/leistungen/standort-wuerzburg-*` | Daniel Sessler | `daniel-sessler-bN3WvTQQhFk-unsplash.jpg` | `/agentur/` (Verwurzelt in Würzburg), `/kontakt/` (Standort) |
 
 ### Branchenbilder
 
-| Datei | Motiv | Einsatzort |
-| ----- | ----- | ---------- |
-| `assets/branchen/handwerk-*` | Schleifarbeit an einer Holzplatte | Branchenraster + `/branchen/handwerk/` |
-| `assets/branchen/gastronomie-hotels-*` | Koch beim Anrichten | Branchenraster + `/branchen/gastronomie-hotels/` |
-| `assets/branchen/lokale-dienstleister-*` | Fassadenreinigung | Branchenraster + `/branchen/lokale-dienstleister/` |
-| `assets/branchen/b2b-mittelstand-*` | Zuschnitt von Bauholz in einer Halle | Branchenraster + `/branchen/b2b-mittelstand/` |
-| `assets/branchen/restaurant-ambiente-*` | Restaurant von oben | `/branchen/gastronomie-hotels/` (Galerie) |
-| `assets/branchen/hotelzimmer-*` | Hotelzimmer | `/branchen/gastronomie-hotels/` (Galerie) |
-| `assets/branchen/garten-landschaftsbau-*` | Angelegter Garten | `/branchen/lokale-dienstleister/` (Bildstreifen) |
+| Datei                                     | Motiv                                | Einsatzort                                         |
+| ----------------------------------------- | ------------------------------------ | -------------------------------------------------- |
+| `assets/branchen/handwerk-*`              | Schleifarbeit an einer Holzplatte    | Branchenraster + `/branchen/handwerk/`             |
+| `assets/branchen/gastronomie-hotels-*`    | Koch beim Anrichten                  | Branchenraster + `/branchen/gastronomie-hotels/`   |
+| `assets/branchen/lokale-dienstleister-*`  | Fassadenreinigung                    | Branchenraster + `/branchen/lokale-dienstleister/` |
+| `assets/branchen/b2b-mittelstand-*`       | Zuschnitt von Bauholz in einer Halle | Branchenraster + `/branchen/b2b-mittelstand/`      |
+| `assets/branchen/restaurant-ambiente-*`   | Restaurant von oben                  | `/branchen/gastronomie-hotels/` (Galerie)          |
+| `assets/branchen/hotelzimmer-*`           | Hotelzimmer                          | `/branchen/gastronomie-hotels/` (Galerie)          |
+| `assets/branchen/garten-landschaftsbau-*` | Angelegter Garten                    | `/branchen/lokale-dienstleister/` (Bildstreifen)   |
 
 Fotografennamen und Photo-IDs der Branchenbilder lagen der Lieferung nicht bei
 und sind nachzutragen (siehe `docs/ASSET_TODO.md`).

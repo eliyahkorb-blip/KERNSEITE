@@ -111,14 +111,16 @@ const scope = [
   <!-- Leistungsumfang, kompakt -->
   <section class="section section--surface">
     <div class="content sscope">
-      <h2 class="sscope__title">Was wir übernehmen.</h2>
+      <div class="sscope__aside">
+        <h2 class="sscope__title">Was wir übernehmen.</h2>
+        <p class="sscope__note">
+          Die laufende Betreuung übernimmt eine spezialisierte Partnerin bzw. ein Partner. Konzept
+          und Verbindung zur Website bleiben bei uns.
+        </p>
+      </div>
       <ul class="sscope__list" role="list">
         {scope.map((s) => <li class="sscope__item">{s}</li>)}
       </ul>
-      <p class="sscope__note">
-        Die laufende Betreuung übernimmt eine spezialisierte Partnerin bzw. ein Partner. Konzept und
-        Verbindung zur Website bleiben bei uns.
-      </p>
     </div>
   </section>
 
@@ -252,6 +254,9 @@ const scope = [
     max-width: min(56ch, 100%);
   }
   @media (min-width: 64rem) {
+    /* Überschrift und einordnender Satz bilden zusammen die linke Spalte.
+       Stand der Satz rechts unter der Liste, blieb links unter der kurzen
+       Überschrift eine große leere Fläche. */
     .sscope {
       display: grid;
       grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
@@ -260,9 +265,6 @@ const scope = [
     }
     .sscope__list {
       margin-block-start: 0;
-    }
-    .sscope__note {
-      grid-column: 2;
     }
   }
 </style>
