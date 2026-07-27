@@ -163,10 +163,13 @@ const timings = [
     font-weight: var(--fw-regular);
     font-size: 0.8rem;
   }
+  /* Ohne min-inline-size behalten Felder ihre Standardbreite (~20 Zeichen)
+     und sprengen sehr schmale Viewports. */
   .field input,
   .field select,
   .field textarea {
     width: 100%;
+    min-inline-size: 0;
     padding: 0.7rem 0.85rem;
     border: 1.5px solid var(--line-strong);
     border-radius: var(--radius-md);
@@ -179,14 +182,14 @@ const timings = [
   .field textarea:focus-visible {
     outline: 3px solid var(--focus-ring);
     outline-offset: 1px;
-    border-color: var(--accent-ink);
+    border-color: var(--accent-mark);
   }
   .field textarea {
     resize: vertical;
     min-height: 8rem;
   }
   .field [aria-invalid='true'] {
-    border-color: var(--accent-ink);
+    border-color: var(--accent-mark);
   }
   .field__hint {
     font-size: 0.8rem;

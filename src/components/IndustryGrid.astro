@@ -1,53 +1,44 @@
 ---
 /**
- * IndustryGrid – asymmetrisches Branchenraster.
+ * IndustryGrid – geordnetes Branchenraster.
  *
- * Keine identischen Karten: die Felder haben unterschiedliche Breiten und
- * Höhen, der Aufbau bricht bewusst die Rasterlogik. Liegt für eine Branche ein
- * Bild unter `public/assets/branchen/<slug>.webp`, wird es verwendet; sonst
- * trägt die Fläche allein die Typografie (keine leeren Bildplatzhalter).
+ * Alle fünf Branchen haben denselben Aufbau: Bildfläche im Format 4:3,
+ * Branchenname, ein kurzes Argument, Pfeillink. Keine Karte, kein Rahmen,
+ * kein Schatten, keine Nummer, kein Badge, keine Kategoriezeile.
+ *
+ * Bilder zeigen das jeweilige Gewerk. Kunden-Screenshots werden hier nicht
+ * verwendet – die gehören in den Bereich „Arbeiten“. Liegt ein Motiv noch
+ * nicht vor, erscheint der Eintrag ohne Bildfläche; es gibt weder graue
+ * Platzhalter noch schwarze Ersatzlinien.
  */
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import { industries } from '../config/industries';
-import { industryImages } from '../config/media';
+import { resolveIndustryMotif } from '../lib/industry-media';
 
-// Auf das Projektverzeichnis beziehen – `import.meta.url` zeigt im Build
-// nicht zuverlässig auf die Komponentendatei.
-const publicDir = join(process.cwd(), 'public');
-const motifFor = (slug: string) => {
-  const motif = industryImages[slug];
-  if (!motif) return null;
-  return existsSync(join(publicDir, motif.src.replace(/^\//, ''))) ? motif : null;
-};
-
-// Feste Größenverteilung sorgt für die Asymmetrie.
-const spans = ['a', 'b', 'c', 'd', 'e'] as const;
-const items = industries.map((ind, i) => ({
-  ...ind,
-  motif: motifFor(ind.slug),
-  span: spans[i % spans.length],
-}));
+const items = industries.map((ind) => ({ ...ind, motif: resolveIndustryMotif(ind.slug) }));
 ---
 
 <ul class="igrid" role="list">
   {
     items.map((ind) => (
-      <li class:list={['igrid__cell', `igrid__cell--${ind.span}`]}>
+      <li class="igrid__cell">
         <a class="igrid__link" href={ind.href}>
-          {ind.motif ? (
+          {ind.motif && (
             <span class="igrid__media">
-              <img
-                src={ind.motif.src}
-                alt={ind.motif.alt}
-                width={ind.motif.width}
-                height={ind.motif.height}
-                loading="lazy"
-                decoding="async"
-              />
+              <picture>
+                {ind.motif.avifSrcset && (
+                  <source type="image/avif" srcset={ind.motif.avifSrcset} sizes={ind.motif.sizes} />
+                )}
+                <source type="image/webp" srcset={ind.motif.webpSrcset} sizes={ind.motif.sizes} />
+                <img
+                  src={ind.motif.src}
+                  alt={ind.motif.alt}
+                  width={ind.motif.width}
+                  height={ind.motif.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </span>
-          ) : (
-            <span class="igrid__rule" aria-hidden="true" />
           )}
           <span class="igrid__name">{ind.title}</span>
           <span class="igrid__arg">{ind.argument}</span>
@@ -63,7 +54,7 @@ const items = industries.map((ind, i) => ({
 <style>
   .igrid {
     display: grid;
-    gap: clamp(2rem, 1.5rem + 2vw, 3.5rem) clamp(1.5rem, 1rem + 2vw, 3rem);
+    gap: clamp(4rem, 3rem + 3vw, 6rem) clamp(1.75rem, 1rem + 2vw, 3rem);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -71,92 +62,87 @@ const items = industries.map((ind, i) => ({
 
   .igrid__link {
     display: grid;
-    gap: var(--space-md);
+    /* Bild – Name – Argument – Pfeil, in festen Abständen. */
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0;
     text-decoration: none;
     color: var(--text);
-    height: 100%;
-    align-content: start;
+    block-size: 100%;
   }
   .igrid__link:hover {
     color: var(--text);
   }
 
-  /* Kein Einheitszuschnitt: Jedes Motiv behält sein eigenes Format.
-     Daraus entsteht der Formatwechsel im Raster. */
+  /* Einheitliches Bildfenster für alle Branchen. */
   .igrid__media {
     display: block;
     overflow: hidden;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-image);
     background: var(--ks-surface);
+    margin-block-end: 1.5rem;
   }
   .igrid__media img {
     display: block;
     inline-size: 100%;
-    block-size: auto;
+    block-size: 100%;
+    object-fit: cover;
     transition: transform var(--dur-slow) var(--ease-out);
   }
-  .igrid__link:hover .igrid__media img {
-    transform: scale(1.03);
-  }
-
-  /* Ohne Bild trägt eine kräftige Linie die Fläche. */
-  .igrid__rule {
-    display: block;
-    block-size: 3px;
-    background: var(--ks-black);
-    transition: background-color var(--dur-base) var(--ease-out);
-  }
-  .igrid__link:hover .igrid__rule,
-  .igrid__link:focus-visible .igrid__rule {
-    background: var(--accent);
+  .igrid__link:hover .igrid__media img,
+  .igrid__link:focus-visible .igrid__media img {
+    transform: scale(1.025);
   }
 
   .igrid__name {
     display: block;
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: clamp(1.6rem, 3vw, 2.75rem);
-    line-height: 1;
+    font-size: clamp(1.5rem, 2.2vw, 2.1rem);
+    line-height: 1.05;
     letter-spacing: var(--track-display);
-    overflow-wrap: break-word;
-    hyphens: auto;
+    /* Feine Neon-Linie beim Hover statt Kachelrahmen. */
+    padding-block-end: 0.35rem;
+    border-block-end: 2px solid transparent;
+    transition: border-color var(--dur-base) var(--ease-out);
   }
+  .igrid__link:hover .igrid__name,
+  .igrid__link:focus-visible .igrid__name {
+    border-block-end-color: var(--accent);
+  }
+
   .igrid__arg {
+    margin-block-start: 0.9rem;
     color: var(--text-muted);
     font-size: var(--fs-small);
-    max-width: 42ch;
+    line-height: 1.5;
+    max-width: 34ch;
   }
+
   .igrid__go {
     justify-self: start;
+    margin-block-start: 1.5rem;
     font-size: 1.25rem;
-    color: var(--accent-ink);
+    line-height: 1;
+    color: var(--accent-mark);
     transition: transform var(--dur-base) var(--ease-out);
   }
   .igrid__link:hover .igrid__go,
   .igrid__link:focus-visible .igrid__go {
-    transform: translateX(7px);
+    transform: translateX(6px);
   }
 
-  /* --- Asymmetrie ab Tablet --------------------------------------------- */
+  /* Tablet: zwei Spalten, letzter Eintrag halbbreit statt über die Kante. */
   @media (min-width: 48rem) {
     .igrid {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .igrid__cell--a {
-      grid-column: span 7;
-    }
-    .igrid__cell--b {
-      grid-column: span 5;
-      padding-block-start: clamp(1.5rem, 4vw, 4rem);
-    }
-    .igrid__cell--c {
-      grid-column: span 5;
-    }
-    .igrid__cell--d {
-      grid-column: span 7;
-      padding-block-start: clamp(1rem, 3vw, 3rem);
-    }
-    .igrid__cell--e {
-      grid-column: span 8;
+  }
+
+  /* Desktop: drei Spalten – erste Reihe drei, zweite Reihe zwei Einträge. */
+  @media (min-width: 69rem) {
+    .igrid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 </style>

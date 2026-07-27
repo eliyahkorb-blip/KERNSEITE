@@ -61,8 +61,6 @@ test.describe('Relaunch – Inhalte und Medien', () => {
       'public/assets/video/hero-kernseite-final-1280.webp',
       'public/assets/video/hero-kernseite-final-portrait.webp',
       'public/assets/references/kernseite-crt-square.webp',
-      'public/assets/branchen/gastronomie-hotels.webp',
-      'public/assets/branchen/lokale-dienstleister.webp',
     ];
     for (const rel of required) {
       expect(existsSync(join(ROOT, rel)), `${rel} fehlt`).toBe(true);
@@ -137,8 +135,9 @@ test.describe('Relaunch – Struktur', () => {
     expect(s.bgImage).toBe('none');
     expect(s.radius).toBe('0px');
     expect(s.padding).toBe('0px0px');
-    // Türkis eingefärbter Text
-    expect(s.color).toBe('rgb(0, 117, 125)');
+    // Auf hellem Grund schwarz – die Marke trägt die Neon-Unterstreichung,
+    // nicht ein abgeschwächter Türkiston (siehe farben-formen.spec.ts).
+    expect(s.color).toBe('rgb(16, 18, 20)');
     // keine Pseudo-Element-Markerfläche
     expect(['none', 'normal']).toContain(s.beforeContent);
     expect(['none', 'normal']).toContain(s.afterContent);

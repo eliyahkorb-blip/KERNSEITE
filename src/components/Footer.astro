@@ -76,10 +76,14 @@ const c = activeCompany;
     display: block;
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    /* großer Schriftzug, füllt die Breite */
-    font-size: clamp(3rem, 15.5vw, 17rem);
-    line-height: 0.82;
-    letter-spacing: -0.06em;
+    /* Großer Schriftzug, füllt die Breite. Die Untergrenze von 3rem war auf
+       sehr schmalen Viewports (starker Browser-Zoom) breiter als der
+       Container – deshalb skaliert sie jetzt bis 1.75rem herunter. */
+    font-size: clamp(1.75rem, 15.5vw, 17rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    /* Ober- und Unterlängen des großen Schriftzugs nicht beschneiden. */
+    padding-block-end: 0.06em;
     color: var(--text-invert);
     text-decoration: none;
     margin-block-end: clamp(2.5rem, 2rem + 3vw, 5rem);
@@ -127,6 +131,14 @@ const c = activeCompany;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-xl);
   }
+  /* Sehr schmal (auch bei starkem Browser-Zoom): einspaltig, sonst laufen
+     lange Linktexte wie „Google-Unternehmensprofil“ aus dem Raster. */
+  @media (max-width: 30rem) {
+    .ft__nav {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-lg);
+    }
+  }
   .ft__group ul {
     display: grid;
     gap: 0.55rem;
@@ -137,8 +149,6 @@ const c = activeCompany;
     color: var(--text-invert-muted);
     text-decoration: none;
     font-size: var(--fs-small);
-    overflow-wrap: break-word;
-    hyphens: auto;
   }
   .ft__group a:hover {
     color: var(--accent);

@@ -214,6 +214,25 @@ function isActive(href: string): boolean {
     inline-size: 100%;
   }
 
+  /* Sehr schmal (etwa 360px bei 200% Zoom): Wortmarke verkleinern, damit
+     Marke und Menütaste nebeneinander in die Zeile passen. */
+  @media (max-width: 26rem) {
+    .site-header__inner {
+      gap: var(--space-sm);
+    }
+    .wordmark {
+      font-size: 1.15rem;
+    }
+    .burger {
+      margin-inline-end: -0.75rem;
+    }
+  }
+  @media (max-width: 22rem) {
+    .wordmark {
+      font-size: 1rem;
+    }
+  }
+
   @media (min-width: 64rem) {
     .site-header__inner {
       min-height: 76px;

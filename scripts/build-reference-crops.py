@@ -7,10 +7,7 @@ nichts erfunden und nichts von fremden Servern geladen – die Ausschnitte
 sorgen nur dafür, dass die Seite nicht überall dasselbe 16:9-Format zeigt.
 
 Ausgabe:
-  public/assets/branchen/gastronomie-hotels.webp   (3:2, Screenshot-Ausschnitt)
-  public/assets/branchen/lokale-dienstleister.webp (4:5, Screenshot-Ausschnitt)
   public/assets/references/kernseite-crt-square.webp (1:1, eigenes Motiv)
-  public/assets/references/kaya-doener-wide.webp     (21:9, Screenshot-Ausschnitt)
 """
 
 from pathlib import Path
@@ -23,20 +20,13 @@ REF = ROOT / 'public/assets/references'
 IND = ROOT / 'public/assets/branchen'
 
 # (Quelle, Ziel, Ausschnitt (l, o, r, u), Zielbreite)
+#
+# Screenshots von Kundenprojekten gehören ausschließlich in den Bereich
+# „Arbeiten“. Sie werden NICHT als Branchen-Stimmungsbilder zweckentfremdet –
+# ein Website-Ausschnitt zeigt nicht das Gewerk, sondern nur unsere Arbeit.
 JOBS = [
-    # Startbereich der Kaya-Döner-Website – Querformat 3:2.
-    ('case-kaya-doener-desktop.png', IND / 'gastronomie-hotels.webp', (0, 60, 1904, 1330), 1400),
-    # Startbereich der Kinderkörbchen-Website, Textspalte – Hochformat 4:5.
-    (
-        'case-kinderkoerbchen-desktop.png',
-        IND / 'lokale-dienstleister.webp',
-        (320, 88, 1000, 938),
-        900,
-    ),
     # Eigenes Markenmotiv, quadratischer Ausschnitt auf den Monitorkopf.
     ('hero-kernseite-final.png', REF / 'kernseite-crt-square.webp', (735, 55, 1385, 705), 900),
-    # Breites Band aus dem Kaya-Screenshot.
-    ('case-kaya-doener-desktop.png', REF / 'kaya-doener-wide.webp', (0, 40, 1904, 856), 1600),
 ]
 
 

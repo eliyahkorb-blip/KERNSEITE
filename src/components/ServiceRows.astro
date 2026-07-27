@@ -77,9 +77,6 @@ const Tag = headingLevel;
     font-size: clamp(1.75rem, 3.6vw, 3.25rem);
     line-height: 1;
     letter-spacing: var(--track-display);
-    /* lange Komposita dürfen umbrechen */
-    overflow-wrap: break-word;
-    hyphens: auto;
   }
   .rows__body {
     display: block;
@@ -123,16 +120,28 @@ const Tag = headingLevel;
     transform: scaleX(1);
   }
 
-  @media (min-width: 48rem) {
+  /* Zweispaltig erst, wenn die längsten Leistungsnamen sicher passen. */
+  @media (min-width: 64rem) {
     .rows__link {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr) auto;
+      grid-template-columns: minmax(22rem, 1fr) minmax(0, 0.95fr) auto;
       align-items: start;
     }
-    /* Titel links, Text rechts, Pfeil am Zeilenende. */
+    /* Titel links, Text rechts, Pfeil am Zeilenende – die Spalten werden
+       ausdrücklich zugewiesen, sonst rutscht der Pfeil in die Textspalte. */
     .rows__head {
       display: contents;
     }
+    .rows__title {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .rows__main {
+      grid-column: 2;
+      grid-row: 1;
+    }
     .rows__go {
+      grid-column: 3;
+      grid-row: 1;
       align-self: start;
       padding-block-start: 0.15em;
     }

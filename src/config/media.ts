@@ -1,41 +1,57 @@
 /**
- * Bildmotive, die aus echtem Projektmaterial stammen.
+ * Bildmotive der Website.
  *
- * Die Branchenbilder sind Ausschnitte aus den Screenshots der beiden echten
- * Referenzprojekte (`scripts/build-reference-crops.py`). Der Alternativtext
- * benennt das offen – es sind keine Stimmungsbilder und keine Stockfotos.
- * Branchen ohne Eintrag bekommen kein Bild und keinen leeren Platzhalter.
+ * Branchenbilder zeigen das jeweilige Gewerk beziehungsweise Unternehmens-
+ * umfeld – echte Fotografie. Screenshots von Kundenprojekten gehören
+ * ausschließlich in den Bereich „Arbeiten“ und werden hier bewusst NICHT
+ * als Stimmungsbilder zweckentfremdet.
  *
- * Breite und Höhe entsprechen den echten Dateimaßen. Die Flächen übernehmen
- * dieses Seitenverhältnis, statt jedes Motiv in dasselbe Raster zu schneiden –
- * daher kommen die wechselnden Formate auf der Seite.
+ * Alle fünf Motive haben dasselbe Seitenverhältnis (4:3) und dieselben
+ * Breiten, damit das Raster ruhig bleibt. Eine Branche wird nur dann mit
+ * Bild gerendert, wenn die Datei tatsächlich vorliegt – bis dahin bleibt
+ * die Fläche leer statt einen Platzhalter oder eine Ersatzlinie zu zeigen.
+ *
+ * Beschaffungsstand siehe `docs/ASSET_TODO.md`.
  */
 export interface Motif {
-  readonly src: string;
-  readonly width: number;
-  readonly height: number;
+  /** Dateiname ohne Endung, relativ zu `public/assets/branchen/`. */
+  readonly name: string;
   readonly alt: string;
 }
 
-export const industryImages: Readonly<Record<string, Motif>> = {
+/** Einheitliches Format aller Branchenmotive. */
+export const INDUSTRY_ASPECT = { width: 1600, height: 1200 } as const;
+
+/** Breiten, die `scripts/build-industry-images.py` erzeugt. */
+export const INDUSTRY_WIDTHS = [640, 960, 1280, 1600] as const;
+
+export const industryMotifs: Readonly<Record<string, Motif>> = {
+  handwerk: {
+    name: 'handwerk',
+    alt: 'Handwerkerin bei der Arbeit in einer Werkstatt.',
+  },
+  zahnarztpraxen: {
+    name: 'zahnarztpraxen',
+    alt: 'Beratungsgespräch in einer hellen, modernen Praxis.',
+  },
   'gastronomie-hotels': {
-    src: '/assets/branchen/gastronomie-hotels.webp',
-    width: 1400,
-    height: 699,
-    alt: 'Ausschnitt der von KERNSEITE umgesetzten Website für Kaya Döner in Himmelstadt: Startbereich mit Speisekarten-Einstieg.',
+    name: 'gastronomie-hotels',
+    alt: 'Küchenteam bei der Arbeit in einer Restaurantküche.',
   },
   'lokale-dienstleister': {
-    src: '/assets/branchen/lokale-dienstleister.webp',
-    width: 900,
-    height: 1125,
-    alt: 'Ausschnitt der von KERNSEITE umgesetzten Website für Anna-Lena’s Kinderkörbchen: Startbereich mit Begrüßung und Kontaktmöglichkeiten.',
+    name: 'lokale-dienstleister',
+    alt: 'Inhaberin eines kleinen Betriebs im Gespräch mit einer Kundin.',
+  },
+  'b2b-mittelstand': {
+    name: 'b2b-mittelstand',
+    alt: 'Technisches Team in einem mittelständischen Produktionsbetrieb.',
   },
 };
 
 /** Quadratischer Ausschnitt des eigenen Markenmotivs. */
-export const crtSquare: Motif = {
+export const crtSquare = {
   src: '/assets/references/kernseite-crt-square.webp',
   width: 900,
   height: 900,
   alt: 'Nahaufnahme des KERNSEITE-Motivs: ein Röhrenmonitor als Kopf, auf dem cyanfarbenen Bildschirm steht KERNSEITE.',
-};
+} as const;

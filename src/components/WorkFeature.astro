@@ -46,7 +46,7 @@ const tags = work.category
       </h2>
       <p class="wf__client">{work.title}</p>
       <p class="wf__body">{work.tagline}</p>
-      <ul class="wf__tags" role="list">
+      <ul class="tags wf__tags" role="list">
         {tags.map((tag) => <li class="tag">{tag}</li>)}
       </ul>
       <div class="wf__actions">
@@ -78,6 +78,12 @@ const tags = work.category
     gap: clamp(1.75rem, 1rem + 3vw, 3.5rem);
     align-items: center;
   }
+  /* Ohne min-inline-size behalten Rasterkinder ihre Min-Content-Breite und
+     schieben lange Wörter aus der Spalte. */
+  .wf__media,
+  .wf__text {
+    min-inline-size: 0;
+  }
 
   .wf__media {
     position: relative;
@@ -99,9 +105,9 @@ const tags = work.category
 
   .wf__title {
     font-size: var(--fs-h3);
-    line-height: 0.94;
+    line-height: 0.98;
     letter-spacing: var(--track-display);
-    max-width: 14ch;
+    max-width: min(14ch, 100%);
     color: var(--text);
   }
   /* Auf der dunklen Bühne muss die Überschrift hell sein. */
@@ -129,15 +135,11 @@ const tags = work.category
   .wf__body {
     margin-block-start: var(--space-md);
     color: var(--text-muted);
-    max-width: 44ch;
+    max-width: min(44ch, 100%);
   }
 
   .wf__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.75rem;
-    margin: var(--space-lg) 0 0;
-    padding: 0;
+    margin-block-start: var(--space-lg);
   }
 
   .wf__actions {
@@ -150,6 +152,8 @@ const tags = work.category
   .wf__live {
     position: relative;
     z-index: 1;
+    /* Lange Domains dürfen umbrechen statt die Zeile zu sprengen. */
+    overflow-wrap: anywhere;
     font-size: var(--fs-small);
     color: var(--accent-ink);
     text-underline-offset: 0.25em;

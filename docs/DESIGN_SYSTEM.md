@@ -13,7 +13,8 @@ Formularfelder, Filter und Dialoge.
 | Token             | Wert      | Rolle                                       |
 | ----------------- | --------- | ------------------------------------------- |
 | `--ks-cyan`       | `#00E3F2` | **einzige kräftige Akzentfarbe**            |
-| `--ks-cyan-dark`  | `#006B73` | Cyan für kleine Texte auf hellem Grund (AA) |
+| `--accent-mark`   | `#00E3F2` | Neon als Linie, Unterstreichung, Pfeil, Fläche, Fokus |
+| `--accent-ink`    | kontextabhängig | Akzent-Schriftfarbe: schwarz auf hell, `#00E3F2` auf dunkel |
 | `--ks-black`      | `#101214` | Typografie, dunkle Flächen                  |
 | `--ks-black-soft` | `#25282B` | abgesetzte dunkle Flächen                   |
 | `--ks-paper`      | `#F4F0E7` | warme Grundfläche                           |
@@ -22,8 +23,22 @@ Formularfelder, Filter und Dialoge.
 | `--ks-line`       | `#D5CFC2` | Trennlinien                                 |
 | `--ks-muted`      | `#60646B` | Sekundärtext                                |
 
-Entfernt: `#19E6F2`, Ultramarin, Marineblau, Blau-Grau, Signalrot als UI-Farbe.
-Blau, Lila, Orange, Grün und Gelb kommen im Interface nicht vor.
+Entfernt: `#19E6F2`, `#006B73`, `#00757D`, `#0C3D42`, `#0A6A73`, Ultramarin,
+Marineblau, Blau-Grau, Signalrot als UI-Farbe. Blau, Lila, Orange, Grün und Gelb
+kommen im Interface nicht vor.
+
+**Es gibt bewusst keine abgeschwächte Türkis- oder Petrolvariante.** `#00E3F2` ist
+zu hell, um auf Beige als kleiner Text zu funktionieren – die Lösung ist deshalb
+nicht ein zweiter, dunklerer Türkiston, sondern eine andere Rolle:
+
+| Untergrund | Text | Neon-Türkis wirkt als |
+| ---------- | ---- | --------------------- |
+| hell (Papier, Creme, Surface) | schwarz | Unterstreichung, Linie, Pfeil, Fläche, Fokus |
+| dunkel (`#101214`) | `#00E3F2` erlaubt | Fläche, Linie, Fokus |
+| Neon-Fläche (`#00E3F2`) | schwarz | – (Markierung wird schwarz) |
+
+Markierte Wörter (`AccentWord`) sind auf hellem Grund **schwarz mit
+Neon-Unterstreichung**, auf dunklem Grund neonfarben.
 
 **Kontextfarben über Variablen.** `.section--dark`, `.wf--dark` und `.section--cyan`
 setzen `--text`, `--text-muted`, `--accent-ink`, `--line` und `--line-strong` neu.
@@ -61,6 +76,41 @@ Variante `underline` für kräftige Unterstreichung statt Fläche.
 - `.label` ist eine ruhige Zwischenzeile in Body-Schrift (Sentence Case).
 - `.tag` ordnet ein (Projektkategorie, Branche): kleine Schrift, feine Kontur,
   Pillenform, normale Schreibweise. Steht **unter** der Beschreibung, nicht darüber.
+
+## Formen
+
+Marketingelemente sind rechteckig. Es gibt **keinen Pillen-Radius** mehr –
+vollrunde Chips, Tags und Buttons wirken beliebig und austauschbar.
+
+| Element | Radius | Form |
+| ------- | ------ | ---- |
+| Buttons (`.btn`) | 6px | Rechteck, Mindesthöhe 52px, Padding 1.7rem |
+| Bilder | 4px (`--radius-image`) | Rechteck |
+| Formularfelder | 6px | Rechteck |
+| Schlagworte (`.tag`) | 0 | reiner Text, Trenner `/` |
+| Fokusring | 2px | 3px Neon-Kontur, 3px Abstand |
+
+Primärer CTA: Fläche `#00E3F2`, Text `#101214`, kein Verlauf, kein Schatten.
+Beim Hover invertiert er zu schwarzer Fläche mit Neon-Text.
+
+Schlagworte tragen keine Umrandung, keinen Hintergrund und keine Rundung. Sie
+stehen als normale Textbegriffe unter der Beschreibung, getrennt durch einen
+feinen Schrägstrich.
+
+## Branchenraster
+
+Fünf gleichwertige Einträge, gleicher Aufbau, gleiches Bildformat:
+
+- Bildfenster 4:3, `object-fit: cover`, Radius 4px
+- darunter Branchenname, ein kurzes Argument, Pfeillink
+- keine Karte, kein Rahmen, kein Schatten, keine Nummer, kein Badge
+- Desktop ab 69rem drei Spalten (3 + 2), Tablet zwei, Mobil eine
+- Hover: Bildzoom 1.025 und eine Neon-Linie unter dem Namen
+
+Bilder zeigen das jeweilige Gewerk. Screenshots von Kundenprojekten gehören
+ausschließlich in den Bereich „Arbeiten“ und werden hier nicht als
+Stimmungsbilder zweckentfremdet. Liegt ein Motiv nicht vor, erscheint der
+Eintrag ohne Bildfläche – kein grauer Platzhalter, keine schwarze Ersatzlinie.
 
 ## Bausteine
 

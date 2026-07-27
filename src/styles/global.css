@@ -60,6 +60,10 @@ ol[role='list'] {
 }
 
 /* --- Typografie ----------------------------------------------------------- */
+/* Zeilenhöhen und Laufweiten sind bewusst zurückgenommen: Bei 0.9 und
+   -0.065em stoßen Ober- und Unterlängen aneinander, große Wörter laufen
+   ineinander und Buchstaben werden am Containerrand beschnitten. Die
+   Schriftarten bleiben unverändert – korrigiert werden nur die Werte. */
 h1,
 h2,
 h3,
@@ -71,13 +75,21 @@ h5 {
   letter-spacing: var(--track-display);
   color: var(--text);
   text-wrap: balance;
-  /* Lange deutsche Komposita dürfen umbrechen bzw. trennen,
-     sonst sprengen sie auf schmalen Displays die Zeile. */
-  overflow-wrap: break-word;
-  hyphens: auto;
+  /* Keine Silbentrennung in Überschriften: „medizi-nische“ oder
+     „Unterneh-men“ sind schlechter als eine etwas kleinere Schrift.
+     Umbrochen wird nur an Wortgrenzen. */
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+  /* Ober- und Unterlängen dürfen nie beschnitten werden. */
+  padding-block-end: 0.04em;
+  /* Eine Überschrift darf ihren Container nie überragen – auch dann nicht,
+     wenn eine `max-width`-Angabe in ch grösser ausfällt als die Spalte. */
+  max-inline-size: 100%;
 }
 h1 {
   font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
   letter-spacing: var(--track-hero);
 }
 h2 {
@@ -86,12 +98,55 @@ h2 {
 h3 {
   font-size: var(--fs-h4);
   line-height: var(--lh-snug);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
 }
 h4 {
   font-size: var(--fs-h5);
   line-height: var(--lh-snug);
   letter-spacing: -0.02em;
+}
+
+/* Sehr schmale Displays (auch bei starkem Browser-Zoom): extrem lange
+   Komposita dürfen als letzter Ausweg innerhalb des Wortes umbrechen, damit
+   nichts aus dem Container läuft. Getrennt wird ohne Bindestrich – es
+   entsteht also keine falsche Silbentrennung. */
+@media (max-width: 30rem) {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    overflow-wrap: anywhere;
+    /* `balance` rechnet auf sehr schmalen Zeilen mit Breiten, die der
+       Container nicht hergibt – hier zählt nur, dass nichts überläuft. */
+    text-wrap: wrap;
+  }
+  /* Auch Fließtext und Zusammenfassungen dürfen hier notfalls brechen. */
+  p,
+  li,
+  summary,
+  dd,
+  dt {
+    overflow-wrap: anywhere;
+  }
+  :root {
+    --gutter: 1rem;
+  }
+}
+
+/* Extrem schmal – das erreicht man nicht mit einem Gerät, sondern mit
+   starkem Browser-Zoom (etwa 360px bei 200%). Hier greifen die üblichen
+   Clamp-Untergrenzen nicht mehr: Ein Wort wie „Vertrauen,“ ist bei 2rem
+   breiter als die verbleibende Zeile. Deshalb skaliert die Displayschrift
+   hier zusätzlich herunter. Reale Telefone ab 360px sind nicht betroffen. */
+@media (max-width: 22rem) {
+  :root {
+    --fs-h1: clamp(1.5rem, 7.6vw, 2.2rem);
+    --fs-h2: clamp(1.4rem, 7.2vw, 2rem);
+    --fs-h3: clamp(1.3rem, 6.6vw, 1.8rem);
+    --fs-h4: clamp(1.15rem, 5.6vw, 1.5rem);
+    --fs-lead: 1rem;
+  }
 }
 
 p {
@@ -220,9 +275,11 @@ strong {
 }
 
 /* --- Markiertes Wort (Markenelement) --------------------------------------
-   Nur die Schriftfarbe wechselt – keine Fläche, kein Marker, keine Pille.
-   Schriftart, -größe, -stärke, Zeilenhöhe und Laufweite bleiben identisch,
-   damit die Headline ruhig bleibt. */
+   Keine Fläche, kein Marker, keine Pille. Schriftart, -größe, -stärke,
+   Zeilenhöhe und Laufweite bleiben identisch, damit die Headline ruhig
+   bleibt. Auf hellem Grund bleibt das Wort schwarz und bekommt eine klare
+   Neon-Türkis-Unterstreichung – das ist lesbar und trägt die Marke. Auf
+   dunklem Grund darf das Neon direkt die Schriftfarbe sein. */
 .accent-word {
   display: inline;
   padding: 0;
@@ -230,31 +287,36 @@ strong {
   background: none;
   border: 0;
   border-radius: 0;
-  color: var(--ks-cyan-text);
+  color: var(--text);
   font: inherit;
   font-size: inherit;
   font-weight: inherit;
   line-height: inherit;
   letter-spacing: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--ks-cyan);
+  text-decoration-thickness: 0.075em;
+  text-underline-offset: 0.14em;
+  text-decoration-skip-ink: none;
   /* markiertes Wort nie mitten im Wort umbrechen */
   white-space: nowrap;
 }
 .section--dark .accent-word,
 .wf--dark .accent-word {
   color: var(--ks-cyan);
+  text-decoration-line: none;
 }
 .section--cyan .accent-word {
   color: var(--ks-black);
-  text-decoration-line: underline;
-  text-decoration-thickness: 0.06em;
-  text-underline-offset: 0.12em;
+  text-decoration-color: var(--ks-black);
 }
-/* Optionale, sehr dezente Unterstreichung */
-.accent-word--underline {
-  text-decoration-line: underline;
-  text-decoration-color: var(--ks-cyan);
-  text-decoration-thickness: 0.07em;
-  text-underline-offset: 0.08em;
+/* Sehr schmal (starker Browser-Zoom): Das markierte Wort darf umbrechen –
+   sonst sprengt ein Wort wie „Agentur-Schleifen“ die Zeile. Muss hinter der
+   Basisregel stehen, sonst gewinnt deren `nowrap`. */
+@media (max-width: 30rem) {
+  .accent-word {
+    white-space: normal;
+  }
 }
 
 /* --- Labels ----------------------------------------------------------------
@@ -270,30 +332,47 @@ strong {
   color: var(--text-muted);
 }
 .label--accent {
-  color: var(--ks-cyan-text);
+  color: var(--text);
 }
 .section--dark .label--accent {
   color: var(--ks-cyan);
 }
 
 /* --- Schlagworte -----------------------------------------------------------
-   Einordnung von Projekten, Leistungen und Branchen. Ruhig, in normaler
-   Schreibweise, ohne Kachel: nur eine feine Linie trägt das Wort. */
+   Einordnung von Projekten, Leistungen und Branchen: normale Textbegriffe.
+   Keine Pille, keine Umrandung, kein Hintergrund, kein Badge. Getrennt wird
+   durch Abstand und einen feinen Schrägstrich zwischen den Begriffen. */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .tag {
-  display: inline-block;
-  padding: 0.3rem 0.7rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
   font-size: var(--fs-small);
   font-weight: var(--fw-regular);
   letter-spacing: 0;
   text-transform: none;
   color: var(--text-muted);
-  white-space: nowrap;
 }
-.tag--accent {
-  border-color: color-mix(in srgb, var(--accent-ink) 45%, transparent);
-  color: var(--accent-ink);
+/* Trenner zwischen den Begriffen – nicht hinter dem letzten. */
+.tag + .tag::before {
+  content: '/';
+  color: var(--line-strong);
+}
+.section--dark .tag + .tag::before,
+.wf--dark .tag + .tag::before {
+  color: var(--line-invert);
 }
 
 .lead {
@@ -309,19 +388,23 @@ strong {
   color: var(--ks-black);
 }
 
-/* --- Buttons -------------------------------------------------------------- */
+/* --- Buttons -------------------------------------------------------------
+   Klare rechteckige Form mit 6px Radius. Keine Pille, kein Verlauf, kein
+   Schatten. Der primäre CTA trägt die Neon-Fläche mit schwarzem Text und
+   invertiert beim Hover. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  min-height: 54px;
-  padding: 0.9rem 1.8rem;
+  min-height: 52px;
+  padding: 0.9rem 1.7rem;
   font-weight: var(--fw-semibold);
   font-size: var(--fs-small);
   text-decoration: none;
   border: 1.5px solid transparent;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-md);
+  box-shadow: none;
   transition:
     background-color var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out),
@@ -387,7 +470,7 @@ strong {
   border-block-end-color: var(--accent);
 }
 .link-arrow .arrow {
-  color: var(--accent-ink);
+  color: var(--accent-mark);
   transition: transform var(--dur-base) var(--ease-out);
 }
 .link-arrow:hover .arrow {
@@ -485,15 +568,20 @@ strong {
 .wf--dark {
   --text: var(--ks-cream);
   --text-muted: #a7abb0;
+  /* Auf dunklem Grund darf das Neon-Türkis direkt Schriftfarbe sein. */
   --accent-ink: var(--ks-cyan);
+  --accent-mark: var(--ks-cyan);
   --line: var(--line-invert);
   --line-strong: #3a4046;
 }
 
+/* Neon-Türkis als Fläche: Text und Markierung werden schwarz – ein
+   zweiter Türkiston käme hier nicht in Frage. */
 .section--cyan {
   --text: var(--ks-black);
-  --text-muted: #0c3d42;
+  --text-muted: #25282b;
   --accent-ink: var(--ks-black);
+  --accent-mark: var(--ks-black);
   --line: rgba(16, 18, 20, 0.25);
   --line-strong: rgba(16, 18, 20, 0.45);
 }

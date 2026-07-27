@@ -158,14 +158,24 @@ const ALT =
   /* --- Text --------------------------------------------------------------- */
   .hero__title {
     font-size: clamp(2.75rem, 11.5vw, 4.25rem);
-    line-height: 0.93;
-    letter-spacing: -0.05em;
+    line-height: 0.97;
+    letter-spacing: -0.04em;
     /* Keine Silbentrennung: „Unternehmen“ bleibt ganz. */
     hyphens: none;
     word-break: normal;
     overflow-wrap: normal;
     text-wrap: initial;
   }
+  /* Sehr starker Browser-Zoom: Titel zusätzlich verkleinern. */
+  @media (max-width: 22rem) {
+    .hero__title {
+      font-size: clamp(1.6rem, 8.5vw, 2.4rem);
+      /* Hier zählt nur, dass nichts überläuft – Trennstriche entstehen
+         dabei nicht, es wird ohne Bindestrich umbrochen. */
+      overflow-wrap: anywhere;
+    }
+  }
+
   .hero__lead {
     margin-block-start: var(--space-xl);
     font-size: var(--fs-lead);
@@ -209,8 +219,8 @@ const ALT =
     }
     .hero__title {
       font-size: clamp(3rem, 4.9vw, 6rem);
-      line-height: 0.9;
-      letter-spacing: -0.055em;
+      line-height: 0.95;
+      letter-spacing: -0.045em;
     }
     .hero__lead {
       max-width: 40ch;

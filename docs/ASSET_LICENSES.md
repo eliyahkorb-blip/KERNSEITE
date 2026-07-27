@@ -100,3 +100,32 @@ heruntergeladen und lokal abgelegt werden.
 Beim Einsetzen bitte je Bild ergänzen: Fotograf:in, Photo-ID, Quell-URL und Datum des
 Downloads. Nur kostenlose Unsplash-Bilder verwenden (**kein Unsplash+**). Keine
 Hotlinks – die Dateien liegen lokal, sonst schlägt `pnpm qa` (`check-external`) fehl.
+
+## Branchenmotive
+
+Die fünf Branchenmotive fehlen noch. Der Download von Unsplash ist in dieser
+Entwicklungsumgebung gesperrt (Egress-Proxy, HTTP 403 beim CONNECT, neun
+Versuche über sechs Hosts mit vier Werkzeugen). Weil unsplash.com nicht
+erreichbar war, konnten auch keine konkreten Fotos ausgewählt werden – es
+stehen hier deshalb bewusst **keine Photo-IDs und keine Fotografennamen**.
+Erfundene Angaben wären schlimmer als eine offene Lücke.
+
+Motivbeschreibung, Suchbegriffe, Ablagepfade und der Ablauf beim Einsetzen
+stehen in `docs/ASSET_TODO.md`.
+
+| Branche | Datei (nach Aufbereitung) | Fotograf | Photo-ID | Quelle | Datum |
+| ------- | ------------------------- | -------- | -------- | ------ | ----- |
+| Handwerk | `assets/branchen/handwerk-{640,960,1280,1600}.{webp,avif}` | *(offen)* | *(offen)* | *(offen)* | *(offen)* |
+| Zahnarztpraxen | `assets/branchen/zahnarztpraxen-…` | *(offen)* | *(offen)* | *(offen)* | *(offen)* |
+| Gastronomie & Hotels | `assets/branchen/gastronomie-hotels-…` | *(offen)* | *(offen)* | *(offen)* | *(offen)* |
+| Lokale Dienstleister | `assets/branchen/lokale-dienstleister-…` | *(offen)* | *(offen)* | *(offen)* | *(offen)* |
+| B2B-Mittelstand | `assets/branchen/b2b-mittelstand-…` | *(offen)* | *(offen)* | *(offen)* | *(offen)* |
+
+Beim Einsetzen je Bild eintragen: Fotograf, Unsplash-Seitenadresse, Photo-ID,
+Einsatzort, Download-Datum und Lizenzquelle (Unsplash-Lizenz, kein Unsplash+).
+
+**Entfernt:** Die früheren Branchenbilder waren Ausschnitte aus den
+Screenshots der Kundenprojekte Kaya Döner und Kinderkörbchen. Das war eine
+Zweckentfremdung – ein Website-Ausschnitt zeigt nicht das Gewerk. Diese
+Dateien wurden gelöscht; die Screenshots erscheinen nur noch im Bereich
+„Arbeiten“.

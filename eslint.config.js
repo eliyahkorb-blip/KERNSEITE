@@ -46,7 +46,7 @@ export default tseslint.config(
   },
   {
     // Skripte, die per Playwright Code im Browser ausführen (page.evaluate).
-    files: ['scripts/visual-qa.mjs'],
+    files: ['scripts/visual-qa.mjs', 'scripts/check-headings.mjs'],
     languageOptions: {
       globals: { ...globals.node, ...globals.browser },
     },

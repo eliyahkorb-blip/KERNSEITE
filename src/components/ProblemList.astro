@@ -40,7 +40,7 @@ const { items } = Astro.props;
   .plist__mark {
     inline-size: clamp(1.25rem, 3vw, 2.5rem);
     block-size: 2px;
-    background: var(--accent-ink);
+    background: var(--accent-mark);
     transform: translateY(-0.4em);
   }
   .plist__text {
@@ -49,7 +49,7 @@ const { items } = Astro.props;
     font-size: clamp(1.35rem, 2.6vw, 2.4rem);
     line-height: 1.1;
     letter-spacing: -0.03em;
-    max-width: 26ch;
+    max-width: min(26ch, 100%);
   }
 
   .plist__text {

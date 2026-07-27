@@ -2,10 +2,8 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
 import AccentWord from '../../components/AccentWord.astro';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import { industries, type Industry } from '../../config/industries';
-import { industryImages } from '../../config/media';
+import { resolveIndustryMotif } from '../../lib/industry-media';
 import { getService, type ServiceKey } from '../../config/services';
 import { works, type ProjectWork } from '../../config/cases';
 
@@ -29,11 +27,7 @@ const breadcrumbs = [
 const related = industry.relatedServices.map((key) => getService(key as ServiceKey));
 
 // Bild nur einbinden, wenn es tatsächlich vorliegt (keine leeren Platzhalter).
-const candidate = industryImages[industry.slug];
-const motif =
-  candidate && existsSync(join(process.cwd(), 'public', candidate.src.replace(/^\//, '')))
-    ? candidate
-    : null;
+const motif = resolveIndustryMotif(industry.slug);
 
 // Branchentypische Referenz, wenn vorhanden.
 const projects = works.filter((w): w is ProjectWork => w.kind === 'project');
@@ -72,14 +66,20 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
     motif && (
       <section class="hero-img">
         <div class="content--wide content">
-          <img
-            src={motif.src}
-            alt={motif.alt}
-            width={motif.width}
-            height={motif.height}
-            loading="eager"
-            decoding="async"
-          />
+          <picture>
+            {motif.avifSrcset && (
+              <source type="image/avif" srcset={motif.avifSrcset} sizes="100vw" />
+            )}
+            <source type="image/webp" srcset={motif.webpSrcset} sizes="100vw" />
+            <img
+              src={motif.src}
+              alt={motif.alt}
+              width={motif.width}
+              height={motif.height}
+              fetchpriority="high"
+              decoding="async"
+            />
+          </picture>
         </div>
       </section>
     )
@@ -166,19 +166,19 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
 </PageLayout>
 
 <style>
-  /* Das Motiv behält sein echtes Format – kein Zwangszuschnitt. */
+  /* Gleiches Format wie im Branchenraster. */
   .hero-img img {
     inline-size: 100%;
     block-size: auto;
     display: block;
-    max-block-size: 80svh;
-    object-fit: contain;
-    object-position: left top;
+    aspect-ratio: 16 / 7;
+    object-fit: cover;
+    border-radius: var(--radius-image);
   }
 
   .sec {
     font-size: var(--fs-h2);
-    max-width: 16ch;
+    max-width: min(16ch, 100%);
     margin-block-end: clamp(2rem, 1.5rem + 3vw, 4rem);
   }
 
@@ -199,7 +199,7 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
   .focus__text {
     margin-block-start: 0.45rem;
     color: var(--text-muted);
-    max-width: 60ch;
+    max-width: min(60ch, 100%);
     font-size: var(--fs-small);
   }
 
@@ -211,13 +211,13 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
   .ref__title {
     margin-block-start: var(--space-md);
     font-size: var(--fs-h3);
-    line-height: 0.95;
-    max-width: 14ch;
+    line-height: 1;
+    max-width: min(14ch, 100%);
   }
   .ref__body {
     margin-block-start: var(--space-lg);
     color: var(--text-muted);
-    max-width: 44ch;
+    max-width: min(44ch, 100%);
   }
   .ref .link-arrow {
     margin-block-start: var(--space-xl);
@@ -251,18 +251,16 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
     font-size: clamp(1.3rem, 2.6vw, 2.1rem);
     letter-spacing: var(--track-display);
     line-height: 1.05;
-    overflow-wrap: break-word;
-    hyphens: auto;
   }
   .rel__teaser {
     display: block;
     margin-block-start: 0.5rem;
     color: var(--text-muted);
     font-size: var(--fs-small);
-    max-width: 60ch;
+    max-width: min(60ch, 100%);
   }
   .rel__go {
-    color: var(--accent-ink);
+    color: var(--accent-mark);
     padding-block-start: 0.35em;
     transition: transform var(--dur-base) var(--ease-out);
   }

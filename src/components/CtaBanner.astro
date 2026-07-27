@@ -62,12 +62,16 @@ const {
   .cta__inner {
     display: grid;
     gap: var(--space-xl);
+    min-inline-size: 0;
+  }
+  .cta__inner > * {
+    min-inline-size: 0;
   }
   .cta__title {
     font-size: var(--fs-h2);
-    line-height: 0.9;
+    line-height: 0.98;
     letter-spacing: var(--track-display);
-    max-width: 18ch;
+    max-width: min(18ch, 100%);
   }
   /* Hervorhebung auf der Cyan-Fläche: rein typografisch, keine Fläche */
   .cta__mark {
@@ -79,10 +83,16 @@ const {
     text-underline-offset: 0.12em;
     white-space: nowrap;
   }
+  /* Bei starkem Zoom passt das markierte Wort nicht mehr in die Zeile. */
+  @media (max-width: 30rem) {
+    .cta__mark {
+      white-space: normal;
+    }
+  }
   .cta__text {
     font-size: var(--fs-lead);
     line-height: 1.5;
-    max-width: 46ch;
+    max-width: min(46ch, 100%);
     color: var(--ks-black);
   }
   .cta__actions {
@@ -93,6 +103,8 @@ const {
     margin-block-start: var(--space-md);
   }
   .cta__mailto {
+    /* Die E-Mail-Adresse ist ein langes zusammenhängendes Wort. */
+    overflow-wrap: anywhere;
     font-size: var(--fs-small);
     color: var(--ks-black);
     text-underline-offset: 0.3em;

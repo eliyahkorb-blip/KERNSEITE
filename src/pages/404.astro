@@ -42,10 +42,10 @@ import { mainNav } from '../config/navigation';
   .notfound__title {
     font-size: clamp(2.5rem, 1rem + 7vw, 6rem);
     margin-block: var(--space-sm) var(--space-lg);
-    max-width: 16ch;
+    max-width: min(16ch, 100%);
   }
   .notfound__lead {
-    max-width: 48ch;
+    max-width: min(48ch, 100%);
   }
   .notfound__actions {
     display: flex;

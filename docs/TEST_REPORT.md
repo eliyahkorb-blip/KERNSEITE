@@ -101,3 +101,53 @@ E2E-Test.
 - `pnpm format:check` scheitert an `src/pages/cookie-einstellungen.astro`: Prettier kann
   das `<script>` innerhalb des JSX-Ausdrucks nicht parsen. Bestand vor dieser Runde,
   betrifft nur die Formatierung, nicht den Build.
+
+---
+
+## Korrekturrunde: Farbe, Formen, Branchenraster, Überschriften (2026-07-26)
+
+### Automatisierte Prüfungen
+
+| Prüfung | Befehl | Ergebnis |
+| ------- | ------ | -------- |
+| Typen | `pnpm typecheck` | 0 Fehler, 0 Warnungen (59 Dateien) |
+| Lint | `pnpm lint` | keine Befunde |
+| Fixture-Build | `pnpm build:ci` | 27 Seiten |
+| Vorschau-Build | `pnpm build:preview` | 27 Seiten |
+| QA-Skripte | `pnpm qa` | alle fünf Prüfungen bestanden |
+| E2E | `pnpm test:e2e` | 64 bestanden, 1 übersprungen |
+| Überschriften | `pnpm check:headings` | 360 Seitenaufrufe: keine Überschneidung, kein Beschnitt, kein Überlauf, keine Silbentrennung |
+| Sichtprüfung | `pnpm visual-qa` | 7 Seiten × 7 Breiten: kein Überlauf, alle Bilder geladen |
+
+### Überschriftenprüfung
+
+`scripts/check-headings.mjs` misst im echten Browser die Kästen aller
+Überschriften und meldet Überlappung, Beschnitt (`scrollWidth > clientWidth`),
+Austritt aus dem Viewport, aktive Silbentrennung und horizontalen Überlauf.
+
+Matrix: 10 Seiten × 9 Breiten (1920, 1680, 1440, 1280, 1024, 768, 430, 390,
+360) × 4 Zoomstufen (100 %, 125 %, 150 %, 200 %) = 360 Seitenaufrufe.
+
+Dabei gefundene und behobene Fehler:
+
+- Footer-Wortmarke mit `line-height: 0.82` und `letter-spacing: -0.06em` –
+  Ober- und Unterlängen stießen aneinander, Buchstaben wurden beschnitten.
+- `ServiceRows`: `display: contents` ohne ausdrückliche Spaltenzuweisung
+  schob den Pfeil in die Textspalte; die Leistungsnamen liefen aus dem Raster.
+- `/agentur/`: Zweispaltigkeit ab 48rem war für die Überschrift zu eng.
+- Begrenzungen in `ch` (`max-width: 18ch`) waren auf schmalen Spalten breiter
+  als der Container – jetzt durchgängig `min(NNch, 100%)`.
+- `.accent-word` mit `white-space: nowrap` sprengte bei starkem Zoom die
+  Zeile; die Ausnahmeregel stand vor der Basisregel und griff deshalb nicht.
+- Formularfelder, Footer-Navigation, Header, lange Domains und die
+  E-Mail-Adresse im CTA-Band liefen bei starkem Zoom über.
+
+### Bekannt und offen
+
+- Die fünf Branchenmotive fehlen. Unsplash ist aus dieser Umgebung nicht
+  erreichbar (neun Versuche, sechs Hosts, vier Werkzeuge – alle HTTP 403 vom
+  Egress-Proxy). Belege in `docs/ASSET_TODO.md`. Das Raster ist so gebaut,
+  dass die Bilder ohne weitere Änderung eingesetzt werden können.
+- `pnpm format:check` scheitert weiterhin an
+  `src/pages/cookie-einstellungen.astro` (Prettier kann das `<script>` im
+  JSX-Ausdruck nicht parsen). Bestand vor dieser Runde.

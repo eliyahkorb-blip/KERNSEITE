@@ -29,7 +29,9 @@
     "guard:no-fixture": "node scripts/guard-no-fixture.mjs",
     "visual-qa": "node scripts/visual-qa.mjs",
     "assets:crt": "node scripts/build-hero-crt.mjs",
-    "assets:crops": "python3 scripts/build-reference-crops.py"
+    "assets:crops": "python3 scripts/build-reference-crops.py",
+    "assets:branchen": "python3 scripts/build-industry-images.py",
+    "check:headings": "node scripts/check-headings.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

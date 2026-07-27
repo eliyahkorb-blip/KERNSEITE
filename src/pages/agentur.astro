@@ -181,7 +181,7 @@ const roles = [
     block-size: auto;
     display: block;
   }
-  @media (min-width: 48rem) {
+  @media (min-width: 64rem) {
     .person {
       grid-template-columns: auto minmax(0, 1fr);
       gap: clamp(2.5rem, 5vw, 5rem);
@@ -238,11 +238,11 @@ const roles = [
     margin-block-start: var(--space-lg);
     color: var(--text-muted);
     font-size: var(--fs-small);
-    max-width: 64ch;
+    max-width: min(64ch, 100%);
   }
 
   .region__text {
-    max-width: 62ch;
+    max-width: min(62ch, 100%);
   }
 
   @media (min-width: 48rem) {

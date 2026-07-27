@@ -97,7 +97,7 @@ const project = works.find((w) => w.kind === 'project');
   }
   .stance__title {
     font-size: var(--fs-h2);
-    max-width: 16ch;
+    max-width: min(16ch, 100%);
     margin-block-start: var(--space-md);
   }
   .stance__body {
@@ -106,19 +106,19 @@ const project = works.find((w) => w.kind === 'project');
   }
   .stance__text {
     color: var(--text-muted);
-    max-width: 52ch;
+    max-width: min(52ch, 100%);
   }
 
   .proof__title {
     font-size: var(--fs-h3);
-    line-height: 0.95;
-    max-width: 14ch;
+    line-height: 1;
+    max-width: min(14ch, 100%);
     margin-block-start: var(--space-md);
   }
   .proof__body {
     margin-block-start: var(--space-lg);
     color: var(--text-muted);
-    max-width: 44ch;
+    max-width: min(44ch, 100%);
   }
   .proof__text .link-arrow {
     margin-block-start: var(--space-xl);
