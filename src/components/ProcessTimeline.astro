@@ -22,8 +22,13 @@ interface Props {
   steps: readonly ProcessStep[];
   /** Ebene der Schritt-Überschriften (abhängig vom Seitenkontext). */
   headingLevel?: 'h2' | 'h3';
+  /**
+   * Kompakt: nur Schritt und Beschreibung. Auf der Startseite genügt das –
+   * wer was beiträgt, steht ausführlich auf `/prozess/`.
+   */
+  compact?: boolean;
 }
-const { steps, headingLevel = 'h3' } = Astro.props;
+const { steps, headingLevel = 'h3', compact = false } = Astro.props;
 const Tag = headingLevel;
 ---
 
@@ -35,17 +40,19 @@ const Tag = headingLevel;
         <div class="tl__body">
           <Tag class="tl__title">{s.title}</Tag>
           <p class="tl__what">{s.what}</p>
-          <ul class="tl__share" role="list">
-            <li>
-              <span class="tl__who">Du bringst mit:</span> {s.you}
-            </li>
-            <li>
-              <span class="tl__who">Wir übernehmen:</span> {s.us}
-            </li>
-            <li>
-              <span class="tl__who">Am Ende steht:</span> {s.result}
-            </li>
-          </ul>
+          {!compact && (
+            <ul class="tl__share" role="list">
+              <li>
+                <span class="tl__who">Du bringst mit:</span> {s.you}
+              </li>
+              <li>
+                <span class="tl__who">Wir übernehmen:</span> {s.us}
+              </li>
+              <li>
+                <span class="tl__who">Am Ende steht:</span> {s.result}
+              </li>
+            </ul>
+          )}
         </div>
       </li>
     ))

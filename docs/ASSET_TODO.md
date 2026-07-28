@@ -95,3 +95,18 @@ Für die vier Leistungsbilder liegen die Fotografennamen vor (siehe
 
 - Ein echtes Porträt von Eliyah Korb für `/agentur/`. Bis dahin steht dort das
   eigene CRT-Markenmotiv – keine gezeichnete Ersatzfigur.
+
+## 5. Stand nach der Feinschliff-Runde
+
+**Zahnarztpraxen:** weiterhin offen. Es wurde kein Zahnarztfoto geliefert –
+die zuletzt angehängte Datei war die Referenz für den Barrierefreiheits-
+Schalter, kein Branchenmotiv. Die Branche erscheint unverändert ohne Bild.
+Sobald ein Foto vorliegt: als `public/assets/branchen/source/zahnarztpraxen.jpg`
+ablegen und `pnpm assets:images` ausführen; das Skript erzeugt AVIF und WebP in
+640/960/1280/1600 px und beschneidet mittig auf 4:3.
+
+**B2B-Mittelstand:** weiterhin offen. Das gelieferte Motiv zeigt eine Zimmerei
+auf der Baustelle und liest sich als Handwerk. Es steht bis zum Austausch
+weiter auf der Seite; auf der Website wird zum Motiv keine Aussage getroffen,
+die darüber hinausginge. Gesucht: Fertigung oder Montage in einer aufgeräumten
+Produktionshalle, Maschinenbau, technische Fertigung, Qualitätskontrolle.

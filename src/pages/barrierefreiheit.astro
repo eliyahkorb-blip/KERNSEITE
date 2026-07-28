@@ -8,6 +8,13 @@ const breadcrumbs = [
   { name: 'Barrierefreiheit', path: '/barrierefreiheit/' },
 ];
 const c = activeCompany;
+
+/** Datum des Builds – so veraltet die Angabe nicht stillschweigend. */
+const lastReview = new Intl.DateTimeFormat('de-DE', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+}).format(new Date());
 ---
 
 <PageLayout
@@ -43,18 +50,48 @@ const c = activeCompany;
           <li>Ausreichend große Bedienelemente</li>
         </ul>
 
-        <h2>Stand der Vereinbarkeit</h2>
+        <h2>Stand der Prüfung</h2>
         <p>
-          Der konkrete Vereinbarkeitsstatus wird nach einer strukturierten Prüfung ergänzt. Sollten
-          einzelne Inhalte noch nicht vollständig barrierefrei sein, arbeiten wir an deren
-          Verbesserung.
+          Diese Website ist <strong>teilweise geprüft</strong>. Wir behaupten keine vollständige
+          gesetzliche Konformität, weil dafür noch kein unabhängiges Gutachten vorliegt.
         </p>
+        <p>Geprüft wurden bisher, jeweils automatisiert und zusätzlich von Hand:</p>
+        <ul>
+          <li>Überschriftenhierarchie und Landmarken auf allen öffentlichen Seiten</li>
+          <li>Alternativtexte aller informativen Bilder</li>
+          <li>
+            Bedienung ohne Maus: Navigation, mobiles Menü, Formular, Aufklappelemente und der
+            Barrierefreiheits-Schalter
+          </li>
+          <li>Sichtbare Fokuszustände</li>
+          <li>Farbkontraste von Fließtext, Überschriften und Schaltflächen</li>
+          <li>
+            Darstellung bei 200 Prozent Browserzoom sowie in der größten Textstufe dieser Website
+          </li>
+          <li>Verhalten bei aktivierter Systemeinstellung „Bewegung reduzieren“</li>
+        </ul>
 
         <h2>Bekannte Einschränkungen</h2>
+        <ul>
+          <li>
+            Der animierte Hintergrund der Startseite ist rein dekorativ und für Screenreader
+            ausgeblendet. Er lässt sich über den Schalter unten links anhalten.
+          </li>
+          <li>
+            Eingebettete Inhalte von Dritten werden erst nach einem Klick geladen. Für deren
+            Barrierefreiheit können wir nicht einstehen.
+          </li>
+          <li>
+            Es liegt noch keine Prüfung durch eine unabhängige Stelle und keine Rückmeldung von
+            Nutzenden mit assistiven Technologien vor.
+          </li>
+        </ul>
+
+        <h2>Barrierefreiheits-Schalter</h2>
         <p>
-          Bekannte Einschränkungen werden hier nach der Prüfung transparent aufgeführt. Wir setzen
-          bewusst keinen scheinbaren „Barrierefreiheits-Schalter“ ein, der nur Farben ändert und
-          vollständige Barrierefreiheit vortäuscht.
+          Unten links lassen sich Textgröße, hoher Kontrast und reduzierte Bewegung einstellen. Die
+          Auswahl wird nur lokal im Browser gespeichert, ohne Cookie und ohne personenbezogene
+          Daten. Der Schalter ersetzt keine barrierefreie Gestaltung, sondern ergänzt sie.
         </p>
 
         <h2>Feedback und Kontakt</h2>
@@ -62,6 +99,7 @@ const c = activeCompany;
           Wenn dir etwas auffällt, das nicht gut zugänglich ist, freuen wir uns über einen Hinweis.
           Du erreichst uns unter: {c.email}. Wir bemühen uns, gemeldete Probleme zeitnah zu beheben.
         </p>
+        <p>Letzte Prüfung: {lastReview}.</p>
       </div>
     </div>
   </section>

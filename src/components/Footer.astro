@@ -72,7 +72,10 @@ const c = activeCompany;
     padding-block: clamp(3.5rem, 2.5rem + 5vw, 7rem) clamp(2rem, 1.5rem + 2vw, 3rem);
   }
 
-  .ft__wordmark {
+  /* `.ft a.ft__wordmark`: Die globale Regel `.section--dark a:not(.btn)` färbt
+     sonst den gesamten Schriftzug cyan. Hier gewinnt die höhere Spezifität –
+     das Wort bleibt cremefarben, nur der Punkt trägt die Markenfarbe. */
+  .ft a.ft__wordmark {
     display: block;
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
@@ -88,8 +91,8 @@ const c = activeCompany;
     text-decoration: none;
     margin-block-end: clamp(2.5rem, 2rem + 3vw, 5rem);
   }
-  .ft__dot {
-    color: var(--accent);
+  .ft a.ft__wordmark .ft__dot {
+    color: var(--ks-cyan);
   }
 
   .ft__grid {

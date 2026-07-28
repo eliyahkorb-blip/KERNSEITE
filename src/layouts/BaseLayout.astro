@@ -3,12 +3,13 @@ import '../styles/tokens.css';
 import '../styles/fonts.css';
 import '../styles/global.css';
 // Nach global.css: veredelt gezielt die vorhandenen `.btn`-Flächen.
-import '../styles/liquid-glass.css';
+import '../styles/button-metal.css';
 
 import Seo from '../components/Seo.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ConsentManager from '../components/ConsentManager.astro';
+import AccessibilityDock from '../components/AccessibilityDock.astro';
 import { site } from '../config/site';
 import { websiteJsonLd, organizationJsonLd } from '../lib/jsonld';
 
@@ -57,6 +58,10 @@ const allSchemas = [...baseSchemas, ...jsonLd];
       crossorigin
     />
 
+    <!-- Gespeicherte Darstellungseinstellungen vor dem ersten Paint anwenden.
+         Externe Datei, damit die CSP ohne 'unsafe-inline' auskommt. -->
+    <script src="/a11y-init.js" is:inline></script>
+
     <Seo
       title={title}
       description={description}
@@ -74,6 +79,7 @@ const allSchemas = [...baseSchemas, ...jsonLd];
     </main>
     <Footer />
     <ConsentManager />
+    <AccessibilityDock />
 
     <script>
       // Sehr dezentes Reveal beim Scrollen. Ohne JS bleibt alles sichtbar,

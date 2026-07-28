@@ -145,14 +145,14 @@ test.describe('Relaunch – Sichtbarkeit beim Scrollen', () => {
 });
 
 test.describe('Relaunch – Aussagenband und Projekt-Schlagworte', () => {
-  test('Das Band unter dem Hero ist eine Aussage, kein Laufband', async ({ page }) => {
+  test('Unter dem Hero folgt kein zweites Aussagenband mehr', async ({ page }) => {
     await page.goto('/');
+    // Der Vollbild-Hero trägt die Aussage selbst; ein zweites großes Band
+    // direkt darunter wäre eine Wiederholung.
+    await expect(page.locator('.statement')).toHaveCount(0);
+    // Marquee gab es nie und soll es nicht geben.
+    await expect(page.locator('.marquee, [data-marquee]')).toHaveCount(0);
     await expect(page.locator('[data-band]')).toHaveCount(0);
-    const band = page.locator('.band__text');
-    await expect(band).toBeVisible();
-    await expect(band).toContainText('Website');
-    // Weiterlese-Hinweis als Scrollmotivation
-    await expect(page.locator('.band__next')).toBeVisible();
   });
 
   test('Projekte tragen ruhige Schlagworte in normaler Schreibweise', async ({ page }) => {

@@ -533,3 +533,82 @@ Zwei Alttests forderten noch das CRT-Motiv und prüfen jetzt den Sollzustand:
 („Der Hero zeigt den Neon-Flow“). Der Test gegen dynamischen Wortwechsel
 vergleicht jetzt den Textinhalt statt des Markups – der Statuswert des
 Effekts ändert das Markup, ohne dass sich etwas Lesbares ändert.
+
+## Runde: Vollbild-Neon-Hero, Barrierefreiheits-Schalter, Feinschliff
+
+### Umgesetzt
+
+- **Neon Flow über den gesamten Hero.** Die Kreismaske ist entfallen; Canvas
+  und Container liegen auf `inset: 0` über die volle Hero-Fläche, der Hero
+  misst `calc(88svh − Kopfzeile)` (mobil 92svh). Die Inhalte liegen als
+  normale HTML-Ebene darüber, lesbar durch einen weichen dunklen Verlauf –
+  ohne sichtbaren Kasten.
+- **Zeigerinteraktion auf der gesamten Fläche.** Der Klick auf freie
+  Hero-Fläche wechselt zwischen drei festen Konfigurationen; Klicks auf Links,
+  Buttons und Formularelemente sind ausgenommen.
+- **Palette.** Cyan dominiert, Magenta, Violett und Neon-Grün sind kleine
+  Akzente, Weiß und Creme tragen die Reflexe. Keine Zufallsfarben. Diese
+  Farben gelten ausschließlich im Hero.
+- **Zweite Wortmarke im Hero entfernt.**
+- **Footer-Wortmarke.** `.section--dark a:not(.btn)` färbte den gesamten
+  Schriftzug cyan. `.ft a.ft__wordmark` gewinnt jetzt auf Spezifität: Wort
+  cremefarben, nur der Punkt `#00E3F2`.
+- **Buttons.** `backdrop-filter` ist von allen Schaltflächen entfernt, die
+  Sekundärflächen sind entsprechend deckender. Die metallische Fassung bleibt.
+  `liquid-glass.css` heißt jetzt `button-metal.css`.
+- **Barrierefreiheits-Schalter** (`AccessibilityDock.astro`), global unten
+  links: Textgröße 100/112,5/125 Prozent, hoher Kontrast, Bewegungen
+  reduzieren, Zurücksetzen. `localStorage`, kein Cookie, keine
+  personenbezogenen Daten. Angewendet vor dem ersten Paint über
+  `public/a11y-init.js` – externe Datei, damit die CSP ohne `unsafe-inline`
+  auskommt.
+- **Rechtstexte.** Anschrift trägt wieder ein Leerzeichen (Astro schluckte den
+  Zeilenumbruch zwischen zwei Ausdrücken). Der Verweis auf die eingestellte
+  OS-Plattform ist entfernt. Die Barrierefreiheitserklärung nennt geprüfte
+  Bereiche, bekannte Einschränkungen und das Prüfdatum statt Platzhaltern.
+- **Kontaktformular.** Pflicht sind Name, E-Mail und Projektbeschreibung. Die
+  Budgetauswahl beginnt bei „Bis 2.500 €“.
+
+### Kürzung
+
+Startseite von 17,9 auf 15,5 Smartphone-Bildschirme (−13 Prozent), Abschnitte
+von 13 auf 10. Entfallen: das Aussagenband unter dem Hero (nach dem
+Vollbild-Hero eine Wiederholung), der eigene Abschnitt für „Alle Arbeiten
+ansehen“, der zweite Absatz im Studio-Abschnitt. Verkürzt: Prozessschritte auf
+der Startseite ohne die drei Detailzeilen, Leistungszeilen ohne das Beispiel,
+FAQ auf drei Fragen. Die geforderten 25–35 Prozent wurden nicht erreicht – dazu
+hätten Inhalte entfernt werden müssen, die ausdrücklich bleiben sollen.
+
+### Nachweise
+
+| Prüfung                                | Ergebnis                          |
+| -------------------------------------- | --------------------------------- |
+| `pnpm astro check`                     | 0 Fehler, 0 Warnungen             |
+| `pnpm lint` / `pnpm format:check`      | ohne Befund                       |
+| `pnpm build:ci` / `pnpm build:preview` | je 27 Seiten                      |
+| `pnpm qa`                              | alle fünf Prüfungen               |
+| `pnpm test:e2e`                        | 175 bestanden, 1 übersprungen     |
+| `pnpm check:headings`                  | 152 Seitenaufrufe über 8 Breiten  |
+| `pnpm visual-qa`                       | 19 Seiten × 7 Breiten ohne Befund |
+
+### Neue Tests
+
+`tests/e2e/feinschliff-final.spec.ts`, 24 Prüfungen: Canvas deckungsgleich mit
+dem Hero, keine Maske, kein Radius, kein Clip-Path, keine zweite Wortmarke,
+Zeigerwirkung über die gesamte Fläche, Buttons klickbar, kein Überlauf bei
+430/390/360 px; Footer-Wortmarke cremefarben mit cyanem Punkt auf fünf Seiten
+und der 404-Seite; Cyan-Block und Footer auf allen Marketingseiten, genau ein
+Footer je Seite; Schalter auf 14 Seiten unten links, 44-px-Flächen,
+Kapselmaß, Textgröße ohne Überlauf, Hochkontrast mit Kontrastverhältnis ≥ 7,
+Bewegungsschalter stoppt den Neon-Hero, Persistenz über Seitenwechsel, Escape
+und Klick außerhalb, Tastaturbedienung; Vorschau bleibt noindex, Anschrift mit
+Leerzeichen, kein OS-Plattform-Verweis, echter Prüfstand, drei Pflichtfelder,
+neue Budgetstufen.
+
+### Angepasste Alttests
+
+Acht Tests forderten den alten Zustand und prüfen jetzt den neuen: Pillenform
+(der Systemschalter darf rund sein), Stylesheet-Name, fehlender
+`backdrop-filter`, `aria-hidden` am Neon-Container statt am Canvas, Animation
+hinter statt neben dem Inhalt, erweiterte Hero-Palette, entfallenes
+Aussagenband.

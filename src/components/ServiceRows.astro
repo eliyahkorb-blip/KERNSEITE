@@ -12,8 +12,13 @@ interface Props {
   /** Nur diese Leistungen zeigen (Schlüssel). Leer = alle. */
   exclude?: readonly string[];
   headingLevel?: 'h2' | 'h3' | 'h4';
+  /**
+   * Kompakt: ohne das konkrete Beispiel. Auf der Startseite steht es direkt
+   * darunter auf `/leistungen/` noch einmal – zweimal ist es Wiederholung.
+   */
+  compact?: boolean;
 }
-const { exclude = [], headingLevel = 'h3' } = Astro.props;
+const { exclude = [], headingLevel = 'h3', compact = false } = Astro.props;
 const rows = services.filter((s) => !exclude.includes(s.key));
 const Tag = headingLevel;
 ---
@@ -31,7 +36,7 @@ const Tag = headingLevel;
           </span>
           <span class="rows__main">
             <span class="rows__body">{s.teaser}</span>
-            <span class="rows__example">{s.example}</span>
+            {!compact && <span class="rows__example">{s.example}</span>}
           </span>
         </a>
       </li>

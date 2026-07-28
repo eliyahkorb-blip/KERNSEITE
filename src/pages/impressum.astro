@@ -30,7 +30,7 @@ const showLegalForm = !isPlaceholder(c.legalForm);
           {c.legalDisplayName}<br />
           {c.legalName}{showLegalForm && ` (${c.legalForm})`}<br />
           {c.street}<br />
-          {c.postalCode}
+          {c.postalCode}{' '}
           {c.city}<br />
           {c.country}
         </p>
@@ -54,7 +54,7 @@ const showLegalForm = !isPlaceholder(c.legalForm);
         <h2>Redaktionell verantwortlich</h2>
         <p>
           {c.responsibleContent}<br />
-          {c.street}, {c.postalCode}
+          {c.street}, {c.postalCode}{' '}
           {c.city}
         </p>
 
@@ -67,7 +67,7 @@ const showLegalForm = !isPlaceholder(c.legalForm);
           )
         }
 
-        <h2>EU-Streitschlichtung</h2>
+        <h2>Verbraucherschlichtung</h2>
         <p>{legal.disputeResolution}</p>
 
         <h2>Haftung für Inhalte</h2>

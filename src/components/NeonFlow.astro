@@ -1,34 +1,29 @@
 ---
 /**
- * NeonFlow – interaktives Markenelement im Hero der Startseite.
+ * NeonFlow – animierter Hintergrund des Startseiten-Heros.
  *
  * Fließende Neonröhren auf schwarzem Grund, die dem Zeiger folgen. Der Effekt
- * ist rein dekorativ: Er trägt keine Aussage, steht nicht im Fokuspfad und ist
- * für Screenreader ausgeblendet. Die Hero-Botschaft liegt vollständig im
- * danebenstehenden HTML-Text.
+ * liegt als Hintergrundebene über die vollständige Hero-Fläche; die Inhalte
+ * stehen als normale HTML-Ebene darüber. Er ist rein dekorativ: keine Aussage,
+ * kein Fokus, für Screenreader ausgeblendet.
  *
  * Technik
- *   Der Röhreneffekt stammt aus dem npm-Paket `threejs-components@0.0.19`
- *   (`build/cursors/tubes1.min.js`) und wird lokal gebündelt – kein CDN, keine
+ *   Röhreneffekt aus dem npm-Paket `threejs-components@0.0.19`
+ *   (`build/cursors/tubes1.min.js`), lokal gebündelt – kein CDN, keine
  *   dynamische URL, keine Lockerung der CSP. Geladen wird er erst, wenn der
- *   Hero im Sichtbereich ist; dadurch bleibt der kritische Ladepfad frei.
+ *   Hero im Sichtbereich ist.
  *
  * Zustände über `data-neon-status`
  *   `idle`     – noch nichts geladen
  *   `ready`    – Effekt läuft
- *   `fallback` – statische Lichtflächen (kein WebGL, reduzierte Bewegung
- *                oder fehlgeschlagener Import)
+ *   `fallback` – statische Lichtflächen (kein WebGL, reduzierte Bewegung,
+ *                Datensparmodus oder fehlgeschlagener Import)
  */
 ---
 
-<div class="neon" data-neon data-neon-status="idle">
-  <!-- Nur die Bühne trägt die weiche Maske. Die Wortmarke steht daneben,
-       sonst würde sie an der Unterkante mit ausgeblendet. -->
-  <div class="neon__stage">
-    <canvas class="neon__canvas" aria-hidden="true" data-neon-canvas></canvas>
-    <div class="neon__still" aria-hidden="true"></div>
-  </div>
-  <span class="neon__mark" aria-hidden="true">KERNSEITE<span class="neon__dot">.</span></span>
+<div class="neon" data-neon data-neon-status="idle" aria-hidden="true">
+  <canvas class="neon__canvas" data-neon-canvas></canvas>
+  <div class="neon__still"></div>
 </div>
 
 <script>
@@ -36,46 +31,68 @@
 
   type Instance = ReturnType<typeof tubesFactory>;
 
-  /* Nur diese vier Farben. Als Hex-Zahl, so erwartet es die Bibliothek. */
+  /* Kontrollierte Neon-Palette. Cyan ist die Markenfarbe und bleibt in jeder
+     Konfiguration dominant; Magenta, Violett und Grün sind kleine Akzente.
+     Diese Farben gelten ausschließlich für dieses Heroelement – die übrige
+     Website bleibt Schwarz, Creme und Cyan. */
   const CYAN = 0x00e3f2;
   const WHITE = 0xffffff;
-  const PAPER = 0xf4f0e7;
-  const BLACK = 0x101214;
+  const CREAM = 0xf4f0e7;
+  const MAGENTA = 0xff2d9b;
+  const VIOLET = 0x8b5cff;
+  const GREEN = 0x36f5a0;
 
   /* Feste Konfigurationen statt zufälliger Farben. Der Klick wechselt
      zwischen ihnen; erzeugt werden dabei keine neuen Werte. */
   const PALETTES = [
-    { tubes: [CYAN, WHITE, CYAN], lights: [CYAN, WHITE, PAPER, CYAN] },
-    { tubes: [WHITE, CYAN, PAPER], lights: [CYAN, CYAN, WHITE, CYAN] },
-    { tubes: [CYAN, BLACK, WHITE], lights: [WHITE, CYAN, CYAN, PAPER] },
+    { tubes: [CYAN, WHITE, CYAN, MAGENTA], lights: [CYAN, WHITE, CYAN, VIOLET] },
+    { tubes: [CYAN, VIOLET, CYAN, WHITE], lights: [CYAN, MAGENTA, CYAN, CREAM] },
+    { tubes: [CYAN, GREEN, CYAN, CREAM], lights: [CYAN, WHITE, CYAN, GREEN] },
   ] as const;
 
   const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /** Nutzereinstellung aus dem Barrierefreiheits-Schalter. */
+  const motionOff = () =>
+    document.documentElement.dataset.a11yMotion === 'reduced' || REDUCED.matches;
+
+  /** Datensparmodus: Der große Chunk wird dann gar nicht erst geladen. */
+  function saveData(): boolean {
+    const c = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    return c?.saveData === true;
+  }
+
+  /** Grobe Einschätzung schwacher Geräte für die Qualitätsstufe. */
+  function weakDevice(): boolean {
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    return (nav.deviceMemory ?? 8) <= 4 || (navigator.hardwareConcurrency ?? 8) <= 4;
+  }
 
   /** Prüft, ob überhaupt ein WebGL-Kontext zu bekommen ist. */
   function supportsWebGL(): boolean {
     try {
       const probe = document.createElement('canvas');
-      const gl = probe.getContext('webgl2') ?? probe.getContext('webgl');
-      return Boolean(gl);
+      return Boolean(probe.getContext('webgl2') ?? probe.getContext('webgl'));
     } catch {
       return false;
     }
   }
 
   function setup(root: HTMLElement) {
-    // Doppelte Initialisierung ausschließen.
     if (root.dataset.neonInit === '1') return;
     root.dataset.neonInit = '1';
 
     const canvas = root.querySelector<HTMLCanvasElement>('[data-neon-canvas]');
     if (!canvas) return;
 
+    /* Die Interaktionsfläche ist der gesamte Hero, nicht nur das Canvas. */
+    const stage = root.closest<HTMLElement>('[data-hero]') ?? root;
+
     const fallback = () => {
       root.dataset.neonStatus = 'fallback';
     };
 
-    if (REDUCED.matches || !supportsWebGL()) {
+    if (motionOff() || saveData() || !supportsWebGL()) {
       fallback();
       return;
     }
@@ -85,15 +102,16 @@
     let palette = 0;
     let disposed = false;
     let resizeFrame = 0;
+    let sizeObserver: ResizeObserver | null = null;
+    let observer: IntersectionObserver | null = null;
 
     /* Die Bibliothek kennt kein öffentliches `stop()`. Zum Pausieren werden
-       die beiden Schleifenfunktionen gegen leere getauscht: Dann rechnet der
-       Effekt nichts mehr und zeichnet nichts mehr. */
+       die beiden Schleifenfunktionen gegen leere getauscht. */
     const noop = () => {};
     let liveRender: Instance['three']['render'] = noop;
     let liveBefore: Instance['three']['onBeforeRender'] = noop;
 
-    const running = () => inView && !document.hidden && !REDUCED.matches;
+    const running = () => inView && !document.hidden && !motionOff();
 
     const sync = () => {
       if (!instance) return;
@@ -102,27 +120,28 @@
       instance.three.onBeforeRender = on ? liveBefore : noop;
     };
 
-    /* Klick wechselt die Farbkonfiguration – ausschließlich zwischen den drei
-       oben definierten. Es wird nichts zufällig erzeugt. */
-    const cyclePalette = () => {
+    /* Klick auf freie Hero-Fläche wechselt die Konfiguration. Klicks auf
+       Links, Buttons und Formularelemente bleiben davon unberührt. */
+    const onStageClick = (event: MouseEvent) => {
       if (!instance) return;
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('a, button, input, select, textarea, label, [role="button"]')) return;
       palette = (palette + 1) % PALETTES.length;
       const next = PALETTES[palette];
       instance.tubes.setColors([...next.tubes]);
       instance.tubes.setLightsColors([...next.lights]);
     };
 
-    /* Auf schmalen Displays steht die Kamera weiter hinten, sonst ist nur ein
-       Ausschnitt der Röhren zu sehen. */
+    /* Kamera an die Fläche anpassen: Auf schmalen Displays weiter hinten,
+       sonst ist nur ein Ausschnitt der Röhren zu sehen. */
     const applyZoom = () => {
       if (!instance) return;
-      const narrow = window.innerWidth < 1024;
-      instance.three.camera.position.z = narrow ? 7.4 : 5;
+      const w = window.innerWidth;
+      instance.three.camera.position.z = w < 640 ? 7.6 : w < 1024 ? 6.6 : 4.4;
       instance.three.camera.lookAt(0, 0, 0);
       instance.three.camera.updateProjectionMatrix();
     };
 
-    /* Resize gebündelt über einen Frame, nicht bei jedem Pixel. */
     const onResize = () => {
       if (resizeFrame) return;
       resizeFrame = requestAnimationFrame(() => {
@@ -132,13 +151,23 @@
       });
     };
 
-    const teardown = () => {
+    const onMotionChange = () => {
+      if (motionOff()) {
+        teardown();
+        fallback();
+      } else {
+        sync();
+      }
+    };
+
+    function teardown() {
       if (disposed) return;
       disposed = true;
       if (resizeFrame) cancelAnimationFrame(resizeFrame);
       document.removeEventListener('visibilitychange', sync);
+      document.removeEventListener('kernseite:motion', onMotionChange);
       REDUCED.removeEventListener?.('change', onMotionChange);
-      root.removeEventListener('click', cyclePalette);
+      stage.removeEventListener('click', onStageClick);
       observer?.disconnect();
       sizeObserver?.disconnect();
       window.removeEventListener('resize', onResize);
@@ -149,59 +178,47 @@
         // Ein fehlgeschlagenes Aufräumen darf die Seite nicht stören.
       }
       instance = null;
-    };
-
-    const onMotionChange = () => {
-      if (REDUCED.matches) {
-        teardown();
-        fallback();
-      } else {
-        sync();
-      }
-    };
-
-    let sizeObserver: ResizeObserver | null = null;
+    }
 
     const boot = async () => {
       try {
         const { default: tubes } = await import('threejs-components/build/cursors/tubes1.min.js');
         if (disposed) return;
 
+        const schwach = weakDevice();
         const start = PALETTES[0];
         instance = tubes(canvas, {
           // Zurückhaltender als die Vorlage: weniger Röhren, weniger Bloom.
-          // Sonst wirkt der Hero wie ein Spielehintergrund.
-          bloom: { threshold: 0.1, strength: 0.9, radius: 0.6 },
+          bloom: { threshold: 0.12, strength: schwach ? 0.7 : 0.95, radius: 0.6 },
           tubes: {
-            count: 12,
+            count: schwach ? 8 : 14,
             colors: [...start.tubes],
             minRadius: 0.006,
-            maxRadius: 0.042,
+            maxRadius: 0.055,
             material: { metalness: 1, roughness: 0.35 },
             lights: { intensity: 160, colors: [...start.lights] },
-            lerp: 0.42,
+            lerp: 0.4,
             noise: 0.04,
           },
-          sleepRadiusX: 260,
-          sleepRadiusY: 130,
-          sleepTimeScale1: 0.7,
-          sleepTimeScale2: 1.3,
+          sleepRadiusX: 460,
+          sleepRadiusY: 210,
+          sleepTimeScale1: 0.65,
+          sleepTimeScale2: 1.2,
         });
 
-        // Die Bibliothek fixiert die Pixeldichte auf 2. Auf großen Displays
-        // kostet das spürbar Leistung, ohne sichtbar besser zu sein.
+        // Die Bibliothek fixiert die Pixeldichte auf 2. Das kostet auf großen
+        // Displays spürbar Leistung, ohne sichtbar besser zu sein.
+        const mobil = window.matchMedia('(max-width: 63.99rem)').matches;
         instance.three.minPixelRatio = 1;
-        instance.three.maxPixelRatio = 1.5;
+        instance.three.maxPixelRatio = schwach ? 1 : mobil ? 1.4 : 1.75;
         applyZoom();
         instance.three.resize();
 
-        // Originale Schleifenfunktionen sichern, damit sich der Effekt
-        // pausieren und wieder aufnehmen lässt.
         liveRender = instance.three.render;
         liveBefore = instance.three.onBeforeRender;
 
         root.dataset.neonStatus = 'ready';
-        root.addEventListener('click', cyclePalette);
+        stage.addEventListener('click', onStageClick);
 
         if ('ResizeObserver' in window) {
           sizeObserver = new ResizeObserver(onResize);
@@ -209,18 +226,16 @@
         }
         window.addEventListener('resize', onResize, { passive: true });
         document.addEventListener('visibilitychange', sync);
+        document.addEventListener('kernseite:motion', onMotionChange);
         REDUCED.addEventListener?.('change', onMotionChange);
         window.addEventListener('pagehide', teardown, { once: true });
         sync();
       } catch {
-        // Import oder WebGL-Kontext fehlgeschlagen: ruhige Ersatzfläche,
-        // keine Fehlermeldung im Layout.
+        // Import oder WebGL-Kontext fehlgeschlagen: ruhige Ersatzfläche.
         fallback();
       }
     };
 
-    /* Erst laden, wenn der Hero wirklich zu sehen ist. */
-    let observer: IntersectionObserver | null = null;
     if ('IntersectionObserver' in window) {
       observer = new IntersectionObserver(
         (entries) => {
@@ -228,7 +243,7 @@
           if (inView && !instance && !disposed) void boot();
           else sync();
         },
-        { threshold: 0.05 },
+        { threshold: 0.02 },
       );
       observer.observe(root);
     } else {
@@ -241,40 +256,17 @@
 </script>
 
 <style>
-  /* Der Effekt schwebt frei auf dem dunklen Hero. Keine Karte, kein Rahmen,
-     kein Mockup – deshalb kein Radius und keine Fläche. */
+  /* Hintergrundebene des Heros: füllt die Fläche vollständig aus. Keine
+     Maske, keine Kachel, keine Karte, kein Radius – der Effekt ist der
+     Hintergrund, nicht ein Bild darin. */
   .neon {
-    position: relative;
-    isolation: isolate;
-    inline-size: 100%;
-    overflow: hidden;
-    border-radius: 0;
-    background: transparent;
-
-    /* Mobil: begrenzte Höhe, damit der Text nicht vom Bildschirm rutscht. */
-    aspect-ratio: 4 / 3;
-    min-block-size: 280px;
-    max-block-size: 430px;
-  }
-
-  /* Weiche Außenkanten: `closest-side` erreicht an der nächstgelegenen Kante
-     volle Transparenz. Ohne das bliebe der Bloom-Schleier als sichtbares
-     helleres Rechteck auf dem Hero stehen. */
-  .neon__stage {
     position: absolute;
     inset: 0;
-    -webkit-mask-image: radial-gradient(
-      closest-side ellipse at 50% 46%,
-      #000 34%,
-      rgba(0, 0, 0, 0.66) 66%,
-      transparent 100%
-    );
-    mask-image: radial-gradient(
-      closest-side ellipse at 50% 46%,
-      #000 34%,
-      rgba(0, 0, 0, 0.66) 66%,
-      transparent 100%
-    );
+    z-index: 0;
+    overflow: hidden;
+    border-radius: 0;
+    pointer-events: none;
+    background: var(--ks-black);
   }
 
   .neon__canvas {
@@ -282,66 +274,27 @@
     inline-size: 100%;
     block-size: 100%;
   }
-  /* Ohne laufenden Effekt bleibt das leere Canvas unsichtbar. */
   .neon:not([data-neon-status='ready']) .neon__canvas {
     opacity: 0;
   }
 
   /* --- Statische Ersatzfläche ---------------------------------------------
-     Für reduzierte Bewegung, fehlendes WebGL und fehlgeschlagenen Import.
-     Rein aus CSS: dezente cyanfarbene Lichtflächen auf Schwarz. */
+     Für reduzierte Bewegung, Datensparmodus, fehlendes WebGL und
+     fehlgeschlagenen Import. Rein aus CSS, ohne Bewegung. */
   .neon__still {
     position: absolute;
     inset: 0;
-    z-index: -1;
     opacity: 0;
-    pointer-events: none;
     background-image:
-      radial-gradient(38% 46% at 32% 38%, rgba(0, 227, 242, 0.4) 0%, transparent 68%),
-      radial-gradient(30% 38% at 68% 62%, rgba(0, 227, 242, 0.24) 0%, transparent 70%),
-      radial-gradient(52% 60% at 54% 50%, rgba(255, 255, 255, 0.07) 0%, transparent 72%);
+      radial-gradient(34% 46% at 26% 34%, rgba(0, 227, 242, 0.42) 0%, transparent 70%),
+      radial-gradient(26% 34% at 62% 62%, rgba(139, 92, 255, 0.22) 0%, transparent 72%),
+      radial-gradient(22% 30% at 78% 32%, rgba(255, 45, 155, 0.16) 0%, transparent 74%),
+      radial-gradient(46% 54% at 52% 50%, rgba(255, 255, 255, 0.06) 0%, transparent 76%);
   }
   .neon[data-neon-status='fallback'] .neon__still {
     opacity: 1;
   }
 
-  /* --- Wortmarke -----------------------------------------------------------
-     Ruhiger Overlay-Inhalt, deutlich kleiner als die Hero-Headline. */
-  .neon__mark {
-    position: absolute;
-    inset-inline: 0;
-    inset-block-end: clamp(0.75rem, 3%, 1.75rem);
-    z-index: 1;
-    pointer-events: none;
-    text-align: center;
-    font-family: var(--font-display);
-    font-weight: var(--fw-bold);
-    font-size: clamp(1.1rem, 4.6vw, 1.9rem);
-    line-height: 1;
-    letter-spacing: -0.03em;
-    color: var(--ks-cream);
-    opacity: 0.86;
-  }
-  .neon__dot {
-    color: var(--ks-cyan);
-  }
-
-  /* --- Desktop -------------------------------------------------------------
-     Große, freie Fläche in der rechten Hero-Spalte. */
-  @media (min-width: 64rem) {
-    .neon {
-      aspect-ratio: auto;
-      block-size: clamp(420px, 56vh, 680px);
-      max-block-size: none;
-    }
-    .neon__mark {
-      font-size: clamp(1.5rem, 2vw, 2.4rem);
-      inset-block-end: clamp(1rem, 4%, 2.25rem);
-    }
-  }
-
-  /* Reduzierte Bewegung: Das Skript lädt den Effekt gar nicht erst. Diese
-     Regel greift zusätzlich, falls der Zustand noch `idle` ist. */
   @media (prefers-reduced-motion: reduce) {
     .neon .neon__still {
       opacity: 1;

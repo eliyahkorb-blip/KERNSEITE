@@ -141,7 +141,11 @@ test.describe('Formen – keine Pillen und keine kreisigen Chips', () => {
   test('Kein Pillen-Radius im ausgelieferten CSS', () => {
     const hits: string[] = [];
     for (const file of cssFiles()) {
-      const css = readFileSync(file, 'utf8').replace(/\s+/g, '');
+      // Der Barrierefreiheits-Schalter ist ein funktionaler Systemschalter und
+      // darf vollrund sein. Geprüft wird alles außerhalb seiner Regeln.
+      const css = readFileSync(file, 'utf8')
+        .replace(/\.a11y[^{}]*\{[^}]*\}/g, '')
+        .replace(/\s+/g, '');
       if (css.includes('border-radius:999px')) hits.push(`${file}: 999px`);
       if (css.includes('--radius-pill')) hits.push(`${file}: --radius-pill`);
     }

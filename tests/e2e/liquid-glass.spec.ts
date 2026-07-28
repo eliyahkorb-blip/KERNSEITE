@@ -83,7 +83,11 @@ test.describe('Typografie und Form bleiben unverändert', () => {
   test('Keine Pillenform im ausgelieferten Button-CSS', () => {
     const hits: string[] = [];
     for (const file of cssFiles()) {
-      const css = readFileSync(file, 'utf8').replace(/\s+/g, '');
+      // Ausgenommen: der Barrierefreiheits-Schalter (Systemelement, kein
+      // Marketingelement) und sein Kontrastsymbol.
+      const css = readFileSync(file, 'utf8')
+        .replace(/\.a11y[^{}]*\{[^}]*\}/g, '')
+        .replace(/\s+/g, '');
       for (const token of ['border-radius:999px', 'border-radius:50%', 'border-radius:9999px']) {
         if (css.includes(token)) hits.push(`${file}: ${token}`);
       }
@@ -617,13 +621,22 @@ test.describe('Kein Fremdcode, kein aggressiver Filter', () => {
     expect(all).not.toMatch(/feDisplacementMap[^>]*scale=["']?\s*(?:[1-9]\d|70)/);
   });
 
-  test('Der Glaseffekt liegt in genau einer eigenen CSS-Datei', () => {
-    expect(existsSync(join(ROOT, 'src/styles/liquid-glass.css'))).toBe(true);
+  test('Die Buttonoberfläche liegt in genau einer eigenen CSS-Datei', () => {
+    expect(existsSync(join(ROOT, 'src/styles/button-metal.css'))).toBe(true);
+    expect(existsSync(join(ROOT, 'src/styles/liquid-glass.css'))).toBe(false);
     const layout = readFileSync(join(ROOT, 'src/layouts/BaseLayout.astro'), 'utf8');
     const globalAt = layout.indexOf('styles/global.css');
-    const glassAt = layout.indexOf('styles/liquid-glass.css');
-    expect(glassAt, 'liquid-glass.css wird nicht eingebunden').toBeGreaterThan(-1);
-    expect(glassAt, 'liquid-glass.css steht vor global.css').toBeGreaterThan(globalAt);
+    const metalAt = layout.indexOf('styles/button-metal.css');
+    expect(metalAt, 'button-metal.css wird nicht eingebunden').toBeGreaterThan(-1);
+    expect(metalAt, 'button-metal.css steht vor global.css').toBeGreaterThan(globalAt);
+  });
+
+  test('Die Schaltflächen tragen kein Milchglas mehr', () => {
+    // Liquid Glass wurde verworfen: kein `backdrop-filter` auf Buttons.
+    const css = cssFiles()
+      .map((f) => readFileSync(f, 'utf8'))
+      .join('\n');
+    expect(css, 'backdrop-filter im ausgelieferten CSS').not.toContain('backdrop-filter');
   });
 
   test('Es wird kein zusätzliches Skript für den Effekt ausgeliefert', () => {
@@ -636,34 +649,19 @@ test.describe('Kein Fremdcode, kein aggressiver Filter', () => {
   });
 });
 
-test.describe('Browser ohne backdrop-filter', () => {
-  test('Für sie liegt eine deckendere Ersatzfläche bereit', () => {
-    const css = cssFiles()
-      .map((f) => readFileSync(f, 'utf8'))
-      .join('\n')
-      .replace(/\s+/g, ' ');
-    const start = css.indexOf('@supports not (backdrop-filter');
-    expect(start, 'kein @supports-Rückfall vorhanden').toBeGreaterThan(-1);
-    // Block bis zur schließenden Klammer der At-Regel einsammeln.
-    let depth = 0;
-    let end = start;
-    for (let i = css.indexOf('{', start); i < css.length; i++) {
-      if (css[i] === '{') depth++;
-      else if (css[i] === '}' && --depth === 0) {
-        end = i;
-        break;
-      }
-    }
-    const block = css.slice(start, end + 1);
-
-    // Der Build schreibt `rgba(255,255,255,.72)` zu `#ffffffb8` um – beide
-    // Schreibweisen müssen erkannt werden.
-    const alphas = [
-      ...[...block.matchAll(/rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/g)].map((m) => Number(m[1])),
-      ...[...block.matchAll(/#ffffff([0-9a-f]{2})\b/gi)].map((m) => parseInt(m[1], 16) / 255),
-      ...[...block.matchAll(/#fff([0-9a-f])\b/gi)].map((m) => parseInt(m[1] + m[1], 16) / 255),
-    ];
-    expect(alphas.length, 'kein Ersatzhintergrund gesetzt').toBeGreaterThan(0);
-    expect(Math.max(...alphas), 'Ersatzfläche zu durchsichtig').toBeGreaterThanOrEqual(0.6);
+test.describe('Deckende Flächen ohne Blur', () => {
+  test('Die Sekundärflächen sind auch ohne Hintergrund-Blur lesbar', async ({ page }) => {
+    // Ohne `backdrop-filter` muss die Fläche selbst genug Deckung mitbringen.
+    await page.goto('/404.html');
+    const s = await page
+      .locator('.btn--secondary')
+      .first()
+      .evaluate((el) => {
+        const cs = getComputedStyle(el);
+        return { bg: cs.backgroundColor, blur: cs.backdropFilter || 'none' };
+      });
+    expect(s.blur, 'Button traegt noch einen Blur').toBe('none');
+    const alpha = Number(s.bg.match(/[\d.]+/g)?.[3] ?? '1');
+    expect(alpha, 'Flaeche zu durchsichtig ohne Blur').toBeGreaterThanOrEqual(0.6);
   });
 });

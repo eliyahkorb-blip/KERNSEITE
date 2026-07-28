@@ -1,19 +1,24 @@
 ---
 /**
- * HeroCinematic – zweigeteilter Hero: Text links, Neon-Flow rechts.
+ * HeroCinematic – Vollbild-Hero der Startseite.
  *
- * Das frühere CRT-Motiv (Person mit Röhrenmonitor) ist hier vollständig
- * entfallen – kein Video, kein Poster, kein Standbild, kein Platzhalter.
- * An seiner Stelle steht das interaktive Markenelement `NeonFlow`.
+ * Der Neon-Flow liegt als animierter Hintergrund über die gesamte Fläche;
+ * Überschrift, Text und Buttons stehen als normale HTML-Ebene darüber. Es
+ * gibt keinen separaten Medienbereich mehr und kein CRT-Motiv.
  *
- * Der Text bleibt unverändert und liegt im normalen Dokumentfluss. Auf Mobil
- * steht das Neon-Element zuerst, danach Überschrift, Text und Buttons.
+ * Lesbarkeit entsteht über einen weichen dunklen Verlauf von links, nicht
+ * über einen sichtbaren Kasten hinter dem Text.
  */
 import AccentWord from './AccentWord.astro';
 import NeonFlow from './NeonFlow.astro';
 ---
 
 <section class="hero section--dark on-dark" data-hero>
+  <NeonFlow />
+
+  <!-- Leseschutz: links fast deckend, zur Mitte auslaufend, rechts frei. -->
+  <div class="hero__veil" aria-hidden="true"></div>
+
   <div class="hero__inner content">
     <div class="hero__text">
       <h1 class="hero__title">
@@ -30,32 +35,43 @@ import NeonFlow from './NeonFlow.astro';
       </div>
       <p class="hero__trust">Persönlich in Würzburg. Digital bundesweit.</p>
     </div>
-
-    <div class="hero__media">
-      <NeonFlow />
-    </div>
   </div>
 </section>
 
 <style>
-  /* Dunkle Bühne: Nur so trägt das Cyan der markierten Wörter genug
-     Kontrast – ein zweiter, abgeschwächter Türkiston kommt nicht in Frage.
-     Die Neonröhren wirken aus genau diesem Schwarz heraus. */
+  /* Der Hero füllt den ersten Bildschirm abzüglich der Kopfzeile. */
   .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     background: var(--ks-black);
+    min-block-size: calc(88svh - var(--header-h, 64px));
+    display: grid;
+    align-items: center;
   }
 
-  /* Mobil: normaler Dokumentfluss – Effekt, dann Text, dann CTAs. */
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      rgba(16, 18, 20, 0.94) 0%,
+      rgba(16, 18, 20, 0.86) 26%,
+      rgba(16, 18, 20, 0.42) 52%,
+      rgba(16, 18, 20, 0) 78%
+    );
+  }
+
   .hero__inner {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.75rem, 1rem + 4vw, 3rem);
-    padding-block: clamp(1.5rem, 1rem + 3vw, 3rem) clamp(3rem, 2rem + 5vw, 5rem);
+    position: relative;
+    z-index: 2;
+    padding-block: clamp(2.5rem, 2rem + 5vw, 5rem);
   }
 
-  .hero__media {
-    order: -1; /* Effekt zuerst */
-    min-inline-size: 0;
+  .hero__text {
+    max-width: min(38rem, 100%);
   }
 
   /* --- Text --------------------------------------------------------------- */
@@ -73,8 +89,6 @@ import NeonFlow from './NeonFlow.astro';
   @media (max-width: 22rem) {
     .hero__title {
       font-size: clamp(1.6rem, 8.5vw, 2.4rem);
-      /* Hier zählt nur, dass nichts überläuft – Trennstriche entstehen
-         dabei nicht, es wird ohne Bindestrich umbrochen. */
       overflow-wrap: anywhere;
     }
   }
@@ -84,7 +98,7 @@ import NeonFlow from './NeonFlow.astro';
     font-size: var(--fs-lead);
     line-height: 1.5;
     color: var(--text-invert-muted);
-    max-width: min(46ch, 100%);
+    max-width: min(42ch, 100%);
   }
 
   .hero__ctas {
@@ -107,25 +121,31 @@ import NeonFlow from './NeonFlow.astro';
     color: var(--text-muted);
   }
 
-  /* --- Desktop: klare Zweiteilung ----------------------------------------
-     Text links, Effekt rechts – ohne Überlappung, ohne absoluten Textblock
-     über dem Canvas. */
+  /* --- Mobil ---------------------------------------------------------------
+     Der Effekt füllt den Hero, der Text steht trotzdem im ersten Bildschirm.
+     Deshalb liegt die Textebene unten und der Verlauf läuft von unten. */
+  @media (max-width: 63.99rem) {
+    .hero {
+      min-block-size: calc(92svh - var(--header-h, 64px));
+      align-items: end;
+    }
+    .hero__veil {
+      background: linear-gradient(
+        to top,
+        rgba(16, 18, 20, 0.95) 0%,
+        rgba(16, 18, 20, 0.88) 34%,
+        rgba(16, 18, 20, 0.5) 62%,
+        rgba(16, 18, 20, 0.08) 88%
+      );
+    }
+  }
+
+  /* --- Desktop -------------------------------------------------------------
+     Textblock links, Animation läuft frei über die gesamte Fläche. */
   @media (min-width: 64rem) {
-    .hero__inner {
-      display: grid;
-      grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
-      align-items: center;
-      gap: clamp(2.5rem, 5vw, 5.5rem);
-      min-block-size: 88svh;
-      padding-block: clamp(2rem, 4vh, 4rem);
-    }
-    .hero__media {
-      order: 0; /* rechts */
-    }
     .hero__title {
-      /* 4.6vw statt 4.9vw: In der 46-Prozent-Spalte passt „Unternehmen“ bei
-         1920px sonst nicht in eine Zeile und wird beschnitten. Getrennt wird
-         das Wort bewusst nicht. */
+      /* 4.6vw: In der begrenzten Textbreite passt „Unternehmen“ sonst bei
+         1920px nicht in eine Zeile und wird beschnitten. */
       font-size: clamp(3rem, 4.6vw, 5.6rem);
       line-height: 0.95;
       letter-spacing: -0.045em;

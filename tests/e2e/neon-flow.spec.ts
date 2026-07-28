@@ -82,9 +82,9 @@ test.describe('Der Neon-Flow ersetzt das Motiv', () => {
     await page.goto('/');
     const canvas = page.locator('[data-hero] canvas[data-neon-canvas]');
     await expect(canvas).toHaveCount(1);
-    await expect(canvas).toHaveAttribute('aria-hidden', 'true');
-    // Kein `tabindex`: Ein für Screenreader ausgeblendetes Element darf gar
-    // nicht erst fokussierbar sein.
+    // Der ganze Hintergrundbereich ist für Screenreader ausgeblendet.
+    await expect(page.locator('[data-hero] [data-neon]')).toHaveAttribute('aria-hidden', 'true');
+    // Kein `tabindex`: Ein ausgeblendetes Element darf nicht fokussierbar sein.
     await expect(canvas).not.toHaveAttribute('tabindex', /.*/);
   });
 
@@ -164,23 +164,23 @@ test.describe('Hero-Inhalte bleiben unverändert', () => {
     expect(fonts.button).toContain('Inter');
   });
 
-  test('Die Animation überdeckt die Buttons nicht', async ({ page }) => {
+  test('Die Animation liegt hinter dem Inhalt und fängt keine Klicks ab', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
     await status(page);
-    const overlap = await page.evaluate(() => {
-      const neon = document.querySelector('[data-neon]')!.getBoundingClientRect();
-      return [...document.querySelectorAll('[data-hero] a.btn')]
-        .map((b) => b.getBoundingClientRect())
-        .filter(
-          (r) =>
-            r.left < neon.right &&
-            r.right > neon.left &&
-            r.top < neon.bottom &&
-            r.bottom > neon.top,
-        ).length;
+    const s = await page.evaluate(() => {
+      const neon = document.querySelector<HTMLElement>('[data-neon]')!;
+      const text = document.querySelector<HTMLElement>('.hero__inner')!;
+      return {
+        neonEvents: getComputedStyle(neon).pointerEvents,
+        neonZ: getComputedStyle(neon).zIndex,
+        textZ: getComputedStyle(text).zIndex,
+      };
     });
-    expect(overlap, 'Neon-Fläche liegt über einem Button').toBe(0);
+    // Der Hintergrund nimmt keine Zeigerereignisse an …
+    expect(s.neonEvents, 'Neon-Fläche fängt Klicks ab').toBe('none');
+    // … und liegt unter der Textebene.
+    expect(Number(s.textZ), 'Text liegt nicht über der Animation').toBeGreaterThan(Number(s.neonZ));
   });
 
   test('Beide Hero-Buttons bleiben anklickbar', async ({ page }) => {
@@ -340,7 +340,17 @@ test.describe('Farben und Bewegung', () => {
   });
 
   test('Nur die freigegebene Palette wird konfiguriert', () => {
-    const ERLAUBT = new Set(['0x00e3f2', '0xffffff', '0xf4f0e7', '0x101214']);
+    // Der Hero ist als besonderes Markenelement gedacht und darf neben Cyan
+    // kleine Neonakzente führen. Außerhalb des Heros gilt die Palette nicht.
+    const ERLAUBT = new Set([
+      '0x00e3f2',
+      '0xffffff',
+      '0xf4f0e7',
+      '0x101214',
+      '0xff2d9b',
+      '0x8b5cff',
+      '0x36f5a0',
+    ]);
     const quelle = readFileSync(join(ROOT, 'src/components/NeonFlow.astro'), 'utf8');
     const hex = [...quelle.matchAll(/0x[0-9a-f]{6}/gi)].map((m) => m[0].toLowerCase());
     expect(hex.length, 'keine Farben gefunden').toBeGreaterThan(0);

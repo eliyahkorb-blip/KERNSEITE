@@ -112,6 +112,10 @@
   --dur-base: 300ms;
   --dur-slow: 700ms;
 
+  /* Höhe der klebenden Kopfzeile. Der Hero zieht sie ab, damit er genau den
+     ersten sichtbaren Bildschirm füllt. */
+  --header-h: 64px;
+
   /* --- Ebenen ------------------------------------------------------------ */
   --z-header: 100;
   --z-skiplink: 150;

@@ -646,3 +646,136 @@ html.has-reveal .reveal.is-visible {
     transform: none;
   }
 }
+
+/* =============================================================================
+   Barrierefreiheits-Einstellungen (`AccessibilityDock`)
+
+   Die Werte kommen vom Wurzelelement: `--a11y-scale` für die Textgröße,
+   `data-a11y-contrast` für den Hochkontrastmodus, `data-a11y-motion` für
+   reduzierte Bewegung. Gesetzt werden sie vor dem ersten Paint durch
+   `public/a11y-init.js`.
+   ========================================================================== */
+:root {
+  --a11y-scale: 1;
+}
+
+/* Skaliert werden Fließtext, Listen, Formulare und Kleintext – nicht die
+   `clamp()`-Überschriften. Sonst würden große Headlines bei 125 Prozent
+   unkontrolliert wachsen und die Zeilen sprengen. */
+body {
+  font-size: calc(var(--fs-body) * var(--a11y-scale));
+}
+p,
+li,
+dd,
+dt,
+label,
+input,
+select,
+textarea,
+button,
+.btn,
+.lead,
+figcaption,
+summary,
+blockquote,
+address,
+th,
+td {
+  font-size: calc(1em * var(--a11y-scale));
+}
+/* Doppelte Skalierung vermeiden: Verschachtelte Elemente erben bereits. */
+p *,
+li *,
+label *,
+.btn * {
+  font-size: inherit;
+}
+/* Die kleinsten Stufen dürfen mitwachsen, aber vom eigenen Wert aus. */
+:root[style*='--a11y-scale'] .lead {
+  font-size: calc(var(--fs-lead) * var(--a11y-scale));
+}
+
+/* --- Hoher Kontrast -------------------------------------------------------
+   Schwarzer Grund, heller Text, klare Linien. Bilder bleiben sichtbar,
+   Schaltflächen bleiben erkennbar, Fokus wird verstärkt. */
+:root[data-a11y-contrast='high'] {
+  --bg: #000;
+  --surface: #000;
+  --surface-alt: #0a0a0a;
+  --text: #fff;
+  --text-muted: #e6e6e6;
+  --text-invert: #fff;
+  --text-invert-muted: #e6e6e6;
+  --accent-ink: var(--ks-cyan);
+  --line: #fff;
+  --line-strong: #fff;
+  --line-invert: #fff;
+  --focus-ring: var(--ks-cyan);
+}
+:root[data-a11y-contrast='high'] body {
+  background: #000;
+  color: #fff;
+}
+:root[data-a11y-contrast='high'] .section--paper,
+:root[data-a11y-contrast='high'] .section--cream,
+:root[data-a11y-contrast='high'] .section--surface,
+:root[data-a11y-contrast='high'] .section--dark,
+:root[data-a11y-contrast='high'] .site-header,
+:root[data-a11y-contrast='high'] .mobile-menu {
+  background: #000;
+  color: #fff;
+}
+:root[data-a11y-contrast='high'] h1,
+:root[data-a11y-contrast='high'] h2,
+:root[data-a11y-contrast='high'] h3,
+:root[data-a11y-contrast='high'] h4,
+:root[data-a11y-contrast='high'] h5,
+:root[data-a11y-contrast='high'] p,
+:root[data-a11y-contrast='high'] li,
+:root[data-a11y-contrast='high'] address {
+  color: #fff;
+}
+:root[data-a11y-contrast='high'] a:not(.btn) {
+  color: var(--ks-cyan);
+  text-decoration: underline;
+}
+/* Der Cyan-Abschlussblock bleibt farbig, aber mit schwarzem Text. */
+:root[data-a11y-contrast='high'] .section--cyan {
+  background: var(--ks-cyan);
+  color: #000;
+}
+:root[data-a11y-contrast='high'] .section--cyan h2,
+:root[data-a11y-contrast='high'] .section--cyan p,
+:root[data-a11y-contrast='high'] .section--cyan a:not(.btn) {
+  color: #000;
+}
+:root[data-a11y-contrast='high'] .btn--primary {
+  background: var(--ks-cyan);
+  color: #000;
+  border-color: #fff;
+}
+:root[data-a11y-contrast='high'] .btn--secondary {
+  background: #000;
+  color: #fff;
+  border-color: #fff;
+}
+:root[data-a11y-contrast='high'] :focus-visible {
+  outline: 4px solid var(--ks-cyan);
+  outline-offset: 3px;
+}
+/* Materialebenen der Schaltflächen im Hochkontrast zurücknehmen. */
+:root[data-a11y-contrast='high'] .btn::before,
+:root[data-a11y-contrast='high'] .btn::after {
+  opacity: 0;
+}
+
+/* --- Bewegung reduzieren (Nutzerschalter) --------------------------------- */
+:root[data-a11y-motion='reduced'] *,
+:root[data-a11y-motion='reduced'] *::before,
+:root[data-a11y-motion='reduced'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}

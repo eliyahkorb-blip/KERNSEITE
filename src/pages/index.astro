@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroCinematic from '../components/HeroCinematic.astro';
-import StatementBand from '../components/StatementBand.astro';
 import WorkFeature from '../components/WorkFeature.astro';
 import ServiceRows from '../components/ServiceRows.astro';
 import GoogleProfile from '../components/GoogleProfile.astro';
@@ -35,8 +34,6 @@ const timelineHome = processTimeline.slice(0, 4);
 >
   <HeroCinematic />
 
-  <StatementBand />
-
   <!-- ARBEITEN – kommen bewusst früh -->
   <section class="section section--cream" id="arbeiten">
     <div class="content head reveal">
@@ -44,6 +41,11 @@ const timelineHome = processTimeline.slice(0, 4);
       <p class="lead">
         Zwei umgesetzte Kundenprojekte aus unterschiedlichen Branchen – jeweils auf das gebaut, was
         der Betrieb wirklich braucht.
+      </p>
+      <p class="more">
+        <a class="link-arrow" href="/arbeiten/">
+          Alle Arbeiten ansehen <span class="arrow" aria-hidden="true">→</span>
+        </a>
       </p>
     </div>
   </section>
@@ -53,14 +55,6 @@ const timelineHome = processTimeline.slice(0, 4);
       <WorkFeature work={project} flip={i % 2 === 1} tone={i === 0 ? 'dark' : 'light'} />
     ))
   }
-
-  <section class="section--cream section--tight">
-    <div class="content">
-      <a class="link-arrow" href="/arbeiten/">
-        Alle Arbeiten ansehen <span class="arrow" aria-hidden="true">→</span>
-      </a>
-    </div>
-  </section>
 
   <!-- LEISTUNGEN -->
   <section class="section section--paper" id="leistungen">
@@ -74,7 +68,7 @@ const timelineHome = processTimeline.slice(0, 4);
           bewegt.
         </p>
       </div>
-      <ServiceRows />
+      <ServiceRows compact />
     </div>
   </section>
 
@@ -115,7 +109,7 @@ const timelineHome = processTimeline.slice(0, 4);
           passiert.
         </p>
       </div>
-      <ProcessTimeline steps={timelineHome} />
+      <ProcessTimeline steps={timelineHome} compact />
       <p class="more">
         <a class="link-arrow" href="/prozess/">
           Alle sieben Schritte ansehen <span class="arrow" aria-hidden="true">→</span>
@@ -136,10 +130,6 @@ const timelineHome = processTimeline.slice(0, 4);
           einer Hand. Für Social Media &amp; Content, KI &amp; Automatisierung sowie Film &amp;
           Produktion arbeiten wir projektbezogen mit selbstständigen Partnern zusammen.
         </p>
-        <p class="about__body">
-          Du sprichst also nicht mit wechselnden Ansprechpartnern, sondern mit der Person, die dein
-          Projekt kennt. Die passenden Fachleute kommen dazu, wenn eine Aufgabe sie braucht.
-        </p>
         <a class="link-arrow" href="/agentur/">
           Mehr über das Studio <span class="arrow" aria-hidden="true">→</span>
         </a>
@@ -157,7 +147,7 @@ const timelineHome = processTimeline.slice(0, 4);
         </a>
       </div>
       <div>
-        <FaqAccordion items={homeFaqs} />
+        <FaqAccordion items={homeFaqs.slice(0, 3)} />
       </div>
     </div>
   </section>
