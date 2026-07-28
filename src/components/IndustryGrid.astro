@@ -8,8 +8,9 @@
  *
  * Bilder zeigen das jeweilige Gewerk. Kunden-Screenshots werden hier nicht
  * verwendet – die gehören in den Bereich „Arbeiten“. Liegt ein Motiv noch
- * nicht vor, erscheint der Eintrag ohne Bildfläche; es gibt weder graue
- * Platzhalter noch schwarze Ersatzlinien.
+ * nicht vor, bleibt der Platz des Bildfensters leer: keine graue Fläche,
+ * kein Rahmen, kein Ersatzmotiv – nur unbemalter Raum, damit Name, Argument
+ * und Pfeil auf derselben Linie stehen wie bei den übrigen Einträgen.
  */
 import { industries } from '../config/industries';
 import Photo from './Photo.astro';
@@ -29,13 +30,15 @@ const items = industries.map((ind) => ({
     items.map((ind) => (
       <li class="igrid__cell">
         <a class:list={['igrid__link', !ind.photo && 'igrid__link--nomedia']} href={ind.href}>
-          {ind.photo && (
+          {ind.photo ? (
             <Photo
               photo={ind.photo}
               ratio="4x3"
               sizes="(min-width: 69rem) 30vw, (min-width: 48rem) 46vw, 100vw"
               class="igrid__media"
             />
+          ) : (
+            <span class="igrid__gap" aria-hidden="true" />
           )}
           <span class="igrid__name">{ind.title}</span>
           <span class="igrid__arg">{ind.argument}</span>
@@ -74,29 +77,28 @@ const items = industries.map((ind) => ({
   .igrid__arg {
     margin-block-end: auto;
   }
-  /* Einträge ohne Motiv rutschen nach unten: Name, Argument und Pfeil stehen
-     dadurch auf derselben Linie wie bei den Einträgen mit Bild. Der freie
-     Raum liegt oben, wo die anderen ihr Bildfenster haben – keine graue
-     Fläche, kein Rahmen, kein Ersatzmotiv. */
-  .igrid__link--nomedia {
-    justify-content: flex-end;
-  }
-  .igrid__link--nomedia .igrid__arg {
-    margin-block-end: 0;
-  }
   .igrid__link:hover {
     color: var(--text);
   }
 
-  /* Einheitliches Bildfenster für alle Branchen. */
-  .igrid__media {
-    margin-block-end: 1.5rem;
+  /* Fehlt das Motiv, bleibt exakt derselbe Raum frei: gleiche Breite,
+     gleiches Seitenverhältnis, aber ohne Fläche, Rahmen oder Farbe.
+     Dadurch beginnt der Name in jeder Rasterzeile auf derselben Höhe –
+     unabhängig davon, über wie viele Zeilen das Argument läuft. */
+  .igrid__gap {
+    display: block;
+    aspect-ratio: 4 / 3;
   }
-  .igrid__media :global(img) {
+
+  /* `.igrid__media` sitzt auf dem Wurzelelement der Photo-Komponente und
+     trägt deren Bereichskennung, nicht die dieser Datei. Ein markierter
+     Selektor greift dort nicht – deshalb `:global()`, eingegrenzt durch
+     den markierten Link davor. */
+  .igrid__link :global(.igrid__media img) {
     transition: transform var(--dur-slow) var(--ease-out);
   }
-  .igrid__link:hover .igrid__media :global(img),
-  .igrid__link:focus-visible .igrid__media :global(img) {
+  .igrid__link:hover :global(.igrid__media img),
+  .igrid__link:focus-visible :global(.igrid__media img) {
     transform: scale(1.025);
   }
 

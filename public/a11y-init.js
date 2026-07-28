@@ -23,7 +23,7 @@
     }
     if (s.contrast === true) root.dataset.a11yContrast = 'high';
     if (s.motion === true) root.dataset.a11yMotion = 'reduced';
-  } catch (e) {
+  } catch {
     /* Gesperrter Speicher: Standarddarstellung, keine Fehlermeldung. */
   }
 })();

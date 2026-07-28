@@ -299,7 +299,6 @@ test.describe('Barrierefreiheits-Schalter', () => {
     const s = await page.evaluate(() => {
       const t = document.querySelector<HTMLButtonElement>('[data-a11y-toggle]')!;
       t.focus();
-      const cs = getComputedStyle(t);
       return { tag: t.tagName, type: t.type, fokussiert: document.activeElement === t };
     });
     expect(s.tag).toBe('BUTTON');

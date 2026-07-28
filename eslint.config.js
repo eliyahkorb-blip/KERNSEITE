@@ -32,6 +32,14 @@ export default tseslint.config(
     },
   },
   {
+    // Skripte, die unverändert aus public/ ausgeliefert werden und im Browser
+    // laufen (z. B. das Vorab-Skript des Barrierefreiheits-Schalters).
+    files: ['public/**/*.js'],
+    languageOptions: {
+      globals: { ...globals.browser },
+    },
+  },
+  {
     // Node-Skripte (Build/QA)
     files: ['scripts/**/*.mjs', '*.mjs', '*.config.mjs'],
     languageOptions: {

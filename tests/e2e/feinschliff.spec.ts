@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 /**
  * Abschließende visuelle Qualitätsprüfung.
@@ -98,47 +98,65 @@ test.describe('Begriffserklärung SEO und GEO', () => {
 });
 
 test.describe('Branchenraster – gemeinsame Grundlinie', () => {
+  /** Misst je Rasterzeile die Oberkanten von Name und Pfeil. */
+  async function messen(page: Page) {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.evaluate(() => document.documentElement.classList.remove('has-reveal'));
+    return page.evaluate(() => {
+      const cells = [...document.querySelectorAll('.igrid__cell')];
+      const groups = new Map<number, { name: number; go: number }[]>();
+      for (const cell of cells) {
+        const cellTop = Math.round(cell.getBoundingClientRect().top);
+        const name = cell.querySelector('.igrid__name');
+        const go = cell.querySelector('.igrid__go');
+        if (!name || !go) continue;
+        const list = groups.get(cellTop) ?? [];
+        list.push({
+          // Oberkante der ersten Namenszeile. Zweizeilige Namen laufen nach
+          // unten weiter – begonnen wird in der Reihe aber auf einer Linie.
+          name: Math.round(name.getBoundingClientRect().top),
+          go: Math.round(go.getBoundingClientRect().top),
+        });
+        groups.set(cellTop, list);
+      }
+      return [...groups.values()];
+    });
+  }
+
+  function pruefen(rows: { name: number; go: number }[][]) {
+    expect(rows.length, 'Kein Branchenraster gefunden').toBeGreaterThan(0);
+    for (const row of rows) {
+      // Innerhalb einer Rasterzeile beginnen alle Namen auf derselben Höhe
+      // und alle Pfeile stehen auf einer Linie – auch beim Eintrag ohne
+      // Bildmotiv, dessen Bildfenster leer bleibt statt zu fehlen.
+      const names = row.map((r) => r.name);
+      const gos = row.map((r) => r.go);
+      expect(
+        Math.max(...names) - Math.min(...names),
+        `Namen versetzt: ${names}`,
+      ).toBeLessThanOrEqual(4);
+      expect(Math.max(...gos) - Math.min(...gos), `Pfeile versetzt: ${gos}`).toBeLessThanOrEqual(4);
+    }
+  }
+
   for (const path of ['/', '/branchen/']) {
     test(`Auf ${path} stehen die Branchennamen einer Reihe auf einer Linie`, async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.goto(path);
-      await page.evaluate(() => document.documentElement.classList.remove('has-reveal'));
-
-      const rows = await page.evaluate(() => {
-        const cells = [...document.querySelectorAll('.igrid__cell')];
-        const groups = new Map<number, { name: number; go: number }[]>();
-        for (const cell of cells) {
-          const cellTop = Math.round(cell.getBoundingClientRect().top);
-          const name = cell.querySelector('.igrid__name');
-          const go = cell.querySelector('.igrid__go');
-          if (!name || !go) continue;
-          const list = groups.get(cellTop) ?? [];
-          list.push({
-            // Letzte Zeile des Namens – zweizeilige Namen sitzen tiefer.
-            name: Math.round(name.getBoundingClientRect().bottom),
-            go: Math.round(go.getBoundingClientRect().top),
-          });
-          groups.set(cellTop, list);
-        }
-        return [...groups.values()];
-      });
-
-      expect(rows.length, 'Kein Branchenraster gefunden').toBeGreaterThan(0);
-      for (const row of rows) {
-        // Innerhalb einer Rasterzeile stehen Namensgrundlinie und Pfeil auf
-        // derselben Höhe – auch beim Eintrag ohne Bildmotiv.
-        const names = row.map((r) => r.name);
-        const gos = row.map((r) => r.go);
-        expect(
-          Math.max(...names) - Math.min(...names),
-          `Namen versetzt: ${names}`,
-        ).toBeLessThanOrEqual(4);
-        expect(Math.max(...gos) - Math.min(...gos), `Pfeile versetzt: ${gos}`).toBeLessThanOrEqual(
-          4,
-        );
-      }
+      await page.evaluate(() => document.fonts.ready);
+      pruefen(await messen(page));
     });
   }
+
+  test('Die Linie hält auch, wenn die Hausschriften fehlen', async ({ page }) => {
+    // Mit Ersatzschrift bricht der Fließtext an anderen Stellen um. Die Zeile
+    // darf davon nicht abhängen: Der Name beginnt unter dem Bildfenster, nicht
+    // in Abhängigkeit von der Länge des Arguments darunter.
+    await page.route('**/*.woff2', (route) => route.abort());
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/branchen/');
+    pruefen(await messen(page));
+  });
 
   test('Die Branche ohne Motiv trägt weder Rahmen noch graue Fläche', async ({ page }) => {
     await page.goto('/branchen/');
