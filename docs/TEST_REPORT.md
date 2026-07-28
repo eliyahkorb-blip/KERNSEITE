@@ -289,3 +289,59 @@ zugehörigem Text auf `/agentur/` und `/leistungen/social-media/`.
 - Ein Branchenmotiv fehlt weiterhin: Die gelieferte `zahnarztpraxen.jpg` ist
   byte-identisch mit `handwerk.jpg`.
 - Fotografennamen und Photo-IDs der Branchenbilder sind nachzutragen.
+
+## Runde: Liquid Glass auf Schaltflächen
+
+Der Referenzcode (React, Tailwind, shadcn, Radix, CVA, SVG-Filter je Button)
+wurde nicht übernommen. Umgesetzt ist ein eigenes CSS-System in
+`src/styles/liquid-glass.css`, eingebunden in `BaseLayout.astro` direkt nach
+`global.css`. Keine neue Abhängigkeit, kein Framework, kein Client-Skript.
+
+### Nachweise
+
+| Prüfung                                | Ergebnis                                     |
+| -------------------------------------- | -------------------------------------------- |
+| `pnpm install --frozen-lockfile`       | unverändert, keine neue Abhängigkeit         |
+| `pnpm astro check`                     | 0 Fehler, 0 Warnungen                        |
+| `pnpm lint`                            | ohne Befund                                  |
+| `pnpm format:check`                    | ohne Befund                                  |
+| `pnpm build:ci` / `pnpm build:preview` | je 27 Seiten                                 |
+| `pnpm qa`                              | alle fünf Prüfungen, 268 Dateien ohne Secret |
+| `pnpm test:e2e`                        | 116 bestanden, 1 übersprungen                |
+| `pnpm check:headings`                  | 136 Seitenaufrufe ohne Befund                |
+| `pnpm visual-qa`                       | 17 Seiten × 4 Breiten ohne Befund            |
+
+### Neue Tests
+
+`tests/e2e/liquid-glass.spec.ts`, 26 Prüfungen: Body-Schrift auf allen `.btn`,
+Radius höchstens 8px, keine Pillenform im CSS, Mindesthöhe 44px, Farbrollen und
+Kontrast je Untergrund (hell, dunkel, Cyan-Fläche), nur ein Türkiston in Hex-
+und rgb-Schreibweise, Pseudo-Ebenen mit `pointer-events: none` und negativer
+Ebene, sichtbarer Fokusring, kein abgeschnittener Text bei 1440/390/360px, kein
+waagerechter Überlauf, unveränderte Geometrie beim Hover, abgeschaltete
+Spiegelung bei reduzierter Bewegung, genau ein Animationsdurchlauf,
+deaktivierte Buttons ohne Hoverreaktion, kein Glas auf Hamburger, Textlinks,
+FAQ-Toggles, Navigation, Footer, Karten oder Abschnitten, keine React-,
+Tailwind-, shadcn-, Radix- oder CVA-Abhängigkeit, kein `.tsx`, kein doppelter
+SVG-Filter, kein `feTurbulence`/`feDisplacementMap`, korrekte Ladereihenfolge
+des Stylesheets, keine Inline-Eventhandler, deckender Rückfall über `@supports`.
+
+### Während der Sichtprüfung korrigiert
+
+- Erster Entwurf: Der Verlauf auf dem Primärbutton war zu stark – die Fläche
+  wirkte wie Gel, der Button auf der Cyan-Fläche wie ein grauer Metallverlauf,
+  der Sekundärbutton auf Dunkel wie graues Plastik. Ursache war, dass sich der
+  Verlauf auf dem Element und der Verlauf auf `::before` addierten. Die
+  Lichtführung läuft jetzt allein über vier Variablen auf `::before`; jeder
+  Kontext überschreibt nur diese Werte.
+- Deaktivierte Buttons übernahmen die invertierte Hoverfläche, weil Chrome
+  `:hover` auf `disabled`-Elementen weiterhin greifen lässt. Ergänzte Regeln
+  nehmen die Farbumkehr für `:disabled` und `[aria-disabled="true"]` zurück.
+
+### Geprüfte Schaltflächen
+
+Header-CTA, CTA im mobilen Menü, beide Hero-CTAs, Abschluss-CTA auf der
+Cyan-Fläche, Seiten-CTAs der Leistungsseiten, Formularbutton „Anfrage senden“
+(aktiv und deaktiviert), Buttons auf der 404-Seite. Consent-Banner und
+Cookie-Einstellungen wurden mit vorübergehend gesetztem `consentRequired: true`
+gebaut und geprüft; die Einstellung steht wieder auf `false`.

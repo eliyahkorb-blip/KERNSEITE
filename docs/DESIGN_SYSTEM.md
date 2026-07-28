@@ -97,6 +97,68 @@ Schlagworte tragen keine Umrandung, keinen Hintergrund und keine Rundung. Sie
 stehen als normale Textbegriffe unter der Beschreibung, getrennt durch einen
 feinen Schrägstrich.
 
+## Liquid Glass auf Schaltflächen (`src/styles/liquid-glass.css`)
+
+Schaltflächen tragen eine feine Glasoberfläche. Sie liegt ausschließlich auf
+`.btn`; Navigationslinks, Textlinks, FAQ-Toggles, der Hamburger, Formularfelder,
+Karten, Bilder und ganze Abschnitte bleiben unberührt. Form, Größe, Typografie
+und Farben ändern sich nicht – es kommt nur Material dazu.
+
+### Ebenen
+
+| Ebene | Träger     | Aufgabe                                      |
+| ----- | ---------- | -------------------------------------------- |
+| 1     | `.btn`     | markenkonformer Hintergrund aus `global.css` |
+| 2     | `::before` | Lichtbrechung, Materialtiefe, innere Kante   |
+| 3     | `::after`  | schmale Spiegelung, läuft einmal beim Hover  |
+| 4     | Inhalt     | Text und Icon                                |
+
+Beide Pseudo-Ebenen stehen auf `z-index: -1` und `pointer-events: none`. Der
+Button setzt `isolation: isolate` und bildet damit einen eigenen Stapelkontext:
+Die Ebenen liegen über der Fläche und unter der Schrift. Dadurch braucht kein
+Button zusätzliche `span`-Wrapper – auch die, die nur aus Text bestehen.
+
+### Lichtführung je Kontext
+
+Jeder Kontext überschreibt nur vier Variablen. So stapeln sich nie zwei
+Lichtebenen übereinander – genau daraus entstünde der Gel- oder Metalleindruck.
+
+| Variable              | Aufgabe                    |
+| --------------------- | -------------------------- |
+| `--glass-top`         | Lichtkante oben links      |
+| `--glass-bottom`      | Materialtiefe unten rechts |
+| `--glass-ring-top`    | innere Kante oben          |
+| `--glass-ring-bottom` | innere Kante unten         |
+
+| Kontext                    | Fläche                             | Text      |
+| -------------------------- | ---------------------------------- | --------- |
+| Primär, hell und dunkel    | `#00E3F2`                          | `#101214` |
+| Primär, Hover              | schwarz, Neon-Kante                | `#00E3F2` |
+| Sekundär, hell             | `rgba(255,255,255,.28)`, Blur 16px | dunkel    |
+| Sekundär, dunkel           | `rgba(255,255,255,.07)`, Rauchglas | hell      |
+| Primär auf der Cyan-Fläche | dunkles Rauchglas                  | `#00E3F2` |
+
+Die gemessene `background-color` des primären CTA bleibt exakt `#00E3F2`: Die
+Materialtiefe kommt allein aus `::before`, nicht aus einem zweiten Verlauf auf
+dem Element. Es gibt weiterhin nur einen Türkiston.
+
+### Bewegung
+
+Hover hebt den Button um 1px, setzt einen leichten Schlagschatten und lässt die
+Spiegelung einmal in 520ms durchlaufen – keine Schleife, kein Blinken. Aktiv:
+1px nach unten, `scale(.99)`. Alles nur unter `(hover: hover) and (pointer:
+fine)`, damit auf Touch nach dem Antippen nichts hängen bleibt. Bei
+`prefers-reduced-motion: reduce` entfallen Spiegelung und Transform; der
+Glaslook bleibt statisch sichtbar.
+
+### Grenzen
+
+Kein SVG-Filter, kein `feTurbulence`, kein `feDisplacementMap`: Eine echte
+Verzerrung würde Schrift und Kanten unruhig machen und je Button anders
+aussehen. Kein JavaScript, keine Hydration, keine zusätzliche Netzwerkdatei
+außer dem Stylesheet. Browser ohne `backdrop-filter` bekommen über `@supports`
+deckendere Flächen und damit weiterhin lesbare Schaltflächen.
+
 ## Branchenraster
 
 Fünf gleichwertige Einträge, gleicher Aufbau, gleiches Bildformat:
