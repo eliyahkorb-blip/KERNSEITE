@@ -612,3 +612,66 @@ Acht Tests forderten den alten Zustand und prüfen jetzt den neuen: Pillenform
 `backdrop-filter`, `aria-hidden` am Neon-Container statt am Canvas, Animation
 hinter statt neben dem Inhalt, erweiterte Hero-Palette, entfallenes
 Aussagenband.
+
+## Runde: Branchenraster – Bildfenster bleibt frei
+
+### Befund
+
+Die CI schlug seit Commit `1796c4c` bei jedem Lauf fehl, lokal aber nie:
+`feinschliff.spec.ts` meldete für das Branchenraster „Namen versetzt“ mit
+22 px Abweichung. Ursache war keine Schwankung des Prüfrechners, sondern eine
+echte Abhängigkeit im Layout.
+
+Der Eintrag ohne Bildmotiv war unten bündig gestellt. Dadurch hing die Höhe
+seines Namens davon ab, über wie viele Zeilen das Argument **darunter** lief.
+Auf dem CI-Rechner brach ein Argument der Nachbarzelle eine Zeile später um,
+die Rasterzeile wurde höher, und der Name des motivlosen Eintrags rutschte
+mit nach unten.
+
+Nachgestellt wurde der Fall lokal, indem die Hausschriften blockiert wurden:
+mit Ersatzschrift bricht `Atmosphäre spürbar machen und Reservierungen bzw.
+Buchungen erleichtern.` dreizeilig statt zweizeilig um – exakt dieselbe
+Abweichung von 22 px.
+
+### Behebung
+
+Fehlt das Motiv, bleibt der Platz des Bildfensters jetzt leer, statt zu
+fehlen: gleiche Breite, gleiches Seitenverhältnis, keine Fläche, kein Rahmen,
+keine Farbe. Der Name beginnt dadurch in jeder Rasterzeile auf derselben
+Höhe – unabhängig vom Umbruch darunter. Der Test
+`Die Branche ohne Motiv trägt weder Rahmen noch graue Fläche` bleibt gültig.
+
+**Nebenbefund:** Die Regeln für `.igrid__media` griffen nie. Die Klasse sitzt
+auf dem Wurzelelement der Photo-Komponente und trägt deren Bereichskennung,
+nicht die des Rasters – ein markierter Selektor findet sie dort nicht. Die
+Bildüberblendung beim Hover ist jetzt über `:global()` angebunden, der tote
+Außenabstand ist entfernt. Die Darstellung im Ruhezustand bleibt unverändert.
+
+### Neue und geänderte Prüfungen
+
+- Die Rasterprüfung misst die **Oberkante der ersten Namenszeile** statt der
+  letzten. Zweizeilige Namen laufen nach unten weiter, beginnen in der Reihe
+  aber auf einer Linie – das ist die Zusage, die das Layout hält.
+- Neu: dieselbe Prüfung mit blockierten Hausschriften. Sie hält den Fall
+  fest, der auf dem CI-Rechner auftrat.
+
+### Nebenbefund Lint
+
+`pnpm lint` beanstandete `public/a11y-init.js` (Browsergloable in einer Datei
+außerhalb von `src/`) und eine ungenutzte Variable in
+`feinschliff-final.spec.ts`. Die ESLint-Konfiguration kennt jetzt
+`public/**/*.js` als Browserumgebung; beide Befunde sind bereinigt.
+
+### Nachweise
+
+| Prüfung                                | Ergebnis                                 |
+| -------------------------------------- | ---------------------------------------- |
+| `pnpm astro check`                     | 0 Fehler, 0 Warnungen                    |
+| `pnpm lint` / `pnpm format:check`      | ohne Befund                              |
+| `pnpm build:ci` / `pnpm build:preview` | je 27 Seiten                             |
+| `pnpm qa`                              | alle fünf Prüfungen                      |
+| `pnpm test:e2e`                        | 176 bestanden, 1 übersprungen            |
+| `pnpm check:headings`                  | 152 Seitenaufrufe über 8 Breiten         |
+| `pnpm visual-qa`                       | 19 Seiten × 7 Breiten ohne Befund        |
+| GitHub Actions „CI“                    | grün (erster grüner Lauf seit `7f1256f`) |
+| GitHub Actions „Preview“               | grün, auf GitHub Pages veröffentlicht    |
