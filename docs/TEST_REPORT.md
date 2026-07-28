@@ -345,3 +345,48 @@ Cyan-Fläche, Seiten-CTAs der Leistungsseiten, Formularbutton „Anfrage senden�
 (aktiv und deaktiviert), Buttons auf der 404-Seite. Consent-Banner und
 Cookie-Einstellungen wurden mit vorübergehend gesetztem `consentRequired: true`
 gebaut und geprüft; die Einstellung steht wieder auf `false`.
+
+## Runde: gerichtete Reflexion auf den großen Schaltflächen
+
+Vorlage war eine React-/Tailwind-/shadcn-Komponente mit WebGL-Shader
+(`@paper-design/shaders`), Pillenform und Metallverlauf. Übernommen wurde
+davon nur die **Wirkung**, nicht der Code: keine neue Abhängigkeit, keine
+React-Komponente, kein `components/ui`, kein Shader, keine Inline-Styles, keine
+Pillenform. Die Umsetzung liegt weiterhin allein in
+`src/styles/liquid-glass.css`.
+
+### Was dazugekommen ist
+
+Hero-CTAs und Abschluss-CTA tragen eine gerichtete Bänderung als zweite
+Hintergrundebene auf `::before` sowie eine härtere Lichtkante. Header-CTA,
+Formularbutton, mobiler Menü-CTA, 404-, Consent- und Cookie-Buttons behalten
+die ruhige Oberfläche.
+
+### Während der Sichtprüfung korrigiert
+
+Erster Entwurf: Auf dunklem Grund lief eine breite helle Bahn quer über die
+Fläche. Der Sekundärbutton im Hero sah dadurch bei 390px aus wie ein grauer
+Metallbalken – genau der ausgeschlossene Eindruck. Für dunkle Kontexte ist die
+helle Bahn jetzt auf `.05` reduziert und die dunkle auf `.2` angehoben; die
+Tiefe entsteht dort aus dem Schatten, nicht aus einer Aufhellung.
+
+### Nachweise
+
+| Prüfung                                | Ergebnis                          |
+| -------------------------------------- | --------------------------------- |
+| `pnpm astro check`                     | 0 Fehler, 0 Warnungen             |
+| `pnpm lint` / `pnpm format:check`      | ohne Befund                       |
+| `pnpm build:ci` / `pnpm build:preview` | je 27 Seiten                      |
+| `pnpm qa`                              | alle fünf Prüfungen               |
+| `pnpm test:e2e`                        | 121 bestanden, 1 übersprungen     |
+| `pnpm check:headings`                  | 136 Seitenaufrufe ohne Befund     |
+| `pnpm visual-qa`                       | 17 Seiten × 4 Breiten ohne Befund |
+
+### Ergänzte Tests
+
+`tests/e2e/liquid-glass.spec.ts` wächst auf 31 Prüfungen. Neu: nur Hero- und
+Abschluss-CTA tragen zwei Verlaufsebenen, die ruhigen Schaltflächen genau eine;
+die helle Bänderung auf dunklem Grund bleibt unter `.12`; die Markenfarbe misst
+auch unter der Bänderung exakt `rgb(0, 227, 242)`; jede Regel, die die
+Spiegelung startet, hängt an `:hover`; im Ruhezustand ist die Spiegelung auf
+allen Schaltflächen unsichtbar.

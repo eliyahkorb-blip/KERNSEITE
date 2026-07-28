@@ -151,6 +151,32 @@ fine)`, damit auf Touch nach dem Antippen nichts hängen bleibt. Bei
 `prefers-reduced-motion: reduce` entfallen Spiegelung und Transform; der
 Glaslook bleibt statisch sichtbar.
 
+### Zwei Materialstärken
+
+Die Haupt-CTAs – beide Hero-Schaltflächen und der Abschluss-CTA – tragen
+zusätzlich zur Lichtebene eine **gerichtete Bänderung**: hell, dunkel, hell quer
+über die Fläche, wie auf gebürstetem Material. Daher der metallische Eindruck,
+ohne Metallfarbe und ohne Grauverlauf. Die Bänderung liegt als zweite
+Hintergrundebene auf `::before`; die gemessene `background-color` bleibt exakt
+`#00E3F2`.
+
+| Schaltfläche                                 | Material               |
+| -------------------------------------------- | ---------------------- |
+| Hero-CTAs, Abschluss-CTA                     | Bänderung + Lichtebene |
+| Header-CTA, Formularbutton, mobiler Menü-CTA | nur Lichtebene         |
+| 404-Buttons, Consent- und Cookie-Buttons     | nur Lichtebene         |
+
+Auf kleinen Flächen wirkt eine kräftige Bänderung schnell billig – deshalb die
+Trennung. Auf dunklem Grund kippt eine helle Bahn sofort ins Graue und der
+Button sieht aus wie ein Metallbalken; dort trägt überwiegend die dunkle Bahn
+die Tiefe (`--metal-dark: .2`), die helle bleibt eine schmale Kante
+(`--metal-light: .05`).
+
+Bei den großen Schaltflächen wandert der Lichtstreifen, solange der Zeiger
+darauf liegt (2600ms je Durchlauf). Ohne Hover steht das Material still – es
+gibt keine dauerhaft laufende Animation auf der Seite. Die ruhigen
+Schaltflächen behalten den einmaligen Durchlauf.
+
 ### Grenzen
 
 Kein SVG-Filter, kein `feTurbulence`, kein `feDisplacementMap`: Eine echte

@@ -291,14 +291,38 @@ test.describe('Bewegung und Bedienpräferenzen', () => {
     await ctx.close();
   });
 
-  test('Ohne Bewegungspräferenz läuft die Spiegelung genau einmal', () => {
+  test('Die Spiegelung läuft nie ohne Hover', () => {
     const css = cssFiles()
       .map((f) => readFileSync(f, 'utf8'))
       .join('\n')
       .replace(/\s+/g, ' ');
     expect(css, 'Spiegelung fehlt').toContain('ks-glass-sheen');
-    // Genau ein Durchlauf, keine Endlosschleife.
-    expect(css).not.toMatch(/ks-glass-sheen[^;}]*infinite/);
+
+    // Jede Regel, die die Spiegelung startet, muss an `:hover` hängen. Ohne
+    // Zeiger darf nichts laufen – es gibt keine dauerhafte Seitenanimation.
+    const withoutHover: string[] = [];
+    for (const m of css.matchAll(/([^{}]+)\{[^{}]*ks-glass-sheen[^{}]*\}/g)) {
+      const selector = m[1].split('}').pop()!.trim();
+      // Der `@keyframes`-Block selbst ist die Definition, keine Anwendung.
+      if (selector.includes('@keyframes')) continue;
+      if (!selector.includes(':hover')) withoutHover.push(selector);
+    }
+    expect(withoutHover, 'Spiegelung läuft ohne Hover').toEqual([]);
+  });
+
+  test('Im Ruhezustand ist die Spiegelung unsichtbar', async ({ page }) => {
+    await page.goto('/');
+    const s = await page.evaluate(() =>
+      [...document.querySelectorAll('.btn')].map((el) => ({
+        animation: getComputedStyle(el, '::after').animationName,
+        opacity: getComputedStyle(el, '::after').opacity,
+      })),
+    );
+    expect(s.length).toBeGreaterThan(0);
+    for (const one of s) {
+      expect(one.animation, 'Spiegelung läuft im Ruhezustand').toBe('none');
+      expect(Number(one.opacity), 'Spiegelung im Ruhezustand sichtbar').toBe(0);
+    }
   });
 
   test('Deaktivierte Schaltflächen reagieren nicht auf Hover', async ({ page }) => {
@@ -329,6 +353,71 @@ test.describe('Bewegung und Bedienpräferenzen', () => {
     expect(hovered.transform, 'Button bewegt sich').toBe(rest.transform);
     expect(hovered.animation, 'Spiegelung läuft').toBe('none');
     expect(Number(hovered.opacity), 'nicht sichtbar abgeschwächt').toBeLessThan(0.8);
+  });
+});
+
+test.describe('Große Schaltflächen tragen mehr Material als die ruhigen', () => {
+  /** Anzahl der Verlaufsebenen auf `::before`. */
+  const layers = (bg: string) => bg.split(/,(?![^(]*\))/).filter((s) => s.includes('gradient'));
+
+  test('Nur Hero- und Abschluss-CTA bekommen die gerichtete Bänderung', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    const bilanz = await page.evaluate(() => {
+      const read = (el: Element) => getComputedStyle(el, '::before').backgroundImage;
+      return {
+        heroPrimaer: read(document.querySelector('.hero__ctas .btn--primary')!),
+        heroSekundaer: read(document.querySelector('.hero__ctas .btn--secondary')!),
+        abschluss: read(document.querySelector('.cta__actions .btn')!),
+        header: read(document.querySelector('.site-header__cta')!),
+      };
+    });
+    // Zwei Ebenen: Bänderung plus Lichtebene.
+    expect(layers(bilanz.heroPrimaer).length, 'Hero-Primär ohne Bänderung').toBe(2);
+    expect(layers(bilanz.heroSekundaer).length, 'Hero-Sekundär ohne Bänderung').toBe(2);
+    expect(layers(bilanz.abschluss).length, 'Abschluss-CTA ohne Bänderung').toBe(2);
+    // Eine Ebene: die ruhige Oberfläche.
+    expect(layers(bilanz.header).length, 'Header-CTA zu kräftig').toBe(1);
+  });
+
+  test('Die ruhigen Schaltflächen bleiben ruhig', async ({ page }) => {
+    for (const [path, selector] of [
+      ['/kontakt/', 'form .btn--primary'],
+      ['/404.html', '.btn--secondary'],
+    ] as const) {
+      await page.goto(path);
+      const bg = await page
+        .locator(selector)
+        .first()
+        .evaluate((el) => getComputedStyle(el, '::before').backgroundImage);
+      expect(layers(bg).length, `${path}: ${selector} trägt Bänderung`).toBe(1);
+    }
+  });
+
+  test('Auf dunklem Grund bleibt die Fläche dunkel statt grau', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    const s = await page
+      .locator('.hero__ctas .btn--secondary')
+      .first()
+      .evaluate((el) => {
+        const cs = getComputedStyle(el, '::before');
+        // Helle Bahn der Bänderung: darf nur eine schmale Kante sein.
+        const alphas = [...cs.backgroundImage.matchAll(/rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/g)]
+          .map((m) => Number(m[1]))
+          .filter((a) => a > 0);
+        return { max: alphas.length ? Math.max(...alphas) : 0 };
+      });
+    expect(s.max, 'helle Bänderung zu kräftig – wirkt wie Metallbalken').toBeLessThanOrEqual(0.12);
+  });
+
+  test('Die Markenfarbe bleibt auch unter der Bänderung exakt erhalten', async ({ page }) => {
+    await page.goto('/');
+    const bg = await page
+      .locator('.hero__ctas .btn--primary')
+      .first()
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(bg).toBe(NEON);
   });
 });
 
