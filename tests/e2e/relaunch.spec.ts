@@ -105,13 +105,11 @@ test.describe('Relaunch – Struktur', () => {
     await expect(marks.first()).toHaveText('mehr');
   });
 
-  test('Der Hero zeigt das fotorealistische Poster, nicht die Vektorfigur', async ({ page }) => {
+  test('Der Hero zeigt den Neon-Flow, keine Vektorfigur', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('svg.figure')).toHaveCount(0);
-    const media = page.locator('[data-hero] .hero__asset');
-    await expect(media).toHaveCount(1);
-    const src = await media.getAttribute('src');
-    expect(src).toContain('hero-kernseite-final');
+    await expect(page.locator('[data-hero] canvas[data-neon-canvas]')).toHaveCount(1);
+    await expect(page.locator('[data-hero] .hero__asset')).toHaveCount(0);
   });
 
   test('AccentWord besitzt keine Hintergrundfläche', async ({ page }) => {

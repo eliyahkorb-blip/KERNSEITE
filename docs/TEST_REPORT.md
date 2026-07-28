@@ -440,3 +440,96 @@ Fassung bleibt bei höchstens 8px Radius und bündig am Rand; der Randglanz
 bewegt sich messbar; `ks-rim-shine` erscheint in keiner Regel außerhalb der
 großen Schaltflächen; bei reduzierter Bewegung steht der Glanz still, während
 die Fassung sichtbar bleibt.
+
+## Runde: Neon-Flow ersetzt das CRT-Motiv im Hero
+
+Das CRT-Motiv (Person mit Röhrenmonitor) ist vollständig aus dem
+Startseiten-Hero entfernt. An seiner Stelle steht `src/components/NeonFlow.astro`
+mit einem interaktiven WebGL-Röhreneffekt.
+
+### Vorlage nicht übernommen
+
+Der Referenzcode war React + Tailwind + shadcn + Framer Motion + lucide-react
+und lud die Bibliothek per `cdn.jsdelivr.net`. Übernommen wurde nur die
+visuelle Funktion. Installiert ist ausschließlich `threejs-components@0.0.19`;
+eingebunden wird `build/cursors/tubes1.min.js` – ein eigenständiges ES-Modul,
+das zur Laufzeit nichts nachlädt. Keine CDN-Adresse im Build, keine Lockerung
+der CSP, keine React-Komponente, kein `components/ui`.
+
+### Ladeverhalten
+
+| Datei                    | roh    | gzip   | Ladezeitpunkt                   |
+| ------------------------ | ------ | ------ | ------------------------------- |
+| NeonFlow-Initialisierung | 3,5 KB | 1,7 KB | mit der Seite                   |
+| `tubes1.min.<hash>.js`   | 743 KB | 202 KB | erst wenn der Hero sichtbar ist |
+
+Der große Chunk wird per `import()` nachgeladen und steht weder als
+`modulepreload` noch als `<script>` im HTML – der kritische Ladepfad bleibt
+unverändert. Bei reduzierter Bewegung und ohne WebGL wird er nie geladen.
+
+### Zustände
+
+`data-neon-status` ist `ready` (Effekt läuft) oder `fallback` (reduzierte
+Bewegung, fehlendes WebGL oder fehlgeschlagener Import). Der Rückfall ist eine
+statische cyanfarbene Lichtfläche aus CSS – kein CRT-Bild, keine graue Box,
+keine Fehlermeldung.
+
+### Farben
+
+Nur `#00E3F2`, `#FFFFFF`, `#F4F0E7`, `#101214`. Die Bibliothek erzeugt in ihren
+Voreinstellungen Zufallsfarben (`16777215 * Math.random()`); alle Farbfelder
+werden deshalb ausdrücklich gesetzt. Der Klick wechselt zwischen drei fest
+definierten Konfigurationen aus genau diesen vier Werten. `randomColors` gibt
+es nicht.
+
+### Während der Umsetzung korrigiert
+
+- Erster Versuch fiel überall auf `fallback` zurück: `three.start()`/`stop()`
+  sind nicht öffentlich. Pausiert wird jetzt, indem `render` und
+  `onBeforeRender` gegen leere Funktionen getauscht werden.
+- Der Bloom-Schleier stand als sichtbares helleres Rechteck auf dem Hero. Die
+  Maske arbeitet jetzt mit `closest-side` und erreicht an der Kante volle
+  Transparenz.
+- Mobil war nur ein Ausschnitt der Röhren zu sehen. Unter 1024px steht die
+  Kamera weiter hinten (z = 7.4 statt 5).
+- Die Wortmarke wurde von der Maske mit ausgeblendet. Maskiert ist jetzt nur
+  noch die Bühne; die Wortmarke steht daneben.
+- Bei 1920px wurde „Unternehmen“ in der schmaleren 46-Prozent-Spalte
+  beschnitten. Die H1 skaliert dort mit 4.6vw statt 4.9vw.
+
+### Nachweise
+
+| Prüfung                                | Ergebnis                           |
+| -------------------------------------- | ---------------------------------- |
+| `pnpm astro check`                     | 0 Fehler, 0 Warnungen (69 Dateien) |
+| `pnpm lint` / `pnpm format:check`      | ohne Befund                        |
+| `pnpm build:ci` / `pnpm build:preview` | je 27 Seiten                       |
+| `pnpm qa`                              | alle fünf Prüfungen                |
+| `pnpm test:e2e`                        | 150 bestanden, 1 übersprungen      |
+| `pnpm check:headings`                  | 153 Seitenaufrufe über 9 Breiten   |
+| `pnpm visual-qa`                       | 17 Seiten × 4 Breiten ohne Befund  |
+
+Zusätzlich in sechs Ansichten geprüft (1920/1440/1280/430/390/360): Effekt
+startet überall (`ready`), null Konsolenfehler, null externe Requests, kein
+waagerechter Überlauf.
+
+### Neue Tests
+
+`tests/e2e/neon-flow.spec.ts`, 26 Prüfungen: kein CRT-Bild, kein CRT-Video,
+kein CRT-Alternativtext, kein CRT-Asset im HTML und in den Requests; Canvas
+vorhanden, `aria-hidden`, ohne `tabindex`, weder per Tab noch programmatisch
+fokussierbar; genau eine Instanz; keine Konsolenfehler; Überschrift, Lead,
+beide Buttons und Standortzeile unverändert; Bricolage Grotesque und Inter
+aktiv; Effekt überdeckt keinen Button, beide bleiben klickbar; kein Überlauf
+bei 360px; Rückfall bei reduzierter Bewegung und ohne WebGL; keine
+CDN-Adresse; keine externen Requests; keine React-, Tailwind-,
+Framer-Motion-, lucide-react-, shadcn-, Radix- oder CVA-Abhängigkeit; kein
+`.tsx`; kein Vorladen des großen Chunks; kein `Math.random` im Neon-Skript;
+nur die freigegebene Palette; Klickwechsel ohne Fehler; CSP weiterhin ohne
+`unsafe-inline` und ohne `unsafe-eval`.
+
+Zwei Alttests forderten noch das CRT-Motiv und prüfen jetzt den Sollzustand:
+`hero.spec.ts` („Im Medienbereich steht der Neon-Flow“) und `relaunch.spec.ts`
+(„Der Hero zeigt den Neon-Flow“). Der Test gegen dynamischen Wortwechsel
+vergleicht jetzt den Textinhalt statt des Markups – der Statuswert des
+Effekts ändert das Markup, ohne dass sich etwas Lesbares ändert.

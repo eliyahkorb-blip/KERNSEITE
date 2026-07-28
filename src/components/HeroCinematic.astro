@@ -1,41 +1,16 @@
 ---
 /**
- * HeroCinematic – zweigeteilter Hero: Text links, CRT-Motiv rechts.
+ * HeroCinematic – zweigeteilter Hero: Text links, Neon-Flow rechts.
  *
- * Ausgeliefert wird eine fertige Rasterdatei (`hero-kernseite-final*.webp`),
- * die aus dem Originalfoto erzeugt wurde (`scripts/build-hero-crt.py`):
- * ohne Augen, mit cyanfarbenem Bildschirm und eingebranntem Schriftzug
- * „KERNSEITE“. Es liegt kein CSS-Overlay darüber, es gibt keinen zweiten
- * Schriftzug und keinen Wortwechsel.
+ * Das frühere CRT-Motiv (Person mit Röhrenmonitor) ist hier vollständig
+ * entfallen – kein Video, kein Poster, kein Standbild, kein Platzhalter.
+ * An seiner Stelle steht das interaktive Markenelement `NeonFlow`.
  *
- * Das Motiv wird vollständig gezeigt (`height: auto`), damit weder die obere
- * Bildschirmkante noch die rechte Gehäuseseite beschnitten wird.
- *
- * Liegt ein Loop-Video vor, ersetzt es das Standbild. Fehlt beides, erscheint
- * eine neutrale Fläche – niemals eine gezeichnete Ersatzfigur.
+ * Der Text bleibt unverändert und liegt im normalen Dokumentfluss. Auf Mobil
+ * steht das Neon-Element zuerst, danach Überschrift, Text und Buttons.
  */
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import AccentWord from './AccentWord.astro';
-
-// Auf das Projektverzeichnis beziehen – `import.meta.url` zeigt im Build
-// nicht zuverlässig auf die Komponentendatei.
-const mediaDir = join(process.cwd(), 'public', 'assets', 'video');
-const hasFile = (n: string) => existsSync(join(mediaDir, n));
-
-const sources = [
-  { src: '/assets/video/hero-kernseite.webm', type: 'video/webm', file: 'hero-kernseite.webm' },
-  { src: '/assets/video/hero-kernseite.mp4', type: 'video/mp4', file: 'hero-kernseite.mp4' },
-].filter((s) => hasFile(s.file));
-const hasVideo = sources.length > 0;
-
-/** Figurbetonter Zuschnitt – zeigt Monitor, Hemd und Jackett vollständig. */
-const POSTER = '/assets/video/hero-kernseite-final-portrait.webp';
-const POSTER_WIDE = '/assets/video/hero-kernseite-final.webp';
-const hasPoster = hasFile('hero-kernseite-final-portrait.webp');
-
-const ALT =
-  'Person im dunklen Anzug mit weißem Hemd, deren Kopf ein alter Röhrenmonitor ist. Auf dem cyanfarbenen Bildschirm steht in schwarzen Buchstaben KERNSEITE.';
+import NeonFlow from './NeonFlow.astro';
 ---
 
 <section class="hero section--dark on-dark" data-hero>
@@ -57,86 +32,20 @@ const ALT =
     </div>
 
     <div class="hero__media">
-      {
-        hasVideo ? (
-          <video
-            class="hero__asset"
-            data-hero-video
-            poster={hasPoster ? POSTER : undefined}
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="auto"
-            aria-label={ALT}
-            tabindex="-1"
-          >
-            {sources.map((s) => (
-              <source src={s.src} type={s.type} />
-            ))}
-          </video>
-        ) : hasPoster ? (
-          <img
-            class="hero__asset"
-            src={POSTER}
-            srcset={`${POSTER} 1052w, ${POSTER_WIDE} 1672w`}
-            sizes="(min-width: 64rem) 46vw, 100vw"
-            width="1052"
-            height="941"
-            alt={ALT}
-            fetchpriority="high"
-            decoding="async"
-          />
-        ) : (
-          <div class="hero__placeholder" role="img" aria-label="Bildfläche – Motiv folgt." />
-        )
-      }
+      <NeonFlow />
     </div>
   </div>
 </section>
 
-<script>
-  // Nur Wiedergabe-Steuerung: Pause offscreen, bei inaktivem Tab und bei
-  // reduzierter Bewegung. Kein Bildschirmtext, kein Wortwechsel, kein Timer.
-  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  document.querySelectorAll<HTMLElement>('[data-hero]').forEach((hero) => {
-    const video = hero.querySelector<HTMLVideoElement>('[data-hero-video]');
-    if (!video) return;
-
-    let inView = true;
-
-    const sync = () => {
-      const active = inView && !document.hidden && !REDUCED.matches;
-      if (active) void video.play().catch(() => {});
-      else video.pause();
-    };
-
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) inView = e.isIntersecting;
-          sync();
-        },
-        { threshold: 0.1 },
-      ).observe(hero);
-    }
-
-    document.addEventListener('visibilitychange', sync);
-    REDUCED.addEventListener?.('change', sync);
-    sync();
-  });
-</script>
-
 <style>
   /* Dunkle Bühne: Nur so trägt das Cyan der markierten Wörter genug
      Kontrast – ein zweiter, abgeschwächter Türkiston kommt nicht in Frage.
-     Das CRT-Motiv gewinnt auf Schwarz zusätzlich an Tiefe. */
+     Die Neonröhren wirken aus genau diesem Schwarz heraus. */
   .hero {
     background: var(--ks-black);
   }
 
-  /* Mobil: normaler Dokumentfluss – Bild, dann Text, dann CTAs. */
+  /* Mobil: normaler Dokumentfluss – Effekt, dann Text, dann CTAs. */
   .hero__inner {
     display: flex;
     flex-direction: column;
@@ -145,17 +54,8 @@ const ALT =
   }
 
   .hero__media {
-    order: -1; /* Bild zuerst */
-  }
-  .hero__asset,
-  .hero__placeholder {
-    inline-size: 100%;
-    block-size: auto;
-    display: block;
-  }
-  .hero__placeholder {
-    aspect-ratio: 1052 / 941;
-    background: var(--ks-black-soft);
+    order: -1; /* Effekt zuerst */
+    min-inline-size: 0;
   }
 
   /* --- Text --------------------------------------------------------------- */
@@ -207,11 +107,13 @@ const ALT =
     color: var(--text-muted);
   }
 
-  /* --- Desktop: klare Zweiteilung ---------------------------------------- */
+  /* --- Desktop: klare Zweiteilung ----------------------------------------
+     Text links, Effekt rechts – ohne Überlappung, ohne absoluten Textblock
+     über dem Canvas. */
   @media (min-width: 64rem) {
     .hero__inner {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
       align-items: center;
       gap: clamp(2.5rem, 5vw, 5.5rem);
       min-block-size: 88svh;
@@ -221,18 +123,15 @@ const ALT =
       order: 0; /* rechts */
     }
     .hero__title {
-      font-size: clamp(3rem, 4.9vw, 6rem);
+      /* 4.6vw statt 4.9vw: In der 46-Prozent-Spalte passt „Unternehmen“ bei
+         1920px sonst nicht in eine Zeile und wird beschnitten. Getrennt wird
+         das Wort bewusst nicht. */
+      font-size: clamp(3rem, 4.6vw, 5.6rem);
       line-height: 0.95;
       letter-spacing: -0.045em;
     }
     .hero__lead {
       max-width: 40ch;
-    }
-  }
-
-  @media (min-width: 90rem) {
-    .hero__inner {
-      grid-template-columns: 1fr 1.15fr;
     }
   }
 </style>

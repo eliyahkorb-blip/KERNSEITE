@@ -16,20 +16,16 @@ test.describe('Hero (HeroCinematic)', () => {
     await expect(hero.getByRole('link', { name: 'Arbeiten ansehen' })).toBeVisible();
   });
 
-  test('Das CRT-Motiv wird als echtes Bild ausgeliefert', async ({ page }) => {
+  test('Im Medienbereich steht der Neon-Flow, kein Motiv und kein Platzhalter', async ({
+    page,
+  }) => {
     await page.goto('/');
-    const asset = page.locator('[data-hero] .hero__asset');
-    await expect(asset).toHaveCount(1);
+    // Der Röhreneffekt hat das frühere CRT-Motiv ersetzt.
+    await expect(page.locator('[data-hero] canvas[data-neon-canvas]')).toHaveCount(1);
 
-    // Das bearbeitete Motiv (ohne Augen, mit eingebranntem Schriftzug).
-    const src = await asset.getAttribute('src');
-    expect(src).toContain('hero-kernseite-final');
-
-    // Das Bild lädt tatsächlich (kein 404, keine Nullgröße).
-    const ok = await asset.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0);
-    expect(ok).toBe(true);
-
-    // Kein Medien-Platzhalter, keine gezeichnete Figur.
+    // Weder Standbild noch Video noch gezeichnete Ersatzfigur.
+    await expect(page.locator('[data-hero] .hero__asset')).toHaveCount(0);
+    await expect(page.locator('[data-hero] video')).toHaveCount(0);
     await expect(page.locator('.hero__placeholder')).toHaveCount(0);
     await expect(page.locator('svg.figure')).toHaveCount(0);
   });
@@ -53,10 +49,12 @@ test.describe('Hero (HeroCinematic)', () => {
     await page.goto('/');
     await expect(page.locator('[data-words]')).toHaveCount(0);
 
-    // Auch nach mehreren früheren Wechselintervallen ändert sich nichts.
-    const before = await page.locator('[data-hero]').innerHTML();
+    // Auch nach mehreren früheren Wechselintervallen ändert sich kein Text.
+    // Verglichen wird der Textinhalt, nicht das Markup: Der Neon-Flow setzt
+    // beim Start seinen Statuswert, ohne dass sich etwas Lesbares ändert.
+    const before = await page.locator('[data-hero]').innerText();
     await page.waitForTimeout(2600);
-    const after = await page.locator('[data-hero]').innerHTML();
+    const after = await page.locator('[data-hero]').innerText();
     expect(after).toBe(before);
   });
 
