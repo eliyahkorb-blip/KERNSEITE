@@ -390,3 +390,53 @@ die helle Bänderung auf dunklem Grund bleibt unter `.12`; die Markenfarbe misst
 auch unter der Bänderung exakt `rgb(0, 227, 242)`; jede Regel, die die
 Spiegelung startet, hängt an `:hover`; im Ruhezustand ist die Spiegelung auf
 allen Schaltflächen unsichtbar.
+
+## Runde: Chromfassung auf dem Rand
+
+Korrektur der vorigen Runde. Die gerichtete Bänderung lag über der **Fläche**;
+gewünscht war Metall ausschließlich auf dem **Rand**, mit durchlaufendem Glanz.
+
+### Umbau
+
+Die Bänderung auf `::before` ist entfallen, die Fläche der großen
+Schaltflächen ist wieder flach. Das Metall sitzt jetzt auf `::after`: ein
+1,6px schmaler Ring, erzeugt aus zwei einander ausschließenden Masken
+(`mask-composite: exclude`), mit `border-radius: inherit` – weiterhin 6px.
+
+Darauf zwei Hintergrundebenen: ein schmales helles Band, das in 5s um die
+Fassung wandert (beim Hover 2,2s), und eine stehende Chromfassung aus hell,
+dunkel, hell. Animiert wird nur die `background-position` der ersten Ebene –
+eine Fläche von rund 200×52px, kein Layout, kein Repaint der Seite.
+
+### Während der Sichtprüfung korrigiert
+
+Erster Entwurf der Fassung war zu weiß (Spitzlichter bei `.9`/`.95`) und las
+sich als Leuchten statt als geschliffene Kante. Die Spitzlichter liegen jetzt
+bei `.66`/`.78`, die dunklen Bahnen bei `.58`/`.62`.
+
+### Nachweise
+
+| Prüfung                                | Ergebnis                          |
+| -------------------------------------- | --------------------------------- |
+| `pnpm astro check`                     | 0 Fehler, 0 Warnungen             |
+| `pnpm lint` / `pnpm format:check`      | ohne Befund                       |
+| `pnpm build:ci` / `pnpm build:preview` | je 27 Seiten                      |
+| `pnpm qa`                              | alle fünf Prüfungen               |
+| `pnpm test:e2e`                        | 124 bestanden, 1 übersprungen     |
+| `pnpm check:headings`                  | 136 Seitenaufrufe ohne Befund     |
+| `pnpm visual-qa`                       | 17 Seiten × 4 Breiten ohne Befund |
+
+Zusätzlich vier Aufnahmen derselben Schaltfläche im Abstand von 900ms: Die
+`background-position` wandert von −61 % über −9 % und 41 % auf 90 %, der helle
+Punkt auf der Fassung verschiebt sich sichtbar mit.
+
+### Ergänzte Tests
+
+`tests/e2e/liquid-glass.spec.ts` wächst auf 34 Prüfungen. Neu: nur die großen
+Schaltflächen tragen eine Ringmaske aus zwei Ebenen mit Ausschlussmodus und
+laufendem Glanz; die ruhigen tragen gar keine; die Fläche der großen
+Schaltflächen führt genau eine Lichtebene und keinen Verlauf quer darüber; die
+Fassung bleibt bei höchstens 8px Radius und bündig am Rand; der Randglanz
+bewegt sich messbar; `ks-rim-shine` erscheint in keiner Regel außerhalb der
+großen Schaltflächen; bei reduzierter Bewegung steht der Glanz still, während
+die Fassung sichtbar bleibt.

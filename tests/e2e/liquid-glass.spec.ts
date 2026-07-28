@@ -273,50 +273,93 @@ test.describe('Glasebenen stören die Bedienung nicht', () => {
 });
 
 test.describe('Bewegung und Bedienpräferenzen', () => {
-  test('Reduzierte Bewegung schaltet die Spiegelung ab', async ({ browser }) => {
+  test('Reduzierte Bewegung stoppt jede Bewegung, die Fassung bleibt', async ({ browser }) => {
     const ctx = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     await page.goto('/');
-    const btn = page.locator('[data-hero] .btn--primary').first();
-    await btn.hover();
+
+    // Große Schaltfläche: Der Glanz läuft nicht mehr, die Chromfassung bleibt
+    // sichtbar – sie ist Material, kein Bewegungselement.
+    const gross = page.locator('.hero__ctas .btn--primary').first();
+    await gross.hover();
     await page.waitForTimeout(200);
-    const s = await btn.evaluate((el) => ({
+    const g = await gross.evaluate((el) => ({
       animation: getComputedStyle(el, '::after').animationName,
       opacity: getComputedStyle(el, '::after').opacity,
       transform: getComputedStyle(el).transform,
     }));
-    expect(s.animation).toBe('none');
-    expect(Number(s.opacity)).toBe(0);
-    expect(['none', 'matrix(1, 0, 0, 1, 0, 0)']).toContain(s.transform);
+    expect(g.animation, 'Glanz läuft trotz reduzierter Bewegung').toBe('none');
+    expect(Number(g.opacity), 'Chromfassung verschwindet').toBe(1);
+    expect(['none', 'matrix(1, 0, 0, 1, 0, 0)']).toContain(g.transform);
+
+    // Ruhige Schaltfläche: Die Spiegelung bleibt vollständig unsichtbar.
+    const ruhig = page.locator('.site-header__cta').first();
+    await ruhig.hover();
+    await page.waitForTimeout(200);
+    const r = await ruhig.evaluate((el) => ({
+      animation: getComputedStyle(el, '::after').animationName,
+      opacity: getComputedStyle(el, '::after').opacity,
+    }));
+    expect(r.animation).toBe('none');
+    expect(Number(r.opacity)).toBe(0);
     await ctx.close();
   });
 
-  test('Die Spiegelung läuft nie ohne Hover', () => {
+  test('Die Flächenspiegelung läuft nie ohne Hover', () => {
     const css = cssFiles()
       .map((f) => readFileSync(f, 'utf8'))
       .join('\n')
       .replace(/\s+/g, ' ');
-    expect(css, 'Spiegelung fehlt').toContain('ks-glass-sheen');
+    expect(css, 'Flächenspiegelung fehlt').toContain('ks-glass-sheen');
 
-    // Jede Regel, die die Spiegelung startet, muss an `:hover` hängen. Ohne
-    // Zeiger darf nichts laufen – es gibt keine dauerhafte Seitenanimation.
+    // `ks-glass-sheen` läuft über die Fläche und darf nur beim Hover starten.
+    // `ks-rim-shine` läuft dauerhaft, sitzt aber ausschließlich auf dem Rand
+    // der großen Schaltflächen – das ist der gewünschte Glanz.
     const withoutHover: string[] = [];
     for (const m of css.matchAll(/([^{}]+)\{[^{}]*ks-glass-sheen[^{}]*\}/g)) {
       const selector = m[1].split('}').pop()!.trim();
-      // Der `@keyframes`-Block selbst ist die Definition, keine Anwendung.
       if (selector.includes('@keyframes')) continue;
       if (!selector.includes(':hover')) withoutHover.push(selector);
     }
-    expect(withoutHover, 'Spiegelung läuft ohne Hover').toEqual([]);
+    expect(withoutHover, 'Flächenspiegelung läuft ohne Hover').toEqual([]);
   });
 
-  test('Im Ruhezustand ist die Spiegelung unsichtbar', async ({ page }) => {
+  test('Der Randglanz läuft nur auf den großen Schaltflächen', () => {
+    const css = cssFiles()
+      .map((f) => readFileSync(f, 'utf8'))
+      .join('\n')
+      .replace(/\s+/g, ' ');
+    expect(css, 'Randglanz fehlt').toContain('ks-rim-shine');
+
+    const fremde: string[] = [];
+    for (const m of css.matchAll(/([^{}]+)\{[^{}]*ks-rim-shine[^{}]*\}/g)) {
+      const selector = m[1].split('}').pop()!.trim();
+      if (selector.includes('@keyframes')) continue;
+      const gross = selector.includes('.hero__ctas') || selector.includes('.cta__actions');
+      if (!gross) fremde.push(selector);
+    }
+    expect(fremde, 'Randglanz auch außerhalb der großen Schaltflächen').toEqual([]);
+  });
+
+  test('Der Randglanz bewegt sich tatsächlich', async ({ page }) => {
+    await page.goto('/');
+    const btn = page.locator('.hero__ctas .btn--primary').first();
+    const lies = () => btn.evaluate((el) => getComputedStyle(el, '::after').backgroundPosition);
+    const a = await lies();
+    await page.waitForTimeout(700);
+    const b = await lies();
+    expect(a, 'Randglanz steht still').not.toBe(b);
+  });
+
+  test('Auf den ruhigen Schaltflächen ist im Ruhezustand nichts sichtbar', async ({ page }) => {
     await page.goto('/');
     const s = await page.evaluate(() =>
-      [...document.querySelectorAll('.btn')].map((el) => ({
-        animation: getComputedStyle(el, '::after').animationName,
-        opacity: getComputedStyle(el, '::after').opacity,
-      })),
+      [...document.querySelectorAll('.btn')]
+        .filter((el) => !el.closest('.hero__ctas') && !el.closest('.cta__actions'))
+        .map((el) => ({
+          animation: getComputedStyle(el, '::after').animationName,
+          opacity: getComputedStyle(el, '::after').opacity,
+        })),
     );
     expect(s.length).toBeGreaterThan(0);
     for (const one of s) {
@@ -356,68 +399,118 @@ test.describe('Bewegung und Bedienpräferenzen', () => {
   });
 });
 
-test.describe('Große Schaltflächen tragen mehr Material als die ruhigen', () => {
-  /** Anzahl der Verlaufsebenen auf `::before`. */
-  const layers = (bg: string) => bg.split(/,(?![^(]*\))/).filter((s) => s.includes('gradient'));
+test.describe('Metall sitzt nur auf dem Rand', () => {
+  const GROSS = ['.hero__ctas .btn--primary', '.hero__ctas .btn--secondary', '.cta__actions .btn'];
+  const RUHIG = ['.site-header__cta'];
 
-  test('Nur Hero- und Abschluss-CTA bekommen die gerichtete Bänderung', async ({ page }) => {
+  test('Nur die großen Schaltflächen tragen die Chromfassung', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
-    const bilanz = await page.evaluate(() => {
-      const read = (el: Element) => getComputedStyle(el, '::before').backgroundImage;
-      return {
-        heroPrimaer: read(document.querySelector('.hero__ctas .btn--primary')!),
-        heroSekundaer: read(document.querySelector('.hero__ctas .btn--secondary')!),
-        abschluss: read(document.querySelector('.cta__actions .btn')!),
-        header: read(document.querySelector('.site-header__cta')!),
-      };
-    });
-    // Zwei Ebenen: Bänderung plus Lichtebene.
-    expect(layers(bilanz.heroPrimaer).length, 'Hero-Primär ohne Bänderung').toBe(2);
-    expect(layers(bilanz.heroSekundaer).length, 'Hero-Sekundär ohne Bänderung').toBe(2);
-    expect(layers(bilanz.abschluss).length, 'Abschluss-CTA ohne Bänderung').toBe(2);
-    // Eine Ebene: die ruhige Oberfläche.
-    expect(layers(bilanz.header).length, 'Header-CTA zu kräftig').toBe(1);
+    const lies = (sel: string) =>
+      page
+        .locator(sel)
+        .first()
+        .evaluate((el) => {
+          const cs = getComputedStyle(el, '::after');
+          return {
+            maske: cs.maskImage || cs.webkitMaskImage || 'none',
+            komposit: cs.maskComposite || cs.webkitMaskComposite || 'none',
+            padding: parseFloat(cs.paddingTop),
+            animation: cs.animationName,
+          };
+        });
+
+    for (const sel of GROSS) {
+      const s = await lies(sel);
+      // Zwei Maskenebenen plus Ausschluss ergeben den Ring.
+      const ebenen = (s.maske.match(/gradient\(/g) ?? []).length;
+      expect(ebenen, `${sel}: keine Ringmaske`).toBe(2);
+      // Der Browser meldet den Modus je Maskenebene: „exclude, exclude“.
+      for (const modus of s.komposit.split(',').map((m) => m.trim())) {
+        expect(['exclude', 'xor'], `${sel}: falscher Maskenmodus`).toContain(modus);
+      }
+      expect(s.padding, `${sel}: keine Ringdicke`).toBeGreaterThan(0);
+      expect(s.animation, `${sel}: kein laufender Glanz`).toBe('ks-rim-shine');
+    }
+
+    for (const sel of RUHIG) {
+      const s = await lies(sel);
+      expect(s.maske, `${sel}: trägt eine Chromfassung`).toBe('none');
+      expect(s.animation, `${sel}: Glanz läuft`).toBe('none');
+    }
   });
 
-  test('Die ruhigen Schaltflächen bleiben ruhig', async ({ page }) => {
+  test('Die ruhigen Schaltflächen bleiben ohne Fassung', async ({ page }) => {
     for (const [path, selector] of [
       ['/kontakt/', 'form .btn--primary'],
       ['/404.html', '.btn--secondary'],
     ] as const) {
       await page.goto(path);
-      const bg = await page
+      const s = await page
         .locator(selector)
         .first()
-        .evaluate((el) => getComputedStyle(el, '::before').backgroundImage);
-      expect(layers(bg).length, `${path}: ${selector} trägt Bänderung`).toBe(1);
+        .evaluate((el) => {
+          const cs = getComputedStyle(el, '::after');
+          return {
+            maske: cs.maskImage || cs.webkitMaskImage || 'none',
+            animation: cs.animationName,
+          };
+        });
+      expect(s.maske, `${path}: ${selector} trägt eine Chromfassung`).toBe('none');
+      expect(s.animation, `${path}: ${selector} glänzt`).toBe('none');
     }
   });
 
-  test('Auf dunklem Grund bleibt die Fläche dunkel statt grau', async ({ page }) => {
+  test('Die Fläche bleibt flach – kein Verlauf quer darüber', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
-    const s = await page
-      .locator('.hero__ctas .btn--secondary')
-      .first()
-      .evaluate((el) => {
-        const cs = getComputedStyle(el, '::before');
-        // Helle Bahn der Bänderung: darf nur eine schmale Kante sein.
-        const alphas = [...cs.backgroundImage.matchAll(/rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/g)]
-          .map((m) => Number(m[1]))
-          .filter((a) => a > 0);
-        return { max: alphas.length ? Math.max(...alphas) : 0 };
-      });
-    expect(s.max, 'helle Bänderung zu kräftig – wirkt wie Metallbalken').toBeLessThanOrEqual(0.12);
+    for (const sel of GROSS) {
+      const layers = await page
+        .locator(sel)
+        .first()
+        .evaluate(
+          (el) =>
+            getComputedStyle(el, '::before')
+              .backgroundImage.split(/,(?![^(]*\))/)
+              .filter((s) => s.includes('gradient')).length,
+        );
+      // Genau eine ruhige Lichtebene, keine gerichtete Bänderung darüber.
+      expect(layers, `${sel}: Verlauf auf der Fläche`).toBe(1);
+    }
   });
 
-  test('Die Markenfarbe bleibt auch unter der Bänderung exakt erhalten', async ({ page }) => {
+  test('Die Markenfarbe bleibt unter der Fassung exakt erhalten', async ({ page }) => {
     await page.goto('/');
     const bg = await page
       .locator('.hero__ctas .btn--primary')
       .first()
       .evaluate((el) => getComputedStyle(el).backgroundColor);
     expect(bg).toBe(NEON);
+  });
+
+  test('Die Fassung bleibt rechteckig und läuft nicht über den Button hinaus', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    for (const sel of GROSS) {
+      const s = await page
+        .locator(sel)
+        .first()
+        .evaluate((el) => {
+          const cs = getComputedStyle(el, '::after');
+          return {
+            radius: cs.borderTopLeftRadius,
+            top: cs.top,
+            left: cs.left,
+            overflow: getComputedStyle(el).overflow,
+          };
+        });
+      expect(parseFloat(s.radius), `${sel}: Fassung zu rund`).toBeLessThanOrEqual(8);
+      expect(s.radius, `${sel}: prozentualer Radius`).not.toContain('%');
+      // Bündig am Rand, nicht darüber hinaus.
+      expect(parseFloat(s.top), `${sel}: Fassung ragt heraus`).toBe(0);
+      expect(parseFloat(s.left), `${sel}: Fassung ragt heraus`).toBe(0);
+      expect(s.overflow, `${sel}: Fassung nicht beschnitten`).toBe('hidden');
+    }
   });
 });
 

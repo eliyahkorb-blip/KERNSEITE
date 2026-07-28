@@ -153,29 +153,41 @@ Glaslook bleibt statisch sichtbar.
 
 ### Zwei Materialstärken
 
-Die Haupt-CTAs – beide Hero-Schaltflächen und der Abschluss-CTA – tragen
-zusätzlich zur Lichtebene eine **gerichtete Bänderung**: hell, dunkel, hell quer
-über die Fläche, wie auf gebürstetem Material. Daher der metallische Eindruck,
-ohne Metallfarbe und ohne Grauverlauf. Die Bänderung liegt als zweite
-Hintergrundebene auf `::before`; die gemessene `background-color` bleibt exakt
-`#00E3F2`.
+Die Haupt-CTAs – beide Hero-Schaltflächen und der Abschluss-CTA – tragen eine
+**Chromfassung auf dem Rand**. Die Fläche bleibt flach; das Metall sitzt
+ausschließlich auf der Kante.
 
-| Schaltfläche                                 | Material               |
-| -------------------------------------------- | ---------------------- |
-| Hero-CTAs, Abschluss-CTA                     | Bänderung + Lichtebene |
-| Header-CTA, Formularbutton, mobiler Menü-CTA | nur Lichtebene         |
-| 404-Buttons, Consent- und Cookie-Buttons     | nur Lichtebene         |
+| Schaltfläche                                 | Material                  |
+| -------------------------------------------- | ------------------------- |
+| Hero-CTAs, Abschluss-CTA                     | Lichtebene + Chromfassung |
+| Header-CTA, Formularbutton, mobiler Menü-CTA | nur Lichtebene            |
+| 404-, Consent- und Cookie-Buttons            | nur Lichtebene            |
 
-Auf kleinen Flächen wirkt eine kräftige Bänderung schnell billig – deshalb die
-Trennung. Auf dunklem Grund kippt eine helle Bahn sofort ins Graue und der
-Button sieht aus wie ein Metallbalken; dort trägt überwiegend die dunkle Bahn
-die Tiefe (`--metal-dark: .2`), die helle bleibt eine schmale Kante
-(`--metal-light: .05`).
+Auf kleinen Flächen wirkt eine kräftige Fassung schnell billig – deshalb die
+Trennung.
 
-Bei den großen Schaltflächen wandert der Lichtstreifen, solange der Zeiger
-darauf liegt (2600ms je Durchlauf). Ohne Hover steht das Material still – es
-gibt keine dauerhaft laufende Animation auf der Seite. Die ruhigen
-Schaltflächen behalten den einmaligen Durchlauf.
+### So entsteht der Ring
+
+`::after` bekommt zwei Masken, die einander ausschließen: Die äußere deckt die
+ganze Fläche, die innere nimmt über `content-box` den Inhaltsbereich wieder
+weg. Übrig bleibt exakt der Rand in der Breite von `--rim-width` (1,6px), mit
+`border-radius: inherit` – also weiterhin 6px, keine Pille.
+
+Darauf liegen zwei Hintergrundebenen:
+
+1. **Laufender Glanz** – ein schmales helles Band, das in `--rim-duration`
+   (5s, beim Hover 2,2s) einmal um die Fassung wandert und sich wiederholt.
+2. **Stehende Chromfassung** – hell, dunkel, hell im 138°-Winkel. Die dunklen
+   Bahnen tragen den Metallcharakter; zu viel Weiß liest sich als Leuchten
+   statt als geschliffene Kante.
+
+Animiert wird nur die `background-position` der ersten Ebene. Die
+`background-color` der Schaltfläche bleibt davon unberührt und misst weiterhin
+exakt `#00E3F2`. Außen sitzt zusätzlich eine dunkle Kante
+(`rgba(16,18,20,.55)`), damit die helle Fassung davor abgesetzt steht.
+
+Bei `prefers-reduced-motion: reduce` steht der Glanz still, die Fassung bleibt
+sichtbar – sie ist Material, kein Bewegungselement.
 
 ### Grenzen
 

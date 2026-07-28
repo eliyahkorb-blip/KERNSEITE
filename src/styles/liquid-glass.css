@@ -287,67 +287,93 @@
    ========================================================================== */
 .hero__ctas .btn,
 .cta__actions .btn {
-  /* Härtere Lichtkante und mehr Materialtiefe als bei den ruhigen Buttons. */
-  --glass-top: rgba(255, 255, 255, 0.24);
-  --glass-bottom: rgba(16, 18, 20, 0.13);
-  --glass-ring-top: rgba(255, 255, 255, 0.46);
-  --glass-ring-bottom: rgba(16, 18, 20, 0.2);
-  /* Stärke der Bänderung: hell und dunkel getrennt regelbar. */
-  --metal-light: 0.16;
-  --metal-dark: 0.09;
-  --glass-sheen-duration: 2600ms;
+  /* Ringdicke und Umlaufzeit des Glanzes. */
+  --rim-width: 1.6px;
+  --rim-duration: 5s;
+  /* Dunkle Außenkante, damit der helle Ring davor abgesetzt steht – wie eine
+     gefasste Kante. */
+  border-color: rgba(16, 18, 20, 0.55);
 }
 
-/* Die Bänderung liegt als zweite Hintergrundebene auf `::before`, damit die
-   gemessene `background-color` der Schaltfläche unverändert bleibt. */
-.hero__ctas .btn::before,
-.cta__actions .btn::before {
+/* Die Fläche bleibt flach. Das Metall sitzt ausschließlich auf `::after`:
+   ein schmaler Ring, erzeugt aus zwei Masken, die einander ausschließen –
+   die äußere deckt die ganze Fläche, die innere nimmt den Inhaltsbereich
+   wieder weg. Übrig bleibt exakt der Rand. */
+.hero__ctas .btn::after,
+.cta__actions .btn::after {
+  inset: 0;
+  inline-size: auto;
+  border-radius: inherit;
+  padding: var(--rim-width);
+  opacity: 1;
+  transform: none;
+  background-repeat: no-repeat;
   background-image:
+    /* 1. laufender Glanz */
     linear-gradient(
-      106deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, var(--metal-light)) 15%,
-      rgba(255, 255, 255, 0) 29%,
-      rgba(16, 18, 20, var(--metal-dark)) 45%,
-      rgba(255, 255, 255, 0) 60%,
-      rgba(255, 255, 255, calc(var(--metal-light) * 0.65)) 74%,
-      rgba(255, 255, 255, 0) 90%
-    ),
-    linear-gradient(
-      148deg,
-      var(--glass-top) 0%,
+      100deg,
       rgba(255, 255, 255, 0) 42%,
-      var(--glass-bottom) 100%
-    );
+      rgba(255, 255, 255, 0.78) 50%,
+      rgba(255, 255, 255, 0) 58%
+    ),
+    /* 2. stehende Chromfassung: hell, dunkel, hell.
+       Die dunklen Bahnen tragen den Metallcharakter. Zu viel Weiß liest sich
+       als Leuchten, nicht als geschliffene Kante. */
+    linear-gradient(
+        138deg,
+        rgba(255, 255, 255, 0.66) 0%,
+        rgba(255, 255, 255, 0.14) 14%,
+        rgba(16, 18, 20, 0.62) 32%,
+        rgba(255, 255, 255, 0.44) 50%,
+        rgba(16, 18, 20, 0.58) 68%,
+        rgba(255, 255, 255, 0.6) 86%,
+        rgba(16, 18, 20, 0.4) 100%
+      );
+  background-size:
+    240% 100%,
+    100% 100%;
+  background-position:
+    -70% 0,
+    0 0;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: ks-rim-shine var(--rim-duration) linear infinite;
 }
 
-/* Beim Hover wandert ein breiterer Lichtstreifen ruhig über die Fläche und
-   wiederholt sich, solange der Zeiger daraufliegt – das ist der flüssige
-   Teil. Ohne Hover steht das Material still; es gibt keine dauerhaft
-   laufende Animation auf der Seite. */
+/* Nur die erste Ebene wandert, die Chromfassung steht still. */
+@keyframes ks-rim-shine {
+  from {
+    background-position:
+      -70% 0,
+      0 0;
+  }
+  to {
+    background-position:
+      190% 0,
+      0 0;
+  }
+}
+
+/* Beim Hover läuft der Glanz schneller – sonst ändert sich nichts. */
 @media (hover: hover) and (pointer: fine) {
   .hero__ctas .btn:hover::after,
   .cta__actions .btn:hover::after {
-    animation: ks-glass-sheen var(--glass-sheen-duration) var(--ease-in-out) infinite;
+    animation: ks-rim-shine 2.2s linear infinite;
   }
 }
-.hero__ctas .btn::after,
-.cta__actions .btn::after {
-  inline-size: 46%;
-}
 
-/* Auf dunklen Flächen kippt eine helle Bänderung sofort ins Graue und der
-   Button sieht aus wie ein Metallbalken. Dort trägt deshalb überwiegend die
-   dunkle Bahn die Tiefe, die helle bleibt eine schmale Kante. */
-.hero__ctas .btn--secondary,
-.section--cyan .cta__actions .btn--primary {
-  --glass-top: rgba(255, 255, 255, 0.09);
-  --glass-bottom: rgba(0, 0, 0, 0.22);
-  --glass-ring-top: rgba(255, 255, 255, 0.18);
-  --glass-ring-bottom: rgba(0, 0, 0, 0.34);
-  --metal-light: 0.05;
-  --metal-dark: 0.2;
-  --glass-sheen: rgba(255, 255, 255, 0.2);
+/* Der Fokusring darf den laufenden Glanz nicht abschalten – er liegt außen
+   und wird davon nicht berührt. */
+.hero__ctas .btn:focus-visible::after,
+.cta__actions .btn:focus-visible::after {
+  animation: ks-rim-shine var(--rim-duration) linear infinite;
+  opacity: 1;
 }
 
 /* =============================================================================
@@ -432,5 +458,16 @@
   .btn:hover::after {
     animation: none !important;
     opacity: 0;
+  }
+  /* Die Chromfassung der großen Schaltflächen ist kein Bewegungselement –
+     sie bleibt sichtbar, nur der Glanz läuft nicht mehr. */
+  .hero__ctas .btn::after,
+  .cta__actions .btn::after,
+  .hero__ctas .btn:hover::after,
+  .cta__actions .btn:hover::after {
+    opacity: 1;
+    background-position:
+      -70% 0,
+      0 0;
   }
 }
