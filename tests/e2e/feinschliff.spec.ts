@@ -158,11 +158,50 @@ test.describe('Branchenraster – gemeinsame Grundlinie', () => {
     pruefen(await messen(page));
   });
 
-  test('Die Branche ohne Motiv trägt weder Rahmen noch graue Fläche', async ({ page }) => {
+  test('Jede Branche trägt inzwischen ihr eigenes Motiv', async ({ page }) => {
     await page.goto('/branchen/');
-    const cell = page.locator('.igrid__link--nomedia').first();
-    await expect(cell, 'Eintrag ohne Motiv fehlt').toBeVisible();
-    const s = await cell.evaluate((el) => {
+    const zellen = page.locator('.igrid__cell');
+    const anzahl = await zellen.count();
+    expect(anzahl).toBeGreaterThan(0);
+    for (let i = 0; i < anzahl; i++) {
+      const name = (await zellen.nth(i).locator('.igrid__name').innerText()).trim();
+      await expect(zellen.nth(i).locator('img'), `${name}: ohne Bild`).toHaveCount(1);
+    }
+  });
+
+  test('Ein Eintrag ohne Motiv bliebe ohne Rahmen und ohne graue Fläche', async ({ page }) => {
+    // Der Fall tritt derzeit nicht auf – alle fünf Branchen haben ein Motiv.
+    // Die Zusage gilt trotzdem weiter: fehlt später eines, bleibt der Platz
+    // des Bildfensters leer statt grau, damit die Reihe ihre Linie hält.
+    await page.goto('/branchen/');
+    const ohne = page.locator('.igrid__link--nomedia');
+    const anzahl = await ohne.count();
+    if (anzahl === 0) {
+      const gap = await page.evaluate(() => {
+        const link = document.querySelector('.igrid__link')!;
+        const probe = document.createElement('span');
+        probe.className = 'igrid__gap';
+        // Astro grenzt Komponentenstile über eine Bereichskennung ein. Ohne
+        // sie greift die Regel am Prüfelement nicht.
+        for (const a of link.getAttributeNames()) {
+          if (a.startsWith('data-astro-cid-')) probe.setAttribute(a, '');
+        }
+        link.append(probe);
+        const cs = getComputedStyle(probe);
+        const s = {
+          bg: cs.backgroundColor,
+          border: parseFloat(cs.borderTopWidth) || 0,
+          ratio: cs.aspectRatio,
+        };
+        probe.remove();
+        return s;
+      });
+      expect(gap.bg).toBe('rgba(0, 0, 0, 0)');
+      expect(gap.border).toBe(0);
+      expect(gap.ratio.replace(/\s/g, '')).toBe('4/3');
+      return;
+    }
+    const s = await ohne.first().evaluate((el) => {
       const cs = getComputedStyle(el);
       return {
         bg: cs.backgroundColor,

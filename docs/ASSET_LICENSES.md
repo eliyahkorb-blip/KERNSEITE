@@ -151,6 +151,7 @@ bereitgestellt. Quelle laut mitgelieferter `BILDZUORDNUNG.txt`: Unsplash.
 | Datei                                     | Motiv                                | Einsatzort                                         |
 | ----------------------------------------- | ------------------------------------ | -------------------------------------------------- |
 | `assets/branchen/handwerk-*`              | Schleifarbeit an einer Holzplatte    | Branchenraster + `/branchen/handwerk/`             |
+| `assets/branchen/zahnarztpraxen-*`        | Zahnärztliche Untersuchung           | Branchenraster + `/branchen/zahnarztpraxen/`       |
 | `assets/branchen/gastronomie-hotels-*`    | Koch beim Anrichten                  | Branchenraster + `/branchen/gastronomie-hotels/`   |
 | `assets/branchen/lokale-dienstleister-*`  | Fassadenreinigung                    | Branchenraster + `/branchen/lokale-dienstleister/` |
 | `assets/branchen/b2b-mittelstand-*`       | Zuschnitt von Bauholz in einer Halle | Branchenraster + `/branchen/b2b-mittelstand/`      |
@@ -158,10 +159,20 @@ bereitgestellt. Quelle laut mitgelieferter `BILDZUORDNUNG.txt`: Unsplash.
 | `assets/branchen/hotelzimmer-*`           | Hotelzimmer                          | `/branchen/gastronomie-hotels/` (Galerie)          |
 | `assets/branchen/garten-landschaftsbau-*` | Angelegter Garten                    | `/branchen/lokale-dienstleister/` (Bildstreifen)   |
 
-Fotografennamen und Photo-IDs der Branchenbilder lagen der Lieferung nicht bei
-und sind nachzutragen (siehe `docs/ASSET_TODO.md`).
+Für das Zahnarztmotiv liegen die Angaben vor:
 
-Aufbereitung: `pnpm assets:images` (`scripts/build-images.py`) beschneidet
-mittig auf 4:3 und schreibt je Motiv 640/960/1280/1600 px als WebP und AVIF.
-Die Originaldateien liegen unter `public/assets/<gruppe>/source/` und werden
-nicht ausgeliefert.
+| Datei                              | Fotograf                 | Photo-ID      | Quelle   |
+| ---------------------------------- | ------------------------ | ------------- | -------- |
+| `assets/branchen/zahnarztpraxen-*` | Filip Rankovic Grobgaard | `rm7Mgu33tHU` | Unsplash |
+
+Die Unsplash-Seitenadresse ist noch einzutragen; der Abruf ist aus dieser
+Arbeitsumgebung nicht möglich (die Netzsperre lässt unsplash.com nicht zu).
+
+Fotografennamen und Photo-IDs der übrigen Branchenbilder lagen der Lieferung
+nicht bei und sind nachzutragen (siehe `docs/ASSET_TODO.md`).
+
+Aufbereitung: `pnpm assets:images` (`scripts/build-images.py`) beschneidet auf
+4:3 und schreibt je Motiv 640/960/1280/1600 px als WebP und AVIF. Der
+Ausschnitt sitzt mittig; für Hochformate steht in `FOCUS` eine abweichende
+senkrechte Lage (Zahnarztmotiv: 0.42). Die Originaldateien liegen unter
+`public/assets/<gruppe>/source/` und werden nicht ausgeliefert.

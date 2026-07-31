@@ -675,3 +675,98 @@ außerhalb von `src/`) und eine ungenutzte Variable in
 | `pnpm visual-qa`                       | 19 Seiten × 7 Breiten ohne Befund        |
 | GitHub Actions „CI“                    | grün (erster grüner Lauf seit `7f1256f`) |
 | GitHub Actions „Preview“               | grün, auf GitHub Pages veröffentlicht    |
+
+## Runde: Zahnarztmotiv eingesetzt
+
+### Bild
+
+Das gelieferte Foto (Filip Rankovic Grobgaard, Unsplash `rm7Mgu33tHU`) liegt
+als `public/assets/branchen/source/zahnarztpraxen.jpg` (1476 × 2000, Hochformat)
+und wird von `pnpm assets:images` in acht Dateien aufbereitet: 640/960/1280/1600 px
+je als WebP und AVIF. Alle übrigen Motive bleiben byte-identisch.
+
+Das frühere, mit `handwerk.jpg` identische Bild (MD5 `96484aad…`) wird nicht
+verwendet; die neue Quelle trägt MD5 `ab160840…`.
+
+### Ausschnitt
+
+Aus dem Hochformat entsteht ein 4:3-Querformat. Der Ausschnitt sitzt bewusst
+nicht exakt mittig: `scripts/build-images.py` kennt jetzt eine Karte `FOCUS`
+mit der senkrechten Lage je Motiv (0 = oben, 0.5 = Mitte, 1 = unten). Für
+`zahnarztpraxen` steht dort **0.42**.
+
+Der Grund ist doppelt: weiter oben käme der aufgestickte Name einer fremden
+Praxis ins Bild – eine andere Marke auf der eigenen Website; weiter unten
+liefe das obere Auge aus dem Bild. Bei 0.42 stehen Gesicht, beide Augen,
+Hand, Instrument, Mundspiegel und die Behandlungssituation vollständig im
+Ausschnitt. Ohne Eintrag in `FOCUS` bleibt es bei der Mitte, sodass die
+bestehenden Motive unverändert erzeugt werden.
+
+### Nebenbefund: Bildfenster liefen oben bündig ab
+
+Beim Prüfen des Hauptmotivs auf der Detailseite fiel auf, dass das Bild
+oben bündig abgeschnitten wurde statt mittig – die Behandlung lag unterhalb
+der Kante. Ursache war nicht der Ausschnitt, sondern die Photo-Komponente:
+`picture` ist von Haus aus inline und ohne eigene Höhe, ein `block-size: 100%`
+am Bild fand dort keinen Bezug und fiel auf die Eigenhöhe zurück. Das Bild
+ragte aus dem Fenster und wurde vom `overflow: hidden` oben bündig
+beschnitten; `object-fit` und `object-position` blieben wirkungslos.
+
+Betroffen war jedes Fenster, dessen Format vom 4:3 der Datei abweicht:
+
+| Fläche                                   | Überstand vorher |
+| ---------------------------------------- | ---------------- |
+| Branchen-Hauptmotive (21:9), fünf Seiten | 426 px           |
+| Bildstreifen `/branchen/lokale-…` (21:9) | 426 px           |
+| Standortbild `/kontakt/` (16:9)          | 135 px           |
+| Hochformat `/branchen/gastronomie-…`     | −302 px          |
+
+Der letzte Fall lief andersherum: das Bild war kleiner als das Fenster, unter
+dem Hotelzimmer stand ein grauer Balken – genau die Fläche, die es auf dieser
+Website nicht geben soll.
+
+`picture` spannt jetzt das Fenster auf. Alle neun Flächen füllen exakt
+(Überstand 0 px), und der graue Balken ist weg. Sichtbare Folge: die Motive
+zeigen ihre Mitte statt ihres oberen Randes – bei allen fünf Branchenbildern,
+dem Standortbild und den beiden Galeriebildern ist mehr vom Motiv zu sehen
+als zuvor.
+
+### Neue Tests
+
+`tests/e2e/zahnarztmotiv.spec.ts`, 8 Prüfungen: acht Varianten vorhanden;
+Quelldatei nicht das Handwerksbild (MD5-Vergleich gegen den alten Hash und
+gegen `handwerk.jpg`); auch die ausgelieferten Breiten unterscheiden sich vom
+Handwerksmotiv; Bildfeld bei 1440 × 900 und 390 × 844 gefüllt, `naturalWidth`
+
+> 0, Alternativtext, feste `width`/`height`, 4:3, `object-fit: cover`, kein
+> Handwerkspfad; gleicher Aufbau wie Handwerk und Gastronomie (Bild,
+> Überschrift, Beschreibung, Pfeil); `picture` mit AVIF- und WebP-Quelle,
+> `srcset` über alle vier Breiten, `sizes` gesetzt; Hauptmotiv auf der
+> Detailseite; Bild füllt sein Fenster (Überstand ≤ 1 px); kein waagerechter
+> Überlauf bei 360/390/430 px.
+
+### Geänderter Alttest
+
+`Die Branche ohne Motiv trägt weder Rahmen noch graue Fläche` setzte einen
+Eintrag ohne Bild voraus – den gibt es nicht mehr. Die Prüfung ist geteilt:
+eine Zusage, dass jede Branche ihr Motiv trägt, und eine zweite, die die alte
+Regel für den Fall erhält, dass später wieder ein Motiv fehlt.
+
+### Nachweise
+
+| Prüfung                                | Ergebnis                          |
+| -------------------------------------- | --------------------------------- |
+| `pnpm astro check`                     | 0 Fehler, 0 Warnungen             |
+| `pnpm lint` / `pnpm format:check`      | ohne Befund                       |
+| `pnpm build:ci` / `pnpm build:preview` | je 27 Seiten                      |
+| `pnpm qa`                              | alle fünf Prüfungen               |
+| `pnpm test:e2e`                        | 187 bestanden, 1 übersprungen     |
+| `pnpm check:headings`                  | 152 Seitenaufrufe über 8 Breiten  |
+| `pnpm visual-qa`                       | 19 Seiten × 7 Breiten ohne Befund |
+
+### Nebenbefund package.json
+
+`assets:branchen` zeigte auf `scripts/build-industry-images.py` – eine Datei,
+die es nicht gibt. Der Eintrag heißt jetzt `assets:images` und zeigt auf
+`scripts/build-images.py`, wie in der Dokumentation und im Skript selbst
+angegeben.

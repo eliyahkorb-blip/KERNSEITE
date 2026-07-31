@@ -68,11 +68,23 @@ const resolved = resolvePhoto(photo, alt);
 
 <style>
   .photo {
+    position: relative;
     margin: 0;
     display: block;
     overflow: hidden;
     background: var(--ks-surface);
     border-radius: var(--radius-image);
+  }
+  /* `picture` ist von Haus aus inline und ohne eigene Höhe. Ein `block-size:
+     100%` am Bild fände dort keinen Bezug und fiele auf die Eigenhöhe des
+     Bildes zurück – das Bild ragte dann aus dem Fenster heraus und wurde oben
+     bündig abgeschnitten statt mittig beschnitten. Deshalb spannt `picture`
+     das Fenster auf; erst dadurch greifen `object-fit` und `object-position`
+     wie vorgesehen. */
+  .photo picture {
+    position: absolute;
+    inset: 0;
+    display: block;
   }
   .photo img {
     display: block;

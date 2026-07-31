@@ -9,11 +9,16 @@ Ausgabe je Motiv:
   <name>-{640,960,1280,1600}.webp
   <name>-{640,960,1280,1600}.avif
 
-Alle Motive werden mittig auf 4:3 beschnitten – dadurch bleibt das
+Alle Motive werden auf 4:3 beschnitten – dadurch bleibt das
 Seitenverhältnis über die ganze Website hinweg berechenbar, auch wenn die
 Bilder unterschiedlich groß eingesetzt werden. Die Quelldateien bleiben
 liegen und werden nicht ausgeliefert (`.gitignore` schließt sie nicht aus,
 weil sie als Nachweis im Repository bleiben sollen).
+
+Der Ausschnitt sitzt standardmäßig mittig. Für Hochformate, bei denen die
+Mitte das Motiv ungünstig anschneidet, steht in `FOCUS` eine abweichende
+senkrechte Lage: 0 = oben, 0.5 = Mitte, 1 = unten. Ohne Eintrag bleibt es
+bei der Mitte, sodass bestehende Motive unverändert erzeugt werden.
 
 Aufruf: `pnpm assets:images`
 """
@@ -33,8 +38,18 @@ WIDTHS = [640, 960, 1280, 1600]
 ASPECT = 4 / 3
 SUFFIXES = ('.jpg', '.jpeg', '.png', '.webp')
 
+# Senkrechte Lage des Ausschnitts je Motiv (0 = oben, 0.5 = Mitte, 1 = unten).
+# Nur für Hochformate nötig, bei denen die Mitte das Motiv anschneidet.
+FOCUS: dict[str, float] = {
+    # Hochformat. Die Mitte würde die Augen an den oberen Rand schieben; weiter
+    # oben käme der aufgestickte Name einer fremden Praxis ins Bild. Bei 0.42
+    # stehen Gesicht, Hand, Instrument und Mundspiegel vollständig im Bild.
+    'zahnarztpraxen': 0.42,
+}
+DEFAULT_FOCUS = 0.5
 
-def crop_to_aspect(im: Image.Image) -> Image.Image:
+
+def crop_to_aspect(im: Image.Image, focus: float = DEFAULT_FOCUS) -> Image.Image:
     w, h = im.size
     if abs(w / h - ASPECT) < 0.005:
         return im
@@ -43,7 +58,7 @@ def crop_to_aspect(im: Image.Image) -> Image.Image:
         left = (w - new_w) // 2
         return im.crop((left, 0, left + new_w, h))
     new_h = round(w / ASPECT)
-    top = (h - new_h) // 2
+    top = int((h - new_h) * focus)
     return im.crop((0, top, w, top + new_h))
 
 
@@ -72,7 +87,7 @@ def main() -> int:
 
         sources = sorted(p for p in src_dir.iterdir() if p.suffix.lower() in SUFFIXES)
         for src in sources:
-            im = crop_to_aspect(Image.open(src).convert('RGB'))
+            im = crop_to_aspect(Image.open(src).convert('RGB'), FOCUS.get(src.stem, DEFAULT_FOCUS))
             for width in WIDTHS:
                 height = round(width / ASPECT)
                 resized = im.resize((width, height), Image.LANCZOS)

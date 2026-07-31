@@ -40,6 +40,10 @@ export const photos = {
     group: 'branchen',
     alt: 'Handwerker beim Schleifen einer Holzplatte',
   },
+  zahnarztpraxen: {
+    group: 'branchen',
+    alt: 'Zahnärztliche Untersuchung einer Patientin in einer Praxis',
+  },
   'gastronomie-hotels': {
     group: 'branchen',
     alt: 'Koch beim Anrichten eines Gerichts in der Restaurantküche',

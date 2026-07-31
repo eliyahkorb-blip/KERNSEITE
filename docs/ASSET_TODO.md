@@ -1,43 +1,19 @@
 # Offene Bildbeschaffung
 
-## 1. Zahnarztpraxen & medizinische Praxen
+## 1. Zahnarztpraxen & medizinische Praxen – erledigt
 
-**Es fehlt genau ein Branchenmotiv.**
+Das Motiv liegt vor und ist eingebunden: Foto von **Filip Rankovic
+Grobgaard** (Unsplash, Photo-ID `rm7Mgu33tHU`), abgelegt als
+`public/assets/branchen/source/zahnarztpraxen.jpg`, aufbereitet mit
+`pnpm assets:images`. Es erscheint im Branchenraster und als Hauptmotiv auf
+`/branchen/zahnarztpraxen/`.
 
-Die Lieferung `KERNSEITE_branchenbilder_4zu3.zip` enthielt zwar eine Datei
-`zahnarztpraxen.jpg`, sie ist aber **byte-identisch mit `handwerk.jpg`**
-(MD5 `96484aad8868e10d38508b9df6580933`) und zeigt eine Schleifmaschine auf
-einer Holzplatte – keine Praxis.
+Das frühere, mit `handwerk.jpg` byte-identische Bild
+(MD5 `96484aad8868e10d38508b9df6580933`) wird **nicht** verwendet; die Quelldatei
+trägt jetzt MD5 `ab160840f11f01630efe3a69bfc49103`.
 
-Ein Handwerksfoto als Praxisbild auszugeben wäre eine falsche Darstellung.
-Die Datei wurde deshalb nicht übernommen. Die Branche erscheint im Raster und
-auf ihrer Detailseite ohne Bildfläche – kein grauer Platzhalter, keine
-Ersatzlinie, kein zweckentfremdetes Motiv.
-
-### Gesuchtes Motiv
-
-Helle, moderne Praxis; ruhiges Gespräch zwischen medizinischem Personal und
-Patient; vertrauensvolle Atmosphäre.
-
-**Nicht:** Nahaufnahme eines Mundes, sichtbare Behandlung, Zahnbürsten-Stock,
-künstlich lachendes Stockteam, Heilversprechen.
-
-Suchbegriffe: `dentist patient modern clinic`, `dental practice interior`,
-`doctor patient consultation`, `modern medical practice`,
-`friendly dentist consultation`
-
-### Einsetzen
-
-1. Foto auf <https://unsplash.com/> auswählen – kostenlos, **kein Unsplash+**,
-   keine KI-Bilder, keine fremden Marken.
-2. Als `public/assets/branchen/source/zahnarztpraxen.jpg` ablegen (4:3).
-3. `pnpm assets:images` ausführen. Das Skript beschneidet mittig auf 4:3 und
-   schreibt 640/960/1280/1600 px als WebP und AVIF.
-4. Fotograf, Photo-ID, Quell-URL und Datum in `docs/ASSET_LICENSES.md`
-   eintragen, diesen Abschnitt entfernen.
-5. `pnpm build:ci && pnpm qa && pnpm test:e2e`. Der Test
-   `tests/e2e/branchen.spec.ts` prüft, dass das Motiv geladen wird und
-   dasselbe Seitenverhältnis hat wie die übrigen.
+Offen bleibt allein die Unsplash-Seitenadresse in `docs/ASSET_LICENSES.md` –
+der Abruf ist aus der Arbeitsumgebung gesperrt.
 
 ## 2. B2B-Mittelstand – Motiv passt nicht zur Branche
 
@@ -88,6 +64,9 @@ in `docs/ASSET_LICENSES.md` nachzutragen, bevor die Website produktiv geht:
 - `b2b-mittelstand.jpg`
 - `restaurant-ambiente.jpg`, `hotelzimmer.jpg`, `garten-landschaftsbau.jpg`
 
+Für `zahnarztpraxen.jpg` liegen Fotograf und Photo-ID vor; dort fehlt nur noch
+die Unsplash-Seitenadresse.
+
 Für die vier Leistungsbilder liegen die Fotografennamen vor (siehe
 `docs/ASSET_LICENSES.md`); dort fehlen noch die Unsplash-Seitenadressen.
 
@@ -96,14 +75,9 @@ Für die vier Leistungsbilder liegen die Fotografennamen vor (siehe
 - Ein echtes Porträt von Eliyah Korb für `/agentur/`. Bis dahin steht dort das
   eigene CRT-Markenmotiv – keine gezeichnete Ersatzfigur.
 
-## 5. Stand nach der Feinschliff-Runde
+## 5. Stand
 
-**Zahnarztpraxen:** weiterhin offen. Es wurde kein Zahnarztfoto geliefert –
-die zuletzt angehängte Datei war die Referenz für den Barrierefreiheits-
-Schalter, kein Branchenmotiv. Die Branche erscheint unverändert ohne Bild.
-Sobald ein Foto vorliegt: als `public/assets/branchen/source/zahnarztpraxen.jpg`
-ablegen und `pnpm assets:images` ausführen; das Skript erzeugt AVIF und WebP in
-640/960/1280/1600 px und beschneidet mittig auf 4:3.
+**Zahnarztpraxen:** erledigt, siehe Abschnitt 1.
 
 **B2B-Mittelstand:** weiterhin offen. Das gelieferte Motiv zeigt eine Zimmerei
 auf der Baustelle und liest sich als Handwerk. Es steht bis zum Austausch
