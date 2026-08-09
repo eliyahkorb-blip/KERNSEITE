@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroCinematic from '../components/HeroCinematic.astro';
+import WorkFeature from '../components/WorkFeature.astro';
+import ServiceRows from '../components/ServiceRows.astro';
+import GoogleProfile from '../components/GoogleProfile.astro';
+import ProblemList from '../components/ProblemList.astro';
+import IndustryGrid from '../components/IndustryGrid.astro';
+import ProcessTimeline from '../components/ProcessTimeline.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import AccentWord from '../components/AccentWord.astro';
+
+import { site } from '../config/site';
+import { featuredProjects } from '../config/cases';
+import { processTimeline } from '../config/process';
+import { homeFaqs } from '../config/faq';
+
+const problems = [
+  'Interessenten zweifeln an der Professionalität.',
+  'Bewerber entscheiden sich für modernere Wettbewerber.',
+  'Google versteht Angebot und Standort nicht eindeutig.',
+  'Gute Leistungen wirken online austauschbar.',
+  'Anfragen gehen durch schlechte Nutzerführung verloren.',
+];
+
+// Startseite zeigt nur die ersten Schritte; der Rest steht auf /prozess/.
+const timelineHome = processTimeline.slice(0, 4);
+---
+
+<BaseLayout title="Webdesign & KI-Agentur Würzburg" description={site.metaDescription}>
+  <HeroCinematic />
+
+  <!-- ARBEITEN – kommen bewusst früh -->
+  <section class="section section--cream" id="arbeiten">
+    <div class="content head reveal">
+      <h2 class="head__title">Arbeiten, die nicht nach Vorlage aussehen.</h2>
+      <p class="lead">
+        Zwei umgesetzte Kundenprojekte aus unterschiedlichen Branchen – jeweils auf das gebaut, was
+        der Betrieb wirklich braucht.
+      </p>
+      <p class="more">
+        <a class="link-arrow" href="/arbeiten/">
+          Alle Arbeiten ansehen <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </p>
+    </div>
+  </section>
+
+  {
+    featuredProjects.map((project, i) => (
+      <WorkFeature work={project} flip={i % 2 === 1} tone={i === 0 ? 'dark' : 'light'} />
+    ))
+  }
+
+  <!-- LEISTUNGEN -->
+  <section class="section section--paper" id="leistungen">
+    <div class="content reveal">
+      <div class="head">
+        <h2 class="head__title head__title--wide">
+          Die Website ist der Kern. Alles Weitere dockt sinnvoll an.
+        </h2>
+        <p class="lead">
+          Wir bauen nicht alles an, was möglich ist – sondern das, was bei dir tatsächlich etwas
+          bewegt.
+        </p>
+      </div>
+      <ServiceRows compact />
+    </div>
+  </section>
+
+  <!-- GOOGLE-UNTERNEHMENSPROFIL -->
+  <GoogleProfile />
+
+  <!-- PROBLEM -->
+  <section class="section section--dark">
+    <div class="content problem reveal">
+      <div>
+        <h2 class="head__title">
+          Eine schwache Website kostet <AccentWord>mehr</AccentWord> als eine neue.
+        </h2>
+      </div>
+      <ProblemList items={problems} />
+    </div>
+  </section>
+
+  <!-- BRANCHEN -->
+  <section class="section section--paper" id="branchen">
+    <div class="content reveal">
+      <div class="head">
+        <h2 class="head__title head__title--wide">
+          Gute Gestaltung versteht das Geschäft dahinter.
+        </h2>
+      </div>
+      <IndustryGrid />
+    </div>
+  </section>
+
+  <!-- PROZESS -->
+  <section class="section section--cream" id="prozess">
+    <div class="content reveal">
+      <div class="head">
+        <h2 class="head__title">Klarer Prozess. Keine Agentur-Schleifen.</h2>
+        <p class="lead">
+          Du weißt jederzeit, woran gearbeitet wird, was von dir gebraucht wird und was als Nächstes
+          passiert.
+        </p>
+      </div>
+      <ProcessTimeline steps={timelineHome} compact />
+      <p class="more">
+        <a class="link-arrow" href="/prozess/">
+          Alle sieben Schritte ansehen <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ÜBER KERNSEITE -->
+  <section class="section section--surface" id="agentur">
+    <div class="content about reveal">
+      <div>
+        <h2 class="head__title">Ein Ansprechpartner. Spezialisten, wenn sie gebraucht werden.</h2>
+      </div>
+      <div class="about__text">
+        <p class="lead">
+          KERNSEITE wird von Eliyah Korb geführt: Strategie, Beratung und Projektsteuerung liegen in
+          einer Hand. Für Social Media &amp; Content, KI &amp; Automatisierung sowie Film &amp;
+          Produktion arbeiten wir projektbezogen mit selbstständigen Partnern zusammen.
+        </p>
+        <a class="link-arrow" href="/agentur/">
+          Mehr über das Studio <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section--paper" id="faq">
+    <div class="content faq-home reveal">
+      <div class="faq-home__head">
+        <h2 class="head__title">Kurz beantwortet.</h2>
+        <a class="link-arrow" href="/faq/">
+          Alle Fragen ansehen <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+      <div>
+        <FaqAccordion items={homeFaqs.slice(0, 3)} />
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner />
+</BaseLayout>
+
+<style>
+  .problem {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .more {
+    margin-block-start: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+
+  .about {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .about__text {
+    display: grid;
+    gap: var(--space-lg);
+    justify-items: start;
+    max-width: min(58ch, 100%);
+  }
+  .about__body {
+    color: var(--text-muted);
+  }
+
+  .faq-home {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+  .faq-home__head {
+    display: grid;
+    gap: var(--space-lg);
+    justify-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .problem {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(3rem, 5vw, 6rem);
+      align-items: start;
+    }
+    .about {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 5vw, 6rem);
+      align-items: start;
+    }
+    .faq-home {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: clamp(3rem, 5vw, 6rem);
+    }
+    .faq-home__head {
+      position: sticky;
+      top: 7.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,164 @@
+---
+/**
+ * HeroCinematic – Vollbild-Hero der Startseite.
+ *
+ * Der Neon-Flow liegt als animierter Hintergrund über die gesamte Fläche;
+ * Überschrift, Text und Buttons stehen als normale HTML-Ebene darüber. Es
+ * gibt keinen separaten Medienbereich mehr und kein CRT-Motiv.
+ *
+ * Lesbarkeit entsteht über einen weichen dunklen Verlauf von links, nicht
+ * über einen sichtbaren Kasten hinter dem Text.
+ */
+import AccentWord from './AccentWord.astro';
+import NeonFlow from './NeonFlow.astro';
+---
+
+<section class="hero section--dark on-dark" data-hero>
+  <NeonFlow />
+
+  <!-- Leseschutz: links fast deckend, zur Mitte auslaufend, rechts frei. -->
+  <div class="hero__veil" aria-hidden="true"></div>
+
+  <div class="hero__inner content">
+    <div class="hero__text">
+      <h1 class="hero__title">
+        Dein Unternehmen kann <AccentWord>mehr</AccentWord>.<br />
+        Deine Website sollte es <AccentWord>zeigen</AccentWord>.
+      </h1>
+      {
+        /* Sachliche Einordnung direkt unter der Überschrift: Wer, was, wo.
+          Die Aussage steht bewusst hier und nicht in einem zweiten Band unter
+          dem Hero – sie ist der erste Fließtext, den Menschen wie
+          Antwortsysteme lesen. */
+      }
+      <p class="hero__lead">
+        KERNSEITE ist eine Webdesign- und KI-Agentur aus dem Raum Würzburg. Wir entwickeln
+        individuelle Unternehmenswebsites, verbessern die Sichtbarkeit in Suche und KI-Antworten und
+        automatisieren sinnvolle Abläufe – für Unternehmen bundesweit.
+      </p>
+      <div class="hero__ctas">
+        <a class="btn btn--primary" href="/kontakt/">Projekt besprechen</a>
+        <a class="btn btn--secondary" href="/arbeiten/">Arbeiten ansehen</a>
+      </div>
+      <p class="hero__trust">Persönlich im Raum Würzburg. Digital bundesweit.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Der Hero füllt den ersten Bildschirm abzüglich der Kopfzeile. */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--ks-black);
+    min-block-size: calc(88svh - var(--header-h, 64px));
+    display: grid;
+    align-items: center;
+  }
+
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      rgba(16, 18, 20, 0.94) 0%,
+      rgba(16, 18, 20, 0.86) 26%,
+      rgba(16, 18, 20, 0.42) 52%,
+      rgba(16, 18, 20, 0) 78%
+    );
+  }
+
+  .hero__inner {
+    position: relative;
+    z-index: 2;
+    padding-block: clamp(2.5rem, 2rem + 5vw, 5rem);
+  }
+
+  .hero__text {
+    max-width: min(38rem, 100%);
+  }
+
+  /* --- Text --------------------------------------------------------------- */
+  .hero__title {
+    font-size: clamp(2.75rem, 11.5vw, 4.25rem);
+    line-height: 0.97;
+    letter-spacing: -0.04em;
+    /* Keine Silbentrennung: „Unternehmen“ bleibt ganz. */
+    hyphens: none;
+    word-break: normal;
+    overflow-wrap: normal;
+    text-wrap: initial;
+  }
+  /* Sehr starker Browser-Zoom: Titel zusätzlich verkleinern. */
+  @media (max-width: 22rem) {
+    .hero__title {
+      font-size: clamp(1.6rem, 8.5vw, 2.4rem);
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .hero__lead {
+    margin-block-start: var(--space-xl);
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    color: var(--text-invert-muted);
+    max-width: min(42ch, 100%);
+  }
+
+  .hero__ctas {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-block-start: var(--space-2xl);
+  }
+  @media (min-width: 32.5rem) {
+    .hero__ctas {
+      grid-template-columns: auto auto;
+      justify-content: start;
+      gap: var(--space-md);
+    }
+  }
+
+  .hero__trust {
+    margin-block-start: var(--space-xl);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+
+  /* --- Mobil ---------------------------------------------------------------
+     Der Effekt füllt den Hero, der Text steht trotzdem im ersten Bildschirm.
+     Deshalb liegt die Textebene unten und der Verlauf läuft von unten. */
+  @media (max-width: 63.99rem) {
+    .hero {
+      min-block-size: calc(92svh - var(--header-h, 64px));
+      align-items: end;
+    }
+    .hero__veil {
+      background: linear-gradient(
+        to top,
+        rgba(16, 18, 20, 0.95) 0%,
+        rgba(16, 18, 20, 0.88) 34%,
+        rgba(16, 18, 20, 0.5) 62%,
+        rgba(16, 18, 20, 0.08) 88%
+      );
+    }
+  }
+
+  /* --- Desktop -------------------------------------------------------------
+     Textblock links, Animation läuft frei über die gesamte Fläche. */
+  @media (min-width: 64rem) {
+    .hero__title {
+      /* 4.6vw: In der begrenzten Textbreite passt „Unternehmen“ sonst bei
+         1920px nicht in eine Zeile und wird beschnitten. */
+      font-size: clamp(3rem, 4.6vw, 5.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.045em;
+    }
+    .hero__lead {
+      max-width: 40ch;
+    }
+  }
+</style>

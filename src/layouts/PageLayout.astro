@@ -1,0 +1,73 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import type { Crumb } from '../components/Breadcrumbs.astro';
+import { breadcrumbJsonLd } from '../lib/jsonld';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Kleines Label über der Headline (sparsam einsetzen). */
+  label?: string;
+  /** Reine Text-Headline. Alternativ den Slot `h1` mit Markup nutzen. */
+  h1?: string;
+  /** Wenn true, wird die Headline aus dem Slot `h1` gerendert. */
+  h1Slot?: boolean;
+  lead?: string;
+  breadcrumbs?: Crumb[];
+  extraJsonLd?: Array<Record<string, unknown> | null>;
+  noindex?: boolean;
+  /** Hintergrund des Seitenkopfs. */
+  variant?: 'paper' | 'cream' | 'surface' | 'dark';
+}
+
+const {
+  title,
+  description,
+  label,
+  h1,
+  h1Slot = false,
+  lead,
+  breadcrumbs = [],
+  extraJsonLd = [],
+  noindex = false,
+  variant = 'paper',
+} = Astro.props;
+
+const jsonLd = [breadcrumbJsonLd(breadcrumbs), ...extraJsonLd];
+---
+
+<BaseLayout title={title ?? h1} description={description} noindex={noindex} jsonLd={jsonLd}>
+  <header class={`page-hero section--${variant}${variant === 'dark' ? ' on-dark' : ''}`}>
+    <div class="content">
+      {breadcrumbs.length > 1 && <Breadcrumbs items={breadcrumbs} />}
+      {label && <p class="label page-hero__label">{label}</p>}
+      {h1Slot ? <slot name="h1" /> : <h1 class="page-hero__title">{h1}</h1>}
+      {lead && <p class="lead page-hero__lead">{lead}</p>}
+      <slot name="hero-extra" />
+    </div>
+  </header>
+  <slot />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding-block: clamp(2rem, 1.5rem + 3vw, 4rem) clamp(2.5rem, 2rem + 4vw, 5.5rem);
+  }
+  .page-hero__label {
+    display: block;
+    margin-block-start: var(--space-xl);
+  }
+  .page-hero :global(h1) {
+    margin-block-start: var(--space-md);
+    font-size: var(--fs-h1);
+    line-height: 0.96;
+    letter-spacing: var(--track-hero);
+    max-width: min(18ch, 100%);
+  }
+  .page-hero__lead {
+    margin-block-start: var(--space-xl);
+    font-size: var(--fs-lead);
+    max-width: min(52ch, 100%);
+  }
+</style>

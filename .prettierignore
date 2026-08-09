@@ -1,0 +1,9 @@
+dist/
+deploy/
+.astro/
+node_modules/
+php/
+pnpm-lock.yaml
+public/fonts/
+playwright-report/
+test-results/

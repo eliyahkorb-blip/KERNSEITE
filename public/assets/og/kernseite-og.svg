@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="KERNSEITE – Digitalstudio aus Würzburg">
+  <rect width="1200" height="630" fill="#101214"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#00E3F2"/>
+  <g font-family="Inter, system-ui, sans-serif" fill="#FCFAF5">
+    <text x="90" y="150" font-size="26" fill="#00E3F2">Digitalstudio aus Würzburg</text>
+    <text x="86" y="330" font-size="140" font-weight="700" letter-spacing="-5" font-family="'Bricolage Grotesque', Inter, sans-serif">KERNSEITE<tspan fill="#00E3F2">.</tspan></text>
+    <text x="90" y="420" font-size="40" fill="#A7ABB0">Websites, die professionell wirken.</text>
+    <text x="90" y="560" font-size="24" fill="#A7ABB0">Individuelle Websites · Google-Unternehmensprofil · SEO/GEO · Video · Social</text>
+  </g>
+  <g transform="translate(960,215)">
+    <rect x="0" y="0" width="150" height="150" rx="4" fill="#25282B" stroke="#3A4046"/>
+    <g fill="none" stroke="#FCFAF5" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" transform="translate(30,28) scale(1.4)">
+      <path d="M8 5 V55"/>
+      <path d="M11 30 L40 5"/>
+      <path d="M11 30 L40 55"/>
+    </g>
+    <circle cx="120" cy="120" r="11" fill="#00E3F2"/>
+  </g>
+</svg>

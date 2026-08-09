@@ -1,0 +1,177 @@
+---
+/**
+ * WorkFeature – großflächige Inszenierung eines echten Projekts.
+ *
+ * Keine Karte, keine Box, keine Kapitelnummer: großer Screenshot, große
+ * Headline, feine Linien. Die Ausrichtung wechselt je Projekt (`flip`), damit
+ * keine gleichförmige Reihe entsteht. Die Einordnung des Projekts steht als
+ * ruhige Schlagworte unter der Beschreibung – in normaler Schreibweise.
+ */
+import type { ProjectWork } from '../config/cases';
+
+interface Props {
+  work: ProjectWork;
+  /** true = Text links, Bild rechts. */
+  flip?: boolean;
+  /** Dunkle Bühne (passend zu Projekten mit dunklem Kopfbereich). */
+  tone?: 'light' | 'dark';
+}
+const { work, flip = false, tone = 'light' } = Astro.props;
+
+/** „Gastronomie · Website · digitale Speisekarte“ → einzelne Schlagworte. */
+const tags = work.category
+  .split('·')
+  .map((part) => part.trim())
+  .filter(Boolean);
+---
+
+<article class:list={['wf', { 'wf--flip': flip, 'wf--dark': tone === 'dark' }]}>
+  <div class="wf__inner content--wide content">
+    <div class="wf__media">
+      <img
+        src={work.screenshotDesktop.src}
+        srcset={work.screenshotDesktop.srcset}
+        sizes="(min-width: 64rem) 62vw, 100vw"
+        width={work.screenshotDesktop.width}
+        height={work.screenshotDesktop.height}
+        alt={work.screenshotDesktop.alt}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <div class="wf__text">
+      <h2 class="wf__title">
+        <a class="wf__link" href={work.href}>{work.headline}</a>
+      </h2>
+      <p class="wf__client">{work.title}</p>
+      <p class="wf__body">{work.tagline}</p>
+      <ul class="tags wf__tags" role="list">
+        {tags.map((tag) => <li class="tag">{tag}</li>)}
+      </ul>
+      <div class="wf__actions">
+        <a class="link-arrow" href={work.href}>
+          Projekt ansehen <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="wf__live" href={work.liveUrl} target="_blank" rel="noopener noreferrer">
+          {work.liveLabel}
+          <span class="visually-hidden"> (öffnet in neuem Tab)</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</article>
+
+<style>
+  .wf {
+    padding-block: clamp(3.5rem, 2rem + 6vw, 8rem);
+    background: var(--ks-cream);
+  }
+  .wf--dark {
+    background: var(--ks-black);
+    color: var(--text-invert);
+  }
+
+  .wf__inner {
+    position: relative;
+    display: grid;
+    gap: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+    align-items: center;
+  }
+  /* Ohne min-inline-size behalten Rasterkinder ihre Min-Content-Breite und
+     schieben lange Wörter aus der Spalte. */
+  .wf__media,
+  .wf__text {
+    min-inline-size: 0;
+  }
+
+  .wf__media {
+    position: relative;
+    overflow: hidden;
+    background: var(--ks-surface);
+  }
+  .wf__media img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .wf:hover .wf__media img {
+    transform: scale(1.015);
+  }
+  .wf--dark .wf__media {
+    background: var(--ks-black-soft);
+  }
+
+  .wf__title {
+    font-size: var(--fs-h3);
+    line-height: 0.98;
+    letter-spacing: var(--track-display);
+    max-width: min(14ch, 100%);
+    color: var(--text);
+  }
+  /* Auf der dunklen Bühne muss die Überschrift hell sein. */
+  .wf--dark .wf__title {
+    color: var(--text-invert);
+  }
+  .wf__link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .wf__link:hover {
+    color: inherit;
+  }
+  /* Ganze Fläche klickbar, ohne den Screenshot doppelt zu verlinken */
+  .wf__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .wf__client {
+    margin-block-start: var(--space-md);
+    font-weight: var(--fw-semibold);
+  }
+  .wf__body {
+    margin-block-start: var(--space-md);
+    color: var(--text-muted);
+    max-width: min(44ch, 100%);
+  }
+
+  .wf__tags {
+    margin-block-start: var(--space-lg);
+  }
+
+  .wf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-lg) var(--space-xl);
+    margin-block-start: var(--space-xl);
+  }
+  .wf__live {
+    position: relative;
+    z-index: 1;
+    /* Lange Domains dürfen umbrechen statt die Zeile zu sprengen. */
+    overflow-wrap: anywhere;
+    font-size: var(--fs-small);
+    color: var(--accent-ink);
+    text-underline-offset: 0.25em;
+  }
+
+  @media (min-width: 64rem) {
+    .wf__inner {
+      grid-template-columns: 1.55fr 1fr;
+      gap: clamp(2.5rem, 4vw, 5rem);
+    }
+    .wf--flip .wf__media {
+      order: 2;
+    }
+    .wf--flip .wf__text {
+      order: 1;
+    }
+    .wf--flip .wf__inner {
+      grid-template-columns: 1fr 1.55fr;
+    }
+  }
+</style>

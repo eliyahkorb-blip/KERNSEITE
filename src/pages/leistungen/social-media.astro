@@ -1,0 +1,270 @@
+---
+/**
+ * Social Media – bildstarker Aufbau.
+ *
+ * Eigene Komposition: Hero mit halbseitigem Foto, eine kurze
+ * Problem-/Lösungs-Aussage, drei Markenprinzipien als große typografische
+ * Zeilen und ein knapper Leistungsumfang. Die Begriffe Redaktionsplan,
+ * Bildwelt und Ton werden genau einmal erklärt.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import Photo from '../../components/Photo.astro';
+import RelatedServices from '../../components/RelatedServices.astro';
+import AccentWord from '../../components/AccentWord.astro';
+import FaqAccordion from '../../components/FaqAccordion.astro';
+import { getService } from '../../config/services';
+import { faqs } from '../../config/faq';
+import { serviceJsonLd, breadcrumbJsonLd, faqPageJsonLd } from '../../lib/jsonld';
+
+const service = getService('social');
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Leistungen', path: '/leistungen/' },
+  { name: service.label, path: service.href },
+];
+const pageFaqs = faqs.filter((f) => f.services?.includes('social')).slice(0, 2);
+
+const principles = [
+  {
+    t: 'Haltung',
+    b: 'Wofür ihr steht, in eigener Sprache. Nicht das, was gerade alle posten.',
+  },
+  {
+    t: 'Format',
+    b: 'Ein Redaktionsplan mit wenigen, festen Formaten – planbar statt Dauerdruck.',
+  },
+  {
+    t: 'Wiedererkennung',
+    b: 'Eine Bildwelt und ein Ton, an denen man euch erkennt, bevor der Name fällt.',
+  },
+];
+
+const scope = [
+  'Markenauftritt und Bildwelt festlegen',
+  'Redaktionsplan mit realistischen Formaten',
+  'Profile einrichten und aufräumen',
+  'Verbindung zur Website und zum Google-Profil',
+  'Laufende Betreuung über einen Partner',
+];
+---
+
+<BaseLayout
+  title="Social Media Betreuung"
+  description="Social Media aus dem Raum Würzburg: erkennbarer Markenauftritt, planbare Formate und die Verbindung zur Website – ohne Dauerdruck."
+  jsonLd={[breadcrumbJsonLd(breadcrumbs), serviceJsonLd(service), faqPageJsonLd(pageFaqs)]}
+>
+  <!-- Bildstarker Hero: Foto links, Aussage rechts -->
+  <header class="shero section--dark on-dark">
+    <div class="content shero__inner">
+      <Photo
+        photo="social-media"
+        ratio="4x3"
+        sizes="(min-width: 64rem) 48vw, 100vw"
+        priority
+        class="shero__photo"
+      />
+      <div class="shero__text">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="shero__title">
+          Eine Marke muss nicht jeden Tag posten.<br />
+          Sie muss <AccentWord>erkennbar</AccentWord> bleiben.
+        </h1>
+        <p class="shero__lead">
+          Guter Auftritt beginnt mit einer klaren Marke und einem realistischen Plan.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Problem und Lösung, kurz -->
+  <section class="section section--paper">
+    <div class="content stwo">
+      <p class="stwo__problem">
+        Ohne Strategie verpufft der Aufwand: uneinheitliche Beiträge, unklare Botschaft, keine
+        Verbindung zur Website.
+      </p>
+      <p class="stwo__solution">
+        Wir legen fest, wofür ihr steht, wie es aussieht und was regelmäßig machbar ist. Danach
+        entscheidet ihr, wer es betreut.
+      </p>
+    </div>
+  </section>
+
+  <!-- Drei Prinzipien als große Zeilen -->
+  <section class="section section--cream">
+    <ul class="prin" role="list">
+      {
+        principles.map((p) => (
+          <li class="prin__row">
+            <div class="content prin__inner">
+              <h2 class="prin__title">{p.t}</h2>
+              <p class="prin__body">{p.b}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- Leistungsumfang, kompakt -->
+  <section class="section section--surface">
+    <div class="content sscope">
+      <div class="sscope__aside">
+        <h2 class="sscope__title">Was wir übernehmen.</h2>
+        <p class="sscope__note">
+          Die laufende Betreuung übernimmt eine spezialisierte Partnerin bzw. ein Partner. Konzept
+          und Verbindung zur Website bleiben bei uns.
+        </p>
+      </div>
+      <ul class="sscope__list" role="list">
+        {scope.map((s) => <li class="sscope__item">{s}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  {
+    pageFaqs.length > 0 && (
+      <section class="section section--paper">
+        <div class="content">
+          <h2 class="sscope__title sscope__title--gap">Kurz gefragt.</h2>
+          <FaqAccordion items={pageFaqs} />
+        </div>
+      </section>
+    )
+  }
+
+  <RelatedServices exclude="social" only={['video', 'websites', 'google']} />
+  <CtaBanner ctaLabel="Social-Media-Betreuung besprechen" ctaHref="/kontakt/?leistung=social" />
+</BaseLayout>
+
+<style>
+  /* --- Hero ---------------------------------------------------------------- */
+  .shero {
+    padding-block: clamp(1.5rem, 1rem + 2vw, 3rem) clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+  .shero__inner {
+    display: grid;
+    gap: clamp(1.75rem, 1.5rem + 2vw, 3rem);
+    align-items: center;
+  }
+  .shero__title {
+    margin-block-start: var(--space-lg);
+    font-size: var(--fs-h2);
+    max-width: min(17ch, 100%);
+    color: var(--text-invert);
+  }
+  .shero__lead {
+    margin-block-start: var(--space-lg);
+    font-size: var(--fs-lead);
+    color: var(--text-invert-muted);
+    max-width: min(42ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    .shero__inner {
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: clamp(2.5rem, 4vw, 5rem);
+    }
+  }
+
+  /* --- Problem / Lösung ---------------------------------------------------- */
+  .stwo {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+  .stwo__problem,
+  .stwo__solution {
+    font-size: var(--fs-lead);
+    line-height: 1.45;
+    max-width: min(42ch, 100%);
+  }
+  .stwo__problem {
+    color: var(--text-muted);
+  }
+  @media (min-width: 48rem) {
+    .stwo {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+
+  /* --- Prinzipien als Zeilen ----------------------------------------------- */
+  .prin {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .prin__row {
+    border-block-start: 1px solid var(--line);
+  }
+  .prin__row:last-child {
+    border-block-end: 1px solid var(--line);
+  }
+  .prin__inner {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+  .prin__title {
+    font-size: clamp(1.9rem, 4vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: var(--track-display);
+  }
+  .prin__body {
+    color: var(--text-muted);
+    max-width: min(48ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    .prin__inner {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      align-items: baseline;
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+  }
+
+  /* --- Umfang -------------------------------------------------------------- */
+  .sscope__title {
+    /* Kleiner als --fs-h3: In der schmalen Rasterspalte passte „übernehmen.“
+       bei 1920px sonst nicht in eine Zeile und wurde beschnitten. */
+    font-size: clamp(1.75rem, 3.2vw, 3.25rem);
+    max-width: min(14ch, 100%);
+    min-inline-size: 0;
+  }
+  .sscope__title--gap {
+    margin-block-end: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+  .sscope__list {
+    margin: clamp(1.5rem, 1rem + 2vw, 2.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0;
+    border-block-start: 1px solid var(--line);
+  }
+  .sscope__item {
+    padding-block: 0.9rem;
+    border-block-end: 1px solid var(--line);
+    font-weight: var(--fw-medium);
+  }
+  .sscope__note {
+    margin-block-start: var(--space-lg);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    max-width: min(56ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    /* Überschrift und einordnender Satz bilden zusammen die linke Spalte.
+       Stand der Satz rechts unter der Liste, blieb links unter der kurzen
+       Überschrift eine große leere Fläche. */
+    .sscope {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
+      align-items: start;
+    }
+    .sscope__list {
+      margin-block-start: 0;
+    }
+  }
+</style>

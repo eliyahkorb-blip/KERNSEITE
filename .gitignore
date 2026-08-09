@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-php/vendor/
+php/api/vendor/
 
 # Build output
 dist/
@@ -38,3 +38,5 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+scripts/screenshot.mjs
+.visual-qa/

@@ -1,0 +1,294 @@
+---
+/**
+ * Unternehmensvideo – cineastischer Aufbau.
+ *
+ * Eigene Komposition: dunkler Hero mit großem Kameramotiv, zwei kurze
+ * Spalten, der Film als Storyline über vier Kapitel, ein kompakter
+ * Produktionsablauf und zwei Qualitätsargumente. Bewusst ohne FAQ – die
+ * Fragen sind im Text beantwortet.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import Photo from '../../components/Photo.astro';
+import RelatedServices from '../../components/RelatedServices.astro';
+import AccentWord from '../../components/AccentWord.astro';
+import { getService } from '../../config/services';
+import { serviceJsonLd, breadcrumbJsonLd } from '../../lib/jsonld';
+
+const service = getService('video');
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Leistungen', path: '/leistungen/' },
+  { name: service.label, path: service.href },
+];
+
+const beats = [
+  { t: 'Auftakt', b: 'Ort, Menschen, Atmosphäre – in wenigen Sekunden verständlich.' },
+  { t: 'Arbeit', b: 'Was ihr tut, in echten Situationen statt gestellter Szenen.' },
+  { t: 'Haltung', b: 'Warum ihr es so macht – im O-Ton, ohne Werbeversprechen.' },
+  { t: 'Schluss', b: 'Ein klarer nächster Schritt, kein Abspann ins Leere.' },
+];
+
+const production = [
+  { t: 'Konzept', b: 'Ziel, Aussage und Drehplan stehen vorher fest.' },
+  { t: 'Dreh', b: 'Ein Tag vor Ort, geplant statt improvisiert.' },
+  { t: 'Schnitt', b: 'Fassung, Korrekturschleife, finale Version.' },
+  { t: 'Einbindung', b: 'Performant und datenschutzfreundlich auf der Website.' },
+];
+---
+
+<BaseLayout
+  title="Unternehmensvideo Würzburg"
+  description="Unternehmensvideo aus dem Raum Würzburg: Konzept, Dreh, Schnitt und datenschutzfreundliche Einbindung – echte Situationen statt gestellter Werbeszenen."
+  jsonLd={[breadcrumbJsonLd(breadcrumbs), serviceJsonLd(service)]}
+>
+  <!-- Dunkler Hero mit großem Kameramotiv -->
+  <header class="vhero section--dark on-dark">
+    <div class="content vhero__inner">
+      <div class="vhero__text">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="vhero__title">
+          Zeig, was Texte allein nicht vermitteln.<br />
+          Menschen vertrauen dem, was sie <AccentWord>sehen</AccentWord>.
+        </h1>
+        <p class="vhero__lead">
+          Ein gutes Unternehmensvideo macht Atmosphäre, Team und Arbeitsweise erlebbar.
+        </p>
+      </div>
+      <Photo
+        photo="unternehmensvideo"
+        ratio="4x3"
+        sizes="(min-width: 64rem) 50vw, 100vw"
+        priority
+        class="vhero__photo"
+      />
+    </div>
+  </header>
+
+  <!-- Problem und Nutzen, zwei kurze Spalten -->
+  <section class="section section--paper">
+    <div class="content vtwo">
+      <div>
+        <h2 class="vtwo__title">Warum Text hier an Grenzen stößt.</h2>
+        <p class="vtwo__body">
+          Vertrauen, Handschlagqualität und Atmosphäre lassen sich schwer beschreiben. Reine
+          Textseiten wirken dabei schnell distanziert.
+        </p>
+      </div>
+      <div>
+        <h2 class="vtwo__title">Was ein Film dafür leistet.</h2>
+        <p class="vtwo__body">
+          In 60 Sekunden sieht jemand, wie bei euch gearbeitet wird und wer dahintersteht. Das
+          entscheidet oft, ob überhaupt angefragt wird.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Der Film in vier Kapiteln – als Storyline -->
+  <section class="story section--dark on-dark">
+    <div class="content">
+      <h2 class="story__title">Vier Kapitel. Kein Werbefilm.</h2>
+      <ol class="story__list" role="list">
+        {
+          beats.map((b) => (
+            <li class="story__beat">
+              <h3 class="story__beat-title">{b.t}</h3>
+              <p class="story__beat-body">{b.b}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Produktionsablauf -->
+  <section class="section section--cream">
+    <div class="content vprod">
+      <h2 class="vtwo__title vprod__head">So läuft die Produktion.</h2>
+      <ul class="vprod__list" role="list">
+        {
+          production.map((p) => (
+            <li class="vprod__item">
+              <h3 class="vprod__item-title">{p.t}</h3>
+              <p class="vprod__item-body">{p.b}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Zwei Qualitätsargumente -->
+  <section class="section section--surface">
+    <div class="content vqual">
+      <p class="vqual__item">Kein Autoplay mit Ton. Das Video startet erst, wenn jemand es will.</p>
+      <p class="vqual__item">
+        Kein fremder Player, der beim Seitenaufruf mitlädt. Eingebunden wird erst nach Klick.
+      </p>
+    </div>
+  </section>
+
+  <RelatedServices exclude="video" only={['websites', 'social', 'google']} />
+  <CtaBanner ctaLabel="Videoprojekt besprechen" ctaHref="/kontakt/?leistung=video" />
+</BaseLayout>
+
+<style>
+  /* --- Hero ---------------------------------------------------------------- */
+  .vhero {
+    padding-block: clamp(1.5rem, 1rem + 2vw, 3rem) clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+  .vhero__inner {
+    display: grid;
+    gap: clamp(1.75rem, 1.5rem + 2vw, 3rem);
+    align-items: center;
+  }
+  .vhero__title {
+    margin-block-start: var(--space-lg);
+    font-size: var(--fs-h2);
+    max-width: min(18ch, 100%);
+    color: var(--text-invert);
+  }
+  .vhero__lead {
+    margin-block-start: var(--space-lg);
+    font-size: var(--fs-lead);
+    color: var(--text-invert-muted);
+    max-width: min(44ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    .vhero__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(2.5rem, 4vw, 5rem);
+    }
+  }
+
+  /* --- Zwei Spalten -------------------------------------------------------- */
+  .vtwo {
+    display: grid;
+    gap: clamp(1.75rem, 1.5rem + 2vw, 3rem);
+  }
+  .vtwo__title {
+    font-size: var(--fs-h4);
+    max-width: min(20ch, 100%);
+  }
+  .vtwo__body {
+    margin-block-start: var(--space-md);
+    color: var(--text-muted);
+    max-width: min(48ch, 100%);
+  }
+  @media (min-width: 48rem) {
+    .vtwo {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+
+  /* --- Storyline ----------------------------------------------------------- */
+  .story {
+    padding-block: clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+  .story__title {
+    font-size: var(--fs-h3);
+    color: var(--text-invert);
+    max-width: min(16ch, 100%);
+    margin-block-end: clamp(2rem, 1.5rem + 2vw, 3rem);
+  }
+  .story__list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .story__beat {
+    padding-block: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+    border-block-start: 1px solid var(--line-invert);
+  }
+  .story__beat:last-child {
+    border-block-end: 1px solid var(--line-invert);
+  }
+  .story__beat-title {
+    font-size: var(--fs-h5);
+    color: var(--text-invert);
+  }
+  .story__beat-body {
+    margin-block-start: 0.35rem;
+    color: var(--text-invert-muted);
+    font-size: var(--fs-small);
+    max-width: min(52ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    /* Storyline: die Kapitel laufen versetzt nach rechts. */
+    .story__beat {
+      padding-inline-start: 0;
+      transition: padding-inline-start var(--dur-base) var(--ease-out);
+    }
+    .story__beat:nth-child(2) {
+      padding-inline-start: clamp(2rem, 6vw, 7rem);
+    }
+    .story__beat:nth-child(3) {
+      padding-inline-start: clamp(4rem, 12vw, 14rem);
+    }
+    .story__beat:nth-child(4) {
+      padding-inline-start: clamp(6rem, 18vw, 21rem);
+    }
+  }
+
+  /* --- Produktion ---------------------------------------------------------- */
+  .vprod {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+  .vprod__list {
+    display: grid;
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .vprod__item-title {
+    font-size: var(--fs-h5);
+    /* Neon-Linie über der Überschrift – unter ihr wirkte sie wie ein Link. */
+    padding-block-start: 0.6rem;
+    border-block-start: 2px solid var(--accent-mark);
+  }
+  .vprod__item-body {
+    margin-block-start: 0.6rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  @media (min-width: 48rem) {
+    .vprod__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 3vw, 3rem);
+    }
+  }
+  @media (min-width: 64rem) {
+    .vprod {
+      grid-template-columns: minmax(0, 0.55fr) minmax(0, 1.45fr);
+      align-items: start;
+      gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+
+  /* --- Qualität ------------------------------------------------------------ */
+  .vqual {
+    display: grid;
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  }
+  .vqual__item {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.15rem, 2vw, 1.7rem);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    max-width: min(34ch, 100%);
+  }
+  @media (min-width: 48rem) {
+    .vqual {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+</style>

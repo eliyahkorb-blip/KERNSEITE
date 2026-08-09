@@ -1,0 +1,447 @@
+/* =============================================================================
+   KERNSEITE – Metalloberfläche für Schaltflächen
+
+   Veredelt ausschließlich die bestehenden `.btn`-Schaltflächen. Form, Größe,
+   Typografie, Farben und Texte bleiben unverändert; es kommt eine feine
+   Materialschicht dazu: eine Lichtebene, eine schmale Spiegelung und auf den
+   großen Schaltflächen eine gerichtete Chromfassung auf dem Rand.
+
+   Bewusst kein `backdrop-filter`, kein Milchglas, keine Wasserverzerrung:
+   Die Buttons sollen metallisch wirken, nicht gläsern.
+
+   Aufbau je Button
+     Ebene 1  Der markenkonforme Hintergrund (aus `global.css`).
+     Ebene 2  `::before` – Lichtbrechung, Materialtiefe, innere Kante.
+     Ebene 3  `::after`  – schmale Spiegelung, läuft einmal beim Hover.
+     Ebene 4  Text und Icon.
+
+   Warum `z-index: -1` auf den Pseudo-Elementen
+     Buttons enthalten reinen Text ohne Wrapper. Inline-Inhalt wird vor
+     positionierten Nachfahren mit `z-index: auto/0` gezeichnet – eine
+     Spiegelung mit `z-index: 1` läge also über der Schrift. Mit
+     `isolation: isolate` bildet der Button einen eigenen Stapelkontext;
+     darin liegen negative Ebenen über dem eigenen Hintergrund und unter dem
+     Text. Deshalb braucht es keine zusätzlichen `span`-Wrapper im Markup.
+
+   Warum vier Farbvariablen statt fester Verläufe
+     Jeder Kontext (hell, dunkel, Cyan-Fläche) überschreibt nur die vier
+     Werte unten. Dadurch stapeln sich nie zwei Lichtebenen übereinander –
+     genau daraus entstünden der Gel- und der Metalleindruck.
+
+   Kein SVG-Filter, kein `feTurbulence`, kein `feDisplacementMap`: eine echte
+   Verzerrung würde Schrift und Kanten unruhig machen. Der Effekt entsteht
+   vollständig aus CSS.
+   ========================================================================== */
+
+/* --- Grundmaterial --------------------------------------------------------
+   Gilt für jede echte Schaltfläche. Navigationslinks, Textlinks, FAQ-Toggles,
+   der Hamburger und Formularfelder bleiben unberührt – sie tragen kein
+   `.btn`. */
+.btn {
+  /* Lichtführung. Bewusst niedrig gehalten: Das Material soll erst beim
+     genaueren Hinsehen auffallen, nicht glänzen. */
+  --glass-top: rgba(255, 255, 255, 0.16);
+  --glass-bottom: rgba(16, 18, 20, 0.05);
+  --glass-ring-top: rgba(255, 255, 255, 0.26);
+  --glass-ring-bottom: rgba(16, 18, 20, 0.09);
+  --glass-sheen: rgba(255, 255, 255, 0.34);
+  --glass-sheen-duration: 520ms;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  /* Radius bleibt bei 6px (`--radius-md`). Keine Pille, keine runde Fläche. */
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+/* Ebene 2: Lichtbrechung. Ein sehr flacher Verlauf von oben links nach unten
+   rechts plus eine haarfeine innere Kante. */
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: linear-gradient(
+    148deg,
+    var(--glass-top) 0%,
+    rgba(255, 255, 255, 0) 42%,
+    var(--glass-bottom) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 var(--glass-ring-top),
+    inset 0 -1px 0 var(--glass-ring-bottom);
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+/* Ebene 3: Spiegelung. Startet außerhalb des Buttons und läuft nur beim
+   Hover einmal durch – keine Dauerschleife, kein Blinken. */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset-block: -30%;
+  inset-inline-start: 0;
+  z-index: -1;
+  pointer-events: none;
+  inline-size: 26%;
+  background-image: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0) 0%,
+    var(--glass-sheen) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0;
+  transform: translateX(-160%) skewX(-16deg);
+}
+
+@keyframes ks-glass-sheen {
+  from {
+    opacity: 0;
+    transform: translateX(-160%) skewX(-16deg);
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(500%) skewX(-16deg);
+  }
+}
+
+/* --- Bewegung -------------------------------------------------------------
+   Nur auf Geräten mit echtem Zeiger. Auf Touch bliebe der Hoverzustand sonst
+   nach dem Antippen hängen und die Spiegelung stehen. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(16, 18, 20, 0.13);
+  }
+  .btn:hover::after {
+    animation: ks-glass-sheen var(--glass-sheen-duration) var(--ease-out) 1;
+  }
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: none;
+}
+.btn:active::before {
+  opacity: 0.65;
+}
+
+/* --- Fokus ----------------------------------------------------------------
+   Die bestehende Fokuslogik aus `global.css` bleibt maßgeblich. Hier wird nur
+   sichergestellt, dass Bewegung und Spiegelung den Ring nicht stören. */
+.btn:focus-visible {
+  transform: none;
+}
+.btn:focus-visible::after {
+  animation: none;
+  opacity: 0;
+}
+
+/* --- Deaktivierte Schaltflächen ------------------------------------------- */
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.btn:disabled::after,
+.btn[aria-disabled='true']::after {
+  animation: none;
+  opacity: 0;
+}
+.btn:disabled::before,
+.btn[aria-disabled='true']::before {
+  opacity: 0.4;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn:disabled:hover,
+  .btn[aria-disabled='true']:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .btn:disabled:hover::after,
+  .btn[aria-disabled='true']:hover::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* =============================================================================
+   Primärbutton auf hellen und dunklen Flächen – „Projekt besprechen“
+
+   Die Fläche bleibt exakt `#00E3F2`. Es liegt kein weiterer Verlauf auf dem
+   Element selbst; die Materialtiefe kommt allein aus `::before`. So bleibt die
+   gemessene `background-color` die Markenfarbe und es entsteht kein zweiter
+   Türkiston.
+   ========================================================================== */
+.btn--primary {
+  --glass-top: rgba(255, 255, 255, 0.12);
+  --glass-bottom: rgba(16, 18, 20, 0.05);
+  --glass-ring-top: rgba(255, 255, 255, 0.24);
+  --glass-ring-bottom: rgba(16, 18, 20, 0.1);
+  border-color: rgba(16, 18, 20, 0.3);
+}
+.btn--primary:hover {
+  /* Invertierte Fläche wie bisher: dunkler Grund, Neon-Schrift,
+     Neon nur als Kante. */
+  --glass-top: rgba(255, 255, 255, 0.08);
+  --glass-bottom: rgba(0, 227, 242, 0.08);
+  --glass-ring-top: rgba(255, 255, 255, 0.14);
+  --glass-ring-bottom: rgba(0, 227, 242, 0.2);
+  border-color: var(--ks-cyan);
+}
+
+/* =============================================================================
+   Sekundärbutton auf hellen Flächen – „Arbeiten ansehen“
+   Helle, leicht durchscheinende Metallfläche mit feiner Kante.
+   ========================================================================== */
+.btn--secondary {
+  --glass-top: rgba(255, 255, 255, 0.3);
+  --glass-bottom: rgba(16, 18, 20, 0.03);
+  --glass-ring-top: rgba(255, 255, 255, 0.5);
+  --glass-ring-bottom: rgba(16, 18, 20, 0.06);
+  background-color: rgba(255, 255, 255, 0.66);
+  border-color: rgba(16, 18, 20, 0.28);
+}
+.btn--secondary:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(16, 18, 20, 0.45);
+}
+
+/* =============================================================================
+   Dunkle Flächen – Rauchglas statt grauer Plastikfläche
+   ========================================================================== */
+.section--dark .btn--secondary,
+.on-dark .btn--secondary {
+  --glass-top: rgba(255, 255, 255, 0.06);
+  --glass-bottom: rgba(255, 255, 255, 0);
+  --glass-ring-top: rgba(255, 255, 255, 0.13);
+  --glass-ring-bottom: rgba(0, 0, 0, 0.22);
+  --glass-sheen: rgba(255, 255, 255, 0.24);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: var(--text-invert);
+}
+.section--dark .btn--secondary:hover,
+.on-dark .btn--secondary:hover {
+  background-color: rgba(255, 255, 255, 0.16);
+  /* Cyan erscheint hier nur als feine Kante, nie als Fläche. */
+  border-color: var(--ks-cyan);
+  color: var(--text-invert);
+}
+
+/* =============================================================================
+   Die große Cyan-Fläche – der Block selbst bleibt unverändert,
+   nur der Button darin wird zu dunklem Rauchglas.
+   ========================================================================== */
+.section--cyan .btn--primary {
+  --glass-top: rgba(255, 255, 255, 0.06);
+  --glass-bottom: rgba(0, 227, 242, 0.07);
+  --glass-ring-top: rgba(255, 255, 255, 0.12);
+  --glass-ring-bottom: rgba(0, 0, 0, 0.3);
+  --glass-sheen: rgba(255, 255, 255, 0.22);
+  border-color: rgba(16, 18, 20, 0.55);
+}
+.section--cyan .btn--primary:hover {
+  --glass-top: rgba(255, 255, 255, 0.34);
+  --glass-bottom: rgba(16, 18, 20, 0.05);
+  --glass-ring-top: rgba(255, 255, 255, 0.6);
+  --glass-ring-bottom: rgba(16, 18, 20, 0.1);
+  border-color: var(--ks-black);
+}
+.section--cyan .btn--secondary {
+  --glass-top: rgba(255, 255, 255, 0.28);
+  --glass-ring-top: rgba(255, 255, 255, 0.45);
+  background-color: rgba(255, 255, 255, 0.24);
+  border-color: rgba(16, 18, 20, 0.55);
+  color: var(--ks-black);
+}
+
+/* =============================================================================
+   Große Schaltflächen – gerichtete Reflexion
+
+   Nur die Haupt-CTAs: die beiden Hero-Schaltflächen und der Abschluss-CTA.
+   Sie bekommen zusätzlich zur Lichtebene eine gerichtete Bänderung, wie sie
+   auf gebürstetem Material entsteht: hell, dunkel, hell quer über die Fläche.
+   Daher der metallische Eindruck – ohne Metallfarbe, ohne Grauverlauf und
+   ohne dass sich die Markenfarbe ändert.
+
+   Header-CTA, Formularbutton, mobiler Menü-CTA, 404- und Consent-Buttons
+   behalten die ruhige Oberfläche. Auf kleinen Flächen wirkt eine kräftige
+   Bänderung schnell billig.
+   ========================================================================== */
+.hero__ctas .btn,
+.cta__actions .btn {
+  /* Ringdicke und Umlaufzeit des Glanzes. */
+  --rim-width: 1.6px;
+  --rim-duration: 5s;
+  /* Dunkle Außenkante, damit der helle Ring davor abgesetzt steht – wie eine
+     gefasste Kante. */
+  border-color: rgba(16, 18, 20, 0.55);
+}
+
+/* Die Fläche bleibt flach. Das Metall sitzt ausschließlich auf `::after`:
+   ein schmaler Ring, erzeugt aus zwei Masken, die einander ausschließen –
+   die äußere deckt die ganze Fläche, die innere nimmt den Inhaltsbereich
+   wieder weg. Übrig bleibt exakt der Rand. */
+.hero__ctas .btn::after,
+.cta__actions .btn::after {
+  inset: 0;
+  inline-size: auto;
+  border-radius: inherit;
+  padding: var(--rim-width);
+  opacity: 1;
+  transform: none;
+  background-repeat: no-repeat;
+  background-image:
+    /* 1. laufender Glanz */
+    linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 42%,
+      rgba(255, 255, 255, 0.78) 50%,
+      rgba(255, 255, 255, 0) 58%
+    ),
+    /* 2. stehende Chromfassung: hell, dunkel, hell.
+       Die dunklen Bahnen tragen den Metallcharakter. Zu viel Weiß liest sich
+       als Leuchten, nicht als geschliffene Kante. */
+    linear-gradient(
+        138deg,
+        rgba(255, 255, 255, 0.66) 0%,
+        rgba(255, 255, 255, 0.14) 14%,
+        rgba(16, 18, 20, 0.62) 32%,
+        rgba(255, 255, 255, 0.44) 50%,
+        rgba(16, 18, 20, 0.58) 68%,
+        rgba(255, 255, 255, 0.6) 86%,
+        rgba(16, 18, 20, 0.4) 100%
+      );
+  background-size:
+    240% 100%,
+    100% 100%;
+  background-position:
+    -70% 0,
+    0 0;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: ks-rim-shine var(--rim-duration) linear infinite;
+}
+
+/* Nur die erste Ebene wandert, die Chromfassung steht still. */
+@keyframes ks-rim-shine {
+  from {
+    background-position:
+      -70% 0,
+      0 0;
+  }
+  to {
+    background-position:
+      190% 0,
+      0 0;
+  }
+}
+
+/* Beim Hover läuft der Glanz schneller – sonst ändert sich nichts. */
+@media (hover: hover) and (pointer: fine) {
+  .hero__ctas .btn:hover::after,
+  .cta__actions .btn:hover::after {
+    animation: ks-rim-shine 2.2s linear infinite;
+  }
+}
+
+/* Der Fokusring darf den laufenden Glanz nicht abschalten – er liegt außen
+   und wird davon nicht berührt. */
+.hero__ctas .btn:focus-visible::after,
+.cta__actions .btn:focus-visible::after {
+  animation: ks-rim-shine var(--rim-duration) linear infinite;
+  opacity: 1;
+}
+
+/* =============================================================================
+   Deaktivierte Schaltflächen reagieren auch farblich nicht auf Hover
+
+   Chrome lässt `:hover` auf deaktivierten Buttons weiterhin greifen. Ohne die
+   folgenden Regeln übernähme ein deaktivierter Absende-Button die invertierte
+   Hoverfläche und sähe dadurch aus, als wäre er bedienbar. Die Regeln stehen
+   bewusst nach allen Hover-Definitionen.
+   ========================================================================== */
+.btn--primary:disabled:hover,
+.btn--primary[aria-disabled='true']:hover {
+  --glass-top: rgba(255, 255, 255, 0.12);
+  --glass-bottom: rgba(16, 18, 20, 0.05);
+  --glass-ring-top: rgba(255, 255, 255, 0.24);
+  --glass-ring-bottom: rgba(16, 18, 20, 0.1);
+  background-color: var(--accent);
+  border-color: rgba(16, 18, 20, 0.3);
+  color: var(--ks-black);
+}
+.btn--secondary:disabled:hover,
+.btn--secondary[aria-disabled='true']:hover {
+  background-color: rgba(255, 255, 255, 0.66);
+  border-color: rgba(16, 18, 20, 0.28);
+}
+.section--dark .btn--secondary:disabled:hover,
+.section--dark .btn--secondary[aria-disabled='true']:hover,
+.on-dark .btn--secondary:disabled:hover,
+.on-dark .btn--secondary[aria-disabled='true']:hover {
+  background-color: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+.section--cyan .btn--primary:disabled:hover,
+.section--cyan .btn--primary[aria-disabled='true']:hover {
+  --glass-top: rgba(255, 255, 255, 0.06);
+  --glass-bottom: rgba(0, 227, 242, 0.07);
+  --glass-ring-top: rgba(255, 255, 255, 0.12);
+  --glass-ring-bottom: rgba(0, 0, 0, 0.3);
+  background-color: var(--ks-black);
+  border-color: rgba(16, 18, 20, 0.55);
+  color: var(--accent);
+}
+
+/* =============================================================================
+   Reduzierte Bewegung
+   Der Glaslook bleibt statisch sichtbar; jede Bewegung entfällt.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+  .btn:hover,
+  .btn:active,
+  .btn:focus-visible {
+    transform: none;
+  }
+  .btn::after,
+  .btn:hover::after {
+    animation: none !important;
+    opacity: 0;
+  }
+  /* Die Chromfassung der großen Schaltflächen ist kein Bewegungselement –
+     sie bleibt sichtbar, nur der Glanz läuft nicht mehr. */
+  .hero__ctas .btn::after,
+  .cta__actions .btn::after,
+  .hero__ctas .btn:hover::after,
+  .cta__actions .btn:hover::after {
+    opacity: 1;
+    background-position:
+      -70% 0,
+      0 0;
+  }
+}

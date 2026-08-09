@@ -1,0 +1,4 @@
+Hier liegen die Originaldateien der Branchenmotive (nicht ausgeliefert).
+Erwartet: handwerk.jpg, zahnarztpraxen.jpg, gastronomie-hotels.jpg,
+lokale-dienstleister.jpg, b2b-mittelstand.jpg
+Danach: python3 scripts/build-industry-images.py

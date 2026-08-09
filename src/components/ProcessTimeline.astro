@@ -1,0 +1,144 @@
+---
+/**
+ * ProcessTimeline – editoriale, vertikale Zeitachse.
+ *
+ * Ohne Kästen und ohne dekorative Nummern: Eine durchgehende Linie trägt die
+ * Schritte, die Reihenfolge ergibt sich aus der Leserichtung. Wer was
+ * beiträgt, steht als ganzer Satz da – nicht als technisches Mini-Label.
+ */
+export interface ProcessStep {
+  readonly title: string;
+  /** Was passiert in diesem Schritt? */
+  readonly what: string;
+  /** Was liefert der Kunde? */
+  readonly you: string;
+  /** Was übernimmt KERNSEITE? */
+  readonly us: string;
+  /** Was entsteht? */
+  readonly result: string;
+}
+
+interface Props {
+  steps: readonly ProcessStep[];
+  /** Ebene der Schritt-Überschriften (abhängig vom Seitenkontext). */
+  headingLevel?: 'h2' | 'h3';
+  /**
+   * Kompakt: nur Schritt und Beschreibung. Auf der Startseite genügt das –
+   * wer was beiträgt, steht ausführlich auf `/prozess/`.
+   */
+  compact?: boolean;
+}
+const { steps, headingLevel = 'h3', compact = false } = Astro.props;
+const Tag = headingLevel;
+---
+
+<ol class="tl" role="list">
+  {
+    steps.map((s) => (
+      <li class="tl__step">
+        <div class="tl__mark" aria-hidden="true" />
+        <div class="tl__body">
+          <Tag class="tl__title">{s.title}</Tag>
+          <p class="tl__what">{s.what}</p>
+          {!compact && (
+            <ul class="tl__share" role="list">
+              <li>
+                <span class="tl__who">Du bringst mit:</span> {s.you}
+              </li>
+              <li>
+                <span class="tl__who">Wir übernehmen:</span> {s.us}
+              </li>
+              <li>
+                <span class="tl__who">Am Ende steht:</span> {s.result}
+              </li>
+            </ul>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .tl {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tl__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: clamp(1.25rem, 3vw, 2.5rem);
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    border-block-start: 1px solid var(--line);
+  }
+  .tl__step:last-child {
+    border-block-end: 1px solid var(--line);
+  }
+
+  /* Durchgehende Achse: feine Linie mit Punkt auf Höhe der Überschrift. */
+  .tl__mark {
+    position: relative;
+    inline-size: 1px;
+    background: var(--line);
+    margin-block-start: 0.5rem;
+  }
+  .tl__mark::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0.35em;
+    inset-inline-start: 50%;
+    inline-size: 14px;
+    block-size: 2px;
+    margin-inline-start: -7px;
+    background: var(--accent-mark);
+  }
+
+  .tl__title {
+    font-size: clamp(1.5rem, 2.8vw, 2.5rem);
+    letter-spacing: var(--track-display);
+    line-height: 1;
+  }
+  .tl__what {
+    margin-block-start: var(--space-md);
+    color: var(--text-muted);
+    max-width: 52ch;
+  }
+
+  .tl__share {
+    display: grid;
+    gap: 0.5rem;
+    margin: var(--space-lg) 0 0;
+    padding: 0;
+    list-style: none;
+    max-width: 56ch;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+  .tl__who {
+    color: var(--text);
+    font-weight: var(--fw-medium);
+  }
+
+  @media (min-width: 64rem) {
+    .tl__step {
+      grid-template-columns: auto minmax(0, 30rem) minmax(0, 1fr);
+      column-gap: clamp(2rem, 4vw, 4rem);
+      align-items: start;
+    }
+    .tl__body {
+      display: contents;
+    }
+    .tl__title,
+    .tl__what {
+      grid-column: 2;
+    }
+    .tl__share {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+      margin-block-start: 0;
+    }
+  }
+</style>

@@ -1,0 +1,167 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import DraftNotice from '../components/DraftNotice.astro';
+import { activeCompany, isPlaceholder } from '../lib/config-validation';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Datenschutz', path: '/datenschutz/' },
+];
+const c = activeCompany;
+
+/**
+ * Standortaussagen nur bei belegten Angaben.
+ *
+ * Ein Serverstandort ist eine Tatsachenbehauptung. Solange Hostinganbieter,
+ * Serverstandort oder Mailanbieter Platzhalter sind, wird der Standort nicht
+ * genannt – der Absatz beschreibt dann nur, was tatsächlich feststeht. Der
+ * Produktions-Build kommt in diesem Zustand ohnehin nicht zustande
+ * (src/lib/config-validation.ts).
+ */
+const hostingConfirmed = !isPlaceholder(c.hostingLocation) && !isPlaceholder(c.hostingProvider);
+const mailConfirmed = !isPlaceholder(c.mailProvider);
+const retentionConfirmed = !isPlaceholder(c.formRetentionPeriod);
+---
+
+<PageLayout
+  title="Datenschutzerklärung"
+  description="Datenschutzerklärung von KERNSEITE – Eliyah Korb. Datenschutzfreundlich geplant, ohne Tracking und ohne externe Dienste im Standard."
+  h1="Datenschutzerklärung"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section section--paper">
+    <div class="content">
+      <DraftNotice
+        text="Entwurf – nur im Entwicklungsmodus sichtbar. Diese Datenschutzerklärung ist ein technisch vorbereiteter Entwurf. Sie muss vor Veröffentlichung fachlich geprüft, an die tatsächlichen Verarbeitungen (u. a. konkreter Hoster und Mailversand als Auftragsverarbeiter, Aufbewahrungsfristen) angepasst und rechtssicher vervollständigt werden."
+      />
+      <div class="prose">
+        <p>
+          Der Schutz deiner Daten ist uns wichtig. Diese Website ist datenschutzfreundlich geplant:
+          Sie lädt standardmäßig keine externen Dienste, nutzt keine Tracking- oder
+          Marketing-Werkzeuge und bindet Schriften ausschließlich lokal ein.
+        </p>
+
+        <h2>1. Verantwortlicher</h2>
+        <p>
+          Verantwortlich für die Datenverarbeitung auf dieser Website ist:<br />
+          {c.legalDisplayName}<br />
+          {c.street}, {c.postalCode}{' '}
+          {c.city}, {c.country}<br />
+          E-Mail: {c.email}
+        </p>
+
+        <h2>2. Hosting und Server-Logfiles</h2>
+        <p>
+          {
+            hostingConfirmed
+              ? `Diese Website wird bei ${c.hostingProvider} gehostet; der Serverstandort ist ${c.hostingLocation}.`
+              : 'Diese Website wird bei einem externen Anbieter gehostet, der als Auftragsverarbeiter für uns tätig ist.'
+          }{' '}
+          Beim Aufruf der Website werden technisch notwendige Zugriffsdaten in Server-Logfiles gespeichert
+          (z. B. anonymisierte bzw. gekürzte IP-Adresse, Datum und Uhrzeit, abgerufene Datei, übertragene
+          Datenmenge, Referrer, Browsertyp und Betriebssystem). Diese Verarbeitung dient dem sicheren,
+          stabilen Betrieb der Website. Rechtsgrundlage ist unser berechtigtes Interesse an einer fehlerfreien
+          Bereitstellung (Art. 6 Abs. 1 lit. f DSGVO).
+        </p>
+
+        <h2>3. Schriftarten (lokal eingebunden)</h2>
+        <p>
+          Verwendete Schriftarten werden lokal von unserem Server ausgeliefert. Es besteht keine
+          Verbindung zu Google Fonts oder anderen externen Schrift-Diensten. Beim Seitenaufruf
+          werden dadurch keine Daten an Dritte übermittelt.
+        </p>
+
+        <h2>4. Keine externen Dienste und kein Tracking (Standard)</h2>
+        <p>
+          Standardmäßig sind keine externen Dienste eingebunden, die personenbezogene Daten an
+          Dritte übertragen (z. B. Karten, Video-Player, Social-Media-Widgets, Analyse- oder
+          Marketing-Werkzeuge). Sollten künftig einwilligungspflichtige Dienste eingesetzt werden,
+          werden diese erst nach deiner ausdrücklichen Einwilligung geladen; die Einwilligung kann
+          jederzeit widerrufen werden.
+        </p>
+
+        <h2>5. Kontaktaufnahme und Kontaktformular</h2>
+        <p>
+          Wenn du uns über das Kontaktformular oder per E-Mail kontaktierst, verarbeiten wir die von
+          dir gemachten Angaben ausschließlich zur Bearbeitung deiner Anfrage. Die Übermittlung des
+          Formulars erfolgt serverseitig; die Anfrage wird anschließend per E-Mail an uns
+          weitergeleitet{mailConfirmed ? ` (Mailversand über ${c.mailProvider})` : ''}.
+        </p>
+        <p>
+          Rechtsgrundlage ist – je nach Anliegen – die Durchführung vorvertraglicher Maßnahmen bzw.
+          die Erfüllung eines Vertrags (Art. 6 Abs. 1 lit. b DSGVO) oder unser berechtigtes
+          Interesse an der Beantwortung deiner Anfrage (Art. 6 Abs. 1 lit. f DSGVO). Wir speichern
+          deine Anfrage nur so lange, wie es für die Bearbeitung erforderlich ist{
+            retentionConfirmed ? ` (${c.formRetentionPeriod})` : ''
+          }, und löschen sie anschließend, sofern keine gesetzlichen Aufbewahrungspflichten
+          entgegenstehen.
+        </p>
+        <p>
+          Zum Schutz vor automatisiertem Missbrauch (Spam) setzen wir technische Maßnahmen wie ein
+          verstecktes Prüffeld (Honeypot), eine Mindest-Ausfüllzeit und eine Begrenzung der Anfragen
+          pro Zeitraum ein. Dabei werden keine gesonderten personenbezogenen Profile gebildet.
+        </p>
+
+        <h2>6. Cookies und lokale Speicherung</h2>
+        <p>
+          Für den Betrieb der Website werden nur technisch notwendige Funktionen verwendet. Es
+          werden keine Cookies zu Analyse- oder Marketingzwecken gesetzt. Sofern künftig
+          einwilligungspflichtige Funktionen hinzukommen, informieren wir dich gesondert und holen
+          deine Einwilligung ein.
+        </p>
+        <h3>Darstellungsoptionen (<code>kernseite-accessibility</code>)</h3>
+        <p>
+          Wenn du den Barrierefreiheits-Schalter unten links benutzt, wird deine Auswahl im lokalen
+          Speicher (localStorage) deines Browsers unter dem Schlüssel
+          <code>kernseite-accessibility</code> abgelegt. Gespeichert werden ausschließlich die von dir
+          selbst gewählten Darstellungsoptionen: Textgröße, hoher Kontrast und reduzierte Bewegung.
+        </p>
+        <ul>
+          <li>Zweck: die gewählte Darstellung bleibt beim nächsten Seitenaufruf erhalten.</li>
+          <li>Kein Bezug zu Reichweitenmessung, Werbung oder Profilbildung.</li>
+          <li>Die Angaben verlassen deinen Browser nicht und werden nicht an uns übertragen.</li>
+          <li>
+            Die Speicherung erfolgt erst, wenn du den Schalter bedienst – nicht beim bloßen Aufruf
+            der Seite.
+          </li>
+          <li>
+            Löschen kannst du sie jederzeit über „Einstellungen zurücksetzen“ im Schalter oder über
+            die Browsereinstellungen.
+          </li>
+        </ul>
+        <p>
+          Diese Speicherung dient ausschließlich einer Funktion, die du selbst ausdrücklich
+          angefordert hast. Weitere Informationen zu Einsatz und Rechtsgrundlage stehen unter{' '}
+          <a href="/cookie-einstellungen/">Cookie-Einstellungen</a>.
+        </p>
+
+        <h2>7. Deine Rechte</h2>
+        <p>Du hast im Rahmen der gesetzlichen Bestimmungen das Recht auf:</p>
+        <ul>
+          <li>Auskunft über die zu deiner Person gespeicherten Daten (Art. 15 DSGVO),</li>
+          <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO),</li>
+          <li>Löschung (Art. 17 DSGVO),</li>
+          <li>Einschränkung der Verarbeitung (Art. 18 DSGVO),</li>
+          <li>Datenübertragbarkeit (Art. 20 DSGVO),</li>
+          <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO).</li>
+        </ul>
+        <p>
+          Eine erteilte Einwilligung kannst du jederzeit mit Wirkung für die Zukunft widerrufen. Zur
+          Ausübung deiner Rechte genügt eine Nachricht an die oben genannten Kontaktdaten.
+        </p>
+
+        <h2>8. Beschwerderecht</h2>
+        <p>
+          Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung
+          deiner personenbezogenen Daten zu beschweren.
+        </p>
+
+        <h2>9. Änderungen dieser Datenschutzerklärung</h2>
+        <p>
+          Wir passen diese Datenschutzerklärung an, sobald sich die tatsächlichen Verarbeitungen
+          oder die rechtlichen Rahmenbedingungen ändern.
+        </p>
+      </div>
+    </div>
+  </section>
+</PageLayout>

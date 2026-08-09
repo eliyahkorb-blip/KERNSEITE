@@ -1,0 +1,107 @@
+---
+import type { FaqItem } from '../config/faq';
+
+interface Props {
+  items: readonly FaqItem[];
+  /** Erstes Element geöffnet darstellen. */
+  openFirst?: boolean;
+}
+const { items, openFirst = false } = Astro.props;
+---
+
+<div class="faq">
+  {
+    items.map((item, i) => (
+      <details class="faq__item" open={openFirst && i === 0}>
+        <summary class="faq__summary">
+          <span class="faq__q">{item.question}</span>
+          <span class="faq__icon" aria-hidden="true" />
+        </summary>
+        <div class="faq__answer">
+          <p>{item.answer}</p>
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  /* Nur Frage, feine Linie, Plus/Minus. Keine Karten. */
+  .faq {
+    display: grid;
+    gap: 0;
+    border-block-start: 1px solid var(--line);
+  }
+  .faq__item {
+    border-block-end: 1px solid var(--line);
+  }
+  .faq__summary {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding-block: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.15rem, 2vw, 1.75rem);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+  .faq__summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq__summary:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+  }
+  .faq__q {
+    max-width: 44ch;
+  }
+  .faq__icon {
+    position: relative;
+    flex: none;
+    inline-size: 20px;
+    block-size: 20px;
+    align-self: center;
+  }
+  .faq__icon::before,
+  .faq__icon::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    background: var(--accent-mark);
+    transform: translate(-50%, -50%);
+  }
+  .faq__icon::before {
+    inline-size: 16px;
+    block-size: 2px;
+  }
+  .faq__icon::after {
+    inline-size: 2px;
+    block-size: 16px;
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .faq__item[open] .faq__icon::after {
+    transform: translate(-50%, -50%) scaleY(0);
+  }
+  .faq__answer {
+    padding-block-end: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+    color: var(--text-muted);
+    max-width: var(--measure);
+  }
+
+  .section--dark .faq,
+  .section--dark .faq__item {
+    border-color: var(--line-invert);
+  }
+  .section--dark .faq__answer {
+    color: var(--text-invert-muted);
+  }
+  .section--dark .faq__icon::before,
+  .section--dark .faq__icon::after {
+    background: var(--accent);
+  }
+</style>

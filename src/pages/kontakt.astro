@@ -1,0 +1,183 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Photo from '../components/Photo.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site } from '../config/site';
+import { activeCompany, isPlaceholder } from '../lib/config-validation';
+import { SHOW_DRAFT_NOTICES } from '../lib/build-mode';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Kontakt', path: '/kontakt/' },
+];
+
+const c = activeCompany;
+const emailReady = !isPlaceholder(c.email);
+const phoneReady = !isPlaceholder(c.phone);
+const phoneHref = 'tel:' + c.phone.replace(/[^\d+]/g, '');
+---
+
+<PageLayout
+  title="Kontakt"
+  description="Erzähl kurz, was du vorhast: per Formular, E-Mail oder Telefon. KERNSEITE meldet sich persönlich."
+  h1="Erzähl kurz, was du vorhast."
+  lead="Ein paar Sätze genügen für den Anfang. Wir melden uns persönlich und klären im ersten Gespräch, was wirklich sinnvoll ist."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section section--paper">
+    <div class="content kontakt">
+      <div class="kontakt__form">
+        <h2 class="visually-hidden">Kontaktformular</h2>
+        <ContactForm />
+      </div>
+
+      <aside class="kontakt__aside">
+        <h2 class="kontakt__aside-title">Direkt erreichbar</h2>
+        <ul class="channels" role="list">
+          <li class="channel">
+            <span class="channel__label">E-Mail</span>
+            {
+              emailReady ? (
+                <a class="channel__value" href={`mailto:${c.email}`}>
+                  {c.email}
+                </a>
+              ) : (
+                <span class="channel__value channel__value--todo">
+                  {SHOW_DRAFT_NOTICES ? 'E-Mail wird ergänzt (LEGAL_TODO)' : ''}
+                </span>
+              )
+            }
+          </li>
+          <li class="channel">
+            <span class="channel__label">Telefon</span>
+            {
+              phoneReady ? (
+                <a class="channel__value" href={phoneHref}>
+                  {c.phone}
+                </a>
+              ) : (
+                <span class="channel__value channel__value--todo">
+                  {SHOW_DRAFT_NOTICES ? 'Telefon wird ergänzt (LEGAL_TODO)' : ''}
+                </span>
+              )
+            }
+          </li>
+          {
+            site.bookingUrl && (
+              <li class="channel">
+                <span class="channel__label">Termin</span>
+                <a
+                  class="channel__value"
+                  href={site.bookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Termin auswählen (externer Anbieter)
+                </a>
+              </li>
+            )
+          }
+        </ul>
+
+        <div class="kontakt__note">
+          <p>
+            Deine Anfrage landet direkt bei Eliyah Korb. Kein Callcenter, keine automatische
+            Warteschleife.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+  <!-- Standort -->
+  <section class="section section--surface">
+    <div class="content place">
+      <div class="place__text">
+        <h2 class="place__title">Raum Würzburg. Projekte bundesweit.</h2>
+        <p class="place__body">
+          Der Sitz liegt in Erlabrunn bei Würzburg. Persönliche Termine sind in der Region möglich.
+          Vieles lässt sich zugleich schnell und unkompliziert digital abstimmen.
+        </p>
+      </div>
+      <Photo photo="standort-wuerzburg" ratio="16x9" sizes="(min-width: 64rem) 55vw, 100vw" />
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .kontakt {
+    display: grid;
+    gap: var(--space-3xl);
+    align-items: start;
+  }
+  .place {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    align-items: center;
+  }
+  .place__title {
+    font-size: var(--fs-h3);
+    max-width: min(14ch, 100%);
+  }
+  .place__body {
+    margin-block-start: var(--space-md);
+    color: var(--text-muted);
+    max-width: min(44ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    .place {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+
+  .kontakt__aside-title {
+    font-size: var(--fs-h3);
+    margin-block-end: var(--space-lg);
+  }
+  .channels {
+    display: grid;
+    gap: var(--space-lg);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .channel {
+    display: grid;
+    gap: 0.2rem;
+    padding-block-end: var(--space-lg);
+    border-block-end: 1px solid var(--line);
+  }
+  .channel__label {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+  .channel__value {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-h4);
+    color: var(--text);
+    text-decoration: none;
+  }
+  a.channel__value:hover {
+    color: var(--accent-ink);
+  }
+  .channel__value--todo {
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  .kontakt__note {
+    margin-block-start: var(--space-xl);
+    padding: var(--space-lg);
+    background: var(--ks-surface);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+
+  @media (min-width: 64rem) {
+    .kontakt {
+      grid-template-columns: 1.5fr 0.9fr;
+      gap: var(--space-4xl);
+    }
+  }
+</style>

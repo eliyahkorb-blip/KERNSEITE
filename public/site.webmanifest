@@ -1,0 +1,18 @@
+{
+  "name": "KERNSEITE",
+  "short_name": "KERNSEITE",
+  "description": "Individuelle Unternehmenswebsites aus Würzburg.",
+  "lang": "de",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ede9e1",
+  "theme_color": "#0f1215",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}
