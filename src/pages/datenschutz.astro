@@ -1,13 +1,26 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import DraftNotice from '../components/DraftNotice.astro';
-import { activeCompany } from '../lib/config-validation';
+import { activeCompany, isPlaceholder } from '../lib/config-validation';
 
 const breadcrumbs = [
   { name: 'Start', path: '/' },
   { name: 'Datenschutz', path: '/datenschutz/' },
 ];
 const c = activeCompany;
+
+/**
+ * Standortaussagen nur bei belegten Angaben.
+ *
+ * Ein Serverstandort ist eine Tatsachenbehauptung. Solange Hostinganbieter,
+ * Serverstandort oder Mailanbieter Platzhalter sind, wird der Standort nicht
+ * genannt – der Absatz beschreibt dann nur, was tatsächlich feststeht. Der
+ * Produktions-Build kommt in diesem Zustand ohnehin nicht zustande
+ * (src/lib/config-validation.ts).
+ */
+const hostingConfirmed = !isPlaceholder(c.hostingLocation) && !isPlaceholder(c.hostingProvider);
+const mailConfirmed = !isPlaceholder(c.mailProvider);
+const retentionConfirmed = !isPlaceholder(c.formRetentionPeriod);
 ---
 
 <PageLayout
@@ -39,12 +52,16 @@ const c = activeCompany;
 
         <h2>2. Hosting und Server-Logfiles</h2>
         <p>
-          Diese Website wird bei einem Anbieter mit Serverstandort in Deutschland gehostet. Beim
-          Aufruf der Website werden technisch notwendige Zugriffsdaten in Server-Logfiles
-          gespeichert (z. B. anonymisierte bzw. gekürzte IP-Adresse, Datum und Uhrzeit, abgerufene
-          Datei, übertragene Datenmenge, Referrer, Browsertyp und Betriebssystem). Diese
-          Verarbeitung dient dem sicheren, stabilen Betrieb der Website. Rechtsgrundlage ist unser
-          berechtigtes Interesse an einer fehlerfreien Bereitstellung (Art. 6 Abs. 1 lit. f DSGVO).
+          {
+            hostingConfirmed
+              ? `Diese Website wird bei ${c.hostingProvider} gehostet; der Serverstandort ist ${c.hostingLocation}.`
+              : 'Diese Website wird bei einem externen Anbieter gehostet, der als Auftragsverarbeiter für uns tätig ist.'
+          }{' '}
+          Beim Aufruf der Website werden technisch notwendige Zugriffsdaten in Server-Logfiles gespeichert
+          (z. B. anonymisierte bzw. gekürzte IP-Adresse, Datum und Uhrzeit, abgerufene Datei, übertragene
+          Datenmenge, Referrer, Browsertyp und Betriebssystem). Diese Verarbeitung dient dem sicheren,
+          stabilen Betrieb der Website. Rechtsgrundlage ist unser berechtigtes Interesse an einer fehlerfreien
+          Bereitstellung (Art. 6 Abs. 1 lit. f DSGVO).
         </p>
 
         <h2>3. Schriftarten (lokal eingebunden)</h2>
@@ -67,15 +84,17 @@ const c = activeCompany;
         <p>
           Wenn du uns über das Kontaktformular oder per E-Mail kontaktierst, verarbeiten wir die von
           dir gemachten Angaben ausschließlich zur Bearbeitung deiner Anfrage. Die Übermittlung des
-          Formulars erfolgt serverseitig und wird per E-Mail (über einen Server in Deutschland) an
-          uns weitergeleitet.
+          Formulars erfolgt serverseitig; die Anfrage wird anschließend per E-Mail an uns
+          weitergeleitet{mailConfirmed ? ` (Mailversand über ${c.mailProvider})` : ''}.
         </p>
         <p>
           Rechtsgrundlage ist – je nach Anliegen – die Durchführung vorvertraglicher Maßnahmen bzw.
           die Erfüllung eines Vertrags (Art. 6 Abs. 1 lit. b DSGVO) oder unser berechtigtes
           Interesse an der Beantwortung deiner Anfrage (Art. 6 Abs. 1 lit. f DSGVO). Wir speichern
-          deine Anfrage nur so lange, wie es für die Bearbeitung erforderlich ist, und löschen sie
-          anschließend, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
+          deine Anfrage nur so lange, wie es für die Bearbeitung erforderlich ist{
+            retentionConfirmed ? ` (${c.formRetentionPeriod})` : ''
+          }, und löschen sie anschließend, sofern keine gesetzlichen Aufbewahrungspflichten
+          entgegenstehen.
         </p>
         <p>
           Zum Schutz vor automatisiertem Missbrauch (Spam) setzen wir technische Maßnahmen wie ein
@@ -89,6 +108,31 @@ const c = activeCompany;
           werden keine Cookies zu Analyse- oder Marketingzwecken gesetzt. Sofern künftig
           einwilligungspflichtige Funktionen hinzukommen, informieren wir dich gesondert und holen
           deine Einwilligung ein.
+        </p>
+        <h3>Darstellungsoptionen (<code>kernseite-accessibility</code>)</h3>
+        <p>
+          Wenn du den Barrierefreiheits-Schalter unten links benutzt, wird deine Auswahl im lokalen
+          Speicher (localStorage) deines Browsers unter dem Schlüssel
+          <code>kernseite-accessibility</code> abgelegt. Gespeichert werden ausschließlich die von dir
+          selbst gewählten Darstellungsoptionen: Textgröße, hoher Kontrast und reduzierte Bewegung.
+        </p>
+        <ul>
+          <li>Zweck: die gewählte Darstellung bleibt beim nächsten Seitenaufruf erhalten.</li>
+          <li>Kein Bezug zu Reichweitenmessung, Werbung oder Profilbildung.</li>
+          <li>Die Angaben verlassen deinen Browser nicht und werden nicht an uns übertragen.</li>
+          <li>
+            Die Speicherung erfolgt erst, wenn du den Schalter bedienst – nicht beim bloßen Aufruf
+            der Seite.
+          </li>
+          <li>
+            Löschen kannst du sie jederzeit über „Einstellungen zurücksetzen“ im Schalter oder über
+            die Browsereinstellungen.
+          </li>
+        </ul>
+        <p>
+          Diese Speicherung dient ausschließlich einer Funktion, die du selbst ausdrücklich
+          angefordert hast. Weitere Informationen zu Einsatz und Rechtsgrundlage stehen unter{' '}
+          <a href="/cookie-einstellungen/">Cookie-Einstellungen</a>.
         </p>
 
         <h2>7. Deine Rechte</h2>

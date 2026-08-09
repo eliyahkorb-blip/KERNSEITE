@@ -15,6 +15,22 @@ import { canonicalFor } from '../config/seo';
 
 type Json = Record<string, unknown>;
 
+/**
+ * Tatsächlich betreutes Gebiet.
+ *
+ * Der Sitz steht in `address` (Erlabrunn) und wird davon nicht berührt:
+ * `areaServed` beschreibt, wo gearbeitet wird, nicht wo das Büro steht.
+ * Deutschland gehört dazu, weil Projekte bundesweit umgesetzt werden – das
+ * deckt sich mit der sichtbaren Aussage „Persönlich im Raum Würzburg. Digital
+ * bundesweit.“
+ */
+const AREA_SERVED = [
+  site.region.city,
+  site.region.area,
+  site.region.state,
+  site.region.country,
+].filter(Boolean);
+
 /** ProfessionalService/LocalBusiness der Marke – nur bei vollständigen Daten. */
 export function organizationJsonLd(): Json | null {
   if (!hasCompleteLegalData) return null;
@@ -29,7 +45,7 @@ export function organizationJsonLd(): Json | null {
     email: c.email,
     telephone: c.phone,
     description: site.shortDescription,
-    areaServed: [site.region.city, site.region.area, site.region.state].filter(Boolean),
+    areaServed: AREA_SERVED,
     address: {
       '@type': 'PostalAddress',
       streetAddress: c.street,
@@ -67,7 +83,7 @@ export function serviceJsonLd(service: Service): Json | null {
       name: activeCompany.legalDisplayName,
       url: site.url,
     },
-    areaServed: [site.region.city, site.region.area, site.region.state].filter(Boolean),
+    areaServed: AREA_SERVED,
     url: canonicalFor(service.href),
   };
 }

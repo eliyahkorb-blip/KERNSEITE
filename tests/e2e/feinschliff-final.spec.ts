@@ -397,13 +397,17 @@ test.describe('Vorschau, Produktion und Rechtstexte', () => {
     expect(pflicht.sort()).toEqual(['cf-email', 'cf-message', 'cf-name']);
   });
 
-  test('Die Budgetauswahl beginnt nicht bei 5.000 Euro', async ({ page }) => {
+  test('Statt Budgetklassen wird der Projektumfang abgefragt', async ({ page }) => {
     await page.goto('/kontakt/');
+    await expect(page.locator('#cf-budget')).toHaveCount(0);
     const werte = await page.evaluate(() =>
-      [...document.querySelectorAll<HTMLOptionElement>('#cf-budget option')].map((o) => o.text),
+      [...document.querySelectorAll<HTMLOptionElement>('#cf-scope option')].map((o) => o.text),
     );
-    expect(werte).toContain('Bis 2.500 €');
-    expect(werte).toContain('2.500–5.000 €');
-    expect(werte.some((w) => w.includes('unter 5.000'))).toBe(false);
+    expect(werte).toContain('Unternehmenswebsite');
+    expect(werte).toContain('Umfangreicher Relaunch');
+    expect(
+      werte.some((w) => /€|EUR|Euro/i.test(w)),
+      `Eurobetrag in: ${werte.join(' | ')}`,
+    ).toBe(false);
   });
 });

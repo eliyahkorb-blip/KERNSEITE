@@ -770,3 +770,93 @@ Regel für den Fall erhält, dass später wieder ein Motiv fehlt.
 die es nicht gibt. Der Eintrag heißt jetzt `assets:images` und zeigt auf
 `scripts/build-images.py`, wie in der Dokumentation und im Skript selbst
 angegeben.
+
+## Runde: Produktions-, SEO-, Recht- und Conversion-Prüfung
+
+Ausgangsstand: `388b29b`. Geprüft wurden 27 Routen an 8 Breiten und 4
+Zoomstufen – 297 Einzelprüfungen ohne Befund.
+
+### Vier Befunde, die vorher niemand gemeldet hatte
+
+**1. `build:production` lief durch, obwohl tragende Angaben fehlten.**
+`REQUIRED_LEGAL_FIELDS` enthielt nur Anschrift, E-Mail und Telefon. Hosting-
+anbieter, Serverstandort, Mailanbieter und Aufbewahrungsdauer standen auf
+`[ERSETZEN]` – und trotzdem entstand ein deploybarer Build. Die vier Felder
+sind jetzt Pflicht.
+
+**2. Die Datenschutzerklärung behauptete einen Serverstandort.**
+„Serverstandort in Deutschland“ und „über einen Server in Deutschland“ standen
+im Text, während genau diese Angaben unbestätigt waren. Beide Aussagen
+erscheinen jetzt nur bei belegten Werten; sonst steht dort, was tatsächlich
+feststeht.
+
+**3. Die Website verlegte den Sitz nach Würzburg.**
+„KERNSEITE sitzt in Würzburg“ stand in `site.ts`, auf der Agenturseite und
+sinngemäß in Hero, Fußzeile und Meta-Angaben. Der Sitz ist Erlabrunn.
+Würzburg ist bedientes Marktgebiet und wird jetzt auch so benannt („Raum
+Würzburg“, „bei Würzburg“). Die strukturierte Anschrift nannte bereits
+Erlabrunn – Text und Daten widersprachen sich also.
+
+**4. Das Kontaktformular veröffentlichte Preise.**
+Vier Budgetklassen von „Bis 2.500 €“ bis „Über 10.000 €“ waren sichtbar,
+obwohl KERNSEITE keine Preise veröffentlicht. Ersetzt durch den Projektumfang
+ohne Beträge.
+
+### Umgesetzt
+
+- **Legal-Gate** (`src/config/release.ts`): drei interne Schalter
+  (`legalReviewApproved`, `canonicalDomainConfirmed`,
+  `privacyInfrastructureConfirmed`). Der Produktions-Build bricht ab, solange
+  einer offen ist. Die Schalter erscheinen nirgends im Output.
+- **Impressum**: Haftungs-Boilerplate zu §§ 7/8–10 DDG entfernt – keine
+  Pflichtangabe und nur eine verkürzte Wiedergabe der Gesetzeslage. § 5 DDG
+  bleibt Grundlage. „Redaktionell verantwortlich“ erscheint nur noch, wenn
+  tatsächlich ein redaktionelles Angebot besteht (`legal.hasJournalisticContent`).
+- **Datenschutz**: `kernseite-accessibility` mit Zweck, Inhalt, Speicherort
+  und Löschweg beschrieben; keine Verharmlosung der Rechtslage.
+- **SEO**: je Seite eine primäre Suchintention. Titel und Beschreibungen tragen
+  jetzt den Suchbegriff statt nur den Seitennamen; die Startseite ordnet die
+  Marke im ersten Fließtext sachlich ein. Keine Stadt-Landingpages, kein
+  Keyword-Stuffing.
+- **JSON-LD**: `areaServed` um Deutschland ergänzt. Weiterhin keine
+  Bewertungen, Preise, Öffnungszeiten oder Auszeichnungen.
+- **CTA**: kontextbezogene Beschriftungen; `/kontakt/?leistung=` und
+  `?branche=` wählen im Formular vor. Der Wert aus der Adresszeile wird nur
+  verglichen, nie übernommen – gesetzt wird der Wert aus der Whitelist.
+- **Formular/PHP**: `budget` → `scope`, neues Feld `branch`, beide mit
+  Längenbegrenzung im Validator.
+
+### Neue dauerhafte Prüfungen
+
+| Datei                                | Umfang                                                                                                                                                                           |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/check-seo.mjs`              | Teil von `pnpm qa`: eindeutige Titles/Descriptions, Längen, genau eine H1, Canonicals, Open Graph, parsebares JSON-LD, keine meta keywords, kein hreflang, Sitemap gegen noindex |
+| `tests/e2e/a11y-reset.spec.ts`       | 5 Prüfungen: alle drei Einstellungen inkl. Reload, Reset inkl. Reload, beschädigtes JSON, gesperrter Speicher, Escape/Klick/Tastatur, Live-Region                                |
+| `tests/e2e/produktionsreife.spec.ts` | 32 Prüfungen: Recht, Standortwahrheit, Suchintent je Seite, Preise, Query-Kontext, Produktions-Gate                                                                              |
+| `tests/e2e/zoom-und-bilder.spec.ts`  | 7 Prüfungen: Zoom 125/150/200 %, Schalter bei 200 %, Bilder mit AVIF/WebP/Maßen/Alt                                                                                              |
+
+### Nachweise
+
+| Prüfung                                | Ergebnis                                  |
+| -------------------------------------- | ----------------------------------------- |
+| `pnpm astro check`                     | 0 Fehler, 0 Warnungen                     |
+| `pnpm lint` / `pnpm format:check`      | ohne Befund                               |
+| `pnpm build:ci` / `pnpm build:preview` | je 27 Seiten                              |
+| `pnpm build:production`                | **bricht ab, Exit-Code 1** (gewollt)      |
+| `pnpm qa`                              | sechs Prüfungen, darunter neu `check-seo` |
+| `pnpm test:e2e`                        | **231 bestanden, 1 übersprungen**         |
+| `pnpm check:headings`                  | 152 Seitenaufrufe über 8 Breiten          |
+| Responsive-/Zoom-/Bildaudit            | 297 Prüfungen, keine Befunde              |
+
+### Performance
+
+Der Three.js-Anteil (`tubes1.min`, 761 KB) wird ausschließlich von der
+Startseite dynamisch nachgeladen. Keine der 26 übrigen Seiten referenziert
+ihn; Rechtstexte, Kontakt und Branchenseiten laden 6 kleine Skripte
+(zusammen unter 12 KB). Der Effekt startet erst nach dem kritischen Inhalt
+und entfällt bei reduzierter Bewegung, fehlendem WebGL und Datensparmodus.
+
+### Bewusst nicht geändert
+
+Schriften, Farben, Buttonoptik, Cyan-Abschluss, schwarzer Footer, Bildsprache
+und Seitenaufbau bleiben unverändert. Diese Runde hat nichts neu gestaltet.

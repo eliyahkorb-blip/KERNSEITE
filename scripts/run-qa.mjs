@@ -23,6 +23,7 @@ const checks = [
   ['check-external.mjs', [dist]],
   ['check-links.mjs', [dist]],
   ['check-a11y-static.mjs', [dist]],
+  ['check-seo.mjs', [dist]],
   ['check-secrets.mjs', []],
 ];
 

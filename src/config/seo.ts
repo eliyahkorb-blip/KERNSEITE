@@ -5,8 +5,8 @@ export const seo = {
   /** Title-Template: `%s` wird durch den Seitentitel ersetzt. */
   titleTemplate: '%s · KERNSEITE',
   /** Fallback-Title (Startseite bzw. wenn kein Seitentitel gesetzt ist). */
-  defaultTitle: 'KERNSEITE · Individuelle Unternehmenswebsites aus Würzburg',
-  defaultDescription: site.shortDescription,
+  defaultTitle: 'Webdesign & KI-Agentur Würzburg · KERNSEITE',
+  defaultDescription: site.metaDescription,
   /** Lokal gehostetes Open-Graph-Bild (siehe public/assets). */
   defaultOgImage: '/assets/og/kernseite-og.svg',
   ogImageType: 'image/svg+xml',

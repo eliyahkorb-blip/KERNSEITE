@@ -35,8 +35,8 @@ const steps = ['Analyse', 'Seitenstruktur', 'Inhalte', 'Technische Umsetzung', '
 ---
 
 <PageLayout
-  title={service.label}
-  description="SEO und GEO aus Würzburg: Seiten so aufbauen, dass Suchmaschinen und KI-Antwortsysteme das Angebot verstehen und korrekt wiedergeben."
+  title="SEO & GEO Agentur Würzburg"
+  description="SEO- und GEO-Agentur im Raum Würzburg: Seiten so aufbauen, dass Suchmaschinen und generative Antwortsysteme dein Angebot verstehen und korrekt wiedergeben."
   h1Slot
   breadcrumbs={breadcrumbs}
   extraJsonLd={[serviceJsonLd(service), faqPageJsonLd(pageFaqs)]}
@@ -121,7 +121,7 @@ const steps = ['Analyse', 'Seitenstruktur', 'Inhalte', 'Technische Umsetzung', '
   }
 
   <RelatedServices exclude="seo-geo" only={['websites', 'google', 'ki']} />
-  <CtaBanner />
+  <CtaBanner ctaLabel="Sichtbarkeit besprechen" ctaHref="/kontakt/?leistung=seo-geo" />
 </PageLayout>
 
 <style>

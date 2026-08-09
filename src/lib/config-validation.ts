@@ -6,6 +6,7 @@ import {
   type Company,
 } from '../config/company';
 import { companyFixture } from '../config/company.fixture';
+import { release, RELEASE_GATE_LABELS, type ReleaseGate } from '../config/release';
 import { BUILD_MODE, IS_CI, IS_PRODUCTION } from './build-mode';
 
 /** True, wenn ein Wert leer oder ein `[ERSETZEN]`-Platzhalter ist. */
@@ -36,32 +37,63 @@ export const hasCompleteLegalData: boolean = missingLegalFields.length === 0;
 /** True, wenn ein bestätigter Serverstandort vorliegt (Grundlage Hosting-Hinweis). */
 export const hasConfirmedHostingLocation: boolean = !isPlaceholder(activeCompany.hostingLocation);
 
+/** Noch nicht erteilte Freigaben aus `src/config/release.ts`. */
+export const openReleaseGates: string[] = (Object.keys(release) as (keyof ReleaseGate)[]).filter(
+  (key) => !release[key],
+);
+
+/** True, wenn alle internen Freigabeschalter gesetzt sind. */
+export const hasReleaseApproval: boolean = openReleaseGates.length === 0;
+
 /**
- * PRODUKTIONS-SCHUTZ (Korrektur 6):
+ * PRODUKTIONS-SCHUTZ.
+ *
  * Bricht `pnpm build:production` mit klarer Meldung ab, solange rechtliche
- * Pflichtangaben fehlen. Dev- und CI-Build sind davon nicht betroffen.
+ * Pflichtangaben fehlen ODER eine der internen Freigaben aussteht. Dev-, CI-
+ * und Vorschau-Build sind davon nicht betroffen.
+ *
+ * Der zweite Teil ist bewusst getrennt: Vollständige Feldwerte allein machen
+ * einen Auftritt nicht rechtlich fertig. Ohne ausdrückliche fachliche Freigabe
+ * entsteht kein deploybarer Build – auch dann nicht, wenn technisch alles grün
+ * ist. Die Schalter erscheinen nirgends auf der Website.
  */
-if (IS_PRODUCTION && !hasCompleteLegalData) {
-  const list = missingLegalFields.map((f) => `  - ${f}`).join('\n');
-  throw new Error(
-    [
+if (IS_PRODUCTION && (!hasCompleteLegalData || !hasReleaseApproval)) {
+  const lines = [
+    '',
+    '══════════════════════════════════════════════════════════════════════',
+    ' PRODUKTIONS-BUILD ABGEBROCHEN',
+    '══════════════════════════════════════════════════════════════════════',
+    '',
+  ];
+
+  if (!hasCompleteLegalData) {
+    lines.push(
+      ' Fehlende Pflichtangaben in src/config/company.ts:',
+      ...missingLegalFields.map((f) => `   - ${f}`),
       '',
-      '══════════════════════════════════════════════════════════════════════',
-      ' PRODUKTIONS-BUILD ABGEBROCHEN – fehlende rechtliche Pflichtangaben',
-      '══════════════════════════════════════════════════════════════════════',
+    );
+  }
+
+  if (!hasReleaseApproval) {
+    lines.push(
+      ' Ausstehende Freigaben in src/config/release.ts:',
+      ...openReleaseGates.map((k) => `   - ${k}: ${RELEASE_GATE_LABELS[k as keyof ReleaseGate]}`),
       '',
-      ' Folgende Felder in src/config/company.ts sind noch Platzhalter:',
-      list,
-      '',
-      ' Trage die echten Werte ein (siehe docs/LEGAL_TODO.md), bevor ein',
-      ' produktiver, deploybarer Build erstellt wird.',
-      '',
-      ' Für Tests/QA ohne echte Daten stattdessen `pnpm build:ci` verwenden',
-      ' (nicht deploybar, klar als Fixture markiert).',
-      '══════════════════════════════════════════════════════════════════════',
-      '',
-    ].join('\n'),
+    );
+  }
+
+  lines.push(
+    ' Nächste Schritte: docs/LEGAL_TODO.md, docs/LEGAL_REVIEW_2026-08.md und',
+    ' docs/PRODUCTION_TODO.md. Die Freigaben werden erst nach echter fachlicher',
+    ' Klärung von Hand gesetzt – nicht, um den Build durchzubekommen.',
+    '',
+    ' Für Tests/QA ohne echte Daten `pnpm build:ci` verwenden, für die',
+    ' visuelle Abnahme `pnpm build:preview` (beide nicht deploybar).',
+    '══════════════════════════════════════════════════════════════════════',
+    '',
   );
+
+  throw new Error(lines.join('\n'));
 }
 
 export { BUILD_MODE };

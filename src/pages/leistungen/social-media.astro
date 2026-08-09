@@ -51,8 +51,8 @@ const scope = [
 ---
 
 <BaseLayout
-  title={service.label}
-  description="Social Media aus Würzburg: erkennbarer Markenauftritt, planbare Formate und die Verbindung zur Website – ohne Dauerdruck."
+  title="Social Media Betreuung"
+  description="Social Media aus dem Raum Würzburg: erkennbarer Markenauftritt, planbare Formate und die Verbindung zur Website – ohne Dauerdruck."
   jsonLd={[breadcrumbJsonLd(breadcrumbs), serviceJsonLd(service), faqPageJsonLd(pageFaqs)]}
 >
   <!-- Bildstarker Hero: Foto links, Aussage rechts -->
@@ -136,7 +136,7 @@ const scope = [
   }
 
   <RelatedServices exclude="social" only={['video', 'websites', 'google']} />
-  <CtaBanner />
+  <CtaBanner ctaLabel="Social-Media-Betreuung besprechen" ctaHref="/kontakt/?leistung=social" />
 </BaseLayout>
 
 <style>

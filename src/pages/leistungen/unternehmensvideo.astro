@@ -39,8 +39,8 @@ const production = [
 ---
 
 <BaseLayout
-  title={service.label}
-  description="Unternehmensvideo aus Würzburg: Konzept, Dreh, Schnitt und datenschutzfreundliche Einbindung – echte Situationen statt gestellter Werbeszenen."
+  title="Unternehmensvideo Würzburg"
+  description="Unternehmensvideo aus dem Raum Würzburg: Konzept, Dreh, Schnitt und datenschutzfreundliche Einbindung – echte Situationen statt gestellter Werbeszenen."
   jsonLd={[breadcrumbJsonLd(breadcrumbs), serviceJsonLd(service)]}
 >
   <!-- Dunkler Hero mit großem Kameramotiv -->
@@ -131,7 +131,7 @@ const production = [
   </section>
 
   <RelatedServices exclude="video" only={['websites', 'social', 'google']} />
-  <CtaBanner />
+  <CtaBanner ctaLabel="Videoprojekt besprechen" ctaHref="/kontakt/?leistung=video" />
 </BaseLayout>
 
 <style>

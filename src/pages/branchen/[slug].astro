@@ -67,8 +67,8 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
 ---
 
 <PageLayout
-  title={industry.title}
-  description={industry.intro.slice(0, 155)}
+  title={industry.seoTitle}
+  description={industry.metaDescription}
   h1Slot
   variant="dark"
   lead={industry.intro}
@@ -183,6 +183,8 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
   <CtaBanner
     title={`Bereit für einen Auftritt, der zu ${industry.label} passt?`}
     text="Im ersten Gespräch klären wir, was für dein Geschäft wirklich zählt."
+    ctaLabel={industry.ctaLabel}
+    ctaHref={`/kontakt/?branche=${industry.slug}`}
   />
 </PageLayout>
 

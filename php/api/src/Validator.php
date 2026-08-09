@@ -22,7 +22,8 @@ final class Validator
         'service' => 120,
         'existing_site' => 300,
         'message' => 5000,
-        'budget' => 60,
+        'scope' => 80,
+        'branch' => 80,
         'timing' => 80,
     ];
 

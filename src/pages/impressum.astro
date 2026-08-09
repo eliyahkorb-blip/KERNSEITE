@@ -16,7 +16,7 @@ const showLegalForm = !isPlaceholder(c.legalForm);
 
 <PageLayout
   title="Impressum"
-  description="Impressum von KERNSEITE – Eliyah Korb."
+  description="Impressum von KERNSEITE – Eliyah Korb: Anbieterkennzeichnung nach § 5 DDG mit Anschrift, E-Mail und Telefonnummer für die schnelle Kontaktaufnahme."
   h1="Impressum"
   breadcrumbs={breadcrumbs}
   noindex={false}
@@ -51,12 +51,18 @@ const showLegalForm = !isPlaceholder(c.legalForm);
           )
         }
 
-        <h2>Redaktionell verantwortlich</h2>
-        <p>
-          {c.responsibleContent}<br />
-          {c.street}, {c.postalCode}{' '}
-          {c.city}
-        </p>
+        {
+          legal.hasJournalisticContent && (
+            <>
+              <h2>Redaktionell verantwortlich</h2>
+              <p>
+                {c.responsibleContent}
+                <br />
+                {c.street}, {c.postalCode} {c.city}
+              </p>
+            </>
+          )
+        }
 
         {
           showAuthority && (
@@ -70,30 +76,31 @@ const showLegalForm = !isPlaceholder(c.legalForm);
         <h2>Verbraucherschlichtung</h2>
         <p>{legal.disputeResolution}</p>
 
-        <h2>Haftung für Inhalte</h2>
-        <p>
-          Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten
-          nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als
-          Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde
-          Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige
-          Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von
-          Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.
-        </p>
+        {
+          /*
+          Der frühere Haftungs-Boilerplate („Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG …“
+          nebst „Nach §§ 8 bis 10 DDG sind wir … nicht verpflichtet …“) ist entfallen. Er gab die
+          gesetzliche Lage lediglich verkürzt wieder und ist keine Pflichtangabe nach § 5 DDG. Die
+          Haftungsprivilegien für fremde Informationen gelten unabhängig davon, ob sie auf der
+          Seite abgedruckt werden – und dieses Angebot besteht ohnehin aus eigenen Inhalten.
+          Ersetzt wurde er nicht durch neue Paragraphennummern, sondern durch die beiden Punkte,
+          die hier tatsächlich etwas aussagen.
+        */
+        }
 
-        <h2>Haftung für Links</h2>
+        <h2>Externe Links</h2>
         <p>
-          Unser Angebot enthält gegebenenfalls Links zu externen Websites Dritter, auf deren Inhalte
-          wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr
-          übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder
-          Betreiber der Seiten verantwortlich.
+          Diese Website verweist an einzelnen Stellen auf Websites Dritter. Für deren Inhalte sind
+          ausschließlich die jeweiligen Anbieter verantwortlich. Zum Zeitpunkt der Verlinkung waren
+          keine Rechtsverstöße erkennbar; bei Bekanntwerden entfernen wir betroffene Links.
         </p>
 
         <h2>Urheberrecht</h2>
         <p>
-          Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen
-          dem deutschen Urheberrecht. Beiträge Dritter sind als solche gekennzeichnet. Die
-          Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der
-          Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung.
+          Inhalte, Gestaltung und Quellcode dieser Website sind urheberrechtlich geschützt.
+          Verwendete Fotos stammen aus lizenzierten Quellen; die Nachweise stehen in der
+          Bilddokumentation des Projekts. Eine Weiterverwendung außerhalb der gesetzlich zulässigen
+          Fälle bedarf unserer Zustimmung.
         </p>
       </div>
     </div>

@@ -1,14 +1,38 @@
 ---
 import { services } from '../config/services';
+import { industries } from '../config/industries';
 import { IS_PREVIEW } from '../lib/build-mode';
+
+/**
+ * Kontextübergabe über die Adresszeile.
+ *
+ * Von einer Leistungs- oder Branchenseite führt der Aufruf `?leistung=…`
+ * bzw. `?branche=…` mit. Der Wert aus der Adresszeile wird **nie**
+ * übernommen: Das Skript vergleicht ihn nur mit dieser Liste und setzt bei
+ * einem Treffer den hier erzeugten Wert. Damit kann kein fremder Text ins
+ * Formular, ins DOM oder in die E-Mail gelangen.
+ */
+const serviceKeys = services.map((s) => s.key);
+const branchSlugs = industries.map((i) => i.slug);
+const branchLabels = Object.fromEntries(industries.map((i) => [i.slug, i.label]));
 
 // Endpoint des PHP-Formulars (wird beim Deployment nach public_html/api/ ausgeliefert).
 // Im Vorschaumodus wird NICHT gesendet (kein Mailversand).
 const ACTION = '/api/contact.php';
 
-/* Kleinere Projekte werden ebenfalls angeboten – deshalb beginnt die Auswahl
-   nicht bei „unter 5.000 €“. */
-const budgets = ['Noch offen', 'Bis 2.500 €', '2.500–5.000 €', '5.000–10.000 €', 'Über 10.000 €'];
+/* Projektumfang statt Budget.
+   KERNSEITE veröffentlicht keine Preise. Eine sichtbare Auswahl von
+   Eurobeträgen wäre eine Preisangabe durch die Hintertür: Sie legt eine
+   Spanne fest, bevor überhaupt feststeht, worum es geht, und sortiert
+   Anfragen nach Zahlen statt nach Vorhaben. Die Qualifizierung läuft deshalb
+   über den Umfang des Vorhabens. */
+const scopes = [
+  'Noch offen',
+  'Einzelne Landingpage / Onepager',
+  'Unternehmenswebsite',
+  'Umfangreicher Relaunch',
+  'Individuelles digitales System',
+];
 const timings = [
   'So bald wie möglich',
   'In den nächsten 3 Monaten',
@@ -23,6 +47,9 @@ const timings = [
   action={IS_PREVIEW ? '#' : ACTION}
   data-contact-form
   data-preview={IS_PREVIEW ? '' : undefined}
+  data-service-keys={serviceKeys.join(',')}
+  data-branch-slugs={branchSlugs.join(',')}
+  data-branch-labels={JSON.stringify(branchLabels)}
   novalidate
 >
   <!-- Honeypot (für Menschen unsichtbar) -->
@@ -68,9 +95,17 @@ const timings = [
       <label for="cf-service">Gewünschte Leistung <span class="field__opt">optional</span></label>
       <select id="cf-service" name="service">
         <option value="">Bitte wählen …</option>
-        {services.map((s) => <option value={s.label}>{s.cardTitle}</option>)}
+        {
+          services.map((s) => (
+            <option value={s.label} data-key={s.key}>
+              {s.cardTitle}
+            </option>
+          ))
+        }
         <option value="Noch unklar">Noch unklar</option>
       </select>
+      {/* Branche kommt nur aus der Whitelist oben, nie aus der Adresszeile. */}
+      <input type="hidden" name="branch" value="" data-branch-field />
     </div>
     <div class="field">
       <label for="cf-existing">Bestehende Website <span class="field__opt">optional</span></label>
@@ -96,10 +131,10 @@ const timings = [
       <p id="cf-message-hint" class="field__hint">Worum geht es? Was möchtest du erreichen?</p>
     </div>
     <div class="field">
-      <label for="cf-budget">Geplantes Budget <span class="field__opt">optional</span></label>
-      <select id="cf-budget" name="budget">
+      <label for="cf-scope">Projektumfang <span class="field__opt">optional</span></label>
+      <select id="cf-scope" name="scope">
         <option value="">Bitte wählen …</option>
-        {budgets.map((b) => <option value={b}>{b}</option>)}
+        {scopes.map((s) => <option value={s}>{s}</option>)}
       </select>
     </div>
     <div class="field">
@@ -222,6 +257,43 @@ const timings = [
   // Progressive Enhancement: Ohne JS funktioniert das Formular als normaler POST an PHP.
   // Mit JS: Client-Validierung, Absenden per fetch, Statusmeldung in Live-Region.
   const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+
+  /**
+   * Kontext aus der Adresszeile vorbelegen – ausschließlich über Whitelist.
+   *
+   * Der Wert aus `?leistung=` / `?branche=` wird nur zum Vergleich benutzt.
+   * Gesetzt wird immer der Wert aus der serverseitig erzeugten Liste, nie der
+   * Wert aus der URL. Kein Schreiben in innerHTML, keine Ausgabe im Text.
+   */
+  if (form) {
+    const params = new URLSearchParams(window.location.search);
+
+    const wunschLeistung = params.get('leistung');
+    const erlaubteKeys = (form.dataset.serviceKeys ?? '').split(',').filter(Boolean);
+    if (wunschLeistung && erlaubteKeys.includes(wunschLeistung)) {
+      const select = form.querySelector<HTMLSelectElement>('#cf-service');
+      const treffer = select?.querySelector<HTMLOptionElement>(
+        `option[data-key="${CSS.escape(wunschLeistung)}"]`,
+      );
+      if (select && treffer) select.value = treffer.value;
+    }
+
+    const wunschBranche = params.get('branche');
+    const erlaubteSlugs = (form.dataset.branchSlugs ?? '').split(',').filter(Boolean);
+    if (wunschBranche && erlaubteSlugs.includes(wunschBranche)) {
+      const feld = form.querySelector<HTMLInputElement>('[data-branch-field]');
+      let labels: Record<string, string> = {};
+      try {
+        labels = JSON.parse(form.dataset.branchLabels ?? '{}');
+      } catch {
+        /* ohne Beschriftungen bleibt der Slug – beides stammt aus der Whitelist */
+      }
+      // Index aus der Whitelist, nicht der Rohwert aus der Adresszeile.
+      const slug = erlaubteSlugs[erlaubteSlugs.indexOf(wunschBranche)];
+      if (feld) feld.value = labels[slug] ?? slug;
+    }
+  }
+
   if (form && form.dataset.preview !== undefined) {
     // Vorschaumodus: niemals senden, nur eine Hinweismeldung anzeigen.
     const status = form.querySelector<HTMLElement>('[data-status]');

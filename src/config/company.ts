@@ -89,8 +89,15 @@ export const company: Company = {
 };
 
 /**
- * Felder, die für einen produktiven Live-Gang zwingend echte Werte brauchen
- * (Impressum + Datenschutz + Kontakt). Basis der Build-Validierung.
+ * Felder, die für einen produktiven Live-Gang zwingend echte Werte brauchen.
+ * Basis der Build-Validierung.
+ *
+ * Die ersten fünf tragen das Impressum (§ 5 DDG) und die Kontaktaufnahme.
+ * Die vier folgenden tragen Aussagen der Datenschutzerklärung: Solange
+ * Hostinganbieter, Serverstandort, Mailanbieter und Aufbewahrungsdauer nicht
+ * belegt sind, lässt sich weder ein Serverstandort benennen noch eine
+ * Speicherdauer angeben. Ein Produktions-Build wäre dann eine Behauptung ins
+ * Blaue hinein – deshalb bricht er ab, statt die Angaben wegzulassen.
  */
 export const REQUIRED_LEGAL_FIELDS = [
   'street',
@@ -98,4 +105,8 @@ export const REQUIRED_LEGAL_FIELDS = [
   'city',
   'email',
   'phone',
+  'hostingProvider',
+  'hostingLocation',
+  'mailProvider',
+  'formRetentionPeriod',
 ] as const satisfies readonly (keyof Company)[];

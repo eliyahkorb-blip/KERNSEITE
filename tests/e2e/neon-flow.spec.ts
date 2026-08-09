@@ -146,10 +146,12 @@ test.describe('Hero-Inhalte bleiben unverändert', () => {
     await expect(hero.locator('h1')).toHaveCount(1);
     await expect(hero.locator('h1')).toContainText('Dein Unternehmen kann mehr.');
     await expect(hero.locator('h1')).toContainText('Deine Website sollte es zeigen.');
-    await expect(hero).toContainText('KERNSEITE entwickelt individuelle Websites');
+    // Der Lead ordnet die Marke ein: wer, was, wo.
+    await expect(hero).toContainText('Webdesign- und KI-Agentur aus dem Raum Würzburg');
+    await expect(hero).toContainText('individuelle Unternehmenswebsites');
     await expect(hero.locator('a.btn--primary')).toContainText('Projekt besprechen');
     await expect(hero.locator('a.btn--secondary')).toContainText('Arbeiten ansehen');
-    await expect(hero).toContainText('Persönlich in Würzburg. Digital bundesweit.');
+    await expect(hero).toContainText('Persönlich im Raum Würzburg. Digital bundesweit.');
   });
 
   test('Die Marken-Schriften bleiben aktiv', async ({ page }) => {

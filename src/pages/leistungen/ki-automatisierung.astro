@@ -59,8 +59,8 @@ const steps = [
 ---
 
 <BaseLayout
-  title={service.label}
-  description="KI und Automatisierung aus Würzburg: wiederkehrende Arbeit abnehmen, ohne den persönlichen Kontakt zu ersetzen."
+  title="KI-Agentur Würzburg · KI-Integration"
+  description="KI-Agentur im Raum Würzburg: KI-Integration in bestehende Abläufe, Chatbots und Voice Agents mit klarer Übergabe an Menschen – ohne Vollautomatik-Versprechen."
   jsonLd={[breadcrumbJsonLd(breadcrumbs), serviceJsonLd(service)]}
 >
   <!-- Dunkler Textkopf: bewusst ohne KI-Bildsprache -->
@@ -133,7 +133,7 @@ const steps = [
   </section>
 
   <RelatedServices exclude="ki" only={['websites', 'google', 'seo-geo']} />
-  <CtaBanner />
+  <CtaBanner ctaLabel="KI-Einsatz besprechen" ctaHref="/kontakt/?leistung=ki" />
 </BaseLayout>
 
 <style>

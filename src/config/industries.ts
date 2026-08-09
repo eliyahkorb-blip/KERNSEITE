@@ -3,6 +3,16 @@ export interface Industry {
   readonly href: string;
   readonly label: string;
   readonly title: string;
+  /**
+   * Titel für Suchergebnisse. Die sichtbare Überschrift bleibt markenstark;
+   * hier steht, wonach tatsächlich gesucht wird. Eine Branche = eine
+   * Suchintention, keine Aufzählung von Schreibvarianten.
+   */
+  readonly seoTitle: string;
+  /** Beschreibung für Suchergebnisse, 140–160 Zeichen, in ganzen Sätzen. */
+  readonly metaDescription: string;
+  /** Beschriftung des Abschluss-CTA – benennt das Vorhaben, nicht die Aktion. */
+  readonly ctaLabel: string;
   /** Kurzes Nutzenargument für die typografische Branchenliste. */
   readonly argument: string;
   readonly detailH1: string;
@@ -19,6 +29,10 @@ export const industries: readonly Industry[] = [
     href: '/branchen/handwerk/',
     label: 'Handwerk',
     title: 'Handwerk',
+    seoTitle: 'Webdesign für Handwerker',
+    metaDescription:
+      'Website für Handwerksbetriebe: Leistungen verständlich zeigen, regional gefunden werden und Anfragen wie Bewerbungen einfach machen.',
+    ctaLabel: 'Website fürs Handwerk besprechen',
     argument: 'Zeig Qualität, gewinne Aufträge und Bewerber – mit klaren Kontaktwegen.',
     detailH1: 'Websites für Handwerksbetriebe, die Aufträge und Bewerber bringen.',
     intro:
@@ -52,6 +66,10 @@ export const industries: readonly Industry[] = [
     href: '/branchen/zahnarztpraxen/',
     label: 'Zahnarztpraxen',
     title: 'Zahnarztpraxen & medizinische Praxen',
+    seoTitle: 'Webdesign für Zahnarztpraxen',
+    metaDescription:
+      'Praxis-Website, die Vertrauen schafft: ruhige Nutzerführung, klar erklärte Leistungen und einfache Terminwege – ohne Heilversprechen.',
+    ctaLabel: 'Praxis-Website besprechen',
     argument: 'Vertrauen, ruhige Nutzerführung und klare Terminwege – ohne Heilversprechen.',
     detailH1: 'Praxis-Websites, die Vertrauen schaffen und Termine erleichtern.',
     intro:
@@ -85,6 +103,10 @@ export const industries: readonly Industry[] = [
     href: '/branchen/gastronomie-hotels/',
     label: 'Gastronomie & Hotels',
     title: 'Gastronomie & Hotels',
+    seoTitle: 'Webdesign für Gastronomie & Hotels',
+    metaDescription:
+      'Restaurant- und Hotel-Website: Atmosphäre zeigen, Speisekarte aktuell halten, Reservierung und Buchung erleichtern, Google-Profil verbinden.',
+    ctaLabel: 'Website-Projekt besprechen',
     argument: 'Atmosphäre spürbar machen und Reservierungen bzw. Buchungen erleichtern.',
     detailH1: 'Websites für Gastronomie und Hotels, die Lust auf einen Besuch machen.',
     intro:
@@ -118,6 +140,10 @@ export const industries: readonly Industry[] = [
     href: '/branchen/lokale-dienstleister/',
     label: 'Lokale Dienstleister',
     title: 'Lokale Dienstleister',
+    seoTitle: 'Webdesign für lokale Dienstleister',
+    metaDescription:
+      'Website für lokale Dienstleister: Leistungen klar benennen, im Einzugsgebiet gefunden werden und die Kontaktaufnahme kurz halten.',
+    ctaLabel: 'Website-Projekt besprechen',
     argument: 'Klare Leistungen, regionale Auffindbarkeit und einfache Kontaktaufnahme.',
     detailH1: 'Websites für lokale Dienstleister, die Anfragen bringen.',
     intro:
@@ -151,6 +177,10 @@ export const industries: readonly Industry[] = [
     href: '/branchen/b2b-mittelstand/',
     label: 'B2B-Mittelstand',
     title: 'B2B-Mittelstand',
+    seoTitle: 'B2B-Webdesign für den Mittelstand',
+    metaDescription:
+      'B2B-Website für mittelständische Unternehmen: erklärungsbedürftige Leistungen verständlich darstellen und qualifizierte Anfragen erzeugen.',
+    ctaLabel: 'B2B-Website besprechen',
     argument: 'Komplexe Leistungen verständlich machen und qualifizierte Anfragen erzeugen.',
     detailH1: 'Websites für den B2B-Mittelstand, die komplexe Leistungen verständlich machen.',
     intro:
