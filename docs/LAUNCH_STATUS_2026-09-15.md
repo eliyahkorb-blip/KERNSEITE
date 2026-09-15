@@ -36,3 +36,11 @@ Die Website ist als Vorschau prüfbar. Für den produktiven Betrieb fehlen die b
 Ein echtes Porträt von Eliyah verbessert die persönliche Darstellung; es wurde nicht durch ein Stock- oder generiertes Personenbild ersetzt. Referenz-Screenshots dokumentieren den bereitgestellten Projektstand, nicht zwingend die aktuelle externe Live-Version.
 
 Die technische Vorbereitung ist keine Ranking-, Auftrags- oder Rechtskonformitätsgarantie. Nachfrage und gewonnene Aufträge müssen nach dem Domainstart gemessen werden. Die qualitative Wettbewerbsanalyse des beigefügten Audits ersetzt keine Suchvolumen-/Search-Console-Daten.
+
+## GitHub-Prüfung und Veröffentlichung
+
+Commit `a314d7d`: CI-Build, Typecheck, Lint, QA, End-to-End-Tests sowie PHP-Syntax/Composer/Formularvalidierung erfolgreich. Der Vorschau-Build als Artefakt ist ebenfalls erfolgreich.
+
+GitHub Pages hat den Veröffentlichungsjob vor dem Start abgewiesen: Der Branch `rework/agentur-launch-2026-09-15` ist durch die Environment-Regeln nicht zum Deployment auf `github-pages` zugelassen. Die bestehende öffentliche URL zeigt deshalb noch den vorherigen Stand. Keine Schutzregel wurde verändert oder umgangen.
+
+Erforderliche Administratoreinstellung für die neue Vorschau: Repository → Settings → Environments → github-pages → Deployment branches and tags. Den Branch `rework/agentur-launch-2026-09-15` ausdrücklich zulassen, danach den Preview-Workflow erneut starten. Nicht pauschal sämtliche Branches freigeben. Ein Merge in main ist hierfür nicht nötig.

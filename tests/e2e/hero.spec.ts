@@ -35,7 +35,7 @@ test('Desktop-Startseite bleibt kompakt', async ({ page }) => {
 });
 
 for (const width of [320, 390, 768, 1440]) {
-  test(`Wichtige Seiten ohne Überlauf bei ${width}px`, async ({ page }) => {
+  test(`Wichtige Seiten ohne Überlauf bei ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
     for (const path of [
       '/',
@@ -62,6 +62,20 @@ for (const width of [320, 390, 768, 1440]) {
             .map((img) => img.getAttribute('src')),
         );
       expect(broken, path).toEqual([]);
+      if (
+        [390, 1440].includes(width) &&
+        ['/', '/leistungen/websites/', '/agentur/', '/kontakt/'].includes(path)
+      ) {
+        for (const img of await page.locator('img').all()) await img.scrollIntoViewIfNeeded();
+        await page.evaluate(() =>
+          Promise.all(Array.from(document.images).map((img) => img.decode().catch(() => {}))),
+        );
+        await page.keyboard.press('Control+Home');
+        await testInfo.attach(`Ansicht-${width}-${path.replaceAll('/', '-') || 'start'}`, {
+          body: await page.screenshot({ fullPage: true }),
+          contentType: 'image/png',
+        });
+      }
     }
   });
 }
