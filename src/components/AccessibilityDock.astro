@@ -112,8 +112,6 @@
     root.dataset.a11yMotion = s.motion ? 'reduced' : '';
     if (!s.contrast) delete root.dataset.a11yContrast;
     if (!s.motion) delete root.dataset.a11yMotion;
-    // Der Neon-Hero hört darauf und hält an bzw. läuft weiter.
-    document.dispatchEvent(new CustomEvent('kernseite:motion'));
   }
 
   const dock = document.querySelector<HTMLElement>('[data-a11y]');

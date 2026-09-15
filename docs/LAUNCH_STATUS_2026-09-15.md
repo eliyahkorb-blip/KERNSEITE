@@ -39,8 +39,10 @@ Die technische Vorbereitung ist keine Ranking-, Auftrags- oder Rechtskonformitä
 
 ## GitHub-Prüfung und Veröffentlichung
 
-Commit `a314d7d`: CI-Build, Typecheck, Lint, QA, End-to-End-Tests sowie PHP-Syntax/Composer/Formularvalidierung erfolgreich. Der Vorschau-Build als Artefakt ist ebenfalls erfolgreich.
+Commit `a314d7d`: CI-Build, Typecheck, Lint, QA, 69 End-to-End-Tests sowie PHP-Syntax/Composer/Formularvalidierung erfolgreich. Der Vorschau-Build als Artefakt ist ebenfalls erfolgreich.
 
 GitHub Pages hat den Veröffentlichungsjob vor dem Start abgewiesen: Der Branch `rework/agentur-launch-2026-09-15` ist durch die Environment-Regeln nicht zum Deployment auf `github-pages` zugelassen. Die bestehende öffentliche URL zeigt deshalb noch den vorherigen Stand. Keine Schutzregel wurde verändert oder umgangen.
 
 Erforderliche Administratoreinstellung für die neue Vorschau: Repository → Settings → Environments → github-pages → Deployment branches and tags. Den Branch `rework/agentur-launch-2026-09-15` ausdrücklich zulassen, danach den Preview-Workflow erneut starten. Nicht pauschal sämtliche Branches freigeben. Ein Merge in main ist hierfür nicht nötig.
+
+Visuelle Prüfung: Startseite, Website-Leistung, Agentur und Kontakt wurden aus dem CI-Build bei 390 und 1.440 Pixel Breite gerendert und geprüft. Die Kontaktangaben im CI-Bericht sind absichtlich fiktive Testdaten. Die mobile Fußnavigation wurde anschließend kompakter angeordnet. Die Barrierefreiheitserklärung wurde dem tatsächlichen Stand ohne animierten Hero angepasst.

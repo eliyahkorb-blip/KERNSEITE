@@ -70,7 +70,8 @@ for (const width of [320, 390, 768, 1440]) {
         await page.evaluate(() =>
           Promise.all(Array.from(document.images).map((img) => img.decode().catch(() => {}))),
         );
-        await page.keyboard.press('Control+Home');
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+        await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
         await testInfo.attach(`Ansicht-${width}-${path.replaceAll('/', '-') || 'start'}`, {
           body: await page.screenshot({ fullPage: true }),
           contentType: 'image/png',

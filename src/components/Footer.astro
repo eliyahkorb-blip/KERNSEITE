@@ -140,7 +140,7 @@ const c = activeCompany;
   }
   /* Sehr schmal (auch bei starkem Browser-Zoom): einspaltig, sonst laufen
      lange Linktexte wie „Google-Unternehmensprofil“ aus dem Raster. */
-  @media (max-width: 30rem) {
+  @media (max-width: 22rem) {
     .ft__nav {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-lg);
@@ -153,6 +153,7 @@ const c = activeCompany;
     padding: 0;
   }
   .ft__group a {
+    overflow-wrap: anywhere;
     color: var(--text-invert-muted);
     text-decoration: none;
     font-size: var(--fs-small);

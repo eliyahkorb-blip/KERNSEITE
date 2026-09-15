@@ -9,12 +9,8 @@ const breadcrumbs = [
 ];
 const c = activeCompany;
 
-/** Datum des Builds – so veraltet die Angabe nicht stillschweigend. */
-const lastReview = new Intl.DateTimeFormat('de-DE', {
-  day: '2-digit',
-  month: 'long',
-  year: 'numeric',
-}).format(new Date());
+// Tatsächlicher dokumentierter Prüfstand, nicht automatisch das Build-Datum.
+const lastReview = '15. September 2026';
 ---
 
 <PageLayout
@@ -38,7 +34,10 @@ const lastReview = new Intl.DateTimeFormat('de-DE', {
         <h2>Umgesetzte Maßnahmen</h2>
         <ul>
           <li>Semantisches HTML mit klaren Landmarken und sinnvoller Überschriftenstruktur</li>
-          <li>Vollständige Bedienbarkeit per Tastatur und klar sichtbare Fokuszustände</li>
+          <li>
+            Tastaturbedienung für Navigation, Formular und Aufklappelemente mit sichtbaren
+            Fokuszuständen
+          </li>
           <li>
             Ausreichende Farbkontraste; Informationen werden nicht allein über Farbe vermittelt
           </li>
@@ -52,10 +51,10 @@ const lastReview = new Intl.DateTimeFormat('de-DE', {
 
         <h2>Stand der Prüfung</h2>
         <p>
-          Diese Website ist <strong>teilweise geprüft</strong>. Wir behaupten keine vollständige
-          gesetzliche Konformität, weil dafür noch kein unabhängiges Gutachten vorliegt.
+          Diese Website ist <strong>teilweise geprüft</strong>. Eine vollständige Prüfung nach
+          WCAG 2.2 AA ist noch nicht abgeschlossen.
         </p>
-        <p>Geprüft wurden bisher, jeweils automatisiert und zusätzlich von Hand:</p>
+        <p>Die bisherige technische Prüfung umfasst:</p>
         <ul>
           <li>Überschriftenhierarchie und Landmarken auf allen öffentlichen Seiten</li>
           <li>Alternativtexte aller informativen Bilder</li>
@@ -66,7 +65,7 @@ const lastReview = new Intl.DateTimeFormat('de-DE', {
           <li>Sichtbare Fokuszustände</li>
           <li>Farbkontraste von Fließtext, Überschriften und Schaltflächen</li>
           <li>
-            Darstellung bei 200 Prozent Browserzoom sowie in der größten Textstufe dieser Website
+            Darstellung in schmalen Ansichten ab 320 Pixel Breite sowie die Textgrößen-Einstellungen
           </li>
           <li>Verhalten bei aktivierter Systemeinstellung „Bewegung reduzieren“</li>
         </ul>
@@ -74,13 +73,10 @@ const lastReview = new Intl.DateTimeFormat('de-DE', {
         <h2>Bekannte Einschränkungen</h2>
         <ul>
           <li>
-            Der animierte Hintergrund der Startseite ist rein dekorativ und für Screenreader
-            ausgeblendet. Er lässt sich über den Schalter unten links anhalten.
+            Eine vollständige manuelle Prüfung mit Screenreadern und bei vergrößerter
+            Browserdarstellung steht noch aus.
           </li>
-          <li>
-            Eingebettete Inhalte von Dritten werden erst nach einem Klick geladen. Für deren
-            Barrierefreiheit können wir nicht einstehen.
-          </li>
+          <li>Verlinkte externe Kundenwebsites liegen außerhalb unseres Prüfbereichs.</li>
           <li>
             Es liegt noch keine Prüfung durch eine unabhängige Stelle und keine Rückmeldung von
             Nutzenden mit assistiven Technologien vor.
@@ -90,8 +86,8 @@ const lastReview = new Intl.DateTimeFormat('de-DE', {
         <h2>Barrierefreiheits-Schalter</h2>
         <p>
           Unten links lassen sich Textgröße, hoher Kontrast und reduzierte Bewegung einstellen. Die
-          Auswahl wird nur lokal im Browser gespeichert, ohne Cookie und ohne personenbezogene
-          Daten. Der Schalter ersetzt keine barrierefreie Gestaltung, sondern ergänzt sie.
+          Auswahl wird nur lokal im Browser gespeichert, ohne Übertragung dieser Einstellungen an
+          unseren Server. Der Schalter ersetzt keine barrierefreie Gestaltung, sondern ergänzt sie.
         </p>
 
         <h2>Feedback und Kontakt</h2>
