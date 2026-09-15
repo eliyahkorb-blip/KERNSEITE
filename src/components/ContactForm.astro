@@ -2,36 +2,16 @@
 import { services } from '../config/services';
 import { industries } from '../config/industries';
 import { IS_PREVIEW } from '../lib/build-mode';
-
-/**
- * Kontextübergabe über die Adresszeile.
- *
- * Von einer Leistungs- oder Branchenseite führt der Aufruf `?leistung=…`
- * bzw. `?branche=…` mit. Der Wert aus der Adresszeile wird **nie**
- * übernommen: Das Skript vergleicht ihn nur mit dieser Liste und setzt bei
- * einem Treffer den hier erzeugten Wert. Damit kann kein fremder Text ins
- * Formular, ins DOM oder in die E-Mail gelangen.
- */
+import { activeCompany } from '../lib/config-validation';
 const serviceKeys = services.map((s) => s.key);
 const branchSlugs = industries.map((i) => i.slug);
 const branchLabels = Object.fromEntries(industries.map((i) => [i.slug, i.label]));
-
-// Endpoint des PHP-Formulars (wird beim Deployment nach public_html/api/ ausgeliefert).
-// Im Vorschaumodus wird NICHT gesendet (kein Mailversand).
 const ACTION = '/api/contact.php';
-
-/* Projektumfang statt Budget.
-   KERNSEITE veröffentlicht keine Preise. Eine sichtbare Auswahl von
-   Eurobeträgen wäre eine Preisangabe durch die Hintertür: Sie legt eine
-   Spanne fest, bevor überhaupt feststeht, worum es geht, und sortiert
-   Anfragen nach Zahlen statt nach Vorhaben. Die Qualifizierung läuft deshalb
-   über den Umfang des Vorhabens. */
 const scopes = [
   'Noch offen',
   'Einzelne Landingpage / Onepager',
   'Unternehmenswebsite',
   'Umfangreicher Relaunch',
-  'Individuelles digitales System',
 ];
 const timings = [
   'So bald wie möglich',
@@ -50,115 +30,167 @@ const timings = [
   data-service-keys={serviceKeys.join(',')}
   data-branch-slugs={branchSlugs.join(',')}
   data-branch-labels={JSON.stringify(branchLabels)}
-  novalidate
 >
-  <!-- Honeypot (für Menschen unsichtbar) -->
+  {
+    IS_PREVIEW && (
+      <p class="cform__preview">
+        <strong>Vorschau: Der Formularversand ist noch nicht eingerichtet.</strong> Du kannst uns
+        unter{' '}
+        <a href={`tel:${activeCompany.phone.replace(/[^\d+]/g, '')}`}>{activeCompany.phone}</a>{' '}
+        erreichen. Eingaben auf dieser Vorschauseite werden nicht versendet.
+      </p>
+    )
+  }
   <div class="cform__hp" aria-hidden="true">
-    <label for="cf-website2">Bitte dieses Feld frei lassen</label>
-    <input id="cf-website2" name="website2" type="text" tabindex="-1" autocomplete="off" />
+    <label for="cf-website2">Bitte dieses Feld frei lassen</label><input
+      id="cf-website2"
+      name="website2"
+      type="text"
+      tabindex="-1"
+      autocomplete="off"
+    />
   </div>
-  <!-- Zeitstempel für Mindest-Ausfüllzeit (per JS gesetzt) -->
   <input type="hidden" name="rendered_at" data-rendered-at value="" />
-
+  <input type="hidden" name="branch" value="" data-branch-field />
   <div class="cform__grid">
     <div class="field">
-      <label for="cf-name">Name <span class="field__req" aria-hidden="true">*</span></label>
-      <input
+      <label for="cf-name">Dein Name *</label><input
         id="cf-name"
         name="name"
         type="text"
         autocomplete="name"
+        maxlength="120"
         required
-        aria-required="true"
       />
     </div>
     <div class="field">
-      <label for="cf-company">Unternehmen <span class="field__opt">optional</span></label>
-      <input id="cf-company" name="company" type="text" autocomplete="organization" />
-    </div>
-    <div class="field">
-      <label for="cf-email">E-Mail <span class="field__req" aria-hidden="true">*</span></label>
-      <input
+      <label for="cf-email">Deine E-Mail *</label><input
         id="cf-email"
         name="email"
         type="email"
         autocomplete="email"
+        maxlength="200"
         required
-        aria-required="true"
       />
     </div>
     <div class="field">
-      <label for="cf-phone">Telefon <span class="field__opt">optional</span></label>
-      <input id="cf-phone" name="phone" type="tel" autocomplete="tel" />
-    </div>
-    <div class="field">
-      <label for="cf-service">Gewünschte Leistung <span class="field__opt">optional</span></label>
-      <select id="cf-service" name="service">
-        <option value="">Bitte wählen …</option>
-        {
-          services.map((s) => (
-            <option value={s.label} data-key={s.key}>
-              {s.cardTitle}
-            </option>
-          ))
-        }
-        <option value="Noch unklar">Noch unklar</option>
-      </select>
-      {/* Branche kommt nur aus der Whitelist oben, nie aus der Adresszeile. */}
-      <input type="hidden" name="branch" value="" data-branch-field />
-    </div>
-    <div class="field">
-      <label for="cf-existing">Bestehende Website <span class="field__opt">optional</span></label>
-      <input
+      <label for="cf-existing">Bestehende Website <span class="field__opt">optional</span></label
+      ><input
         id="cf-existing"
         name="existing_site"
-        type="url"
+        type="text"
         inputmode="url"
-        placeholder="https://"
+        maxlength="300"
+        placeholder="www.dein-unternehmen.de"
       />
     </div>
-    <div class="field field--full">
-      <label for="cf-message"
-        >Projektbeschreibung <span class="field__req" aria-hidden="true">*</span></label
+    <div class="field">
+      <label for="cf-budget">Geplantes Budget <span class="field__opt">optional</span></label
+      ><select id="cf-budget" name="budget"
+        ><option value="">Noch offen</option><option>1.500–2.400 € netto</option><option
+          >2.400–3.600 € netto</option
+        ><option>Mehr als 3.600 € netto</option></select
       >
-      <textarea
+    </div>
+    <div class="field field--full">
+      <label for="cf-message">Worum geht es? *</label><textarea
         id="cf-message"
         name="message"
-        rows="6"
+        rows="5"
+        minlength="10"
+        maxlength="5000"
         required
-        aria-required="true"
-        aria-describedby="cf-message-hint"></textarea>
-      <p id="cf-message-hint" class="field__hint">Worum geht es? Was möchtest du erreichen?</p>
-    </div>
-    <div class="field">
-      <label for="cf-scope">Projektumfang <span class="field__opt">optional</span></label>
-      <select id="cf-scope" name="scope">
-        <option value="">Bitte wählen …</option>
-        {scopes.map((s) => <option value={s}>{s}</option>)}
-      </select>
-    </div>
-    <div class="field">
-      <label for="cf-timing">Gewünschter Start <span class="field__opt">optional</span></label>
-      <select id="cf-timing" name="timing">
-        <option value="">Bitte wählen …</option>
-        {timings.map((t) => <option value={t}>{t}</option>)}
-      </select>
+        aria-describedby="cf-message-hint"></textarea><p id="cf-message-hint" class="field__hint">
+        Was bietet dein Unternehmen an, und was soll die neue Website erreichen? Ein paar Sätze
+        reichen.
+      </p>
     </div>
   </div>
-
+  <details class="cform__details">
+    <summary>Weitere Angaben ergänzen <span class="field__opt">optional</span></summary><div
+      class="cform__grid"
+    >
+      <div class="field">
+        <label for="cf-company">Unternehmen</label><input
+          id="cf-company"
+          name="company"
+          type="text"
+          autocomplete="organization"
+          maxlength="160"
+        />
+      </div>
+      <div class="field">
+        <label for="cf-phone">Telefon</label><input
+          id="cf-phone"
+          name="phone"
+          type="tel"
+          autocomplete="tel"
+          maxlength="60"
+        />
+      </div>
+      <div class="field">
+        <label for="cf-service">Gewünschte Leistung</label><select id="cf-service" name="service"
+          ><option value="">Bitte wählen …</option>{
+            services.map((s) => (
+              <option value={s.label} data-key={s.key}>
+                {s.cardTitle}
+              </option>
+            ))
+          }<option value="Noch unklar">Noch unklar</option></select
+        >
+      </div>
+      <div class="field">
+        <label for="cf-scope">Projektumfang</label><select id="cf-scope" name="scope"
+          ><option value="">Bitte wählen …</option>{
+            scopes.map((s) => <option value={s}>{s}</option>)
+          }</select
+        >
+      </div>
+      <div class="field">
+        <label for="cf-timing">Gewünschter Start</label><select id="cf-timing" name="timing"
+          ><option value="">Bitte wählen …</option>{
+            timings.map((t) => <option value={t}>{t}</option>)
+          }</select
+        >
+      </div>
+    </div>
+  </details>
   <p class="cform__privacy">
-    Mit dem Absenden werden die Angaben zur Bearbeitung deiner Anfrage verarbeitet. Weitere
-    Informationen findest du in der <a href="/datenschutz/">Datenschutzerklärung</a>.
+    * Pflichtfelder. Mit dem Absenden verarbeiten wir deine Angaben zur Bearbeitung deiner Anfrage.
+    Weitere Informationen findest du in der <a href="/datenschutz/">Datenschutzerklärung</a>.
   </p>
-
   <div class="cform__actions">
-    <button type="submit" class="btn btn--primary" data-submit>Anfrage senden</button>
+    <button type="submit" class="btn btn--primary" data-submit disabled={IS_PREVIEW}
+      >{IS_PREVIEW ? 'Versand erst auf der Live-Website' : 'Unverbindliche Anfrage senden'}</button
+    >
   </div>
-
   <p class="cform__status" role="status" aria-live="polite" data-status></p>
 </form>
 
 <style>
+  .cform__preview {
+    padding: 1rem;
+    background: var(--ks-surface);
+    font-size: 0.875rem;
+    margin-block-end: 1.5rem;
+  }
+  .cform__preview strong {
+    display: block;
+    margin-block-end: 0.4rem;
+  }
+  .cform__details {
+    margin-block-start: 1.5rem;
+    border-block: 1px solid var(--line);
+  }
+  .cform__details summary {
+    padding-block: 1rem;
+    cursor: pointer;
+    font-size: 0.9375rem;
+  }
+  .cform__details .cform__grid {
+    padding-block: 0.5rem 1.5rem;
+  }
+
   .cform__hp {
     position: absolute;
     left: -9999px;
@@ -306,6 +338,7 @@ const timings = [
       }
     });
   } else if (form) {
+    form.noValidate = true;
     const status = form.querySelector<HTMLElement>('[data-status]');
     const submit = form.querySelector<HTMLButtonElement>('[data-submit]');
     const renderedAt = form.querySelector<HTMLInputElement>('[data-rendered-at]');
@@ -319,12 +352,21 @@ const timings = [
         if (!err && wrap) {
           err = document.createElement('p');
           err.className = 'field__error';
+          err.id = field.id + '-error';
+          const hint = field.getAttribute('aria-describedby');
+          field.dataset.originalDescribedby = hint ?? '';
+          field.setAttribute('aria-describedby', [hint, err.id].filter(Boolean).join(' '));
           wrap.appendChild(err);
         }
         if (err) err.textContent = message;
       } else {
         field.removeAttribute('aria-invalid');
-        err?.remove();
+        if (err) {
+          const hint = field.dataset.originalDescribedby;
+          if (hint) field.setAttribute('aria-describedby', hint);
+          else field.removeAttribute('aria-describedby');
+          err.remove();
+        }
       }
     };
 
@@ -377,9 +419,13 @@ const timings = [
           method: 'POST',
           body: new FormData(form),
           headers: { Accept: 'application/json' },
+          signal: AbortSignal.timeout(20000),
         });
-        const data = await response.json().catch(() => ({ ok: response.ok }));
-        if (response.ok && data.ok !== false) {
+        if (!response.headers.get('content-type')?.includes('application/json')) {
+          throw new Error('Unerwartete Serverantwort');
+        }
+        const data = await response.json();
+        if (response.ok && data?.ok === true) {
           if (status) {
             status.dataset.state = 'ok';
             status.textContent =
@@ -388,7 +434,13 @@ const timings = [
           form.reset();
           if (renderedAt) renderedAt.value = String(Date.now());
         } else {
-          throw new Error(data.message || 'Fehler');
+          if (response.status === 429 && status) {
+            status.dataset.state = 'error';
+            status.textContent =
+              'Bitte warte einen Moment und versuche es erneut. Bei wiederholten Fehlern erreichst du uns direkt per E-Mail oder Telefon.';
+            return;
+          }
+          throw new Error('Versand fehlgeschlagen');
         }
       } catch {
         if (status) {

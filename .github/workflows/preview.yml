@@ -5,9 +5,13 @@ name: Preview
 on:
   push:
     branches:
-      - claude/feat-kernseite-website-5cid9c
+      - rework/agentur-launch-2026-09-15
   pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: kernseite-preview-${{ github.event_name }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

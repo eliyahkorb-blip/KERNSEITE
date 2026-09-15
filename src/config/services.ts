@@ -181,7 +181,7 @@ export const services: readonly Service[] = [
     intro:
       'Wer in der Nähe sucht, entscheidet schnell. Ein konsistentes Google-Unternehmensprofil sorgt dafür, dass dein Unternehmen richtig verstanden und gefunden wird.',
     problem:
-      'Unvollständige oder widersprüchliche Profildaten führen dazu, dass Google Angebot und Standort nicht eindeutig zuordnet – und du sichtbar bleibst, wo es zählt.',
+      'Unvollständige oder widersprüchliche Profildaten führen dazu, dass Google Angebot und Standort nicht eindeutig zuordnet – und Interessenten dich bei passenden Suchanfragen schwerer finden.',
     solution:
       'Wir richten das Profil sauber ein oder optimieren es: passende Kategorien, klare Leistungen, aktuelle Inhalte und ein Prozess für Bewertungen – abgestimmt mit der Website.',
     components: [

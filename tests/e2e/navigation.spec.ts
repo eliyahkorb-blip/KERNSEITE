@@ -5,7 +5,7 @@ test.describe('Navigation', () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/');
     const nav = page.getByRole('navigation', { name: 'Hauptnavigation' });
-    await expect(nav.getByRole('link', { name: 'Leistungen' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'Websites' })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'Kontakt' })).toBeVisible();
   });
 

@@ -162,7 +162,7 @@ Formaten:
 | `assets/references/google-business-profile-kinderkoerbchen.webp` | 4:5        | echtes Google-Profil              |
 
 Die Ausschnitte erzeugt `python3 scripts/build-reference-crops.py` reproduzierbar
-aus `public/assets/references/source/`. Sobald echte Motive vorliegen, ersetzen sie
+aus `assets-source/references/`. Sobald echte Motive vorliegen, ersetzen sie
 die Ausschnitte an denselben Dateinamen.
 
 **Offen bleiben** die Branchenbilder für Handwerk, Zahnarztpraxen und

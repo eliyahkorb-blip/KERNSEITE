@@ -23,7 +23,7 @@ const c = activeCompany;
         </p>
         <p class="ft__region">{site.region.claim}</p>
         <a class="link-arrow ft__cta" href="/kontakt/">
-          Projekt besprechen <span class="arrow" aria-hidden="true">→</span>
+          Website anfragen <span class="arrow" aria-hidden="true">→</span>
         </a>
       </div>
 
@@ -73,7 +73,7 @@ const c = activeCompany;
 
 <style>
   .ft {
-    padding-block: clamp(3.5rem, 2.5rem + 5vw, 7rem) clamp(2rem, 1.5rem + 2vw, 3rem);
+    padding-block: clamp(3rem, 4vw, 4rem) clamp(2rem, 1.5rem + 2vw, 3rem);
   }
 
   /* `.ft a.ft__wordmark`: Die globale Regel `.section--dark a:not(.btn)` färbt
@@ -86,14 +86,14 @@ const c = activeCompany;
     /* Großer Schriftzug, füllt die Breite. Die Untergrenze von 3rem war auf
        sehr schmalen Viewports (starker Browser-Zoom) breiter als der
        Container – deshalb skaliert sie jetzt bis 1.75rem herunter. */
-    font-size: clamp(1.75rem, 15.5vw, 17rem);
+    font-size: clamp(2rem, 8vw, 7rem);
     line-height: 1;
     letter-spacing: -0.035em;
     /* Ober- und Unterlängen des großen Schriftzugs nicht beschneiden. */
     padding-block-end: 0.06em;
     color: var(--text-invert);
     text-decoration: none;
-    margin-block-end: clamp(2.5rem, 2rem + 3vw, 5rem);
+    margin-block-end: 2rem;
   }
   .ft a.ft__wordmark .ft__dot {
     color: var(--ks-cyan);

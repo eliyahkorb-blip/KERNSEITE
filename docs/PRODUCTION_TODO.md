@@ -1,71 +1,27 @@
-# Production-Blocker
+# Schritte bis zum Produktionsstart
 
-Was vor dem Live-Gang erledigt sein muss. Jeder Punkt mit **BLOCKER** verhindert
-den Produktions-Build technisch (`src/lib/config-validation.ts`).
+Stand: 15.09.2026. Die neue Vorschau ist kein Produktionsdeploy.
 
-## BLOCKER 1 – Datenschutz-Infrastruktur
+## Erledigt
 
-`src/config/company.ts`: `hostingProvider`, `hostingLocation`, `mailProvider`,
-`formRetentionPeriod` sind Platzhalter. Solange das so ist, lässt sich weder
-ein Serverstandort benennen noch eine Speicherdauer angeben.
+- Produktionsadresse vom Inhaber bestätigt: `https://www.kernseite.com`.
+- Domain in Canonicals, Sitemap, Open Graph, JSON-LD und Kontaktangaben angeglichen.
+- Weiterleitung auf HTTPS und www in `public/.htaccess` vorbereitet.
+- Angebotsrahmen 1.500–3.600 Euro netto mit Umfang und Zusatzkosten veröffentlicht.
+- Zehn Stockmotive zugeordnet, fünf davon durch dokumentierte Unsplash-Downloads ersetzt.
+- Bildnachweise öffentlich und im Repository dokumentiert.
 
-Benötigt: Hostingprodukt, tatsächlicher Rechenzentrumsstandort,
-Vertragspartner laut Rechnung, AV-Vertrag, Mailanbieter und -standort,
-Aufbewahrungsfrist. Einzelheiten: `docs/LEGAL_TODO.md`,
-`docs/LEGAL_REVIEW_2026-08.md` Abschnitt 2.1.
+## Vor dem Live-Gang erforderlich
 
-Danach: `release.privacyInfrastructureConfirmed = true`.
+1. **Produktionshosting:** Anbieter, Produkt und tatsächlichen Serverstandort bestätigen. PHP ab 8.1 mit mbstring, Composer-Abhängigkeiten und Apache-Konfiguration bereitstellen. Bei vorgeschaltetem Proxy die HTTPS-Erkennung passend konfigurieren.
+2. **E-Mail:** Tatsächlichen Versandweg bestätigen, SMTP-Zugang serverseitig hinterlegen und `info@kernseite.com` als erreichbaren Empfänger testen. Google Workspace als eingerichtetes Firmenpostfach ersetzt noch keine SMTP-Konfiguration des Formulars. Erfolgreichen Empfang, Antwortadresse und Fehlermeldung auf dem Zielhosting prüfen.
+3. **Datenschutz:** `hostingProvider`, `hostingLocation`, `mailProvider`, `formRetentionPeriod` in `src/config/company.ts` anhand des tatsächlichen Betriebs vervollständigen. AV-Verträge, etwaige Drittlandübermittlungen und Löschpraxis prüfen. Es gibt keine implementierte automatische Löschung von E-Mail-Anfragen nach 90 Tagen.
+4. **Rechtliche Prüfung:** Impressum, Datenschutz, AGB, Steuerdarstellung und tatsächlichen Barrierefreiheitsstatus mit dem Anwalt prüfen. Die Abnahme- und Gerichtsstandsklauseln wurden überarbeitet; eine anwaltliche Freigabe ist damit nicht erfolgt.
+5. Nach belegter Klärung `privacyInfrastructureConfirmed` und `legalReviewApproved` in `src/config/release.ts` setzen. Die Domainfreigabe steht bereits auf `true`.
+6. Produktionsbuild erstellen, QA durchführen, Deployment zusammenstellen. DNS für beide Hostnamen und TLS auf dem Zielhosting prüfen. Echte SMTP-Testanfrage durchführen.
+7. Erst den geprüften Produktionsstand veröffentlichen. Kein Vorschau-/CI-Verzeichnis hochladen; die vorhandenen Deploy-Guards beibehalten.
+8. Search Console/Bing einrichten, Sitemap einreichen, Weiterleitungen und Linkvorschauen prüfen. Details: `SEARCH_LAUNCH_CHECKLIST.md`.
 
-## BLOCKER 2 – Endgültige Canonical-Domain
+## GitHub
 
-Aktuell steht `https://www.kernseite.de` in `SITE_URL`. **Nicht bestätigt.**
-
-Es darf nicht zwei Canonical-Basen geben. Zu entscheiden ist eine Variante:
-
-- `https://kernseite.de` (ohne www) **oder**
-- `https://www.kernseite.de` (mit www)
-
-Nach der Entscheidung auf genau diese Variante setzen:
-
-- `SITE_URL` (Umgebungsvariable) und der Vorgabewert in `astro.config.mjs`
-- `src/config/site.ts` → `site.url`
-- `.env.example`
-- Canonicals, OG-URLs, Sitemap, `robots.txt`, JSON-LD (folgen automatisch aus
-  `site.url`)
-
-Auf dem Hosting zusätzlich:
-
-- 301 von der Nicht-Canonical-Variante auf die Canonical-Variante
-- HTTPS erzwingen
-- keine Weiterleitungsschleife (erst Host, dann Protokoll – nicht doppelt)
-
-Danach: `release.canonicalDomainConfirmed = true`.
-
-## BLOCKER 3 – Rechtliche Freigabe
-
-Impressum, Datenschutzerklärung und AGB sind fachlich zu prüfen. Offene
-Einzelfragen (B2B/B2C, Abnahmeklausel, VSBG, MStV, TDDDG, BFSG) stehen in
-`docs/LEGAL_REVIEW_2026-08.md` Abschnitt 3.
-
-Danach: `release.legalReviewApproved = true`.
-
-## Kein Blocker, aber vor dem Launch zu erledigen
-
-- Formular: SMTP-Zugang serverseitig einrichten, `.env` oberhalb des Webroots.
-  Erst danach ist das Formular produktiv.
-- `docs/SEARCH_LAUNCH_CHECKLIST.md` abarbeiten.
-- HSTS erst aktivieren, wenn HTTPS auf der endgültigen Domain dauerhaft steht.
-- Bildnachweise vervollständigen (`docs/ASSET_LICENSES.md`): Unsplash-Seiten-
-  adressen und die fehlenden Fotografennamen.
-- B2B-Motiv austauschen (`docs/ASSET_TODO.md` Abschnitt 2).
-
-## Prüfen, ob der Schutz greift
-
-```
-pnpm build:production   # muss mit Meldung abbrechen, Exit-Code 1
-pnpm build:ci           # läuft, Fixture-Daten, nicht deploybar
-pnpm build:preview      # läuft, echte Daten, noindex, kein Mailversand
-```
-
-Der zugehörige Test steht in `tests/e2e/produktionsreife.spec.ts`
-(„Ohne Freigabe entsteht kein Produktions-Build“).
+Die Änderungen werden auf `rework/agentur-launch-2026-09-15` gesichert. Kein Merge in `main` ohne ausdrückliche Freigabe. Der vorherige Websitebranch ist enthalten; sein Pull Request muss nicht vorher gemergt werden.

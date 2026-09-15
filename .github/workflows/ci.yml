@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, 'claude/**']
+    branches: [main, 'rework/**']
   pull_request:
     branches: [main]
 
@@ -73,6 +73,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          extensions: mbstring
           tools: composer
 
       - name: Composer validieren
@@ -88,3 +89,6 @@ jobs:
           for f in $(find php/api -name '*.php' -not -path '*/vendor/*'); do
             php -l "$f"
           done
+
+      - name: Formularvalidierung prüfen
+        run: php php/tests/ValidatorTest.php

@@ -48,6 +48,7 @@ final class Mailer
             : PHPMailer::ENCRYPTION_STARTTLS;
         $mail->CharSet = PHPMailer::CHARSET_UTF8;
         $mail->SMTPDebug = SMTP::DEBUG_OFF;
+        $mail->Timeout = 15;
 
         $mail->setFrom($from, Env::get('SMTP_FROM_NAME', 'KERNSEITE Website'));
         $mail->addAddress($to);
@@ -57,7 +58,7 @@ final class Mailer
             $mail->addReplyTo($fields['email'], $fields['name'] !== '' ? $fields['name'] : $fields['email']);
         }
 
-        $mail->Subject = 'Neue Anfrage über kernseite.de'
+        $mail->Subject = 'Neue Anfrage über kernseite.com'
             . ($fields['company'] !== '' ? ' – ' . $fields['company'] : '');
 
         $lines = [
@@ -67,6 +68,7 @@ final class Mailer
             'Telefon:         ' . ($fields['phone'] ?: '—'),
             'Leistung:        ' . ($fields['service'] ?: '—'),
             'Bestehende Site: ' . ($fields['existing_site'] ?: '—'),
+            'Budget:          ' . ($fields['budget'] ?: '—'),
             'Projektumfang:   ' . ($fields['scope'] ?: '—'),
             'Branche:         ' . ($fields['branch'] ?: '—'),
             'Start:           ' . ($fields['timing'] ?: '—'),

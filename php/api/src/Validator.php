@@ -23,6 +23,7 @@ final class Validator
         'existing_site' => 300,
         'message' => 5000,
         'scope' => 80,
+        'budget' => 80,
         'branch' => 80,
         'timing' => 80,
     ];
@@ -63,7 +64,11 @@ final class Validator
             $errors[] = 'Nachricht zu kurz.';
         }
 
-        if ($fields['existing_site'] !== '' && !filter_var($fields['existing_site'], FILTER_VALIDATE_URL)) {
+        if ($fields['existing_site'] !== '' && !preg_match('~^[a-z][a-z0-9+.-]*://~i', $fields['existing_site'])) {
+            $fields['existing_site'] = 'https://' . $fields['existing_site'];
+        }
+        if ($fields['existing_site'] !== '' && (!filter_var($fields['existing_site'], FILTER_VALIDATE_URL)
+            || !in_array(strtolower((string) parse_url($fields['existing_site'], PHP_URL_SCHEME)), ['http', 'https'], true))) {
             // Nicht blockierend – Feld ist optional; ungültige URL wird verworfen.
             $fields['existing_site'] = '';
         }

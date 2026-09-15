@@ -75,7 +75,7 @@ export const company: Company = {
   postalCode: '97250',
   city: 'Erlabrunn',
   country: 'Deutschland',
-  email: 'info@kernseite.de',
+  email: 'info@kernseite.com',
   phone: '+49 160 92647414',
   // USt-IdNr. nicht erfunden -> leer (Impressum blendet den Abschnitt dann aus).
   vatId: '',

@@ -136,11 +136,11 @@ test.describe('Standortwahrheit', () => {
 
 test.describe('SEO – Suchintent je Seite', () => {
   const erwartet: Record<string, string[]> = {
-    'index.html': ['Webdesign', 'KI-Agentur', 'Würzburg'],
-    'leistungen/websites/index.html': ['Webdesign', 'Würzburg'],
+    'index.html': ['Webdesign', 'Unternehmen', 'Würzburg'],
+    'leistungen/websites/index.html': ['Website erstellen lassen', 'Preise'],
     'leistungen/seo-geo/index.html': ['SEO', 'GEO', 'Würzburg'],
     'leistungen/ki-automatisierung/index.html': ['KI-Agentur', 'KI-Integration'],
-    'agentur/index.html': ['Digital-', 'Medienagentur'],
+    'agentur/index.html': ['Webdesign-Agentur', 'Eliyah Korb'],
     'branchen/handwerk/index.html': ['Handwerk'],
     'branchen/zahnarztpraxen/index.html': ['Zahnarztpraxen'],
     'branchen/gastronomie-hotels/index.html': ['Gastronomie'],
@@ -189,20 +189,19 @@ test.describe('SEO – Suchintent je Seite', () => {
   });
 });
 
-test.describe('Conversion – keine Preise, funktionierender Kontext', () => {
-  test('Nirgends stehen öffentliche Eurobeträge', () => {
-    const treffer: string[] = [];
-    for (const { file, html } of readAll()) {
-      const text = textOf(html);
-      if (/\d[\d.\s]*\s*(€|EUR\b)/.test(text)) treffer.push(file);
-    }
-    expect(treffer, `Preisangabe in: ${treffer.join(', ')}`).toEqual([]);
+test.describe('Conversion – Preisorientierung und funktionierender Kontext', () => {
+  test('Preisrahmen nennt Steuerdarstellung und zusätzliche Kosten', () => {
+    const text = textOf(readFileSync(join(DIST, 'leistungen/websites/index.html'), 'utf8'));
+    expect(text).toContain('1.500–3.600');
+    expect(text).toContain('Umsatzsteuer');
+    expect(text).toContain('Hosting');
+    expect(text).toContain('separat');
   });
 
-  test('Das Formular kennt keine Budgetklassen mehr', async ({ page }) => {
+  test('Budgetangabe bleibt optional', async ({ page }) => {
     await page.goto('/kontakt/');
-    await expect(page.locator('[name="budget"]')).toHaveCount(0);
-    await expect(page.locator('#cf-scope')).toHaveCount(1);
+    await expect(page.locator('[name="budget"]')).toHaveCount(1);
+    await expect(page.locator('[name="budget"]')).not.toHaveAttribute('required');
   });
 
   test('?leistung= wählt die passende Leistung vor', async ({ page }) => {

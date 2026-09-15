@@ -52,22 +52,22 @@
   --fw-bold: 700;
 
   /* Redaktionelle Skala – bewusst groß */
-  --fs-hero: clamp(3.8rem, 8.5vw, 9.5rem);
-  --fs-h1: clamp(2.15rem, 6.4vw, 7.5rem);
-  --fs-h2: clamp(2rem, 5.8vw, 7rem);
-  --fs-h3: clamp(2rem, 4.6vw, 5.8rem);
-  --fs-h4: clamp(1.5rem, 2.4vw, 2.4rem);
-  --fs-h5: clamp(1.2rem, 1.4vw, 1.5rem);
-  --fs-lead: clamp(1.15rem, 1.4vw, 1.5rem);
+  --fs-hero: clamp(2.75rem, 5.1vw, 5.3rem);
+  --fs-h1: clamp(2.3rem, 4.6vw, 4.8rem);
+  --fs-h2: clamp(1.9rem, 3.3vw, 3.35rem);
+  --fs-h3: clamp(1.6rem, 2.6vw, 2.6rem);
+  --fs-h4: clamp(1.3rem, 1.8vw, 1.85rem);
+  --fs-h5: clamp(1.125rem, 1.4vw, 1.4rem);
+  --fs-lead: clamp(1.0625rem, 1.3vw, 1.25rem);
   --fs-body: 1.0625rem;
   --fs-small: 0.9375rem;
 
   /* Zeilenhöhen: keine Werte unter 0.94. Darunter berühren sich Ober- und
      Unterlängen aufeinanderfolgender Zeilen – genau die Überschneidungen,
      die im Bericht beanstandet wurden. */
-  --lh-display: 1;
-  --lh-h1: 0.96;
-  --lh-hero: 0.95;
+  --lh-display: 1.08;
+  --lh-h1: 1.04;
+  --lh-hero: 1.02;
   --lh-snug: 1.12;
   --lh-normal: 1.62;
   /* Laufweiten: maximal -0.045em. Enger klebt „rn“ zu „m“ zusammen und
@@ -84,17 +84,17 @@
   --space-xl: 2rem;
   --space-2xl: 3rem;
   --space-3xl: 4.5rem;
-  --space-4xl: 7rem;
-  --space-5xl: 10rem;
+  --space-4xl: 4.5rem;
+  --space-5xl: 6rem;
   /* Abschnittsabstand: 56–88px mobil, 88–144px auf Desktop. Vorher bis
      192px – dadurch entstanden große, inhaltslose Flächen. */
-  --section-y: clamp(3.5rem, 2rem + 5vw, 9rem);
+  --section-y: clamp(3.25rem, 5.5vw, 5.75rem);
 
   /* --- Layout ------------------------------------------------------------ */
-  --container-max: 1720px;
-  --content-max: 1480px;
+  --container-max: 1440px;
+  --content-max: 1280px;
   --measure: 58ch;
-  --gutter: clamp(1.25rem, 0.5rem + 3.4vw, 5rem);
+  --gutter: clamp(1.25rem, 4vw, 4rem);
   --grid-gap: clamp(1.25rem, 0.5rem + 2vw, 3rem);
 
   /* --- Radien / Schatten (fast keine) ------------------------------------ */

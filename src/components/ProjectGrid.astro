@@ -1,0 +1,91 @@
+---
+import { featuredProjects } from '../config/cases';
+---
+
+<ul class="projects" role="list">
+  {
+    featuredProjects.map((project) => (
+      <li>
+        <>
+          <a class="project" href={project.href}>
+            <div class="project__image">
+              <img
+                src={project.screenshotDesktop.src}
+                srcset={project.screenshotDesktop.srcset}
+                sizes="(min-width: 80rem) 580px, (min-width: 48rem) 45vw, 100vw"
+                width={project.screenshotDesktop.width}
+                height={project.screenshotDesktop.height}
+                alt={project.screenshotDesktop.alt}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <>
+              <div class="project__heading">
+                <>
+                  <h3>{project.title}</h3>
+                  <span aria-hidden="true">↗</span>
+                </>
+              </div>
+              <p class="project__category">{project.category}</p>
+            </>
+          </a>
+          <p class="project__description">{project.tagline}</p>
+        </>
+      </li>
+    ))
+  }
+</ul>
+<style>
+  .projects {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .project {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .project__image {
+    background: var(--ks-surface);
+    padding: clamp(0.75rem, 2vw, 1.75rem);
+    overflow: hidden;
+  }
+  .project__image img {
+    width: 100%;
+    height: auto;
+    box-shadow: 0 12px 24px -16px #10121466;
+    transition: transform 200ms ease;
+  }
+  .project:hover img {
+    transform: translateY(-3px);
+  }
+  .project__heading {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-block-start: 1.25rem;
+  }
+  .project__heading h3 {
+    font-size: clamp(1.3rem, 2vw, 1.65rem);
+  }
+  .project__heading span {
+    font-size: 1.5rem;
+  }
+  .project__category {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-block-start: 0.25rem;
+  }
+  .project__description {
+    margin-block-start: 0.85rem;
+    max-width: 54ch;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+  }
+  @media (min-width: 48rem) {
+    .projects {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

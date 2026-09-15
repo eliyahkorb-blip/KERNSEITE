@@ -2,8 +2,8 @@
 """Bereitet alle Fotos für die Auslieferung auf.
 
 Eingang:
-  public/assets/branchen/source/<name>.jpg
-  public/assets/leistungen/source/<name>.jpg
+  assets-source/branchen/<name>.jpg
+  assets-source/leistungen/<name>.jpg
 
 Ausgabe je Motiv:
   <name>-{640,960,1280,1600}.webp
@@ -45,6 +45,8 @@ FOCUS: dict[str, float] = {
     # oben käme der aufgestickte Name einer fremden Praxis ins Bild. Bei 0.42
     # stehen Gesicht, Hand, Instrument und Mundspiegel vollständig im Bild.
     'zahnarztpraxen': 0.42,
+    # Die Reinigungskraft steht am unteren Bildrand.
+    'lokale-dienstleister': 1.0,
 }
 DEFAULT_FOCUS = 0.5
 
@@ -73,6 +75,21 @@ def avif_available() -> bool:
         probe.unlink(missing_ok=True)
 
 
+def save_verified(im: Image.Image, target: Path, format: str, **options) -> None:
+    temporary = target.with_suffix(target.suffix + '.tmp')
+    try:
+        im.save(temporary, format, **options)
+        if temporary.stat().st_size == 0:
+            raise RuntimeError(f'Leere Bilddatei: {target}')
+        with Image.open(temporary) as check:
+            check.load()
+            if check.size != im.size:
+                raise RuntimeError(f'Falsche Bildabmessungen: {target}')
+        temporary.replace(target)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def main() -> int:
     has_avif = avif_available()
     if not has_avif:
@@ -80,7 +97,7 @@ def main() -> int:
 
     total = 0
     for group in GROUPS:
-        src_dir = group / 'source'
+        src_dir = ROOT / 'assets-source' / group.name
         if not src_dir.exists():
             continue
         group.mkdir(parents=True, exist_ok=True)
@@ -91,10 +108,10 @@ def main() -> int:
             for width in WIDTHS:
                 height = round(width / ASPECT)
                 resized = im.resize((width, height), Image.LANCZOS)
-                resized.save(group / f'{src.stem}-{width}.webp', 'WEBP', quality=80, method=6)
+                save_verified(resized, group / f'{src.stem}-{width}.webp', 'WEBP', quality=80, method=6)
                 total += 1
                 if has_avif:
-                    resized.save(group / f'{src.stem}-{width}.avif', 'AVIF', quality=58)
+                    save_verified(resized, group / f'{src.stem}-{width}.avif', 'AVIF', quality=58)
                     total += 1
             print(f'{group.name}/{src.stem}: {len(WIDTHS)} Breiten aus {src.name}')
 

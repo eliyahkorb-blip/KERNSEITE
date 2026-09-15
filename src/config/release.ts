@@ -41,7 +41,7 @@ export interface ReleaseGate {
 
 export const release: ReleaseGate = {
   legalReviewApproved: false,
-  canonicalDomainConfirmed: false,
+  canonicalDomainConfirmed: true,
   privacyInfrastructureConfirmed: false,
 };
 

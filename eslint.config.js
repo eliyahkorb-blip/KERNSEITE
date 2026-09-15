@@ -3,7 +3,7 @@ import tseslint from 'typescript-eslint';
 import astro from 'eslint-plugin-astro';
 import globals from 'globals';
 
-export default tseslint.config(
+export default [
   {
     ignores: [
       'dist/',
@@ -18,11 +18,14 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...astro.configs.recommended,
+  { files: ['**/*.astro'], processor: 'astro/client-side-ts' },
+  { files: ['**/*.astro/*.ts'], languageOptions: { parser: tseslint.parser } },
   {
     // Browser-Interaktionsskripte (client-seitig)
     files: ['src/**/*.{ts,astro}'],
     languageOptions: {
-      globals: { ...globals.browser },
+      globals: { ...globals.browser, ...globals.node },
+      parserOptions: { parser: tseslint.parser, extraFileExtensions: ['.astro'] },
     },
     rules: {
       '@typescript-eslint/no-unused-vars': [
@@ -59,4 +62,4 @@ export default tseslint.config(
       globals: { ...globals.node, ...globals.browser },
     },
   },
-);
+];

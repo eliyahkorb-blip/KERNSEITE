@@ -10,16 +10,14 @@ export interface NavGroup {
 
 /** Hauptnavigation (Header, Desktop + Mobil). */
 export const mainNav: readonly NavItem[] = [
-  { label: 'Leistungen', href: '/leistungen/' },
-  { label: 'Arbeiten', href: '/arbeiten/' },
-  { label: 'Branchen', href: '/branchen/' },
+  { label: 'Websites', href: '/leistungen/websites/' },
+  { label: 'Projekte', href: '/arbeiten/' },
   { label: 'Agentur', href: '/agentur/' },
-  { label: 'Prozess', href: '/prozess/' },
   { label: 'Kontakt', href: '/kontakt/' },
 ];
 
 /** Primärer Handlungsaufruf (Header). */
-export const primaryCta: NavItem = { label: 'Projekt besprechen', href: '/kontakt/' };
+export const primaryCta: NavItem = { label: 'Website anfragen', href: '/kontakt/' };
 
 /** Footer-Navigation, thematisch gruppiert. */
 export const footerNav: readonly NavGroup[] = [
@@ -45,7 +43,7 @@ export const footerNav: readonly NavGroup[] = [
     ],
   },
   {
-    title: 'Studio',
+    title: 'KERNSEITE',
     items: [
       { label: 'Agentur', href: '/agentur/' },
       { label: 'Prozess', href: '/prozess/' },
@@ -61,6 +59,7 @@ export const footerNav: readonly NavGroup[] = [
       { label: 'Datenschutz', href: '/datenschutz/' },
       { label: 'Barrierefreiheit', href: '/barrierefreiheit/' },
       { label: 'AGB', href: '/agb/' },
+      { label: 'Bildnachweise', href: '/bildnachweise/' },
     ],
   },
 ];

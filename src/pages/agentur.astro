@@ -1,7 +1,6 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import CtaBanner from '../components/CtaBanner.astro';
-import { crtSquare } from '../config/media';
 import Photo from '../components/Photo.astro';
 
 const breadcrumbs = [
@@ -11,77 +10,45 @@ const breadcrumbs = [
 
 const values = [
   {
-    title: 'Individuelle Entwicklung',
-    body: 'Jede Website beginnt beim Unternehmen, nicht beim Template. Struktur, Design und Technik werden für dich entwickelt.',
+    title: 'Ein fester Ansprechpartner',
+    body: 'Du besprichst dein Projekt direkt mit Eliyah. Rückfragen, Gestaltung und Umsetzung laufen an einer Stelle zusammen.',
   },
   {
-    title: 'Ehrliche Beratung',
-    body: 'Wir empfehlen, was sinnvoll ist – und sagen auch, was du dir sparen kannst. Keine Paket-Verkäufe.',
+    title: 'Ein nachvollziehbares Angebot',
+    body: 'Seiten, Funktionen, Zuarbeit und Kosten werden vor Projektstart vereinbart. Erweiterungen stimmen wir mit dir ab.',
   },
   {
-    title: 'Keine unnötigen Leistungen',
-    body: 'Die Website ist der Kern. Erweiterungen kommen dazu, wenn sie einen echten Zweck erfüllen.',
+    title: 'Entscheidungen am Entwurf',
+    body: 'Du siehst, wie deine Website aufgebaut wird, und kannst Texte und Gestaltung in Ruhe prüfen.',
   },
   {
-    title: 'Direkte Kommunikation',
-    body: 'Ein fester Ansprechpartner über das ganze Projekt. Kurze Wege, klare Absprachen.',
-  },
-];
-
-// Rollen neutral dargestellt (keine erfundenen Partnernamen/Lebensläufe).
-const roles = [
-  {
-    role: 'Strategie & Konzeption',
-    who: 'Eliyah Korb',
-    note: 'Ziele, Seitenstruktur, Inhalte und Projektsteuerung.',
-  },
-  {
-    role: 'Webdesign & Entwicklung',
-    who: 'Eliyah Korb',
-    note: 'Design, technische Umsetzung, Performance und Barrierearmut.',
-  },
-  {
-    role: 'Unternehmensvideo',
-    who: 'Spezialisierter Videopartner',
-    note: 'Filmische Umsetzung nach gemeinsamem Konzept.',
-  },
-  {
-    role: 'Social Media',
-    who: 'Spezialisierte Partnerin bzw. Partner',
-    note: 'Laufende Betreuung und Content-Produktion.',
-  },
-  {
-    role: 'KI & Automatisierung',
-    who: 'Spezialisierter KI-Partner',
-    note: 'Anspruchsvolle Integrationen und Automatisierungen.',
+    title: 'Zusammenarbeit auf Distanz',
+    body: 'Telefon, Videogespräch und eine gemeinsame Vorschau machen die Abstimmung in ganz Deutschland möglich.',
   },
 ];
 ---
 
 <PageLayout
-  title="Digital- & Medienagentur Würzburg"
+  title="Webdesign-Agentur von Eliyah Korb bei Würzburg"
   description="KERNSEITE ist das Digitalstudio von Eliyah Korb aus dem Raum Würzburg: Schwerpunkt individuelle Websites, ergänzt durch ein projektbezogenes Partnernetzwerk."
-  h1="Klein im Kern. Stark im Netzwerk."
-  lead="KERNSEITE ist das Digitalstudio von Eliyah Korb. Der Schwerpunkt liegt auf individuellen Websites und digitalen Auftritten – regional verankert im Raum Würzburg, ergänzt durch ein projektbezogenes Partnernetzwerk."
+  h1="Ich bin Eliyah. Dein Ansprechpartner bei KERNSEITE."
+  lead="Ich entwickle Websites für Unternehmen, deren gute Arbeit auch online sichtbar werden soll. Von Erlabrunn bei Würzburg aus begleite ich Projekte in ganz Deutschland."
   breadcrumbs={breadcrumbs}
 >
   <!-- Person / Porträt -->
   <section class="section section--paper section--tight">
     <div class="content person">
-      <img
-        class="person__motif"
-        src={crtSquare.src}
-        width={crtSquare.width}
-        height={crtSquare.height}
-        alt={crtSquare.alt}
-        loading="lazy"
-        decoding="async"
-      />
+      <div class="person__identity">
+        <span class="person__initials" aria-hidden="true">EK.</span><p>
+          Eliyah Korb<br /><span>Gründer · Konzept · Webdesign</span>
+        </p>
+      </div>
       <div class="person__text">
-        <h2 class="head__title">Eliyah Korb – dein Ansprechpartner.</h2>
+        <h2 class="head__title">Warum KERNSEITE?</h2>
         <p class="lead">
-          KERNSEITE wird von Eliyah Korb geführt. Du hast über das ganze Projekt hinweg einen festen
-          Ansprechpartner – von der Strategie bis zur fertigen Website.
+          Wer dein Unternehmen noch nicht kennt, bildet sich online einen ersten Eindruck. Deshalb
+          arbeite ich zuerst daran, dein Angebot und deine Kunden zu verstehen. Daraus entstehen
+          Seiten, die erklären, Vertrauen aufbauen und die Kontaktaufnahme erleichtern.
         </p>
       </div>
     </div>
@@ -106,33 +73,19 @@ const roles = [
     </div>
   </section>
 
-  <!-- Wer arbeitet an meinem Projekt? -->
   <section class="section section--paper">
-    <div class="content">
-      <div class="band-head">
-        <h2 class="head__title head__title--wide">Wer arbeitet an meinem Projekt?</h2>
-        <p class="lead measure">
-          Eliyah Korb ist dein zentraler Ansprechpartner und verantwortet Strategie, Design,
-          Konzeption und Umsetzung. Für Film, Social Media und KI werden je nach Projekt
-          spezialisierte selbstständige Partner eingebunden. So bleibt die Kommunikation zentral,
-          während jede Aufgabe von der passenden Fachperson übernommen wird.
-        </p>
+    <div class="content network">
+      <h2>Für besondere Aufgaben kommen Spezialisten dazu.</h2><div>
+        <p class="lead">
+          Die Website betreue ich persönlich. Für Film, Social Media oder anspruchsvolle
+          Automatisierungen arbeite ich je nach Projekt mit selbstständigen Partnern zusammen.
+        </p><p>
+          Wer welche Aufgabe übernimmt, besprechen wir vorab. Dein zentraler Ansprechpartner und
+          Vertragspartner bleibt KERNSEITE – Eliyah Korb.
+        </p><a class="link-arrow" href="/leistungen/"
+          >Leistungen kennenlernen <span aria-hidden="true">→</span></a
+        >
       </div>
-      <ul class="roles" role="list">
-        {
-          roles.map((r) => (
-            <li class="roles__item">
-              <span class="roles__role">{r.role}</span>
-              <span class="roles__who">{r.who}</span>
-              <span class="roles__note">{r.note}</span>
-            </li>
-          ))
-        }
-      </ul>
-      <p class="roles__hint">
-        Partnerprofile mit Namen und Bild veröffentlichen wir nur nach ausdrücklicher Freigabe. Bis
-        dahin stellen wir die Rollen neutral dar.
-      </p>
     </div>
   </section>
 
@@ -167,6 +120,43 @@ const roles = [
 </PageLayout>
 
 <style>
+  .person__identity {
+    padding: 2rem;
+    background: var(--ks-black);
+    color: var(--ks-cream);
+    min-width: 15rem;
+  }
+  .person__initials {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 6rem;
+    line-height: 1;
+    color: var(--ks-cyan);
+    margin-block-end: 3rem;
+    letter-spacing: -0.06em;
+  }
+  .person__identity p {
+    font-size: 0.9375rem;
+  }
+  .person__identity p span {
+    color: var(--text-invert-muted);
+    font-size: 0.8125rem;
+  }
+  .network {
+    display: grid;
+    gap: 2rem;
+  }
+  .network p + p {
+    margin-block: 1rem 1.5rem;
+    color: var(--text-muted);
+  }
+  @media (min-width: 48rem) {
+    .network {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+
   .band-head {
     display: grid;
     gap: var(--space-sm);

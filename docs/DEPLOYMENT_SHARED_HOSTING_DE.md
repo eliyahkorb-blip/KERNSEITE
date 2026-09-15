@@ -99,9 +99,9 @@ gesperrt (`Require all denied`); zusätzlich verweigern die PHP-Dateien den Dire
 ## 8. HTTPS, www-Weiterleitung und HSTS
 
 1. SSL/HTTPS beim Hoster aktivieren und prüfen, dass die Seite über `https://` lädt.
-2. **www-Canonical:** Die Hauptdomain ist `https://www.kernseite.de`. Die Weiterleitung von
-   `kernseite.de` → `www.kernseite.de` übernimmt die `.htaccess` (301). Stelle sicher, dass im
-   DNS **beide** Hostnamen (`kernseite.de` und `www.kernseite.de`) auf den Server zeigen und das
+2. **www-Canonical:** Die Hauptdomain ist `https://www.kernseite.com`. Die Weiterleitung von
+   `kernseite.com` → `www.kernseite.com` übernimmt die `.htaccess` (301). Stelle sicher, dass im
+   DNS **beide** Hostnamen (`kernseite.com` und `www.kernseite.com`) auf den Server zeigen und das
    SSL-Zertifikat beide abdeckt.
 3. **Erst danach** in `public_html/.htaccess` die HSTS-Zeile aktivieren (auskommentierten
    `Strict-Transport-Security`-Header freischalten).

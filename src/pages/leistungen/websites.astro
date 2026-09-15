@@ -11,7 +11,7 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
 import FaqAccordion from '../../components/FaqAccordion.astro';
 import RelatedServices from '../../components/RelatedServices.astro';
-import AccentWord from '../../components/AccentWord.astro';
+import WebsiteOffer from '../../components/WebsiteOffer.astro';
 import { getService } from '../../config/services';
 import { works, type ProjectWork } from '../../config/cases';
 import { faqs } from '../../config/faq';
@@ -31,10 +31,16 @@ const pageFaqs = faqs.filter((f) => f.services?.includes('websites')).slice(0, 2
 const scope = [
   { t: 'Strategie und Struktur', b: 'Ziele, Zielgruppen, Seitenaufbau und Nutzerführung.' },
   { t: 'Individuelles Design', b: 'Gestaltung für dein Unternehmen, nicht aus dem Baukasten.' },
-  { t: 'Responsive Entwicklung', b: 'Sauberer Code, der auf jedem Gerät funktioniert.' },
+  {
+    t: 'Responsive Entwicklung',
+    b: 'Angepasste Layouts und geprüfte Kontaktwege für Smartphone, Tablet und Desktop.',
+  },
   { t: 'SEO- und GEO-Grundlage', b: 'Titel, Struktur und Daten, die Suchsysteme verstehen.' },
   { t: 'Performance und Barrierearmut', b: 'Kurze Ladezeiten, Tastaturbedienung, gute Kontraste.' },
-  { t: 'Betreuung', b: 'Pflege und Weiterentwicklung nach dem Start.' },
+  {
+    t: 'Start und Übergabe',
+    b: 'Gemeinsame Funktionsprüfung, Veröffentlichung und Abstimmung der weiteren Pflege.',
+  },
 ];
 
 const steps = [
@@ -44,26 +50,27 @@ const steps = [
   { t: 'Umsetzung', b: 'Entwicklung, Tests, Feinschliff.' },
   { t: 'Start', b: 'Live-Gang mit Kontrolle statt Bauchgefühl.' },
 ];
-
-const principles = [
-  { t: 'Strategie vor Gestaltung', b: 'Erst klären, was die Seite leisten soll. Dann gestalten.' },
-  { t: 'Individuell statt Baukasten', b: 'Kein Template, dem man ansieht, dass es eines ist.' },
-  { t: 'Mobil zuerst', b: 'Die meisten kommen vom Smartphone. Dort muss es zuerst stimmen.' },
-];
 ---
 
 <PageLayout
-  title="Webdesign Agentur Würzburg · Websites"
-  description="Webdesign-Agentur im Raum Würzburg: individuelle Unternehmenswebsites von Strategie über Design bis Entwicklung – kein Baukasten, kein Template."
+  title="Website erstellen lassen – Umfang, Preise & Ablauf"
+  description="Individuelle Website erstellen lassen: meist 1.500–3.600 € netto. Design, Inhalte, Umsetzung und SEO-Grundlage. Persönliche Beratung, bundesweit."
   h1Slot
   breadcrumbs={breadcrumbs}
   extraJsonLd={[serviceJsonLd(service), faqPageJsonLd(pageFaqs)]}
 >
-  <h1 slot="h1" class="wsite__h1">Websites, die nicht nur gut aussehen.</h1>
+  <h1 slot="h1" class="wsite__h1">Deine neue Website. Klar geplant, individuell gestaltet.</h1>
   <p slot="hero-extra" class="lead wsite__lead">
-    Deine Website soll nicht zeigen, dass du eine Website hast. Sie soll zeigen, warum man sich für
-    dein Unternehmen entscheidet.
+    Für Unternehmen, die ihren ersten professionellen Auftritt planen oder eine bestehende Website
+    erneuern möchten. Wir entwickeln Struktur, Design und Technik passend zu deinem Angebot.
   </p>
+  <div slot="hero-extra" class="wsite__actions">
+    <a class="btn btn--primary" href="/kontakt/?leistung=websites"
+      >Website anfragen <span aria-hidden="true">↗</span></a
+    ><a class="link-arrow" href="#website-angebot"
+      >Budget & Umfang <span aria-hidden="true">↓</span></a
+    >
+  </div>
 
   <!-- Echte Arbeiten direkt unter dem Kopf: die Seite beweist sich selbst -->
   <section class="proof section--cream">
@@ -95,19 +102,7 @@ const principles = [
     </div>
   </section>
 
-  <!-- Grundsatz auf dunkler Fläche -->
-  <section class="creed section--dark on-dark">
-    <div class="content">
-      <p class="creed__text">
-        Erst die <AccentWord>Grundlage</AccentWord>.<br />
-        Dann alles, was darauf aufbaut.
-      </p>
-      <p class="creed__note">
-        Eine gute Website ist kein Selbstzweck. Sie ist die Basis, auf die Sichtbarkeit, Video und
-        Automatisierung erst sinnvoll aufsetzen.
-      </p>
-    </div>
-  </section>
+  <WebsiteOffer detailed />
 
   <!-- Leistung kompakt: eine Liste statt „Was dazugehört“ + „Was es bringt“ -->
   <section class="section section--paper">
@@ -115,8 +110,8 @@ const principles = [
       <div class="wsite__aside">
         <h2 class="wsite__h2">Was du bekommst.</h2>
         <p class="wsite__aside-text">
-          Kein Baukasten, kein fertiges Theme. Struktur, Design und Technik entstehen für dein
-          Unternehmen.
+          Du bekommst eine abgestimmte Seitenstruktur, ein eigenes Design und eine Umsetzung mit
+          klaren Kontaktwegen. Die einzelnen Seiten und Funktionen halten wir im Angebot fest.
         </p>
       </div>
       <ul class="scope" role="list">
@@ -150,22 +145,6 @@ const principles = [
     </div>
   </section>
 
-  <!-- Drei Prinzipien -->
-  <section class="section section--surface">
-    <div class="content">
-      <ul class="creds" role="list">
-        {
-          principles.map((p) => (
-            <li class="creds__item">
-              <h2 class="creds__title">{p.t}</h2>
-              <p class="creds__body">{p.b}</p>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
   {
     pageFaqs.length > 0 && (
       <section class="section section--paper">
@@ -182,6 +161,14 @@ const principles = [
 </PageLayout>
 
 <style>
+  .wsite__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    margin-block-start: 1.75rem;
+  }
+
   .wsite__h1 {
     margin-block-start: var(--space-md);
     max-width: min(16ch, 100%);

@@ -1,85 +1,67 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Hero (HeroCinematic)', () => {
-  test('Kernaussage und beide CTAs sind sichtbar', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/');
-
-    const hero = page.locator('[data-hero]');
-    await expect(hero).toBeVisible();
-
-    const h1 = page.locator('h1');
-    await expect(h1).toHaveCount(1);
-    await expect(h1).toContainText('Deine Website');
-
-    await expect(hero.getByRole('link', { name: 'Projekt besprechen' })).toBeVisible();
-    await expect(hero.getByRole('link', { name: 'Arbeiten ansehen' })).toBeVisible();
-  });
-
-  test('Im Medienbereich steht der Neon-Flow, kein Motiv und kein Platzhalter', async ({
-    page,
-  }) => {
-    await page.goto('/');
-    // Der Röhreneffekt hat das frühere CRT-Motiv ersetzt.
-    await expect(page.locator('[data-hero] canvas[data-neon-canvas]')).toHaveCount(1);
-
-    // Weder Standbild noch Video noch gezeichnete Ersatzfigur.
-    await expect(page.locator('[data-hero] .hero__asset')).toHaveCount(0);
-    await expect(page.locator('[data-hero] video')).toHaveCount(0);
-    await expect(page.locator('.hero__placeholder')).toHaveCount(0);
-    await expect(page.locator('svg.figure')).toHaveCount(0);
-  });
-
-  test('Über dem Bildschirm liegt kein Overlay mehr', async ({ page }) => {
-    await page.goto('/');
-    for (const sel of [
-      '.hero__screen',
-      '.hero__screen-panel',
-      '.hero__screen-glow',
-      '.hero__screen-scan',
-      '.crt',
-      '[data-crt]',
-      '[data-crt-word]',
-    ]) {
-      await expect(page.locator(sel), `${sel} darf nicht mehr existieren`).toHaveCount(0);
-    }
-  });
-
-  test('Kein dynamischer Wortwechsel auf dem Monitor', async ({ page }) => {
-    await page.goto('/');
-    await expect(page.locator('[data-words]')).toHaveCount(0);
-
-    // Auch nach mehreren früheren Wechselintervallen ändert sich kein Text.
-    // Verglichen wird der Textinhalt, nicht das Markup: Der Neon-Flow setzt
-    // beim Start seinen Statuswert, ohne dass sich etwas Lesbares ändert.
-    const before = await page.locator('[data-hero]').innerText();
-    await page.waitForTimeout(2600);
-    const after = await page.locator('[data-hero]').innerText();
-    expect(after).toBe(before);
-  });
-
-  test('Keine dekorative Vorzeile über der H1', async ({ page }) => {
-    await page.goto('/');
-    await expect(page.locator('[data-hero] .hero__eyebrow')).toHaveCount(0);
-    await expect(page.getByText('Digitalagentur für Websites, Sichtbarkeit & Systeme')).toHaveCount(
-      0,
-    );
-  });
-
-  test('„Unternehmen“ wird nicht getrennt', async ({ page }) => {
-    for (const w of [390, 430]) {
-      await page.setViewportSize({ width: w, height: 900 });
-      await page.goto('/');
-      const style = await page.locator('h1').evaluate((el) => getComputedStyle(el).hyphens);
-      expect(style, `hyphens bei ${w}px`).toBe('none');
-    }
-  });
-
-  test('Ohne Bewegungspräferenz bleiben Reveal-Inhalte lesbar', async ({ page }) => {
-    await page.goto('/');
-    const faq = page.locator('.faq-home');
-    await faq.scrollIntoViewIfNeeded();
-    await expect(faq).toBeVisible();
-    await expect(faq.locator('h2')).toBeVisible();
-  });
+test('Startseite erklärt das Angebot und führt zu Projekt und Anfrage', async ({ page }) => {
+  await page.goto('/');
+  const hero = page.locator('[data-hero]');
+  await expect(hero.getByRole('heading', { level: 1 })).toContainText('Eine Website');
+  await expect(hero.getByRole('link', { name: 'Website anfragen' })).toHaveAttribute(
+    'href',
+    '/kontakt/?leistung=websites',
+  );
+  await expect(hero.getByRole('link', { name: 'Projekte ansehen' })).toHaveAttribute(
+    'href',
+    '/arbeiten/',
+  );
+  await expect(hero.getByRole('img')).toBeVisible();
+  await expect(hero.locator('canvas, video')).toHaveCount(0);
 });
+
+test('Die Startseite lädt ausschließlich eigene Ressourcen', async ({ page }) => {
+  const external: string[] = [];
+  page.on('request', (request) => {
+    if (!request.url().startsWith('http://localhost:4321') && /^https?:/.test(request.url()))
+      external.push(request.url());
+  });
+  await page.goto('/');
+  await expect(page.locator('h1')).toBeVisible();
+  expect(external).toEqual([]);
+});
+
+test('Desktop-Startseite bleibt kompakt', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await page.evaluate(() => document.fonts.ready);
+  expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThan(7000);
+});
+
+for (const width of [320, 390, 768, 1440]) {
+  test(`Wichtige Seiten ohne Überlauf bei ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    for (const path of [
+      '/',
+      '/leistungen/websites/',
+      '/agentur/',
+      '/kontakt/',
+      '/branchen/handwerk/',
+      '/arbeiten/kaya-doener-himmelstadt/',
+      '/bildnachweise/',
+    ]) {
+      await page.goto(path);
+      await page.evaluate(() => document.fonts.ready);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        ),
+        path,
+      ).toBeLessThanOrEqual(1);
+      const broken = await page
+        .locator('img')
+        .evaluateAll((images) =>
+          images
+            .filter((img) => img.complete && !img.naturalWidth)
+            .map((img) => img.getAttribute('src')),
+        );
+      expect(broken, path).toEqual([]);
+    }
+  });
+}

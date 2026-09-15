@@ -1,24 +1,14 @@
-import { site } from './site';
-
-/**
- * Preis-/Paketstruktur ist technisch vorbereitet, aber standardmäßig NICHT veröffentlicht.
- * Es werden keine unbestätigten Preise oder Laufzeiten erfunden.
- *
- * Zum Aktivieren: `site.showPricing` auf true setzen UND alle Felder vollständig füllen.
- */
-export interface PricingPackage {
-  readonly name: string;
-  readonly oneTimePrice: string;
-  readonly monthlyCare: string;
-  readonly minimumTerm: string;
-  readonly installmentModel: string;
-  readonly includes: readonly string[];
-  readonly additionalCosts: string;
-  readonly vatNote: string;
-}
-
-/** Standard: keine Preise veröffentlicht. */
-export const showPricing = site.showPricing;
-
-/** Leer, bis geprüfte, vollständige Preise vorliegen. */
-export const pricingPackages: readonly PricingPackage[] = [];
+/** Unverbindlicher Budgetrahmen für B2B-Projekte; Umfang wird im Angebot vereinbart. */
+export const websiteOffer = {
+  range: '1.500–3.600 €',
+  note: 'Orientierungsrahmen für Unternehmenswebsites. Nettopreise, zuzüglich gesetzlicher Umsatzsteuer, soweit diese anfällt. Den verbindlichen Umfang und Preis erhältst du im Angebot.',
+  includes: [
+    'Struktur und individuelle Gestaltung deiner Seiten',
+    'Abgestimmte Texte und Einbindung deiner Bilder',
+    'Responsive Umsetzung für Smartphone und Desktop',
+    'Technische SEO-Grundlage und klare Kontaktwege',
+    'Gemeinsame Prüfung und Begleitung beim Live-Gang',
+  ],
+  additionalCosts:
+    'Domain, Hosting und laufende Betreuung werden separat vereinbart. Zusätzliche Fotografie, Video und Rechtsberatung sind nicht im Orientierungsrahmen enthalten.',
+} as const;

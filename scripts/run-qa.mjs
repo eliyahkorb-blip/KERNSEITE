@@ -19,6 +19,7 @@ if (!existsSync(join(root, dist, 'index.html'))) {
 }
 
 const checks = [
+  ['check-images.mjs', []],
   ['check-no-inline.mjs', [dist]],
   ['check-external.mjs', [dist]],
   ['check-links.mjs', [dist]],

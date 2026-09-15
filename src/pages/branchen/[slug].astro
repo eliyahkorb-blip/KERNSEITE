@@ -39,8 +39,7 @@ const heroPhoto = (
  * nebeneinander, mal gar keines.
  */
 const secondBySlug: Partial<Record<string, PhotoKey[]>> = {
-  'gastronomie-hotels': ['restaurant-ambiente', 'hotelzimmer'],
-  'lokale-dienstleister': ['garten-landschaftsbau'],
+  'gastronomie-hotels': ['hotelzimmer'],
 };
 const secondPhotos = (secondBySlug[industry.slug] ?? []).filter((k) => resolvePhoto(k));
 
@@ -70,7 +69,7 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
   title={industry.seoTitle}
   description={industry.metaDescription}
   h1Slot
-  variant="dark"
+  variant="paper"
   lead={industry.intro}
   breadcrumbs={breadcrumbs}
 >
@@ -181,7 +180,7 @@ const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
   }
 
   <CtaBanner
-    title={`Bereit für einen Auftritt, der zu ${industry.label} passt?`}
+    title="Eine Website, die dein Angebot verständlich macht."
     text="Im ersten Gespräch klären wir, was für dein Geschäft wirklich zählt."
     ctaLabel={industry.ctaLabel}
     ctaHref={`/kontakt/?branche=${industry.slug}`}

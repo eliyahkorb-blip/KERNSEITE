@@ -17,7 +17,7 @@ export const faqs: readonly FaqItem[] = [
     question: 'Was kostet eine individuelle Website?',
     services: ['websites'],
     answer:
-      'Das hängt vom Umfang ab: Seitenanzahl, Funktionen, Inhalte und gewünschte Erweiterungen. Nach einem kurzen Gespräch bekommst du ein transparentes, schriftliches Angebot – ohne versteckte Posten. Feste Preise veröffentlichen wir bewusst erst, wenn sie zu deinem Projekt passen.',
+      'Der Orientierungsrahmen für Unternehmenswebsites liegt meist bei 1.500–3.600 € netto, zuzüglich gesetzlicher Umsatzsteuer, soweit diese anfällt. Umfang, Seitenanzahl und Funktionen bestimmen das Angebot. Domain, Hosting, laufende Betreuung sowie zusätzliche Fotografie, Video und Rechtsberatung werden separat vereinbart.',
     onHome: true,
   },
   {
@@ -64,7 +64,7 @@ export const faqs: readonly FaqItem[] = [
     question: 'Ist die Website für Smartphones optimiert?',
     services: ['websites', 'seo-geo'],
     answer:
-      'Ja. Das mobile Layout wird eigenständig gestaltet, nicht nur verkleinert. Die meisten Besucher kommen über das Smartphone – entsprechend wichtig ist die mobile Nutzerführung.',
+      'Ja. Das mobile Layout wird eigenständig gestaltet, nicht nur verkleinert. Navigation, Lesbarkeit und Kontaktwege werden auch auf kleinen Bildschirmen geprüft.',
   },
   {
     question: 'Was bedeutet SEO und GEO?',
@@ -100,8 +100,8 @@ export const faqs: readonly FaqItem[] = [
     question: 'Sind Datenschutz und Barrierefreiheit enthalten?',
     services: ['websites', 'seo-geo'],
     answer:
-      'Datenschutzfreundliche Planung und Barrierearmut nach modernen Standards gehören zur Grundumsetzung. Rechtstexte werden als geprüfte Entwürfe vorbereitet und vor Veröffentlichung fachlich final geprüft. Eine automatische „Rechtssicherheit“ sagen wir bewusst nicht zu.',
+      'Datenschutzfreundliche Planung und Barrierearmut nach modernen Standards gehören zur Grundumsetzung. Die technische Umsetzung berücksichtigt Datenschutz und Zugänglichkeit. Rechtstexte und die für dein Unternehmen geltenden Pflichten lässt du fachlich prüfen. Eine automatische „Rechtssicherheit“ sagen wir bewusst nicht zu.',
   },
 ];
 
-export const homeFaqs = faqs.filter((f) => f.onHome);
+export const homeFaqs = faqs.filter((f) => f.onHome).slice(0, 4);

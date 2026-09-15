@@ -9,7 +9,7 @@ Fakten hart im Markup stehen und Pflege an einer Stelle möglich ist.
 | -------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `company.ts`         | Firmen-/Pflichtangaben (Single Source of Truth), `REQUIRED_LEGAL_FIELDS`                                   |
 | `company.fixture.ts` | Fiktive Fixture-Daten **nur** für den CI-Build                                                             |
-| `site.ts`            | Domain, Region, Feature-Flags (`showPricing`, `showHostingClaim`, `consentRequired`), Hosting-Formulierung |
+| `site.ts`            | Domain, Region, Feature-Flags (`showHostingClaim`, `consentRequired`), Hosting-Formulierung |
 | `navigation.ts`      | Haupt-/Footer-Navigation, primärer CTA                                                                     |
 | `services.ts`        | 5 Leistungen (Kern + Erweiterungen) inkl. Problem/Lösung/Bestandteile/Nutzen/Ablauf/Zielgruppen/Abschnitte |
 | `industries.ts`      | 5 Branchen mit eigenständigen Schwerpunkten                                                                |

@@ -21,7 +21,7 @@ interface WorkCommon {
   readonly filters: readonly CaseFilter[];
 }
 
-/** Referenz-Screenshot (aktuell klar gekennzeichneter Platzhalter). */
+/** Lokal gespeicherter Screenshot des Kundenprojekts. */
 export interface WorkScreenshot {
   /** Bildpfad des echten Screenshots (WebP). */
   readonly src: string;
@@ -76,14 +76,7 @@ export interface ConceptWork extends WorkCommon {
 
 export type Work = ProjectWork | ConceptWork;
 
-/**
- * ECHTE Referenzen (vom Auftraggeber freigegeben, Nutzungsrechte bestätigt).
- *
- * Hinweis: Die Live-Sites konnten im Build-Environment nicht abgerufen werden
- * (Egress-Policy), daher sind die Screenshots aktuell klar gekennzeichnete Platzhalter.
- * Sie werden durch echte, lokal gespeicherte Screenshots (WebP/AVIF) ersetzt.
- * Es werden KEINE erfundenen Ergebnisse oder Prozentwerte genannt.
- */
+/** Freigegebene Kundenprojekte mit bereitgestellten Screenshots. */
 const projects: readonly ProjectWork[] = [
   {
     kind: 'project',
@@ -101,14 +94,14 @@ const projects: readonly ProjectWork[] = [
     verified: true,
     filters: ['referenz', 'websites', 'gastronomie'],
     situation:
-      'Ein lokaler Gastronomiebetrieb braucht einen Auftritt, der die wichtigsten Informationen sofort erreichbar macht – gerade auf dem Smartphone.',
+      'Wer unterwegs nach einem Imbiss sucht, braucht schnell eine Antwort: Was gibt es, wann ist geöffnet und wie lässt sich bestellen? Für Kaya Döner in Himmelstadt standen diese Wege im Mittelpunkt.',
     solution:
-      'Ein klar strukturierter Webauftritt mit direkter Nutzerführung, mobil optimierter Darstellung und schnellem Zugang zu den zentralen Inhalten.',
+      'Die Website führt von der Startseite zur digitalen Speisekarte, zu Wochenangeboten sowie Kontakt und Anfahrt. Anrufmöglichkeiten stehen direkt bei den entscheidenden Informationen. Das dunkle Design gibt den Speisen Raum und hält Text und Aktionen gut unterscheidbar.',
     scope: [
       'Individuelle Website',
-      'Mobile Experience / responsive Umsetzung',
-      'Klare Nutzerführung zu den wichtigsten Informationen',
-      'Fokus auf Performance und Zugänglichkeit',
+      'Digitale Speisekarte und gesonderte Wochenangebote',
+      'Direkte Anrufmöglichkeiten und Kontakt-/Anfahrtsseite',
+      'Responsive Gestaltung mit gut lesbaren Angeboten',
     ],
     screenshotDesktop: {
       src: '/assets/references/kaya-doener-desktop.webp',
@@ -136,9 +129,9 @@ const projects: readonly ProjectWork[] = [
     verified: true,
     filters: ['referenz', 'websites', 'lokale-dienstleister'],
     situation:
-      'Ein lokaler Dienstleister möchte Angebot, Persönlichkeit und Vertrauen online verständlich zusammenführen – zugänglich auf allen Geräten.',
+      'Bei der Wahl einer Kindertagespflege möchten Eltern die Betreuungsperson und das Angebot kennenlernen. Anna-Lena’s Kinderkörbchen brauchte dafür einen persönlichen, gut verständlichen Auftritt.',
     solution:
-      'Ein freundlicher, übersichtlicher Webauftritt, der die wichtigsten Inhalte klar bündelt und Vertrauen aufbaut.',
+      'Eine warme Farbwelt und der persönliche Einstieg stellen die Betreuungsperson vor. Die Seitenstruktur bündelt die Informationen zum Angebot und führt zur Kontaktaufnahme. Das vorhandene Google-Unternehmensprofil ergänzt den Website-Auftritt in der lokalen Suche.',
     scope: [
       'Individuelle Website',
       'Struktur für Angebot und Vertrauen',

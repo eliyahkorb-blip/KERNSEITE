@@ -5,7 +5,7 @@ import { hasConfirmedHostingLocation } from '../lib/config-validation';
  */
 export const site = {
   /** Produktions-Domain (Canonical = www-Variante; auch in astro.config.mjs verwendet). */
-  url: process.env.SITE_URL || 'https://www.kernseite.de',
+  url: process.env.SITE_URL || 'https://www.kernseite.com',
   name: 'KERNSEITE',
   lang: 'de',
   locale: 'de_DE',
@@ -38,19 +38,17 @@ export const site = {
    * Meta-Description, weil sie nicht in Suchergebnissen abgeschnitten wird.
    */
   shortDescription:
-    'KERNSEITE ist eine Webdesign- und KI-Agentur aus dem Raum Würzburg: individuelle Unternehmenswebsites, Sichtbarkeit in Suche und KI-Antworten, sinnvolle Automatisierung – für Unternehmen bundesweit.',
+    'KERNSEITE ist die Webdesign-Agentur von Eliyah Korb aus Erlabrunn bei Würzburg. Individuelle Unternehmenswebsites, Suchmaschinenoptimierung und persönliche Betreuung für Unternehmen in ganz Deutschland.',
 
   /** Meta-Description der Startseite (auf Anzeigelänge gekürzt). */
   metaDescription:
-    'Webdesign- und KI-Agentur im Raum Würzburg: individuelle Unternehmenswebsites, Sichtbarkeit in Suche und KI-Antworten, sinnvolle Automatisierung – bundesweit.',
+    'Individuelle Websites für Unternehmen. Persönlich mit Eliyah Korb, meist 1.500–3.600 € netto. Aus Erlabrunn bei Würzburg, bundesweit. Projekte ansehen.',
 
   /** Marken-Claims. */
   claim: 'Websites, die professionell wirken. Und genau deshalb funktionieren.',
   heroClaim: 'Dein Unternehmen kann mehr. Deine Website sollte es zeigen.',
 
   // --- Feature-Flags --------------------------------------------------------
-  /** Preise sind standardmäßig unveröffentlicht (siehe pricing.ts). */
-  showPricing: false,
   /**
    * Hosting-Hinweis nur anzeigen, wenn die Produktionsumgebung tatsächlich auf
    * einen deutschen Standort eingestellt UND dokumentiert wurde. Manueller Schalter

@@ -42,7 +42,7 @@ function respond(bool $ok, string $message, int $code, bool $json): void
         echo '<!doctype html><html lang="de"><meta charset="utf-8">'
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<title>' . $title . ' – KERNSEITE</title>'
-            . '<body style="font-family:system-ui,sans-serif;max-width:40rem;margin:4rem auto;padding:0 1.5rem;color:#111318">'
+            . '<body>'
             . '<h1>' . $title . '</h1><p>' . $safe . '</p>'
             . '<p><a href="/">Zurück zur Startseite</a></p></body></html>';
     }
@@ -58,16 +58,24 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
 $allowedOrigin = rtrim((string) Env::get('ALLOWED_ORIGIN', ''), '/');
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $referer = $_SERVER['HTTP_REFERER'] ?? '';
-$originOk = true;
+$originOk = false;
 if ($allowedOrigin !== '') {
     if ($origin !== '') {
         $originOk = rtrim($origin, '/') === $allowedOrigin;
     } elseif ($referer !== '') {
-        $originOk = str_starts_with($referer, $allowedOrigin);
+        $parts = parse_url($referer);
+        if (is_array($parts) && isset($parts['scheme'], $parts['host'])) {
+            $refererOrigin = $parts['scheme'] . '://' . $parts['host']
+                . (isset($parts['port']) ? ':' . $parts['port'] : '');
+            $originOk = $refererOrigin === $allowedOrigin;
+        }
     } else {
         // Weder Origin noch Referer vorhanden -> abweisen, wenn Origin konfiguriert ist.
         $originOk = false;
     }
+}
+if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 32768) {
+    respond(false, 'Die Anfrage ist zu groß.', 413, $wantsJson);
 }
 if (!$originOk) {
     respond(false, 'Die Anfrage konnte nicht bestätigt werden (Herkunft).', 403, $wantsJson);
@@ -108,7 +116,7 @@ try {
     (new Mailer())->sendContact($result['fields']);
 } catch (\Throwable $e) {
     // Keine PII loggen – nur eine technische Meldung.
-    error_log('[kernseite-contact] Versand fehlgeschlagen: ' . $e->getMessage());
+    error_log('[kernseite-contact] SMTP-Versand fehlgeschlagen.');
     respond(
         false,
         'Das Senden ist derzeit nicht möglich. Bitte versuche es später erneut oder schreib uns direkt per E-Mail.',

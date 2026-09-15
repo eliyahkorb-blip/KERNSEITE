@@ -1,7 +1,7 @@
 # KI-Projekte – interne Prüfliste
 
 Für **Kundenprojekte** mit KI-Anteil (Chatbot, Voice Agent, Automatisierung).
-Nicht für kernseite.de selbst: Dort interagiert derzeit kein KI-System mit
+Nicht für kernseite.com selbst: Dort interagiert derzeit kein KI-System mit
 Nutzerinnen und Nutzern, deshalb steht dort auch kein Transparenzhinweis – ein
 Hinweis auf etwas, das es nicht gibt, informiert niemanden.
 

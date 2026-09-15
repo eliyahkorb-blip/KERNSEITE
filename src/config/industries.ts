@@ -34,17 +34,17 @@ export const industries: readonly Industry[] = [
       'Website für Handwerksbetriebe: Leistungen verständlich zeigen, regional gefunden werden und Anfragen wie Bewerbungen einfach machen.',
     ctaLabel: 'Website fürs Handwerk besprechen',
     argument: 'Zeig Qualität, gewinne Aufträge und Bewerber – mit klaren Kontaktwegen.',
-    detailH1: 'Websites für Handwerksbetriebe, die Aufträge und Bewerber bringen.',
+    detailH1: 'Websites für Handwerksbetriebe. Leistungen zeigen, Anfragen erleichtern.',
     intro:
       'Ein etablierter Betrieb verdient einen Auftritt, der die tatsächliche Qualität zeigt – und der neben Kunden auch Bewerber überzeugt.',
     focus: [
       {
         title: 'Leistungen verständlich darstellen',
-        body: 'Gewerke und Leistungen werden so aufbereitet, dass Interessenten sofort verstehen, was du machst – und was nicht.',
+        body: 'Eigene Seiten für deine wichtigsten Leistungen zeigen Material, Vorgehen und passende Projektbeispiele. Ob Reparatur, Ausbau oder Maßanfertigung: Interessenten erkennen, mit welchem Anliegen sie bei dir richtig sind.',
       },
       {
-        title: 'Einzugsgebiet klarmachen',
-        body: 'Region und Anfahrtsradius werden eindeutig kommuniziert, damit Anfragen zum tatsächlichen Gebiet passen.',
+        title: 'Passende Anfragen erhalten',
+        body: 'Dein Einsatzgebiet, die Art des Vorhabens und der gewünschte Termin helfen bei der Einordnung. Ein kurzes Anfrageformular kann diese Angaben direkt abfragen.',
       },
       {
         title: 'Referenzen und Baustellen',
@@ -81,7 +81,7 @@ export const industries: readonly Industry[] = [
       },
       {
         title: 'Leistungen und Behandlungsschwerpunkte',
-        body: 'Behandlungsschwerpunkte werden verständlich erklärt, ohne Fachjargon und ohne medizinische Heilversprechen.',
+        body: 'Eigene Leistungsseiten erklären Behandlungsabläufe und organisatorische Fragen. Medizinische Inhalte und berufsrechtliche Pflichtangaben werden von der Praxis geliefert und fachlich freigegeben.',
       },
       {
         title: 'Team',
@@ -117,12 +117,12 @@ export const industries: readonly Industry[] = [
         body: 'Die Stimmung des Hauses wird visuell erlebbar – mit hochwertiger Bild- und Videosprache statt Standardfotos.',
       },
       {
-        title: 'Speisekarte bzw. Zimmer',
-        body: 'Angebot, Karte oder Zimmerkategorien werden übersichtlich und aktuell dargestellt.',
+        title: 'Für Restaurants: Speisekarte und Öffnungszeiten',
+        body: 'Eine mobil lesbare Speisekarte führt direkt zum Angebot. Öffnungszeiten, Standort, Anruf und Reservierungsweg sind schnell erreichbar. Das Projekt Kaya zeigt eine solche Umsetzung.',
       },
       {
-        title: 'Reservierung & Buchung',
-        body: 'Reservierungs- oder Buchungswege stehen klar im Vordergrund – datenschutzfreundlich eingebunden.',
+        title: 'Für Hotels: Zimmer und Buchungsweg',
+        body: 'Zimmerkategorien, Ausstattung, Anreise und Fragen zum Aufenthalt werden getrennt aufbereitet. Ein vorhandenes Buchungssystem kann nach technischer und datenschutzrechtlicher Prüfung angebunden werden; dessen Kosten sind separat zu berücksichtigen.',
       },
       {
         title: 'Google-Profil',
@@ -145,13 +145,13 @@ export const industries: readonly Industry[] = [
       'Website für lokale Dienstleister: Leistungen klar benennen, im Einzugsgebiet gefunden werden und die Kontaktaufnahme kurz halten.',
     ctaLabel: 'Website-Projekt besprechen',
     argument: 'Klare Leistungen, regionale Auffindbarkeit und einfache Kontaktaufnahme.',
-    detailH1: 'Websites für lokale Dienstleister, die Anfragen bringen.',
+    detailH1: 'Websites für Dienstleister. Verständlich, persönlich, erreichbar.',
     intro:
       'Ob Beratung, Pflege oder Service: Wer lokal Dienstleistungen anbietet, braucht Klarheit, Vertrauen und einen einfachen Weg zur Anfrage.',
     focus: [
       {
         title: 'Klare Leistungen',
-        body: 'Das Angebot wird auf den Punkt gebracht – ohne Fachchinesisch, ohne überladene Listen.',
+        body: 'Für jedes Angebot werden Zielgruppe, Ablauf und der nächste Schritt verständlich beschrieben. Bei einer Kindertagespflege sind das andere Fragen als bei einer Gebäudereinigung oder Beratung.',
       },
       {
         title: 'Regionale Auffindbarkeit',
@@ -196,7 +196,7 @@ export const industries: readonly Industry[] = [
       },
       {
         title: 'Cases',
-        body: 'Belegbare Projektbeispiele zeigen Kompetenz – nur mit bestätigten Daten, ohne erfundene Kennzahlen.',
+        body: 'Projektbeispiele erläutern die Aufgabe, die eingesetzte Lösung und den jeweiligen Leistungsumfang. Technische Datenblätter oder weiterführende Unterlagen können passend verlinkt werden.',
       },
       {
         title: 'Recruiting',
@@ -204,7 +204,7 @@ export const industries: readonly Industry[] = [
       },
       {
         title: 'Lead-Qualifizierung',
-        body: 'Formulare und optionale Automatisierung sorgen dafür, dass Anfragen vorqualifiziert ankommen.',
+        body: 'Ein Anfrageformular kann Produktbereich, benötigte Leistung und Zeitrahmen abfragen. So erhält der zuständige Ansprechpartner die Informationen, die er für ein erstes Gespräch braucht.',
       },
     ],
     relatedServices: ['websites', 'ki', 'video'],

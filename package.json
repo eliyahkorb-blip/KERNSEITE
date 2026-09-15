@@ -3,9 +3,9 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "Website von KERNSEITE – Eliyah Korb (Digitalstudio aus Würzburg)",
+  "description": "Website von KERNSEITE – Eliyah Korb, Webdesign-Agentur aus Erlabrunn bei Würzburg",
   "engines": {
-    "node": ">=20.11.0"
+    "node": ">=22.12.0"
   },
   "packageManager": "pnpm@10.33.0",
   "scripts": {
@@ -28,15 +28,12 @@
     "assemble": "node scripts/assemble-deploy.mjs",
     "guard:no-fixture": "node scripts/guard-no-fixture.mjs",
     "visual-qa": "node scripts/visual-qa.mjs",
-    "assets:crt": "node scripts/build-hero-crt.mjs",
-    "assets:crops": "python3 scripts/build-reference-crops.py",
     "assets:images": "python3 scripts/build-images.py",
     "check:headings": "node scripts/check-headings.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
-    "astro": "^7.1.3",
-    "threejs-components": "0.0.19"
+    "astro": "^7.1.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",

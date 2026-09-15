@@ -1,59 +1,27 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import WorkFeature from '../../components/WorkFeature.astro';
+import ProjectGrid from '../../components/ProjectGrid.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
-import AccentWord from '../../components/AccentWord.astro';
-import { works } from '../../config/cases';
-
 const breadcrumbs = [
   { name: 'Start', path: '/' },
-  { name: 'Arbeiten', path: '/arbeiten/' },
+  { name: 'Projekte', path: '/arbeiten/' },
 ];
-
-const projects = works.filter((w) => w.kind === 'project');
 ---
 
 <PageLayout
-  title="Arbeiten"
-  description="Umgesetzte Kundenprojekte von KERNSEITE: Kaya Döner Himmelstadt und Anna-Lena’s Kinderkörbchen – Websites, lokale Sichtbarkeit und digitale Speisekarten."
-  h1Slot
-  variant="dark"
+  title="Webdesign-Referenzen – ausgewählte Kundenprojekte"
+  description="Websites für Kaya Döner Himmelstadt und Anna-Lena’s Kinderkörbchen: Einblicke in Gestaltung, Seitenstruktur und Umsetzung von KERNSEITE."
+  h1="So unterschiedlich wie die Unternehmen dahinter."
+  lead="Zwei umgesetzte Kundenwebsites. Schau dir an, welche Aufgaben der jeweilige Auftritt löst und wie daraus Struktur und Gestaltung entstanden sind."
   breadcrumbs={breadcrumbs}
-  lead="Zwei Betriebe, zwei Handschriften. Beide Projekte sind live und werden weiter betreut."
 >
-  <h1 slot="h1">
-    Arbeiten, die nicht nach <AccentWord>Vorlage</AccentWord> aussehen.
-  </h1>
-
-  {
-    projects.map((project, i) => (
-      <WorkFeature work={project} flip={i % 2 === 1} tone={i === 0 ? 'dark' : 'light'} />
-    ))
-  }
-
-  <section class="section section--paper">
-    <div class="content next">
-      <h2 class="next__title">Dein Projekt wird die nächste Arbeit.</h2>
-      <p class="lead">
-        Erzähl kurz, was du vorhast. Wir sagen offen, ob und wie wir helfen können.
-      </p>
-      <a class="link-arrow" href="/kontakt/">
-        Projekt besprechen <span class="arrow" aria-hidden="true">→</span>
-      </a>
+  <section class="section section--cream">
+    <div class="content">
+      <h2 class="visually-hidden">Ausgewählte Kundenprojekte</h2><ProjectGrid />
     </div>
   </section>
-
-  <CtaBanner />
+  <CtaBanner
+    title="Wie könnte dein Auftritt aussehen?"
+    text="Zeig uns dein Unternehmen und erzähl, was deine Website leisten soll. Daraus entwickeln wir einen passenden Vorschlag."
+  />
 </PageLayout>
-
-<style>
-  .next {
-    display: grid;
-    gap: var(--space-lg);
-    justify-items: start;
-  }
-  .next__title {
-    font-size: var(--fs-h2);
-    max-width: 16ch;
-  }
-</style>

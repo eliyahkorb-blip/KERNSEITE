@@ -1,107 +1,53 @@
 # KERNSEITE
 
-Website von **KERNSEITE – Eliyah Korb**, einem Digitalstudio aus Würzburg für
-individuelle Unternehmenswebsites. Statische Multi-Page-Website auf Basis von
-**Astro** und **TypeScript** mit eigenem Design-System – datenschutzfreundlich,
-performant und barrierearm (Zielstandard WCAG 2.2 AA).
+Agenturwebsite von KERNSEITE – Eliyah Korb aus Erlabrunn bei Würzburg.
+Individuelle Unternehmenswebsites für Auftraggeber in ganz Deutschland.
+Astro, TypeScript, eigenes CSS, lokale Schriften und Bilder, PHP-Kontaktformular.
 
-## Tech-Stack
+## Stand und Vorschau
 
-- [Astro](https://astro.build) (statischer Multi-Page-Generator), TypeScript
-- Eigenes CSS mit Design-Tokens (keine UI-Bibliothek, kein Tailwind)
-- Vanilla-TypeScript für Interaktionen (keine React-Runtime)
-- Lokale, selbst gehostete Schriften (SIL OFL) – kein Google-Fonts-/CDN-Hotlink
-- Kontaktformular über einen gehärteten PHP-Endpunkt (PHPMailer via Composer)
+Die Überarbeitung liegt auf `rework/agentur-launch-2026-09-15` und enthält den bisherigen vollständigen Websitecode. `main` bleibt bis zur ausdrücklichen Freigabe unverändert. Der vorherige Pull Request muss nicht zuerst gemergt werden.
 
-## Voraussetzungen
+- Vorschau: https://eliyahkorb-blip.github.io/KERNSEITE/
+- Bestätigte Produktionsdomain: https://www.kernseite.com
+- Aktueller Prüfstand und offene Betriebsschritte: [Launchstatus](docs/LAUNCH_STATUS_2026-09-15.md)
+- Entwicklungsregeln: [CONTRIBUTING.md](CONTRIBUTING.md)
 
-- Node.js `>= 20.11` (siehe `.nvmrc`: 22)
-- [pnpm](https://pnpm.io) `10.x`
-- Für das Kontaktformular: PHP `>= 8.1` und Composer (nur serverseitig / für Deploy)
+## Entwicklung
 
-## Lokale Entwicklung
+Node.js ab 22.12, pnpm 10.33.0. Für das Formular PHP ab 8.1 mit mbstring und Composer.
 
 ```bash
-pnpm install
-pnpm run copy-fonts   # einmalig / nach Font-Update: OFL-woff2 nach public/fonts kopieren
-pnpm dev              # Entwicklungsserver (http://localhost:4321)
+pnpm install --frozen-lockfile
+pnpm copy-fonts
+pnpm dev
 ```
-
-Im **Entwicklungsmodus** sind Entwurfshinweise und `[ERSETZEN]`-Platzhalter der
-Rechtstexte sichtbar. Im Produktions- und CI-Build erscheinen sie nie.
-
-## Build-Modi
-
-Der Build ist strikt getrennt (siehe `src/lib/build-mode.ts`):
-
-| Befehl                  | Zweck                                                       | Deploybar |
-| ----------------------- | ----------------------------------------------------------- | --------- |
-| `pnpm build:production` | Echter Build. **Bricht ab**, solange Pflichtangaben fehlen. | **Ja**    |
-| `pnpm build:ci`         | Build mit **fiktiven Fixture-Daten** für Tests/QA/E2E.      | **Nein**  |
-
-Der CI-Build markiert den Output mit `CI_FIXTURE_DO_NOT_DEPLOY.txt` / `.ci-fixture`
-und `noindex`. Der Deploy-Guard (`pnpm guard:no-fixture`) verweigert dann den Upload.
-
-> Solange die echten Pflichtangaben in `src/config/company.ts` noch Platzhalter sind,
-> ist `pnpm build:production` bewusst blockiert. Das ist gewollt – siehe
-> `docs/LEGAL_TODO.md`.
-
-## Vorschau (vor dem Merge)
-
-Für die visuelle Prüfung auf Smartphone und Desktop gibt es einen eigenen Vorschau-Build
-(echte Daten, `noindex`, sichtbarer „Vorschau“-Hinweis, Formular deaktiviert):
 
 ```bash
-pnpm build:preview      # baut die Vorschau
-pnpm preview:host       # lokal ausliefern (auch fürs Smartphone im selben WLAN)
+pnpm typecheck
+pnpm lint
+pnpm build:ci
+pnpm qa
+pnpm test:e2e
+php php/tests/ValidatorTest.php
 ```
 
-Öffentliche Vorschau-URL (GitHub Pages) und Artefakt-Download: siehe `docs/PREVIEW.md`.
+## Build und Veröffentlichung
 
-## Nützliche Skripte
+| Befehl                  | Verwendung                                                          |
+| ----------------------- | ------------------------------------------------------------------- |
+| `pnpm build:ci`         | Testdaten, noindex, nicht produktiv deploybar                       |
+| `pnpm build:preview`    | Echte Vorschau, noindex, Formular deaktiviert                       |
+| `pnpm build:production` | Produktionsbuild; verweigert fehlende Pflichtangaben oder Freigaben |
 
-```bash
-pnpm typecheck        # astro check (TypeScript)
-pnpm lint             # ESLint
-pnpm format           # Prettier (schreiben)
-pnpm build:ci         # Fixture-Build für QA/Tests
-pnpm qa               # eigene Prüfskripte gegen dist/ (Links, Alt, extern, inline, Secrets)
-pnpm test:e2e         # Playwright End-to-End-Tests
-pnpm guard:no-fixture # verhindert Deploy eines Fixture-Builds
-```
+GitHub Pages führt PHP nicht aus. Der Produktionsstand braucht das in [Deployment](docs/DEPLOYMENT_SHARED_HOSTING_DE.md) beschriebene Hosting mit PHP und SMTP. Der Anbieter und Serverstandort sind noch zu bestätigen. Zugangsdaten gehören ausschließlich auf den Server oberhalb des Webroots.
 
-## Projektstruktur (Kurzüberblick)
+`src/config/company.ts` bündelt die Unternehmensdaten; `src/config/release.ts` die fachlichen Freigaben. Diese nicht setzen, um eine fehlende Prüfung zu umgehen.
 
-```
-src/config/     Zentrale Inhalte & Pflichtangaben (Single Source of Truth)
-src/lib/        Build-Modus, Config-Validierung, JSON-LD-Helfer
-src/layouts/    Seiten-Layouts
-src/components/  Wiederverwendbare Komponenten (inkl. Hero-Animation)
-src/pages/      Alle Seiten (echte Multi-Page-Struktur)
-src/styles/     tokens.css, global.css, fonts.css
-public/         Statische Assets, Schriften, robots.txt, .htaccess
-php/            PHP-Kontaktendpunkt (PHPMailer via Composer)
-scripts/        Build-/QA-/Deploy-Skripte
-docs/           Projekt-, Datenschutz-, Deployment- und Test-Dokumentation
-```
+## Bilder und Lizenzen
 
-## Deployment
+Optimierte Bilder liegen in `public/assets/`. Originale und Herkunftsmanifest liegen außerhalb des öffentlich ausgelieferten Verzeichnisses in `assets-source/`. Die öffentliche Seite `/bildnachweise/` nennt Fotografen und Quellen. Details: [Bilddokumentation](docs/ASSET_LICENSES.md).
 
-Das Produktionshosting läuft auf Servern in Deutschland. Der konkrete Anbieter wird
-öffentlich nicht genannt. Schritt-für-Schritt-Anleitungen:
+`pnpm assets:images` benötigt Pillow mit WebP-/AVIF-Unterstützung. Der Bildexport prüft jede Datei vor dem Ersetzen. Die Qualitätsprüfung kontrolliert zusätzlich Quellen-Hashes und sämtliche erwarteten Bildvarianten.
 
-- `docs/DEPLOYMENT_SHARED_HOSTING_DE.md` – aktiver Weg (statischer Build + PHP-Formular)
-- `docs/DEPLOYMENT_VPS_DE.md` – Alternative (Node/Express-Formularendpunkt)
-
-**Niemals** Zugangsdaten oder `.env`-Dateien committen. Die produktive `.env` des
-Formulars liegt auf dem Server oberhalb des Webroots.
-
-## Weiterführende Dokumentation
-
-Siehe Ordner `docs/` (Design-System, Content-Modell, Datenschutz-Inventar,
-Rechts-TODO, Asset-Shotlist/Lizenzen, SEO-Map, Testbericht) sowie `CLAUDE.md`.
-
-## Lizenz
-
-Proprietär – siehe `LICENSE`. Drittanbieter-Schriften stehen unter der SIL OFL
-(`public/fonts/OFL.txt`, dokumentiert in `docs/ASSET_LICENSES.md`).
+Proprietäre Projektlizenz: [LICENSE](LICENSE). Drittanbieter-Lizenzen bleiben erhalten, insbesondere SIL OFL für die lokalen Schriften.

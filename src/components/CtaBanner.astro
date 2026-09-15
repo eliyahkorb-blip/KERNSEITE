@@ -19,7 +19,7 @@ const c = activeCompany;
 const {
   title,
   text = 'Erzähl kurz, was du vorhast. Im ersten Gespräch klären wir, was sich lohnt – und was du dir sparen kannst.',
-  ctaLabel = 'Projekt besprechen',
+  ctaLabel = 'Website anfragen',
   ctaHref = '/kontakt/',
   secondaryLabel = c.email,
   secondaryHref = `mailto:${c.email}`,
@@ -57,7 +57,7 @@ const {
 
 <style>
   .cta {
-    padding-block: clamp(4.5rem, 3rem + 8vw, 10rem);
+    padding-block: var(--section-y);
   }
   .cta__inner {
     display: grid;
@@ -69,9 +69,9 @@ const {
   }
   .cta__title {
     font-size: var(--fs-h2);
-    line-height: 0.98;
+    line-height: 1.08;
     letter-spacing: var(--track-display);
-    max-width: min(18ch, 100%);
+    max-width: min(24ch, 100%);
   }
   /* Hervorhebung auf der Cyan-Fläche: rein typografisch, keine Fläche */
   .cta__mark {

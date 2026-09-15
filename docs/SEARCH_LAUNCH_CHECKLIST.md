@@ -10,7 +10,7 @@ ist.
 
 ## 1. Voraussetzungen (vor der Anmeldung)
 
-- [ ] Endgültige Domain bestätigt (`docs/PRODUCTION_TODO.md`, BLOCKER 2)
+- [x] Endgültige Domain bestätigt: `https://www.kernseite.com`
 - [ ] HTTPS aktiv und gültig, kein Mixed Content
 - [ ] 301 von der Nicht-Canonical-Variante steht, keine Schleife
 - [ ] `pnpm build:production` erzeugt einen Build (alle Freigaben gesetzt)

@@ -2,6 +2,7 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import DraftNotice from '../components/DraftNotice.astro';
 import { activeCompany, isPlaceholder } from '../lib/config-validation';
+import { IS_PREVIEW } from '../lib/build-mode';
 
 const breadcrumbs = [
   { name: 'Start', path: '/' },
@@ -55,20 +56,20 @@ const retentionConfirmed = !isPlaceholder(c.formRetentionPeriod);
           {
             hostingConfirmed
               ? `Diese Website wird bei ${c.hostingProvider} gehostet; der Serverstandort ist ${c.hostingLocation}.`
-              : 'Diese Website wird bei einem externen Anbieter gehostet, der als Auftragsverarbeiter für uns tätig ist.'
+              : 'Diese Vorschau wird über GitHub Pages bereitgestellt. Anbieter ist GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA. Beim Abruf erhält GitHub technische Verbindungsdaten. Die Infrastruktur der endgültigen Website wird vor deren Veröffentlichung hier ergänzt.'
           }{' '}
           Beim Aufruf der Website werden technisch notwendige Zugriffsdaten in Server-Logfiles gespeichert
-          (z. B. anonymisierte bzw. gekürzte IP-Adresse, Datum und Uhrzeit, abgerufene Datei, übertragene
-          Datenmenge, Referrer, Browsertyp und Betriebssystem). Diese Verarbeitung dient dem sicheren,
-          stabilen Betrieb der Website. Rechtsgrundlage ist unser berechtigtes Interesse an einer fehlerfreien
-          Bereitstellung (Art. 6 Abs. 1 lit. f DSGVO).
+          (z. B. IP-Adresse, Datum und Uhrzeit, abgerufene Datei, übertragene Datenmenge, Referrer, Browsertyp
+          und Betriebssystem). Diese Verarbeitung dient dem sicheren, stabilen Betrieb der Website. Rechtsgrundlage
+          ist unser berechtigtes Interesse an einer fehlerfreien Bereitstellung (Art. 6 Abs. 1 lit. f
+          DSGVO).
         </p>
 
         <h2>3. Schriftarten (lokal eingebunden)</h2>
         <p>
           Verwendete Schriftarten werden lokal von unserem Server ausgeliefert. Es besteht keine
-          Verbindung zu Google Fonts oder anderen externen Schrift-Diensten. Beim Seitenaufruf
-          werden dadurch keine Daten an Dritte übermittelt.
+          Verbindung zu Google Fonts oder anderen externen Schrift-Diensten. Es findet dabei kein
+          zusätzlicher Abruf bei einem externen Schriftanbieter statt.
         </p>
 
         <h2>4. Keine externen Dienste und kein Tracking (Standard)</h2>
@@ -81,6 +82,15 @@ const retentionConfirmed = !isPlaceholder(c.formRetentionPeriod);
         </p>
 
         <h2>5. Kontaktaufnahme und Kontaktformular</h2>
+        {
+          IS_PREVIEW && (
+            <p>
+              Auf dieser GitHub-Vorschau ist der Formularversand deaktiviert. Eingegebene
+              Formulardaten werden über das Formular nicht an uns übermittelt. Die folgende
+              Beschreibung des Formularversands betrifft die geplante Live-Website.
+            </p>
+          )
+        }
         <p>
           Wenn du uns über das Kontaktformular oder per E-Mail kontaktierst, verarbeiten wir die von
           dir gemachten Angaben ausschließlich zur Bearbeitung deiner Anfrage. Die Übermittlung des

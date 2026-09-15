@@ -1,0 +1,110 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import credits from '../../assets-source/photo-credits.json';
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Bildnachweise', path: '/bildnachweise/' },
+];
+---
+
+<PageLayout
+  title="Bildnachweise"
+  description="Fotografen und Quellen der auf KERNSEITE verwendeten Stockfotos sowie Hinweise zu den abgebildeten Kundenprojekten."
+  h1="Bildnachweise"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section section--cream">
+    <div class="content credits">
+      <p class="lead">
+        Die folgenden Stockfotos stammen von Unsplash. Sie illustrieren die jeweiligen Themen und
+        Branchen. Sie zeigen weder das KERNSEITE-Team noch eigene Geschäftsräume.
+      </p>
+      <p>
+        Die Nutzung erfolgt im Rahmen der <a
+          href="https://unsplash.com/license"
+          rel="noopener noreferrer"
+          target="_blank">Unsplash-Lizenz (öffnet in neuem Tab)</a
+        >.
+      </p>
+      <ul role="list">
+        {
+          credits.map((credit) => (
+            <li>
+              <>
+                <img
+                  src={`/assets/${credit.group}/${credit.key}-640.webp`}
+                  alt={credit.alt}
+                  width="640"
+                  height="480"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div>
+                  <>
+                    <h2>{credit.label}</h2>
+                    <p>Foto: {credit.photographer} / Unsplash</p>
+                    <a href={credit.sourceUrl} rel="noopener noreferrer" target="_blank">
+                      Originalfoto auf Unsplash{' '}
+                      <span class="visually-hidden">(öffnet in neuem Tab)</span>{' '}
+                      <span aria-hidden="true">↗</span>
+                    </a>
+                  </>
+                </div>
+              </>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="prose">
+        <h2>Kundenprojekte</h2><p>
+          Die Projektabbildungen zeigen die für Kaya Döner Himmelstadt und Anna-Lena’s
+          Kinderkörbchen umgesetzten Websites sowie das Unternehmensprofil von Anna-Lena’s
+          Kinderkörbchen. Die Screenshots zeigen den jeweiligen Dokumentationsstand; die
+          Live-Websites können inzwischen weiterentwickelt worden sein.
+        </p><h2>Gestaltung und Schriften</h2><p>
+          Wortmarke, Favicon und Seitengestaltung: KERNSEITE. Verwendete Schriften: Bricolage
+          Grotesque und Inter, lokal eingebunden unter der SIL Open Font License.
+        </p>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+<style>
+  .credits > p {
+    max-width: 65ch;
+    margin-block-end: 1rem;
+  }
+  .credits ul {
+    margin-block: 2.5rem;
+  }
+  .credits li {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1.5rem;
+    padding-block: 1.25rem;
+    border-block-start: 1px solid var(--line);
+  }
+  .credits li img {
+    width: 7rem;
+    height: auto;
+  }
+  .credits li h2 {
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+  .credits li p,
+  .credits li a {
+    font-size: 0.875rem;
+  }
+  .credits li p {
+    color: var(--text-muted);
+    margin-block: 0.3rem;
+  }
+  @media (max-width: 30rem) {
+    .credits li {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+</style>

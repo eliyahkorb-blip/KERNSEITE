@@ -40,3 +40,7 @@ Thumbs.db
 !.vscode/extensions.json
 scripts/screenshot.mjs
 .visual-qa/
+
+# Python tools
+__pycache__/
+*.pyc

@@ -1,104 +1,59 @@
-# SEO-Karte
+# SEO-Zuordnung – Stand 15.09.2026
 
-Eine Seite = eine primäre Suchintention. Semantische Varianten stehen im
-Fließtext, nicht als Aufzählung von Schreibweisen. Es gibt bewusst **keine**
-Stadt-Landingpages wie `/webdesign-wuerzburg/` – dieselbe Leistung unter
-mehreren Adressen ist keine zusätzliche Information.
+Startseite: Marke, Unternehmenswebsites und bundesweite Zusammenarbeit.
+Website-Leistungsseite: Website erstellen lassen, Umfang, Preisrahmen und Ablauf.
+Branchenseiten: konkrete Aufgaben wie Speisekarte, Behandlungsinformationen oder qualifizierte Projektanfragen.
+Agenturseite: Ansprechpartner und tatsächlicher Standort Erlabrunn bei Würzburg.
 
-Die Angaben stammen aus dem gebauten Output (`pnpm build:ci`), nicht aus der
-Planung. Automatisch geprüft wird das von `scripts/check-seo.mjs` (Teil von
-`pnpm qa`) und von `tests/e2e/produktionsreife.spec.ts`.
+## Titel und Hauptüberschriften im geprüften Build
 
-## Standort
+Die folgenden Texte stammen aus dem CI-Build. CI und GitHub-Vorschau bleiben noindex; erst der freigegebene Produktionsbuild ist zur Indexierung bestimmt.
 
-Sitz ist **Erlabrunn bei Würzburg**. Würzburg ist bedientes Marktgebiet und
-darf als solches benannt werden – nicht als Sitz. Sichtbare Texte sagen „Raum
-Würzburg“ oder „bei Würzburg“. Die strukturierte Anschrift nennt Erlabrunn,
-`areaServed` nennt Würzburg, Unterfranken, Bayern und Deutschland.
+| Route                                    | Title                                                            | H1                                                                               |
+| ---------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `/404.html`                              | Seite nicht gefunden · KERNSEITE                                 | Diese Seite gibt es nicht.                                                       |
+| `/agb/`                                  | AGB · KERNSEITE                                                  | Allgemeine Geschäftsbedingungen                                                  |
+| `/agentur/`                              | Webdesign-Agentur von Eliyah Korb bei Würzburg · KERNSEITE       | Ich bin Eliyah. Dein Ansprechpartner bei KERNSEITE.                              |
+| `/arbeiten/`                             | Webdesign-Referenzen – ausgewählte Kundenprojekte · KERNSEITE    | So unterschiedlich wie die Unternehmen dahinter.                                 |
+| `/arbeiten/kaya-doener-himmelstadt/`     | Kaya Döner Himmelstadt – Referenz · KERNSEITE                    | Appetit auf den ersten Klick.                                                    |
+| `/arbeiten/kinderkoerbchen/`             | Anna-Lena’s Kinderkörbchen – Referenz · KERNSEITE                | Vertrauen, bevor man sich kennt.                                                 |
+| `/barrierefreiheit/`                     | Barrierefreiheit · KERNSEITE                                     | Erklärung zur Barrierefreiheit                                                   |
+| `/bildnachweise/`                        | Bildnachweise · KERNSEITE                                        | Bildnachweise                                                                    |
+| `/branchen/b2b-mittelstand/`             | B2B-Webdesign für den Mittelstand · KERNSEITE                    | Websites für den B2B-Mittelstand, die komplexe Leistungen verständlich machen.   |
+| `/branchen/gastronomie-hotels/`          | Webdesign für Gastronomie & Hotels · KERNSEITE                   | Websites für Gastronomie und Hotels, die Lust auf einen Besuch machen.           |
+| `/branchen/handwerk/`                    | Webdesign für Handwerker · KERNSEITE                             | Websites für Handwerksbetriebe. Leistungen zeigen, Anfragen erleichtern.         |
+| `/branchen/`                             | Branchen · KERNSEITE                                             | Gute Gestaltung versteht das Geschäft dahinter.                                  |
+| `/branchen/lokale-dienstleister/`        | Webdesign für lokale Dienstleister · KERNSEITE                   | Websites für Dienstleister. Verständlich, persönlich, erreichbar.                |
+| `/branchen/zahnarztpraxen/`              | Webdesign für Zahnarztpraxen · KERNSEITE                         | Praxis-Websites, die Vertrauen schaffen und Termine erleichtern.                 |
+| `/cookie-einstellungen/`                 | Cookie-Einstellungen · KERNSEITE                                 | Cookie-Einstellungen                                                             |
+| `/datenschutz/`                          | Datenschutzerklärung · KERNSEITE                                 | Datenschutzerklärung                                                             |
+| `/faq/`                                  | Häufige Fragen · KERNSEITE                                       | Häufige Fragen, ehrlich beantwortet.                                             |
+| `/impressum/`                            | Impressum · KERNSEITE                                            | Impressum                                                                        |
+| `/`                                      | Webdesign für Unternehmen – bei Würzburg, bundesweit · KERNSEITE | Gute Arbeit. Eine Website, die sie zeigt.                                        |
+| `/kontakt/`                              | Kontakt · KERNSEITE                                              | Deine neue Website beginnt mit einem Gespräch.                                   |
+| `/leistungen/google-unternehmensprofil/` | Google-Unternehmensprofil Würzburg · KERNSEITE                   | Gefunden werden, wenn es vor Ort zählt.                                          |
+| `/leistungen/`                           | Leistungen · KERNSEITE                                           | Die Website ist der Kern . Alles Weitere dockt sinnvoll an.                      |
+| `/leistungen/ki-automatisierung/`        | KI-Agentur Würzburg · KI-Integration · KERNSEITE                 | Automatisiere Arbeit . Nicht die Beziehung zum Kunden.                           |
+| `/leistungen/seo-geo/`                   | SEO & GEO Agentur Würzburg · KERNSEITE                           | Gefunden werden. Und richtig wiedergegeben.                                      |
+| `/leistungen/social-media/`              | Social Media Betreuung · KERNSEITE                               | Eine Marke muss nicht jeden Tag posten. Sie muss erkennbar bleiben.              |
+| `/leistungen/unternehmensvideo/`         | Unternehmensvideo Würzburg · KERNSEITE                           | Zeig, was Texte allein nicht vermitteln. Menschen vertrauen dem, was sie sehen . |
+| `/leistungen/websites/`                  | Website erstellen lassen – Umfang, Preise & Ablauf · KERNSEITE   | Deine neue Website. Klar geplant, individuell gestaltet.                         |
+| `/prozess/`                              | Prozess · KERNSEITE                                              | Klarer Prozess. Keine Agentur-Schleifen .                                        |
 
-## Marketingseiten
+## Regionale Konkurrenz – qualitative Grundlage aus dem Audit
 
-| Route                                    | Primärer Intent                    | Sekundär                                                                             | Title                                             | H1                                                                             | Schema                          |
-| ---------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------- |
-| `/`                                      | Webdesign & KI-Agentur Würzburg    | Digitalagentur, Webagentur, individuelle Websites, SEO/GEO, KI-Automatisierung       | Webdesign & KI-Agentur Würzburg · KERNSEITE       | Dein Unternehmen kann mehr. Deine Website sollte es zeigen.                    | ProfessionalService, WebSite    |
-| `/leistungen/`                           | Leistungsübersicht                 | Websites, SEO/GEO, Google-Profil, Video, Social, KI                                  | Leistungen · KERNSEITE                            | Die Website ist der Kern. Alles Weitere dockt sinnvoll an.                     | Breadcrumb, ProfessionalService |
-| `/leistungen/websites/`                  | Webdesign Agentur Würzburg         | Webseiten-Agentur, Website-Agentur, individuelle Unternehmenswebsite, Webentwicklung | Webdesign Agentur Würzburg · Websites · KERNSEITE | Websites, die nicht nur gut aussehen.                                          | Breadcrumb, Service, FAQPage    |
-| `/leistungen/seo-geo/`                   | SEO & GEO Agentur Würzburg         | SEO-Agentur, GEO-Agentur, Generative Engine Optimization, lokale Sichtbarkeit        | SEO & GEO Agentur Würzburg · KERNSEITE            | Gefunden werden. Und richtig wiedergegeben.                                    | Breadcrumb, Service, FAQPage    |
-| `/leistungen/ki-automatisierung/`        | KI-Agentur Würzburg                | KI-Integration, KI-Implementierung, KI-Automatisierung, Voice Agents, Chatbots       | KI-Agentur Würzburg · KI-Integration · KERNSEITE  | Automatisiere Arbeit. Nicht die Beziehung zum Kunden.                          | Breadcrumb, Service             |
-| `/leistungen/google-unternehmensprofil/` | Google-Unternehmensprofil Würzburg | lokale Sichtbarkeit, Google Maps, Bewertungen                                        | Google-Unternehmensprofil Würzburg · KERNSEITE    | Gefunden werden, wenn es vor Ort zählt.                                        | Breadcrumb, Service, FAQPage    |
-| `/leistungen/unternehmensvideo/`         | Unternehmensvideo Würzburg         | Imagefilm, Videoproduktion                                                           | Unternehmensvideo Würzburg · KERNSEITE            | Zeig, was Texte allein nicht vermitteln.                                       | Breadcrumb, Service             |
-| `/leistungen/social-media/`              | Social-Media-Betreuung             | Markenauftritt, Content-Formate                                                      | Social Media Betreuung · KERNSEITE                | Eine Marke muss nicht jeden Tag posten.                                        | Breadcrumb, Service, FAQPage    |
-| `/arbeiten/`                             | Referenzen                         | umgesetzte Kundenprojekte                                                            | Arbeiten · KERNSEITE                              | Arbeiten, die nicht nach Vorlage aussehen.                                     | Breadcrumb, ProfessionalService |
-| `/arbeiten/kaya-doener-himmelstadt/`     | Referenz Gastronomie               | digitale Speisekarte, lokale Sichtbarkeit                                            | Kaya Döner Himmelstadt – Referenz · KERNSEITE     | Appetit auf den ersten Klick.                                                  | Breadcrumb                      |
-| `/arbeiten/kinderkoerbchen/`             | Referenz Betreuung                 | Vertrauen, persönlicher Auftritt                                                     | Anna-Lena’s Kinderkörbchen – Referenz · KERNSEITE | Vertrauen, bevor man sich kennt.                                               | Breadcrumb                      |
-| `/branchen/`                             | Branchenübersicht                  | fünf Branchen                                                                        | Branchen · KERNSEITE                              | Gute Gestaltung versteht das Geschäft dahinter.                                | Breadcrumb                      |
-| `/branchen/handwerk/`                    | Webdesign für Handwerker           | Website für Handwerksbetriebe, Aufträge, Bewerber, regionale Auffindbarkeit          | Webdesign für Handwerker · KERNSEITE              | Websites für Handwerksbetriebe, die Aufträge und Bewerber bringen.             | Breadcrumb                      |
-| `/branchen/zahnarztpraxen/`              | Webdesign für Zahnarztpraxen       | Praxis-Website, Zahnarzt-Website, Terminwege                                         | Webdesign für Zahnarztpraxen · KERNSEITE          | Praxis-Websites, die Vertrauen schaffen und Termine erleichtern.               | Breadcrumb                      |
-| `/branchen/gastronomie-hotels/`          | Webdesign für Gastronomie & Hotels | Restaurant-Website, Hotel-Website, Reservierung, Buchung, Speisekarte                | Webdesign für Gastronomie & Hotels · KERNSEITE    | Websites für Gastronomie und Hotels, die Lust auf einen Besuch machen.         | Breadcrumb                      |
-| `/branchen/lokale-dienstleister/`        | Webdesign für lokale Dienstleister | Einzugsgebiet, Kontaktaufnahme, Bewertungen                                          | Webdesign für lokale Dienstleister · KERNSEITE    | Websites für lokale Dienstleister, die Anfragen bringen.                       | Breadcrumb                      |
-| `/branchen/b2b-mittelstand/`             | B2B-Webdesign für den Mittelstand  | erklärungsbedürftige Leistungen, qualifizierte Anfragen                              | B2B-Webdesign für den Mittelstand · KERNSEITE     | Websites für den B2B-Mittelstand, die komplexe Leistungen verständlich machen. | Breadcrumb                      |
-| `/agentur/`                              | Digital- & Medienagentur Würzburg  | Digitalstudio, Partnernetzwerk, Ansprechpartner                                      | Digital- & Medienagentur Würzburg · KERNSEITE     | Klein im Kern. Stark im Netzwerk.                                              | Breadcrumb                      |
-| `/prozess/`                              | Projektablauf                      | sieben Schritte, Zusammenarbeit                                                      | Prozess · KERNSEITE                               | Klarer Prozess. Keine Agentur-Schleifen.                                       | Breadcrumb                      |
-| `/faq/`                                  | Häufige Fragen                     | Kosten, Dauer, Templates, Hosting, SEO/GEO                                           | Häufige Fragen · KERNSEITE                        | Häufige Fragen, ehrlich beantwortet.                                           | Breadcrumb, FAQPage             |
-| `/kontakt/`                              | Kontaktaufnahme                    | Anfrage, Gespräch                                                                    | Kontakt · KERNSEITE                               | Erzähl kurz, was du vorhast.                                                   | Breadcrumb                      |
+- [Webfeinschliff](https://www.webfeinschliff.de/webdesign/): Preis-/Leistungsrahmen und konkrete Arbeiten sichtbar. KERNSEITE erklärt jetzt den eigenen Budgetrahmen und Zusatzkosten, statt nur einen günstigen Preis zu nennen.
+- [KreativWerk](https://kreativwerk-sw.de/): getrennte Leistungs-/Zielgruppenseiten. Die vorhandenen KERNSEITE-Branchen werden durch konkrete kaufnahe Aufgaben differenziert.
+- [Shuttle Design Studio](https://www.shuttlestudio.de/): Portfolio und Personen tragen den Auftritt. KERNSEITE stellt echte Arbeiten und den Ansprechpartner vor die Dekoration.
 
-„Medienagentur“ steht auf `/agentur/`, weil Website, Social Media und
-Unternehmensvideo tatsächlich angeboten bzw. über spezialisierte Partner
-koordiniert werden – nicht, weil der Begriff gesucht wird. Die Darstellung
-bleibt dabei ehrlich: klein im Kern, Spezialleistungen über Partner.
+Grundlage: bereitgestelltes Website-Audit vom 15.09.2026. Keine daraus abgeleiteten Suchvolumina oder behaupteten aktuellen Rankingpositionen. Wettbewerbspreise wurden für diese Implementierung nicht erneut erhoben.
 
-## Rechts- und Nebenseiten
+## SEO und generative Suche
 
-| Route                    | Index                    | Anmerkung                                                         |
-| ------------------------ | ------------------------ | ----------------------------------------------------------------- |
-| `/impressum/`            | index                    | Pflichtangaben nach § 5 DDG                                       |
-| `/datenschutz/`          | index                    | Art. 13 DSGVO, an der tatsächlichen Technik ausgerichtet          |
-| `/barrierefreiheit/`     | index                    | ehrlicher Prüfstand, keine Konformitätszusage                     |
-| `/agb/`                  | index                    | fachliche Freigabe offen                                          |
-| `/cookie-einstellungen/` | **nicht in der Sitemap** | erklärt, dass derzeit keine zustimmungspflichtigen Dienste laufen |
-| `/404`                   | **nicht in der Sitemap** | noindex                                                           |
+Eine eindeutige Aufgabe je Seite, verständliche sichtbare Antworten, konsistente Unternehmensdaten, interne Verlinkung, tatsächliche Referenzen und technische Erreichbarkeit. Keine unbelegten Bewertungen oder Ergebniszahlen, keine austauschbaren Stadtseiten.
 
-## Interne Verlinkung nach Suchintent
+Für Googles AI Overviews und AI Mode sind keine speziellen Dateien oder zusätzlichen Schema-Typen erforderlich. Die normalen Suchanforderungen und hilfreiche sichtbare Inhalte bleiben maßgeblich; Aufnahme ist nicht zugesichert. [Google Search Central](https://developers.google.com/search/docs/appearance/ai-features)
 
-| Von                  | Nach                                                                                  |
-| -------------------- | ------------------------------------------------------------------------------------- |
-| Startseite           | Websites, SEO/GEO, Branchen, Arbeiten, Kontakt                                        |
-| Handwerk             | Websites, Google-Unternehmensprofil, Unternehmensvideo, Kontakt (`?branche=handwerk`) |
-| Zahnarztpraxen       | Websites, Google-Unternehmensprofil, KI & Automatisierung, Kontakt                    |
-| Gastronomie & Hotels | Websites, Unternehmensvideo, Google-Unternehmensprofil, Kontakt                       |
-| Lokale Dienstleister | Websites, Google-Unternehmensprofil, KI & Automatisierung, Kontakt                    |
-| B2B-Mittelstand      | Websites, SEO/GEO, Unternehmensvideo, KI & Automatisierung, Kontakt                   |
-| KI & Automatisierung | Websites, Prozess, Kontakt (`?leistung=ki`)                                           |
+## Messung nach dem Start
 
-Die Branchenseiten verlinken ihre passenden Leistungen über
-`relatedServices` in `src/config/industries.ts`. Der Abschluss-CTA jeder
-Leistungs- und Branchenseite trägt den Kontext als Query-Parameter mit; das
-Kontaktformular wählt daraus die passende Leistung vor (Whitelist, siehe
-`src/components/ContactForm.astro`).
-
-## GEO – wie generative Antwortsysteme bedient werden
-
-Ohne Sonderdateien und ohne versteckte Texte. Grundlage sind kurze,
-überprüfbare Aussagen im sichtbaren Inhalt:
-
-| Frage                                        | Wo beantwortet                                               |
-| -------------------------------------------- | ------------------------------------------------------------ |
-| Was ist KERNSEITE?                           | Startseite, erster Absatz unter der Überschrift              |
-| Was bietet KERNSEITE?                        | `/leistungen/` und die sechs Detailseiten                    |
-| Wo sitzt KERNSEITE?                          | `/agentur/`, `/kontakt/`, Impressum – Erlabrunn bei Würzburg |
-| Welche Unternehmen werden betreut?           | `/branchen/` mit fünf Detailseiten                           |
-| Was wird selbst umgesetzt, was mit Partnern? | `/agentur/`, Abschnitt „Wer arbeitet an meinem Projekt?“     |
-| Wie läuft ein Projekt ab?                    | `/prozess/`                                                  |
-| Gibt es Ranking-Garantien?                   | `/faq/` und `/leistungen/seo-geo/` – ausdrücklich nein       |
-| Was bedeutet SEO, was GEO?                   | `/leistungen/seo-geo/`                                       |
-| Was bedeutet KI-Integration?                 | `/leistungen/ki-automatisierung/`                            |
-
-Bewusst **nicht** umgesetzt: `llms.txt` ohne belegten Nutzen, unsichtbare
-Faktenblöcke, KI-spezifische Schema-Typen, Query-Varianten-Listen. Für
-generative Systeme zählt derselbe Inhalt, den Menschen lesen.
-
-## Pflege
-
-Bei jeder Änderung an Titeln, Beschreibungen oder Routen: `pnpm build:ci &&
-pnpm qa` – `check-seo.mjs` meldet doppelte oder zu lange Angaben, fehlende
-Canonicals und nicht parsebares JSON-LD. Diese Datei danach angleichen.
+Search Console und Bing einrichten, Sitemap einreichen und Indexierung prüfen. Pro Anfrage Herkunft, Zielseite, Eignung, Angebot und Auftrag dokumentieren. Bezahlte Kampagnen erst nach dem echten Zustelltest starten. Keine Werbepixel ohne passend eingerichtete Einwilligung. Weitere Schritte: `SEARCH_LAUNCH_CHECKLIST.md`.
