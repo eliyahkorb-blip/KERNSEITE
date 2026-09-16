@@ -2,59 +2,53 @@
 import { footerNav } from '../config/navigation';
 import { site, canShowHostingClaim } from '../config/site';
 import { activeCompany } from '../lib/config-validation';
-
 const year = new Date().getFullYear();
 const c = activeCompany;
+const legal = footerNav.find((group) => group.title === 'Rechtliches');
+const groups = footerNav.filter((group) => group !== legal);
 ---
 
 <footer class="ft section--dark on-dark">
   <div class="content">
-    <!-- Großer Schriftzug als Abschluss -->
-    <a class="ft__wordmark" href="/" aria-label="KERNSEITE – zur Startseite">
-      KERNSEITE<span class="ft__dot" aria-hidden="true">.</span>
-    </a>
-
-    <div class="ft__grid">
-      <div class="ft__contact">
-        <p class="ft__label">Kontakt</p>
-        <p class="ft__lines">
-          <a href={`mailto:${c.email}`}>{c.email}</a><br />
-          <a href={`tel:${c.phone.replace(/[^+\d]/g, '')}`}>{c.phone}</a>
-        </p>
+    <div class="ft__top">
+      <div>
+        <a class="ft__wordmark" href="/" aria-label="KERNSEITE – zur Startseite"
+          >KERNSEITE<span aria-hidden="true">.</span></a
+        >
         <p class="ft__region">{site.region.claim}</p>
-        <a class="link-arrow ft__cta" href="/kontakt/">
-          Website anfragen <span class="arrow" aria-hidden="true">→</span>
-        </a>
       </div>
-
-      <nav class="ft__nav" aria-label="Footer-Navigation">
+      <div class="ft__contact">
+        <a href={`mailto:${c.email}`}>{c.email}</a>
+        <a href={`tel:${c.phone.replace(/[^+\d]/g, '')}`}>{c.phone}</a>
+        <a class="btn btn--primary" href="/kontakt/">Website anfragen</a>
+      </div>
+    </div>
+    <nav class="ft__nav" aria-label="Footer-Navigation">
+      {
+        groups.map((group) => (
+          <div class="ft__group">
+            <h2 class="ft__label">{group.title}</h2>
+            <ul role="list">
+              {group.items.map((item) => (
+                <li>
+                  <a href={item.href}>{item.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </nav>
+    <div class="ft__bottom">
+      <p class="ft__copy">{`© ${year} ${c.legalDisplayName} · ${c.city}, ${site.region.state}`}</p>
+      <ul class="ft__meta" role="list">
         {
-          footerNav.map((group) => (
-            <div class="ft__group">
-              <h2 class="ft__label">{group.title}</h2>
-              <ul role="list">
-                {group.items.map((item) => (
-                  <li>
-                    <a href={item.href}>{item.label}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          legal?.items.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
           ))
         }
-      </nav>
-    </div>
-
-    <div class="ft__bottom">
-      <p class="ft__copy">
-        {
-          /* Ortsangabe folgt der echten Anschrift aus company.ts – nicht dem
-            bedienten Marktgebiet. Kein „Würzburg“ als behaupteter Sitz. */
-        }
-        {`© ${year} ${c.legalDisplayName} · ${c.city}, ${site.region.state}`}
-      </p>
-      <ul class="ft__meta" role="list">
-        {canShowHostingClaim && <li>{site.hostingClaimText}</li>}
         {
           site.consentRequired && (
             <li>
@@ -62,145 +56,118 @@ const c = activeCompany;
             </li>
           )
         }
-        <li><a href="/impressum/">Impressum</a></li>
-        <li><a href="/datenschutz/">Datenschutz</a></li>
-        <li><a href="/barrierefreiheit/">Barrierefreiheit</a></li>
-        <li><a href="/agb/">AGB</a></li>
       </ul>
+      {canShowHostingClaim && <p class="ft__copy">{site.hostingClaimText}</p>}
     </div>
   </div>
 </footer>
-
 <style>
   .ft {
-    padding-block: clamp(3rem, 4vw, 4rem) clamp(2rem, 1.5rem + 2vw, 3rem);
+    padding-block: clamp(2.5rem, 5vw, 4rem) 2rem;
   }
-
-  /* `.ft a.ft__wordmark`: Die globale Regel `.section--dark a:not(.btn)` färbt
-     sonst den gesamten Schriftzug cyan. Hier gewinnt die höhere Spezifität –
-     das Wort bleibt cremefarben, nur der Punkt trägt die Markenfarbe. */
+  .ft__top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem 3rem;
+    margin-block-end: 2.5rem;
+  }
   .ft a.ft__wordmark {
-    display: block;
     font-family: var(--font-display);
-    font-weight: var(--fw-bold);
-    /* Großer Schriftzug, füllt die Breite. Die Untergrenze von 3rem war auf
-       sehr schmalen Viewports (starker Browser-Zoom) breiter als der
-       Container – deshalb skaliert sie jetzt bis 1.75rem herunter. */
-    font-size: clamp(2rem, 8vw, 7rem);
-    line-height: 1;
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 700;
     letter-spacing: -0.035em;
-    /* Ober- und Unterlängen des großen Schriftzugs nicht beschneiden. */
-    padding-block-end: 0.06em;
     color: var(--text-invert);
     text-decoration: none;
-    margin-block-end: 2rem;
   }
-  .ft a.ft__wordmark .ft__dot {
+  .ft__wordmark span {
     color: var(--ks-cyan);
   }
-
-  .ft__grid {
-    display: grid;
-    gap: var(--space-2xl);
-    padding-block-start: clamp(2rem, 1.5rem + 2vw, 3rem);
-    border-block-start: 1px solid var(--line-invert);
+  .ft__region {
+    margin-block-start: 0.5rem;
+    color: var(--text-invert-muted);
+    font-size: 0.9375rem;
   }
-
-  .ft__label {
-    font-size: var(--fs-small);
-    font-weight: var(--fw-medium);
-    color: var(--accent);
-    margin-block-end: var(--space-md);
+  .ft__contact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
   }
-  .ft__lines {
-    display: grid;
-    gap: 0.35rem;
-    font-size: var(--fs-lead);
-  }
-  .ft__lines a {
+  .ft__contact > a:not(.btn) {
     color: var(--text-invert);
     text-decoration: none;
+    font-size: 1rem;
   }
-  .ft__lines a:hover {
-    color: var(--accent);
-  }
-  .ft__region {
-    margin-block-start: var(--space-md);
-    color: var(--text-invert-muted);
-    font-size: var(--fs-small);
-  }
-  .ft__cta {
-    margin-block-start: var(--space-xl);
-  }
-
   .ft__nav {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-xl);
+    gap: 1.5rem;
   }
-  /* Sehr schmal (auch bei starkem Browser-Zoom): einspaltig, sonst laufen
-     lange Linktexte wie „Google-Unternehmensprofil“ aus dem Raster. */
-  @media (max-width: 22rem) {
-    .ft__nav {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-lg);
-    }
-  }
-  .ft__group ul {
+  .ft__group {
     display: grid;
-    gap: 0.55rem;
+    gap: 0.65rem 1.5rem;
+  }
+  .ft__label {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--text-invert);
+    letter-spacing: 0;
+  }
+  .ft__group ul,
+  .ft__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.5rem;
     margin: 0;
     padding: 0;
   }
-  .ft__group a {
-    overflow-wrap: anywhere;
+  .ft__group a,
+  .ft__meta a {
+    display: inline-block;
     color: var(--text-invert-muted);
+    font-size: 0.9375rem;
     text-decoration: none;
-    font-size: var(--fs-small);
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+    padding-block: 0.25rem;
   }
-  .ft__group a:hover {
+  .ft__group a:hover,
+  .ft__meta a:hover,
+  .ft__contact > a:not(.btn):hover {
     color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
   }
-
   .ft__bottom {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-md) var(--space-xl);
+    align-items: baseline;
     justify-content: space-between;
-    align-items: center;
-    margin-block-start: clamp(2.5rem, 2rem + 3vw, 4rem);
-    padding-block-start: var(--space-lg);
+    gap: 1rem 2rem;
     border-block-start: 1px solid var(--line-invert);
+    margin-block-start: 2rem;
+    padding-block-start: 1.5rem;
   }
-  .ft__copy,
-  .ft__meta {
-    font-size: var(--fs-small);
+  .ft__copy {
+    font-size: 0.9375rem;
     color: var(--text-invert-muted);
   }
-  .ft__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-md) var(--space-lg);
-    margin: 0;
-    padding: 0;
-  }
-  .ft__meta a {
-    color: var(--text-invert-muted);
-    text-decoration: none;
-  }
-  .ft__meta a:hover {
-    color: var(--accent);
-  }
-
   @media (min-width: 48rem) {
-    .ft__grid {
-      grid-template-columns: 1fr 1.5fr;
-      gap: var(--space-4xl);
+    .ft__group {
+      grid-template-columns: 8rem minmax(0, 1fr);
     }
   }
-  @media (min-width: 64rem) {
-    .ft__nav {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+  @media (max-width: 20rem) {
+    .ft__group a,
+    .ft__meta a {
+      white-space: normal;
     }
   }
 </style>

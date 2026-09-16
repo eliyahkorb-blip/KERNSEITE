@@ -38,3 +38,9 @@ Wortmarke, Favicon und Open-Graph-Gestaltung gehören zur KERNSEITE-Gestaltung. 
 ## Schriften
 
 Bricolage Grotesque und Inter werden lokal ausgeliefert. Lizenz: SIL Open Font License; Lizenztexte unter `public/fonts/`. Die vorhandenen Lizenztexte bleiben erhalten.
+
+## Aktualisierte Projektscreenshots · 16.09.2026
+
+Vom Nutzer in dieser Aufgabe bereitgestellte Screenshots: Babyschlafberatung Anna-Lena Korb (1901 × 909), Kaya Döner (1904 × 910), Bestattungen Gorhau (1905 × 909). Unveränderter Bildinhalt, als lokale WebP-Auslieferungen in 800/1200/1600 Pixeln sowie Originalbreite optimiert; keine extern geladenen Assets.
+
+Die Domain `babyschlafberatung.example` ist ausdrücklich eine reservierte Beispieladresse und wird nur als Text gezeigt. Der Link führt auf die interne Projektseite. Babyschlafberatung und Gorhau sind als Entwürfe eingeordnet; der Gorhau-Pages-Link lieferte beim Abruf am 16.09.2026 HTTP 404 und wird deshalb nicht als funktionierende Website verlinkt. Die Darstellung ist kein Nachweis eines bereits veröffentlichten Kundenauftritts oder von Geschäftsergebnissen.

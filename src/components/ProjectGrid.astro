@@ -6,32 +6,31 @@ import { featuredProjects } from '../config/cases';
   {
     featuredProjects.map((project) => (
       <li>
-        <>
-          <a class="project" href={project.href}>
-            <div class="project__image">
-              <img
-                src={project.screenshotDesktop.src}
-                srcset={project.screenshotDesktop.srcset}
-                sizes="(min-width: 80rem) 580px, (min-width: 48rem) 45vw, 100vw"
-                width={project.screenshotDesktop.width}
-                height={project.screenshotDesktop.height}
-                alt={project.screenshotDesktop.alt}
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
+        <a class="project" href={project.href}>
+          <div class="project__image">
+            <img
+              src={project.screenshotDesktop.src}
+              srcset={project.screenshotDesktop.srcset}
+              sizes="(min-width: 80rem) 620px, (min-width: 48rem) 45vw, 100vw"
+              width={project.screenshotDesktop.width}
+              height={project.screenshotDesktop.height}
+              alt={project.screenshotDesktop.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="project__heading">
             <>
-              <div class="project__heading">
-                <>
-                  <h3>{project.title}</h3>
-                  <span aria-hidden="true">↗</span>
-                </>
-              </div>
-              <p class="project__category">{project.category}</p>
+              <h3>{project.title}</h3>
+              <span aria-hidden="true">↗</span>
             </>
-          </a>
-          <p class="project__description">{project.tagline}</p>
-        </>
+          </div>
+          <p class="project__category">
+            {project.industryLabel}
+            {project.stage === 'preview' ? ' · Website-Entwurf' : ' · Website'}
+          </p>
+        </a>
+        <p class="project__description">{project.tagline}</p>
       </li>
     ))
   }
@@ -39,53 +38,66 @@ import { featuredProjects } from '../config/cases';
 <style>
   .projects {
     display: grid;
-    gap: 2.5rem;
+    gap: 2.75rem 2rem;
+  }
+  .projects > li {
+    min-width: 0;
   }
   .project {
     color: var(--text);
     text-decoration: none;
   }
   .project__image {
-    background: var(--ks-surface);
-    padding: clamp(0.75rem, 2vw, 1.75rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    background: var(--surface-alt);
     overflow: hidden;
+    border-radius: 5px;
+    aspect-ratio: 1.8;
   }
   .project__image img {
     width: 100%;
-    height: auto;
-    box-shadow: 0 12px 24px -16px #10121466;
-    transition: transform 200ms ease;
+    height: 100%;
+    object-fit: contain;
   }
-  .project:hover img {
-    transform: translateY(-3px);
+  .project:hover h3 {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
   .project__heading {
     display: flex;
     gap: 1rem;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
-    margin-block-start: 1.25rem;
+    margin-block-start: 1.1rem;
   }
   .project__heading h3 {
-    font-size: clamp(1.3rem, 2vw, 1.65rem);
+    font-size: clamp(1.2rem, 1.7vw, 1.5rem);
+    line-height: 1.3;
   }
-  .project__heading span {
-    font-size: 1.5rem;
+  .project__heading > span {
+    font-size: 1.25rem;
   }
   .project__category {
-    font-size: 0.75rem;
+    font-size: 0.9375rem;
     color: var(--text-muted);
-    margin-block-start: 0.25rem;
+    margin-block-start: 0.3rem;
   }
   .project__description {
-    margin-block-start: 0.85rem;
+    margin-block-start: 0.65rem;
     max-width: 54ch;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     color: var(--text-muted);
   }
   @media (min-width: 48rem) {
     .projects {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 30rem) {
+    .project__image {
+      aspect-ratio: auto;
     }
   }
 </style>

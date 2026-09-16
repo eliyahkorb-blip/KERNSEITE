@@ -53,10 +53,14 @@ const tags = work.category
         <a class="link-arrow" href={work.href}>
           Projekt ansehen <span class="arrow" aria-hidden="true">→</span>
         </a>
-        <a class="wf__live" href={work.liveUrl} target="_blank" rel="noopener noreferrer">
-          {work.liveLabel}
-          <span class="visually-hidden"> (öffnet in neuem Tab)</span>
-        </a>
+        {
+          work.liveUrl && (
+            <a class="wf__live" href={work.liveUrl} target="_blank" rel="noopener noreferrer">
+              {work.liveLabel}
+              <span class="visually-hidden"> (öffnet in neuem Tab)</span>
+            </a>
+          )
+        }
       </div>
     </div>
   </div>

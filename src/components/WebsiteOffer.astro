@@ -9,9 +9,7 @@ const { detailed = false } = Astro.props;
 <section class="section section--dark on-dark" id="website-angebot">
   <div class="content offer">
     <div>
-      <p class="eyebrow">Individuelle Unternehmenswebsites</p><h2>
-        Ein Auftritt,<br />der zu deinem<br />Unternehmen passt.
-      </h2><p class="offer__intro">
+      <h2>Deine Website. Von der Idee bis zum Start.</h2><p class="offer__intro">
         Für Selbstständige, Handwerksbetriebe und Dienstleister, die online klarer auftreten und
         passende Anfragen gewinnen möchten.
       </p><a
@@ -25,14 +23,7 @@ const { detailed = false } = Astro.props;
       <p class="offer__budget-label">Typischer Projektumfang</p><p class="offer__price">
         {websiteOffer.range}
       </p><p class="offer__note">{websiteOffer.note}</p><ul role="list">
-        {
-          websiteOffer.includes.map((item) => (
-            <li>
-              <span aria-hidden="true">↗</span>
-              {item}
-            </li>
-          ))
-        }
+        {websiteOffer.includes.map((item) => <li>{item}</li>)}
       </ul><p class="offer__extras">{websiteOffer.additionalCosts}</p>{
         detailed && (
           <p class="offer__extras">
@@ -56,39 +47,37 @@ const { detailed = false } = Astro.props;
     max-width: 42ch;
     color: var(--text-muted);
     margin-block: 1.5rem;
-    font-size: 0.9375rem;
+    font-size: 1rem;
   }
   .offer__detail {
     padding-block-start: 0.25rem;
   }
   .offer__budget-label {
-    font-size: 0.8125rem;
+    font-size: 1rem;
     color: var(--text-muted);
   }
   .offer__price {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(2.1rem, 3.6vw, 3.75rem);
+    font-size: clamp(2rem, 3vw, 3rem);
     line-height: 1.15;
     letter-spacing: -0.04em;
     margin-block: 0.5rem 1rem;
   }
   .offer__note,
   .offer__extras {
-    font-size: 0.8125rem;
+    font-size: 1rem;
     color: var(--text-muted);
     max-width: 58ch;
   }
   .offer ul {
     margin-block: 1.75rem 1.25rem;
-    border-block-start: 1px solid var(--line);
   }
   .offer li {
     display: flex;
     gap: 1rem;
-    padding-block: 0.8rem;
-    border-block-end: 1px solid var(--line);
-    font-size: 0.9375rem;
+    padding-block: 0.4rem;
+    font-size: 1rem;
   }
   .offer li span {
     color: var(--accent);

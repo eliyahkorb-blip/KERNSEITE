@@ -51,12 +51,12 @@
   --fw-semibold: 600;
   --fw-bold: 700;
 
-  /* Redaktionelle Skala – bewusst groß */
+  /* Abgestufte, ruhige Skala für Überschriften und Fließtext */
   --fs-hero: clamp(2.75rem, 5.1vw, 5.3rem);
-  --fs-h1: clamp(2.3rem, 4.6vw, 4.8rem);
-  --fs-h2: clamp(1.9rem, 3.3vw, 3.35rem);
-  --fs-h3: clamp(1.6rem, 2.6vw, 2.6rem);
-  --fs-h4: clamp(1.3rem, 1.8vw, 1.85rem);
+  --fs-h1: clamp(2rem, 3.5vw, 3.4rem);
+  --fs-h2: clamp(1.75rem, 2.6vw, 2.5rem);
+  --fs-h3: clamp(1.4rem, 2vw, 1.9rem);
+  --fs-h4: clamp(1.25rem, 1.6vw, 1.6rem);
   --fs-h5: clamp(1.125rem, 1.4vw, 1.4rem);
   --fs-lead: clamp(1.0625rem, 1.3vw, 1.25rem);
   --fs-body: 1.0625rem;

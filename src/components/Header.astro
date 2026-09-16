@@ -4,6 +4,7 @@ import { mainNav, primaryCta } from '../config/navigation';
 const currentPath = Astro.url.pathname;
 function isActive(href: string): boolean {
   if (href === '/') return currentPath === '/';
+  if (href === '/leistungen/' && currentPath.startsWith('/leistungen/websites/')) return false;
   return currentPath.startsWith(href);
 }
 ---

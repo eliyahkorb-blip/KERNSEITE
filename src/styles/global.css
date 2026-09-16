@@ -783,10 +783,10 @@ label *,
 
 /* Gemeinsame Überschriften und Aktionen. */
 .eyebrow {
-  font-size: 0.75rem;
+  font-size: 0.9375rem;
   line-height: 1.4;
   font-weight: 500;
-  letter-spacing: 0.045em;
+  letter-spacing: 0;
   margin-block-end: 1.1rem;
   color: var(--text-muted);
 }

@@ -12,7 +12,6 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import CtaBanner from '../../components/CtaBanner.astro';
 import Photo from '../../components/Photo.astro';
 import RelatedServices from '../../components/RelatedServices.astro';
-import AccentWord from '../../components/AccentWord.astro';
 import { getService } from '../../config/services';
 import { serviceJsonLd, breadcrumbJsonLd } from '../../lib/jsonld';
 
@@ -48,13 +47,14 @@ const production = [
     <div class="content vhero__inner">
       <div class="vhero__text">
         <Breadcrumbs items={breadcrumbs} />
-        <h1 class="vhero__title">
-          Zeig, was Texte allein nicht vermitteln.<br />
-          Menschen vertrauen dem, was sie <AccentWord>sehen</AccentWord>.
-        </h1>
+        <h1 class="vhero__title">Mach dein Unternehmen erlebbar.</h1>
         <p class="vhero__lead">
-          Ein gutes Unternehmensvideo macht Atmosphäre, Team und Arbeitsweise erlebbar.
+          Zeig deinen Kunden, wer hinter deinem Unternehmen steht und wie ihr arbeitet. Wir planen
+          Konzept, Produktion und Einbindung mit passenden Partnern.
         </p>
+        <a class="btn btn--primary vhero__cta" href="/kontakt/?leistung=video"
+          >Videoprojekt besprechen</a
+        >
       </div>
       <Photo
         photo="unternehmensvideo"
@@ -89,7 +89,7 @@ const production = [
   <!-- Der Film in vier Kapiteln – als Storyline -->
   <section class="story section--dark on-dark">
     <div class="content">
-      <h2 class="story__title">Vier Kapitel. Kein Werbefilm.</h2>
+      <h2 class="story__title">Was dein Film erzählen kann.</h2>
       <ol class="story__list" role="list">
         {
           beats.map((b) => (
@@ -163,6 +163,10 @@ const production = [
     }
   }
 
+  .vhero__cta {
+    margin-block-start: 1.5rem;
+  }
+
   /* --- Zwei Spalten -------------------------------------------------------- */
   .vtwo {
     display: grid;
@@ -191,22 +195,19 @@ const production = [
   .story__title {
     font-size: var(--fs-h3);
     color: var(--text-invert);
-    max-width: min(16ch, 100%);
+    max-width: min(30ch, 100%);
     margin-block-end: clamp(2rem, 1.5rem + 2vw, 3rem);
   }
   .story__list {
     display: grid;
-    gap: 0;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
     margin: 0;
     padding: 0;
     list-style: none;
   }
   .story__beat {
     padding-block: clamp(1rem, 0.8rem + 1vw, 1.5rem);
-    border-block-start: 1px solid var(--line-invert);
-  }
-  .story__beat:last-child {
-    border-block-end: 1px solid var(--line-invert);
   }
   .story__beat-title {
     font-size: var(--fs-h5);
@@ -215,24 +216,8 @@ const production = [
   .story__beat-body {
     margin-block-start: 0.35rem;
     color: var(--text-invert-muted);
-    font-size: var(--fs-small);
+    font-size: 1rem;
     max-width: min(52ch, 100%);
-  }
-  @media (min-width: 64rem) {
-    /* Storyline: die Kapitel laufen versetzt nach rechts. */
-    .story__beat {
-      padding-inline-start: 0;
-      transition: padding-inline-start var(--dur-base) var(--ease-out);
-    }
-    .story__beat:nth-child(2) {
-      padding-inline-start: clamp(2rem, 6vw, 7rem);
-    }
-    .story__beat:nth-child(3) {
-      padding-inline-start: clamp(4rem, 12vw, 14rem);
-    }
-    .story__beat:nth-child(4) {
-      padding-inline-start: clamp(6rem, 18vw, 21rem);
-    }
   }
 
   /* --- Produktion ---------------------------------------------------------- */
@@ -249,18 +234,15 @@ const production = [
   }
   .vprod__item-title {
     font-size: var(--fs-h5);
-    /* Neon-Linie über der Überschrift – unter ihr wirkte sie wie ein Link. */
-    padding-block-start: 0.6rem;
-    border-block-start: 2px solid var(--accent-mark);
   }
   .vprod__item-body {
     margin-block-start: 0.6rem;
     color: var(--text-muted);
-    font-size: var(--fs-small);
+    font-size: 1rem;
   }
   @media (min-width: 48rem) {
     .vprod__list {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       column-gap: clamp(1.5rem, 3vw, 3rem);
     }
   }

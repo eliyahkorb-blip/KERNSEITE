@@ -11,6 +11,7 @@ export interface NavGroup {
 /** Hauptnavigation (Header, Desktop + Mobil). */
 export const mainNav: readonly NavItem[] = [
   { label: 'Websites', href: '/leistungen/websites/' },
+  { label: 'Leistungen', href: '/leistungen/' },
   { label: 'Projekte', href: '/arbeiten/' },
   { label: 'Agentur', href: '/agentur/' },
   { label: 'Kontakt', href: '/kontakt/' },
@@ -24,6 +25,7 @@ export const footerNav: readonly NavGroup[] = [
   {
     title: 'Leistungen',
     items: [
+      { label: 'Alle Leistungen', href: '/leistungen/' },
       { label: 'Websites', href: '/leistungen/websites/' },
       { label: 'SEO & GEO', href: '/leistungen/seo-geo/' },
       { label: 'Google-Unternehmensprofil', href: '/leistungen/google-unternehmensprofil/' },
@@ -35,6 +37,7 @@ export const footerNav: readonly NavGroup[] = [
   {
     title: 'Branchen',
     items: [
+      { label: 'Alle Branchen', href: '/branchen/' },
       { label: 'Handwerk', href: '/branchen/handwerk/' },
       { label: 'Zahnarztpraxen', href: '/branchen/zahnarztpraxen/' },
       { label: 'Gastronomie & Hotels', href: '/branchen/gastronomie-hotels/' },

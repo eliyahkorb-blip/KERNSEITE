@@ -32,17 +32,20 @@ export interface WorkScreenshot {
   readonly alt: string;
 }
 
-/** Echtes, umgesetztes Kundenprojekt (KEINE Konzeptstudie). */
+/** Vom Nutzer bereitgestelltes Projekt; noch unveröffentlichte Entwürfe tragen stage. */
 export interface ProjectWork extends WorkCommon {
   readonly kind: 'project';
-  /** Name des realen Auftraggebers (Nutzungsrechte bestätigt). */
+  /** Projektname laut bereitgestellten Angaben. */
   readonly client: string;
   /** z. B. "Gastronomie · Website · digitale Speisekarte". */
   readonly category: string;
   /** Große redaktionelle Projektüberschrift. */
   readonly headline: string;
   /** Live-Website (href, ggf. Punycode für IDN). */
-  readonly liveUrl: string;
+  readonly liveUrl?: string;
+  readonly stage?: 'preview';
+  /** Reservierte Beispieldomain, nur zur Anzeige, niemals als externer Link. */
+  readonly previewDomain?: string;
   /** Anzeige-Label der Live-Website (Unicode). */
   readonly liveLabel: string;
   /**
@@ -76,8 +79,43 @@ export interface ConceptWork extends WorkCommon {
 
 export type Work = ProjectWork | ConceptWork;
 
-/** Freigegebene Kundenprojekte mit bereitgestellten Screenshots. */
+/** Projektbeispiele mit bereitgestellten Screenshots. */
 const projects: readonly ProjectWork[] = [
+  {
+    kind: 'project',
+    slug: 'babyschlafberatung',
+    href: '/arbeiten/babyschlafberatung/',
+    title: 'Anna-Lena Korb · Babyschlafberatung',
+    headline: 'Nähe und Vertrauen von Anfang an.',
+    client: 'Anna-Lena Korb',
+    industryLabel: 'Babyschlafberatung',
+    category: 'Beratung · Website · Kontaktanfrage',
+    tagline:
+      'Eine persönliche Website, die Eltern Orientierung gibt und den Weg zum Kennenlerngespräch einfach macht.',
+    liveLabel: 'Website-Entwurf',
+    stage: 'preview',
+    previewDomain: 'babyschlafberatung.example',
+    verified: false,
+    filters: ['referenz', 'websites', 'lokale-dienstleister'],
+    situation:
+      'Eltern möchten verstehen, wie eine Schlafberatung begleitet, welche Angebote es gibt und wer ihnen zur Seite steht.',
+    solution:
+      'Der Entwurf verbindet eine ruhige Bildsprache mit verständlichen Angeboten, Preisen und einem direkten Weg zum Kennenlernen. Die dargestellte Beispieldomain ist ein Platzhalter; eine eigene Domain ist noch nicht eingerichtet.',
+    scope: [
+      'Individuelle Gestaltung für Anna-Lena Korb',
+      'Struktur für Beratung, Angebote und Preise',
+      'Persönliche Vorstellung und Schlafwissen',
+      'Klarer Einstieg zum Kennenlerngespräch',
+    ],
+    screenshotDesktop: {
+      src: '/assets/references/babyschlafberatung-desktop.webp',
+      srcset:
+        '/assets/references/babyschlafberatung-desktop-800.webp 800w, /assets/references/babyschlafberatung-desktop-1200.webp 1200w, /assets/references/babyschlafberatung-desktop-1600.webp 1600w, /assets/references/babyschlafberatung-desktop.webp 1901w',
+      width: 1901,
+      height: 909,
+      alt: 'Website-Entwurf der Babyschlafberatung Anna-Lena Korb mit ruhiger Gestaltung, schlafendem Baby und Einladung zum Kennenlernen.',
+    },
+  },
   {
     kind: 'project',
     slug: 'kaya-doener-himmelstadt',
@@ -108,8 +146,42 @@ const projects: readonly ProjectWork[] = [
       srcset:
         '/assets/references/kaya-doener-desktop-800.webp 800w, /assets/references/kaya-doener-desktop-1200.webp 1200w, /assets/references/kaya-doener-desktop-1600.webp 1600w, /assets/references/kaya-doener-desktop.webp 1904w',
       width: 1904,
-      height: 1010,
-      alt: 'Startseite von Kaya Döner Himmelstadt: dunkler Kopfbereich, Schlagzeile „Frischer Döner in Himmelstadt“, Produktfoto und Speisekarte.',
+      height: 910,
+      alt: 'Neuer Auftritt von Kaya Döner Himmelstadt mit „Döner. Dürüm. Dein Kaya.“, großem Dönerfoto und direktem Anrufbutton.',
+    },
+  },
+  {
+    kind: 'project',
+    slug: 'bestattungen-gorhau',
+    href: '/arbeiten/bestattungen-gorhau/',
+    title: 'Bestattungen Gorhau',
+    headline: 'Orientierung in einem schweren Moment.',
+    client: 'Bestattungen Gorhau',
+    industryLabel: 'Bestattungsunternehmen',
+    category: 'Bestattungen · Website · Kontaktwege',
+    tagline:
+      'Ein ruhiger Auftritt mit verständlichen Informationen und einem direkt sichtbaren Kontakt für den Trauerfall.',
+    liveLabel: 'Projektvorschau',
+    stage: 'preview',
+    verified: false,
+    filters: ['referenz', 'websites', 'lokale-dienstleister'],
+    situation:
+      'Im Trauerfall müssen Angehörige schnell erkennen, wen sie erreichen können und welche Schritte als Nächstes wichtig sind.',
+    solution:
+      'Der gezeigte Entwurf setzt auf eine zurückhaltende Farbwelt, ein großflächiges Naturmotiv und klare Navigation zu Trauerfall, Leistungen, Bestattungsarten und Vorsorge. Die Telefonnummer steht direkt im Einstieg.',
+    scope: [
+      'Individuelle Gestaltung mit ruhiger Bildsprache',
+      'Verständliche Navigation zu Leistungen und Vorsorge',
+      'Direkter Telefonkontakt im Seitenkopf',
+      'Eigenständiger Auftritt für das Bestattungsunternehmen',
+    ],
+    screenshotDesktop: {
+      src: '/assets/references/bestattungen-gorhau-desktop.webp',
+      srcset:
+        '/assets/references/bestattungen-gorhau-desktop-800.webp 800w, /assets/references/bestattungen-gorhau-desktop-1200.webp 1200w, /assets/references/bestattungen-gorhau-desktop-1600.webp 1600w, /assets/references/bestattungen-gorhau-desktop.webp 1905w',
+      width: 1905,
+      height: 909,
+      alt: 'Website-Entwurf von Bestattungen Gorhau mit grüner Baumlandschaft, der Überschrift „Wenn Worte fehlen. Sind wir da.“ und direktem Telefonkontakt.',
     },
   },
   {

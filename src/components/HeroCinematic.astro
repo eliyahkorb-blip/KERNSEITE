@@ -1,39 +1,30 @@
 ---
 import { featuredProjects } from '../config/cases';
-const project = featuredProjects[0];
+const project = featuredProjects.find((work) => work.slug === 'kaya-doener-himmelstadt')!;
 ---
 
 <section class="hero section--paper" data-hero>
   <div class="content hero__inner">
     <div class="hero__text">
-      <p class="eyebrow">Webdesign für Unternehmen · bundesweit</p>
-      <h1 class="hero__title">Gute Arbeit.<br />Eine Website,<br />die sie zeigt.</h1>
+      <h1 class="hero__title">Eine Website, die aus Interesse Anfragen macht.</h1>
       <p class="hero__lead">
-        Du überzeugst mit deinem Unternehmen. Wir sorgen dafür, dass man das auch online erkennt –
-        mit einer individuellen Website, die dein Angebot erklärt und den Weg zur Anfrage einfach
-        macht.
+        Wir gestalten deinen Auftritt so, dass Kunden dein Angebot verstehen, Vertrauen fassen und
+        dich einfach erreichen. Individuell für dein Unternehmen, persönlich mit Eliyah Korb.
       </p>
       <div class="hero__ctas">
-        <a class="btn btn--primary" href="/kontakt/?leistung=websites"
-          >Website anfragen <span aria-hidden="true">↗</span></a
-        >
+        <a class="btn btn--primary" href="/kontakt/?leistung=websites">Website anfragen</a>
         <a class="hero__link" href="/arbeiten/"
           >Projekte ansehen <span aria-hidden="true">→</span></a
         >
       </div>
-      <p class="hero__trust">
-        Projektbudget meist 1.500–3.600 € netto · persönlicher Ansprechpartner
-      </p>
+      <p class="hero__trust">Individuelle Websites · meist 1.500–3.600 € netto</p>
     </div>
     <a class="hero__project" href={project.href} aria-label={`Referenz ansehen: ${project.title}`}>
-      <div class="hero__project-head">
-        <span>Ausgewählte Arbeit</span><span aria-hidden="true">01 / 02</span>
-      </div>
       <div class="hero__screen">
         <img
           src={project.screenshotDesktop.src}
           srcset={project.screenshotDesktop.srcset}
-          sizes="(min-width: 80rem) 620px, (min-width: 64rem) 48vw, 100vw"
+          sizes="(min-width: 80rem) 640px, (min-width: 64rem) 50vw, 100vw"
           width={project.screenshotDesktop.width}
           height={project.screenshotDesktop.height}
           alt={project.screenshotDesktop.alt}
@@ -42,36 +33,34 @@ const project = featuredProjects[0];
         />
       </div>
       <div class="hero__project-caption">
-        <span><strong>{project.title}</strong><small>Webdesign · digitale Speisekarte</small></span
-        ><span class="hero__go" aria-hidden="true">↗</span>
+        <strong>{project.title}</strong><span
+          >Projekt ansehen <span aria-hidden="true">↗</span></span
+        >
       </div>
     </a>
-  </div>
-  <div class="content hero__footer">
-    <span>KERNSEITE · Eliyah Korb</span><span
-      >Aus Erlabrunn bei Würzburg. Für Unternehmen in ganz Deutschland.</span
-    >
   </div>
 </section>
 
 <style>
   .hero {
-    padding-block: clamp(3rem, 5vw, 5.5rem) 0;
+    padding-block: clamp(2.5rem, 5vw, 5rem);
   }
   .hero__inner {
     display: grid;
-    gap: 3rem;
+    gap: 2.5rem;
     align-items: center;
   }
-  .hero__text {
+  .hero__text,
+  .hero__project {
     min-width: 0;
   }
   .hero__title {
-    font-size: clamp(2.6rem, 5.1vw, 5.3rem);
-    line-height: 1.02;
-    letter-spacing: -0.045em;
-    margin-block: 1.35rem 1.5rem;
-    max-width: 14ch;
+    font-size: clamp(2.2rem, 3.9vw, 3.65rem);
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+    max-width: 19ch;
+    margin-block-end: 1.5rem;
+    text-wrap: balance;
   }
   .hero__lead {
     max-width: 47ch;
@@ -86,86 +75,49 @@ const project = featuredProjects[0];
     margin-block-start: 1.75rem;
   }
   .hero__link {
-    font-size: 0.9375rem;
+    font-size: 1rem;
     font-weight: 600;
     text-underline-offset: 0.3em;
   }
   .hero__trust {
-    font-size: 0.8125rem;
+    font-size: 0.9375rem;
     color: var(--text-muted);
     margin-block-start: 1.25rem;
-    max-width: 47ch;
   }
   .hero__project {
-    display: block;
-    min-width: 0;
-    background: #dcd6c9;
-    border: 1px solid #cec7b9;
-    color: var(--ks-black);
+    color: var(--text);
     text-decoration: none;
-    padding: clamp(1.15rem, 2.5vw, 2.5rem);
-  }
-  .hero__project-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    font-size: 0.75rem;
-    margin-block-end: clamp(2rem, 4vw, 4rem);
   }
   .hero__screen {
-    background: #161616;
-    padding: 0.5rem;
-    box-shadow: 0 20px 36px -18px #10121455;
     border-radius: 6px;
+    overflow: hidden;
+    background: #1d1e19;
+    box-shadow: 0 16px 40px -24px #10121455;
   }
   .hero__screen img {
     width: 100%;
     height: auto;
-    border-radius: 2px;
   }
   .hero__project-caption {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    align-items: baseline;
     justify-content: space-between;
-    gap: 1rem;
-    margin-block-start: clamp(2rem, 4vw, 4rem);
-  }
-  .hero__project-caption strong {
-    display: block;
+    gap: 0.5rem 1rem;
+    margin-block-start: 1rem;
     font-size: 0.9375rem;
   }
-  .hero__project-caption small {
-    display: block;
-    font-size: 0.75rem;
-    margin-block-start: 0.25rem;
-  }
-  .hero__go {
-    font-size: 1.7rem;
-    transition: transform 160ms ease;
-  }
-  .hero__project:hover .hero__go {
-    transform: translate(3px, -3px);
-  }
-  .hero__footer {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem 2rem;
-    margin-block-start: clamp(3rem, 5vw, 5rem);
-    padding-block: 1.15rem;
-    border-block-start: 1px solid var(--line);
-    font-size: 0.75rem;
+  .hero__project-caption > span {
     color: var(--text-muted);
+  }
+  .hero__project:hover strong {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
   }
   @media (min-width: 64rem) {
     .hero__inner {
-      grid-template-columns: 1fr 1fr;
-      gap: clamp(2.5rem, 5vw, 5rem);
-    }
-  }
-  @media (max-width: 22rem) {
-    .hero__title {
-      font-size: 2rem;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(2.5rem, 5vw, 4rem);
     }
   }
 </style>

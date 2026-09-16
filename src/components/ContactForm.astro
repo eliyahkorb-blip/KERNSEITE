@@ -35,7 +35,7 @@ const timings = [
     IS_PREVIEW && (
       <p class="cform__preview">
         <strong>Vorschau: Der Formularversand ist noch nicht eingerichtet.</strong> Du kannst uns
-        unter{' '}
+        per E-Mail an <a href={`mailto:${activeCompany.email}`}>{activeCompany.email}</a> oder unter{' '}
         <a href={`tel:${activeCompany.phone.replace(/[^\d+]/g, '')}`}>{activeCompany.phone}</a>{' '}
         erreichen. Eingaben auf dieser Vorschauseite werden nicht versendet.
       </p>

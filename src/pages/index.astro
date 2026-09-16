@@ -34,9 +34,7 @@ const steps = [
     <div class="content">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">Einblicke in unsere Arbeit</p><h2>
-            Zwei Unternehmen.<br />Zwei eigene Auftritte.
-          </h2>
+          <h2>Websites mit eigenem Charakter.</h2>
         </div><a class="link-arrow" href="/arbeiten/"
           >Alle Projekte <span aria-hidden="true">→</span></a
         >
@@ -49,19 +47,16 @@ const steps = [
     <div class="content">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">Zusammenarbeit</p><h2>
-            Von der ersten Idee<br />bis zur fertigen Website.
-          </h2>
+          <h2>So arbeiten wir zusammen.</h2>
         </div><a class="link-arrow" href="/prozess/"
           >Der Ablauf im Detail <span aria-hidden="true">→</span></a
         >
       </div>
       <ol class="steps" role="list">
         {
-          steps.map((step, i) => (
+          steps.map((step) => (
             <li>
               <>
-                <span class="steps__number">0{i + 1}</span>
                 <h3>{step.title}</h3>
                 <p>{step.text}</p>
               </>
@@ -74,9 +69,7 @@ const steps = [
   <section class="section section--surface" id="agentur">
     <div class="content founder">
       <div>
-        <p class="eyebrow">KERNSEITE · Eliyah Korb</p><h2>
-          Dein Projekt.<br />Mein persönlicher Einsatz.
-        </h2>
+        <h2>Dein direkter Ansprechpartner.</h2>
       </div>
       <div class="founder__text">
         <p class="lead">
@@ -95,7 +88,7 @@ const steps = [
   <section class="section section--cream">
     <div class="content extensions">
       <div>
-        <p class="eyebrow">Wenn dein Auftritt mehr braucht</p><h2>Passend erweitern.</h2><p>
+        <h2>Passend erweitern.</h2><p>
           Ein gutes Fundament lässt sich ausbauen. Wir besprechen, welche Ergänzung zu deinem
           Unternehmen passt.
         </p>
@@ -120,15 +113,14 @@ const steps = [
   <section class="section section--paper">
     <div class="content home-faq">
       <div>
-        <p class="eyebrow">Vor dem ersten Gespräch</p><h2>Was du noch<br />wissen möchtest.</h2><a
-          class="link-arrow"
-          href="/faq/">Weitere Antworten <span aria-hidden="true">→</span></a
+        <h2>Häufige Fragen.</h2><a class="link-arrow" href="/faq/"
+          >Weitere Antworten <span aria-hidden="true">→</span></a
         >
       </div><FaqAccordion items={homeFaqs} />
     </div>
   </section>
   <CtaBanner
-    title="Was soll deine neue Website verändern?"
+    title="Lass uns über deine Website sprechen."
     text="Erzähl uns kurz von deinem Unternehmen. Wir klären gemeinsam, welcher Auftritt und welcher Umfang zu dir passen."
     ctaLabel="Website anfragen"
     ctaHref="/kontakt/?leistung=websites"
@@ -140,20 +132,15 @@ const steps = [
     gap: 2rem;
   }
   .steps li {
-    border-block-start: 1px solid var(--line);
-    padding-block-start: 1.25rem;
-  }
-  .steps__number {
-    color: var(--text-muted);
-    font-size: 0.8125rem;
+    min-width: 0;
   }
   .steps h3 {
     font-size: 1.35rem;
-    margin-block: 1.5rem 0.75rem;
+    margin-block: 0 0.75rem;
   }
   .steps p {
     color: var(--text-muted);
-    font-size: 0.9375rem;
+    font-size: 1rem;
   }
   .founder,
   .home-faq,
@@ -178,11 +165,10 @@ const steps = [
   .extensions p {
     color: var(--text-muted);
     max-width: 42ch;
-    font-size: 0.9375rem;
+    font-size: 1rem;
   }
   .extensions li {
-    border-block-start: 1px solid var(--line);
-    padding-block: 1.15rem;
+    padding-block: 0.5rem 1rem;
   }
   .extensions li a {
     display: flex;
