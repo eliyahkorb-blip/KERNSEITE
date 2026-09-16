@@ -1,0 +1,123 @@
+---
+import { featuredProjects } from '../config/cases';
+const project = featuredProjects.find((work) => work.slug === 'kaya-doener-himmelstadt')!;
+---
+
+<section class="hero section--paper" data-hero>
+  <div class="content hero__inner">
+    <div class="hero__text">
+      <h1 class="hero__title">Eine Website, die aus Interesse Anfragen macht.</h1>
+      <p class="hero__lead">
+        Wir gestalten deinen Auftritt so, dass Kunden dein Angebot verstehen, Vertrauen fassen und
+        dich einfach erreichen. Individuell für dein Unternehmen, persönlich mit Eliyah Korb.
+      </p>
+      <div class="hero__ctas">
+        <a class="btn btn--primary" href="/kontakt/?leistung=websites">Website anfragen</a>
+        <a class="hero__link" href="/arbeiten/"
+          >Projekte ansehen <span aria-hidden="true">→</span></a
+        >
+      </div>
+      <p class="hero__trust">Individuelle Websites · meist 1.500–3.600 € netto</p>
+    </div>
+    <a class="hero__project" href={project.href} aria-label={`Referenz ansehen: ${project.title}`}>
+      <div class="hero__screen">
+        <img
+          src={project.screenshotDesktop.src}
+          srcset={project.screenshotDesktop.srcset}
+          sizes="(min-width: 80rem) 640px, (min-width: 64rem) 50vw, 100vw"
+          width={project.screenshotDesktop.width}
+          height={project.screenshotDesktop.height}
+          alt={project.screenshotDesktop.alt}
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+      <div class="hero__project-caption">
+        <strong>{project.title}</strong><span
+          >Projekt ansehen <span aria-hidden="true">↗</span></span
+        >
+      </div>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(2.5rem, 5vw, 5rem);
+  }
+  .hero__inner {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .hero__text,
+  .hero__project {
+    min-width: 0;
+  }
+  .hero__title {
+    font-size: clamp(2.2rem, 3.9vw, 3.65rem);
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+    max-width: 19ch;
+    margin-block-end: 1.5rem;
+    text-wrap: balance;
+  }
+  .hero__lead {
+    max-width: 47ch;
+    color: var(--text-muted);
+    font-size: 1.0625rem;
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 1.5rem;
+    margin-block-start: 1.75rem;
+  }
+  .hero__link {
+    font-size: 1rem;
+    font-weight: 600;
+    text-underline-offset: 0.3em;
+  }
+  .hero__trust {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    margin-block-start: 1.25rem;
+  }
+  .hero__project {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .hero__screen {
+    border-radius: 6px;
+    overflow: hidden;
+    background: #1d1e19;
+    box-shadow: 0 16px 40px -24px #10121455;
+  }
+  .hero__screen img {
+    width: 100%;
+    height: auto;
+  }
+  .hero__project-caption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-block-start: 1rem;
+    font-size: 0.9375rem;
+  }
+  .hero__project-caption > span {
+    color: var(--text-muted);
+  }
+  .hero__project:hover strong {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  @media (min-width: 64rem) {
+    .hero__inner {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(2.5rem, 5vw, 4rem);
+    }
+  }
+</style>

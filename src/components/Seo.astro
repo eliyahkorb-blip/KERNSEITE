@@ -1,0 +1,71 @@
+---
+import { seo, buildTitle, canonicalFor } from '../config/seo';
+import { site } from '../config/site';
+import { IS_NOINDEX_BUILD } from '../lib/build-mode';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Aktueller Pfad, i. d. R. Astro.url.pathname */
+  path: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  /** Zusätzliche JSON-LD-Objekte (null-Einträge werden ignoriert). */
+  jsonLd?: Array<Record<string, unknown> | null>;
+}
+
+const {
+  title,
+  description = seo.defaultDescription,
+  path,
+  ogImage = seo.defaultOgImage,
+  ogType = 'website',
+  noindex = false,
+  jsonLd = [],
+} = Astro.props;
+
+const fullTitle = buildTitle(title);
+const canonical = canonicalFor(path);
+const ogImageUrl = canonicalFor(ogImage);
+// CI-/Fixture- und Vorschau-Builds werden grundsätzlich auf noindex gesetzt.
+const isNoindex = noindex || IS_NOINDEX_BUILD;
+
+const schemas = jsonLd.filter((s): s is Record<string, unknown> => s != null);
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{
+  isNoindex ? (
+    <meta name="robots" content="noindex, nofollow" />
+  ) : (
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+  )
+}
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content={site.locale} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:type" content={seo.ogImageType} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="KERNSEITE – individuelle Websites für Unternehmen" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content={seo.twitterCard} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+
+{
+  schemas.map((schema) => (
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+  ))
+}

@@ -1,0 +1,97 @@
+---
+/**
+ * RelatedServices – kompakte Verweisliste am Ende einer Leistungsseite.
+ *
+ * Bewusst klein gehalten: höchstens vier Einträge, zwei Spalten auf Desktop,
+ * eine auf Mobil. Der Bereich darf nie länger wirken als der Hauptinhalt.
+ */
+import { services, type ServiceKey } from '../config/services';
+
+interface Props {
+  /** Diese Leistung ausschließen (die aktuelle Seite). */
+  exclude: ServiceKey;
+  /** Nur diese Leistungen zeigen – sonst die nächstliegenden vier. */
+  only?: readonly ServiceKey[];
+  title?: string;
+}
+const { exclude, only, title = 'Passt dazu' } = Astro.props;
+
+const items = (
+  only
+    ? only.map((k) => services.find((s) => s.key === k)!)
+    : services.filter((s) => s.key !== exclude)
+)
+  .filter((s): s is (typeof services)[number] => Boolean(s) && s.key !== exclude)
+  .slice(0, 4);
+---
+
+<section class="rel section--surface">
+  <div class="content">
+    <h2 class="rel__title">{title}</h2>
+    <ul class="rel__list" role="list">
+      {
+        items.map((s) => (
+          <li>
+            <a class="rel__link" href={s.href}>
+              <span class="rel__name">{s.cardTitle}</span>
+              <span class="rel__go" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .rel {
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .rel__title {
+    font-size: var(--fs-h4);
+    margin-block-end: var(--space-lg);
+  }
+  .rel__list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .rel__link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding-block: 0.9rem;
+    border-block-end: 1px solid var(--line);
+    text-decoration: none;
+    color: var(--text);
+    transition: padding-inline-start var(--dur-base) var(--ease-out);
+  }
+  .rel__link:hover,
+  .rel__link:focus-visible {
+    color: var(--text);
+    padding-inline-start: 0.5rem;
+  }
+  .rel__name {
+    font-weight: var(--fw-medium);
+  }
+  .rel__go {
+    color: var(--accent-mark);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .rel__link:hover .rel__go {
+    transform: translateX(5px);
+  }
+
+  @media (min-width: 48rem) {
+    .rel__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2rem, 4vw, 4rem);
+    }
+  }
+</style>

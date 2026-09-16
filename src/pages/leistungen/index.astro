@@ -1,0 +1,153 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import ServiceRows from '../../components/ServiceRows.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import AccentWord from '../../components/AccentWord.astro';
+import { works } from '../../config/cases';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Leistungen', path: '/leistungen/' },
+];
+const project = works.find((w) => w.kind === 'project');
+---
+
+<PageLayout
+  title="Leistungen"
+  description="Websites, SEO & GEO, Google-Unternehmensprofil, Unternehmensvideo, Social Media und KI-Automatisierung – aufeinander abgestimmt statt einzeln verkauft."
+  h1Slot
+  variant="dark"
+  breadcrumbs={breadcrumbs}
+  lead="Die Website ist die Grundlage. Alles Weitere ergibt nur Sinn, wenn es darauf einzahlt."
+>
+  <h1 slot="h1">
+    Die Website ist der <AccentWord>Kern</AccentWord>. Alles Weitere dockt sinnvoll an.
+  </h1>
+
+  <section class="section section--cream">
+    <div class="content">
+      <ServiceRows headingLevel="h2" />
+    </div>
+  </section>
+
+  <!-- Haltung, ohne Kästen -->
+  <section class="section section--paper">
+    <div class="content stance">
+      <div>
+        <h2 class="stance__title">Erst die Grundlage. Dann das, was darauf aufbaut.</h2>
+      </div>
+      <div class="stance__body">
+        <p class="lead">
+          Ein Unternehmensvideo bringt wenig, wenn die Seite dahinter nicht überzeugt. Ein
+          Google-Profil bringt wenig, wenn der Klick auf eine unklare Startseite führt. Deshalb
+          beginnen wir bei der Website – und ergänzen erst danach.
+        </p>
+        <p class="stance__text">
+          Was du nicht brauchst, empfehlen wir auch nicht. Wenn eine Leistung in deinem Fall keinen
+          Unterschied macht, sagen wir das im ersten Gespräch.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {
+    project && project.kind === 'project' && (
+      <section class="section section--surface">
+        <div class="content proof">
+          <div class="proof__text">
+            <p class="label">Aus der Praxis</p>
+            <h2 class="proof__title">{project.headline}</h2>
+            <p class="proof__body">{project.tagline}</p>
+            <a class="link-arrow" href={project.href}>
+              Projekt ansehen{' '}
+              <span class="arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </div>
+          <a
+            class="proof__media"
+            href={project.href}
+            aria-label={`Projekt ${project.title} ansehen`}
+          >
+            <img
+              src={project.screenshotDesktop.src}
+              srcset={project.screenshotDesktop.srcset}
+              sizes="(min-width: 64rem) 55vw, 100vw"
+              width={project.screenshotDesktop.width}
+              height={project.screenshotDesktop.height}
+              alt={project.screenshotDesktop.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <CtaBanner />
+</PageLayout>
+
+<style>
+  .stance,
+  .proof {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+  .stance__title {
+    font-size: var(--fs-h2);
+    max-width: min(16ch, 100%);
+    margin-block-start: var(--space-md);
+  }
+  .stance__body {
+    display: grid;
+    gap: var(--space-lg);
+  }
+  .stance__text {
+    color: var(--text-muted);
+    max-width: min(52ch, 100%);
+  }
+
+  .proof__title {
+    font-size: var(--fs-h3);
+    line-height: 1;
+    max-width: min(14ch, 100%);
+    margin-block-start: var(--space-md);
+  }
+  .proof__body {
+    margin-block-start: var(--space-lg);
+    color: var(--text-muted);
+    max-width: min(44ch, 100%);
+  }
+  .proof__text .link-arrow {
+    margin-block-start: var(--space-xl);
+  }
+  .proof__media {
+    display: block;
+    overflow: hidden;
+    background: var(--ks-cream);
+  }
+  .proof__media img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .proof__media:hover img {
+    transform: scale(1.015);
+  }
+
+  @media (min-width: 64rem) {
+    .stance {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(3rem, 5vw, 6rem);
+    }
+    .proof {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: clamp(3rem, 5vw, 6rem);
+      align-items: center;
+    }
+  }
+</style>

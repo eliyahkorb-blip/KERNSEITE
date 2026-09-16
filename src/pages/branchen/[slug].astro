@@ -1,0 +1,305 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import AccentWord from '../../components/AccentWord.astro';
+import { industries, type Industry } from '../../config/industries';
+import Photo from '../../components/Photo.astro';
+import { photos, type PhotoKey } from '../../config/photos';
+import { resolvePhoto } from '../../lib/photo';
+import { getService, type ServiceKey } from '../../config/services';
+import { works, type ProjectWork } from '../../config/cases';
+
+export function getStaticPaths() {
+  return industries.map((industry) => ({
+    params: { slug: industry.slug },
+    props: { industry },
+  }));
+}
+
+interface Props {
+  industry: Industry;
+}
+const { industry } = Astro.props;
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Branchen', path: '/branchen/' },
+  { name: industry.label, path: industry.href },
+];
+const related = industry.relatedServices.map((key) => getService(key as ServiceKey));
+
+// Hauptmotiv der Branche – nur, wenn die Datei tatsächlich vorliegt.
+const heroPhoto = (
+  industry.slug in photos && resolvePhoto(industry.slug as PhotoKey) ? industry.slug : null
+) as PhotoKey | null;
+
+/**
+ * Zweites Motiv je Branche. Es sorgt dafür, dass die Detailseiten nicht
+ * denselben Aufbau zeigen: mal ein breiter Bildstreifen, mal zwei Bilder
+ * nebeneinander, mal gar keines.
+ */
+const secondBySlug: Partial<Record<string, PhotoKey[]>> = {
+  'gastronomie-hotels': ['hotelzimmer'],
+};
+const secondPhotos = (secondBySlug[industry.slug] ?? []).filter((k) => resolvePhoto(k));
+
+// Branchentypische Referenz, wenn vorhanden.
+const projects = works.filter((w): w is ProjectWork => w.kind === 'project');
+const refBySlug: Record<string, string | undefined> = {
+  'gastronomie-hotels': 'kaya-doener-himmelstadt',
+  'lokale-dienstleister': 'kinderkoerbchen',
+};
+const reference = projects.find((p) => p.slug === refBySlug[industry.slug]);
+
+/** Ein markiertes Wort je Branchen-Headline. */
+const accentBySlug: Record<string, string> = {
+  handwerk: 'Aufträge',
+  zahnarztpraxen: 'Vertrauen',
+  'gastronomie-hotels': 'Gäste',
+  'lokale-dienstleister': 'Nähe',
+  'b2b-mittelstand': 'Anfragen',
+};
+const accent = accentBySlug[industry.slug];
+const idx = accent ? industry.detailH1.indexOf(accent) : -1;
+const pre = idx >= 0 ? industry.detailH1.slice(0, idx) : industry.detailH1;
+const post = idx >= 0 ? industry.detailH1.slice(idx + accent.length) : '';
+---
+
+<PageLayout
+  title={industry.seoTitle}
+  description={industry.metaDescription}
+  h1Slot
+  variant="paper"
+  lead={industry.intro}
+  breadcrumbs={breadcrumbs}
+>
+  <h1 slot="h1">
+    {pre}{idx >= 0 && <AccentWord>{accent}</AccentWord>}{post}
+  </h1>
+
+  {
+    heroPhoto && (
+      <section class="hero-img">
+        <div class="content--wide content">
+          <Photo photo={heroPhoto} ratio="21x9" sizes="100vw" priority />
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Typische Probleme -->
+  <section class="section section--cream">
+    <div class="content">
+      <h2 class="sec">Worauf es hier ankommt</h2>
+      <ul class="focus" role="list">
+        {
+          industry.focus.map((f) => (
+            <li class="focus__item">
+              <h3 class="focus__title">{f.title}</h3>
+              <p class="focus__text">{f.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Passende Referenz -->
+  {
+    reference && (
+      <section class="section section--surface">
+        <div class="content ref">
+          <div>
+            <p class="label">Aus dieser Branche</p>
+            <h2 class="ref__title">{reference.headline}</h2>
+            <p class="ref__body">{reference.tagline}</p>
+            <a class="link-arrow" href={reference.href}>
+              Projekt ansehen{' '}
+              <span class="arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </div>
+          <span class="ref__media" aria-hidden="true">
+            <img
+              src={reference.screenshotDesktop.src}
+              srcset={reference.screenshotDesktop.srcset}
+              sizes="(min-width: 64rem) 55vw, 100vw"
+              width={reference.screenshotDesktop.width}
+              height={reference.screenshotDesktop.height}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          </span>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Passende Leistungen -->
+  <section class="section section--paper">
+    <div class="content">
+      <h2 class="sec">Das bringt dich hier weiter</h2>
+      <ul class="rel" role="list">
+        {
+          related.map((r) => (
+            <li>
+              <a class="rel__link" href={r.href}>
+                <span class="rel__main">
+                  <span class="rel__name">{r.cardTitle}</span>
+                  <span class="rel__teaser">{r.teaser}</span>
+                </span>
+                <span class="rel__go" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {
+    secondPhotos.length > 0 && (
+      <section class="section section--cream">
+        <div class="content--wide content">
+          <div class:list={['gallery', { 'gallery--pair': secondPhotos.length > 1 }]}>
+            {secondPhotos.map((key, i) => (
+              <Photo
+                photo={key}
+                ratio={secondPhotos.length > 1 ? (i === 0 ? '4x3' : '3x4') : '21x9'}
+                sizes={secondPhotos.length > 1 ? '(min-width: 48rem) 48vw, 100vw' : '100vw'}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CtaBanner
+    title="Eine Website, die dein Angebot verständlich macht."
+    text="Im ersten Gespräch klären wir, was für dein Geschäft wirklich zählt."
+    ctaLabel={industry.ctaLabel}
+    ctaHref={`/kontakt/?branche=${industry.slug}`}
+  />
+</PageLayout>
+
+<style>
+  .hero-img {
+    padding-block-end: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    background: var(--ks-paper);
+  }
+
+  .gallery {
+    display: grid;
+    gap: clamp(1rem, 0.75rem + 1.5vw, 2rem);
+  }
+  @media (min-width: 48rem) {
+    .gallery--pair {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      align-items: start;
+    }
+  }
+
+  .sec {
+    font-size: var(--fs-h2);
+    max-width: min(16ch, 100%);
+    margin-block-end: clamp(2rem, 1.5rem + 3vw, 4rem);
+  }
+
+  .focus {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .focus__item {
+    padding-block: clamp(1.25rem, 1rem + 1.4vw, 2rem);
+    border-block-end: 1px solid var(--line);
+  }
+  .focus__title {
+    font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+    letter-spacing: -0.028em;
+  }
+  .focus__text {
+    margin-block-start: 0.45rem;
+    color: var(--text-muted);
+    max-width: min(60ch, 100%);
+    font-size: var(--fs-small);
+  }
+
+  .ref {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .ref__title {
+    margin-block-start: var(--space-md);
+    font-size: var(--fs-h3);
+    line-height: 1;
+    max-width: min(14ch, 100%);
+  }
+  .ref__body {
+    margin-block-start: var(--space-lg);
+    color: var(--text-muted);
+    max-width: min(44ch, 100%);
+  }
+  .ref .link-arrow {
+    margin-block-start: var(--space-xl);
+  }
+  .ref__media img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+  }
+
+  .rel {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .rel__link {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.6rem clamp(1rem, 3vw, 2.5rem);
+    align-items: start;
+    padding-block: clamp(1.25rem, 1rem + 1.4vw, 2rem);
+    border-block-end: 1px solid var(--line);
+    text-decoration: none;
+    color: var(--text);
+  }
+  .rel__name {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.3rem, 2.6vw, 2.1rem);
+    letter-spacing: var(--track-display);
+    line-height: 1.05;
+  }
+  .rel__teaser {
+    display: block;
+    margin-block-start: 0.5rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    max-width: min(60ch, 100%);
+  }
+  .rel__go {
+    color: var(--accent-mark);
+    padding-block-start: 0.35em;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .rel__link:hover .rel__go {
+    transform: translateX(7px);
+  }
+
+  @media (min-width: 64rem) {
+    .ref {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: clamp(3rem, 5vw, 5rem);
+    }
+  }
+</style>

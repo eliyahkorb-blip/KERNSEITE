@@ -1,0 +1,124 @@
+/* =============================================================================
+   KERNSEITE – Design-Tokens
+   Editoriale Agentur-Gestaltung: warme Papierflächen, sehr große Typografie,
+   Cyan als einzige kräftige Akzentfarbe.
+   ========================================================================== */
+
+:root {
+  /* --- Markenpalette (verbindlich) --------------------------------------
+     #00E3F2 ist der einzige kräftige Akzent. Es gibt bewusst keine
+     abgeschwächte Türkis- oder Petrolvariante: Auf hellem Grund trägt
+     Schwarz den Text, das Neon-Türkis wirkt als Linie, Fläche, Pfeil oder
+     Fokus. Auf dunklem Grund darf #00E3F2 direkt Schriftfarbe sein. */
+  --ks-cyan: #00e3f2;
+  --ks-black: #101214;
+  --ks-black-soft: #25282b;
+  --ks-paper: #f4f0e7;
+  --ks-cream: #fcfaf5;
+  --ks-surface: #eae5db;
+  --ks-line: #d5cfc2;
+  --ks-muted: #60646b;
+
+  /* --- Semantische Rollen ------------------------------------------------ */
+  --bg: var(--ks-paper);
+  --surface: var(--ks-cream);
+  --surface-alt: var(--ks-surface);
+  --text: var(--ks-black);
+  --text-muted: var(--ks-muted);
+  --text-invert: var(--ks-cream);
+  --text-invert-muted: #a7abb0;
+  --accent: var(--ks-cyan);
+  /* Schriftfarbe für Akzente im jeweiligen Kontext. Auf hellem Grund
+     schwarz – Neon-Türkis wäre dort als Text zu kontrastarm. Dunkle und
+     cyanfarbene Flächen überschreiben den Wert in `global.css`. */
+  --accent-ink: var(--ks-black);
+  /* Neon-Türkis als grafische Markierung: Linien, Unterstreichungen,
+     Pfeile, Flächen, Fokus. Nie als kleiner Text auf hellem Grund. */
+  --accent-mark: var(--ks-cyan);
+  --line: var(--ks-line);
+  --line-strong: #b9b2a2;
+  --line-invert: #2f3338;
+  --focus-ring: var(--ks-black);
+  --focus-ring-invert: var(--ks-cyan);
+
+  /* --- Typografie -------------------------------------------------------- */
+  --font-display:
+    'Bricolage Grotesque', 'Inter', system-ui, -apple-system, 'Segoe UI', roboto, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', roboto, helvetica, arial, sans-serif;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Abgestufte, ruhige Skala für Überschriften und Fließtext */
+  --fs-hero: clamp(2.75rem, 5.1vw, 5.3rem);
+  --fs-h1: clamp(2rem, 3.5vw, 3.4rem);
+  --fs-h2: clamp(1.75rem, 2.6vw, 2.5rem);
+  --fs-h3: clamp(1.4rem, 2vw, 1.9rem);
+  --fs-h4: clamp(1.25rem, 1.6vw, 1.6rem);
+  --fs-h5: clamp(1.125rem, 1.4vw, 1.4rem);
+  --fs-lead: clamp(1.0625rem, 1.3vw, 1.25rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.9375rem;
+
+  /* Zeilenhöhen: keine Werte unter 0.94. Darunter berühren sich Ober- und
+     Unterlängen aufeinanderfolgender Zeilen – genau die Überschneidungen,
+     die im Bericht beanstandet wurden. */
+  --lh-display: 1.08;
+  --lh-h1: 1.04;
+  --lh-hero: 1.02;
+  --lh-snug: 1.12;
+  --lh-normal: 1.62;
+  /* Laufweiten: maximal -0.045em. Enger klebt „rn“ zu „m“ zusammen und
+     Randbuchstaben laufen aus dem Container. */
+  --track-display: -0.035em;
+  --track-hero: -0.045em;
+
+  /* --- Abstände ---------------------------------------------------------- */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4.5rem;
+  --space-4xl: 4.5rem;
+  --space-5xl: 6rem;
+  /* Abschnittsabstand: 56–88px mobil, 88–144px auf Desktop. Vorher bis
+     192px – dadurch entstanden große, inhaltslose Flächen. */
+  --section-y: clamp(3.25rem, 5.5vw, 5.75rem);
+
+  /* --- Layout ------------------------------------------------------------ */
+  --container-max: 1440px;
+  --content-max: 1280px;
+  --measure: 58ch;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --grid-gap: clamp(1.25rem, 0.5rem + 2vw, 3rem);
+
+  /* --- Radien / Schatten (fast keine) ------------------------------------ */
+  /* Marketingelemente sind rechteckig mit sehr kleinem Radius. Es gibt
+     bewusst keinen Pillen-Radius mehr – vollrunde Chips wirken beliebig. */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-image: 4px;
+  --shadow-media: 0 40px 90px rgba(16, 18, 20, 0.16);
+
+  /* --- Bewegung ---------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 160ms;
+  --dur-base: 300ms;
+  --dur-slow: 700ms;
+
+  /* Höhe der klebenden Kopfzeile. Der Hero zieht sie ab, damit er genau den
+     ersten sichtbaren Bildschirm füllt. */
+  --header-h: 64px;
+
+  /* --- Ebenen ------------------------------------------------------------ */
+  --z-header: 100;
+  --z-skiplink: 150;
+  --z-menu: 200;
+  --z-modal: 300;
+}

@@ -1,0 +1,348 @@
+---
+import { mainNav, primaryCta } from '../config/navigation';
+
+const currentPath = Astro.url.pathname;
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  if (href === '/leistungen/' && currentPath.startsWith('/leistungen/websites/')) return false;
+  return currentPath.startsWith(href);
+}
+---
+
+<header class="site-header" data-header>
+  <div class="site-header__inner container">
+    <a class="wordmark" href="/" aria-label="KERNSEITE – zur Startseite">
+      <span>KERNSEITE</span><span class="wordmark__dot" aria-hidden="true">.</span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Hauptnavigation">
+      <ul role="list">
+        {
+          mainNav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="btn btn--primary site-header__cta" href={primaryCta.href}>{primaryCta.label}</a>
+      <button
+        type="button"
+        class="burger"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span class="burger__box" aria-hidden="true">
+          <span class="burger__line"></span>
+          <span class="burger__line"></span>
+          <span class="burger__line"></span>
+        </span>
+        <span class="visually-hidden">Menü öffnen</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="mobile-menu" data-mobile-menu hidden>
+    <nav class="mobile-menu__nav" aria-label="Mobile Navigation">
+      <ul role="list">
+        {
+          mainNav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="btn btn--primary mobile-menu__cta" href={primaryCta.href}>{primaryCta.label}</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    background: var(--ks-paper);
+    border-block-end: 1px solid transparent;
+    transition: border-color var(--dur-base) var(--ease-out);
+  }
+  .site-header[data-scrolled] {
+    border-block-end-color: var(--line);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    min-height: 60px;
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: 1.4rem;
+    letter-spacing: -0.045em;
+    text-decoration: none;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .wordmark__dot {
+    color: var(--accent);
+  }
+
+  .primary-nav {
+    display: none;
+  }
+  .primary-nav ul {
+    display: flex;
+    gap: clamp(0.75rem, 0.2rem + 1.6vw, 2rem);
+    margin: 0;
+    padding: 0;
+  }
+  .primary-nav a {
+    display: inline-block;
+    padding: 0.45rem 0.15rem;
+    font-size: var(--fs-small);
+    font-weight: var(--fw-medium);
+    text-decoration: none;
+    color: var(--text);
+    position: relative;
+  }
+  .primary-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .primary-nav a:hover::after,
+  .primary-nav a[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+  /* Kompakter CTA statt großer schwarzer Pille */
+  .site-header__cta {
+    display: none;
+    min-height: 44px;
+    padding: 0.55rem 1.15rem;
+    font-size: var(--fs-small);
+  }
+
+  /* 44 × 44 px Touchfläche, aber ohne sichtbaren Kasten */
+  .burger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 44px;
+    block-size: 44px;
+    margin-inline-end: -0.5rem;
+    border: 0;
+    background: transparent;
+  }
+  .burger__box {
+    display: grid;
+    gap: 4px;
+    inline-size: 20px;
+  }
+  .burger__line {
+    display: block;
+    block-size: 1.5px;
+    background: var(--text);
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      opacity var(--dur-fast) var(--ease-out);
+  }
+  .burger[aria-expanded='true'] .burger__line:nth-child(1) {
+    transform: translateY(5.5px) rotate(45deg);
+  }
+  .burger[aria-expanded='true'] .burger__line:nth-child(2) {
+    opacity: 0;
+  }
+  .burger[aria-expanded='true'] .burger__line:nth-child(3) {
+    transform: translateY(-5.5px) rotate(-45deg);
+  }
+
+  .mobile-menu {
+    border-block-start: 1px solid var(--line);
+    background: var(--ks-cream);
+  }
+  .mobile-menu[hidden] {
+    display: none;
+  }
+  .mobile-menu__nav {
+    padding: var(--space-lg) var(--gutter) var(--space-2xl);
+  }
+  .mobile-menu__nav ul {
+    display: grid;
+    margin: 0 0 var(--space-xl);
+    padding: 0;
+  }
+  .mobile-menu__nav a:not(.btn) {
+    display: block;
+    padding: 0.95rem 0;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.035em;
+    text-decoration: none;
+    color: var(--text);
+    border-block-end: 1px solid var(--line);
+  }
+  .mobile-menu__nav a:not(.btn)[aria-current='page'] {
+    color: var(--accent-ink);
+  }
+  .mobile-menu__cta {
+    inline-size: 100%;
+  }
+
+  /* Sehr schmal (etwa 360px bei 200% Zoom): Wortmarke verkleinern, damit
+     Marke und Menütaste nebeneinander in die Zeile passen. */
+  @media (max-width: 26rem) {
+    .site-header__inner {
+      gap: var(--space-sm);
+    }
+    .wordmark {
+      font-size: 1.15rem;
+    }
+    .burger {
+      margin-inline-end: -0.75rem;
+    }
+  }
+  @media (max-width: 22rem) {
+    .wordmark {
+      font-size: 1rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .site-header__inner {
+      min-height: 76px;
+    }
+    .primary-nav {
+      display: block;
+    }
+    .site-header__cta {
+      display: inline-flex;
+    }
+    .burger {
+      display: none;
+    }
+    .mobile-menu {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Header: Scroll-Kompakt-Zustand + zugängliches Mobil-Menü (Fokusfalle, Escape, Scroll-Lock).
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+
+  // Kompakt-Zustand beim Scrollen
+  if (header) {
+    let ticking = false;
+    const update = () => {
+      if (window.scrollY > 8) header.setAttribute('data-scrolled', '');
+      else header.removeAttribute('data-scrolled');
+      ticking = false;
+    };
+    update();
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+  }
+
+  if (toggle && menu) {
+    const focusableSelector =
+      'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])';
+    let lastFocused: HTMLElement | null = null;
+
+    const getFocusable = (): HTMLElement[] =>
+      Array.from(menu.querySelectorAll<HTMLElement>(focusableSelector));
+
+    const openMenu = () => {
+      lastFocused = document.activeElement as HTMLElement;
+      menu.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.querySelector('.visually-hidden')!.textContent = 'Menü schließen';
+      document.documentElement.setAttribute('data-menu-open', '');
+      getFocusable()[0]?.focus();
+      document.addEventListener('keydown', onKeydown);
+    };
+
+    const closeMenu = () => {
+      menu.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.querySelector('.visually-hidden')!.textContent = 'Menü öffnen';
+      document.documentElement.removeAttribute('data-menu-open');
+      document.removeEventListener('keydown', onKeydown);
+      lastFocused?.focus();
+    };
+
+    const onKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu();
+        return;
+      }
+      if (event.key === 'Tab') {
+        const items = getFocusable();
+        if (items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    toggle.addEventListener('click', () => {
+      if (toggle.getAttribute('aria-expanded') === 'true') closeMenu();
+      else openMenu();
+    });
+
+    // Beim Wechsel in Desktop-Breite Menü sicher schließen
+    const mq = window.matchMedia('(min-width: 64rem)');
+    mq.addEventListener('change', (e) => {
+      if (e.matches && toggle.getAttribute('aria-expanded') === 'true') closeMenu();
+    });
+
+    // Nach Klick auf einen Menülink schließen (SPA-freundlich)
+    menu.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('a')) closeMenu();
+    });
+  }
+</script>

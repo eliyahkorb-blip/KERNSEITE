@@ -1,0 +1,109 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import DraftNotice from '../components/DraftNotice.astro';
+import { activeCompany, isPlaceholder } from '../lib/config-validation';
+import { legal } from '../config/legal';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Impressum', path: '/impressum/' },
+];
+const c = activeCompany;
+const showVat = !isPlaceholder(c.vatId);
+const showAuthority = !isPlaceholder(c.supervisoryAuthority);
+const showLegalForm = !isPlaceholder(c.legalForm);
+---
+
+<PageLayout
+  title="Impressum"
+  description="Impressum von KERNSEITE – Eliyah Korb: Anbieterkennzeichnung nach § 5 DDG mit Anschrift, E-Mail und Telefonnummer für die schnelle Kontaktaufnahme."
+  h1="Impressum"
+  breadcrumbs={breadcrumbs}
+  noindex={false}
+>
+  <section class="section section--paper">
+    <div class="content">
+      <DraftNotice />
+      <div class="prose">
+        <h2>Angaben gemäß § 5 DDG</h2>
+        <p>
+          {c.legalDisplayName}<br />
+          {c.legalName}{showLegalForm && ` (${c.legalForm})`}<br />
+          {c.street}<br />
+          {c.postalCode}{' '}
+          {c.city}<br />
+          {c.country}
+        </p>
+        {c.legalStatusNote && <p>{c.legalStatusNote}</p>}
+
+        <h2>Kontakt</h2>
+        <p>
+          Telefon: {c.phone}<br />
+          E-Mail: {c.email}
+        </p>
+
+        {
+          showVat && (
+            <>
+              <h2>Umsatzsteuer-Identifikationsnummer</h2>
+              <p>Gemäß § 27 a Umsatzsteuergesetz: {c.vatId}</p>
+            </>
+          )
+        }
+
+        {
+          legal.hasJournalisticContent && (
+            <>
+              <h2>Redaktionell verantwortlich</h2>
+              <p>
+                {c.responsibleContent}
+                <br />
+                {c.street}, {c.postalCode} {c.city}
+              </p>
+            </>
+          )
+        }
+
+        {
+          showAuthority && (
+            <>
+              <h2>Aufsichtsbehörde</h2>
+              <p>{c.supervisoryAuthority}</p>
+            </>
+          )
+        }
+
+        <h2>Verbraucherschlichtung</h2>
+        <p>{legal.disputeResolution}</p>
+
+        {
+          /*
+          Der frühere Haftungs-Boilerplate („Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG …“
+          nebst „Nach §§ 8 bis 10 DDG sind wir … nicht verpflichtet …“) ist entfallen. Er gab die
+          gesetzliche Lage lediglich verkürzt wieder und ist keine Pflichtangabe nach § 5 DDG. Die
+          Haftungsprivilegien für fremde Informationen gelten unabhängig davon, ob sie auf der
+          Seite abgedruckt werden – und dieses Angebot besteht ohnehin aus eigenen Inhalten.
+          Ersetzt wurde er nicht durch neue Paragraphennummern, sondern durch die beiden Punkte,
+          die hier tatsächlich etwas aussagen.
+        */
+        }
+
+        <h2>Externe Links</h2>
+        <p>
+          Diese Website verweist an einzelnen Stellen auf Websites Dritter. Für deren Inhalte sind
+          ausschließlich die jeweiligen Anbieter verantwortlich. Zum Zeitpunkt der Verlinkung waren
+          keine Rechtsverstöße erkennbar; bei Bekanntwerden entfernen wir betroffene Links.
+        </p>
+
+        <h2>Urheberrecht</h2>
+        <p>
+          Inhalte, Gestaltung und Quellcode dieser Website sind urheberrechtlich geschützt. Die
+          Fotografen und Quellen der verwendeten Stockfotos stehen unter <a href="/bildnachweise/"
+            >Bildnachweise</a
+          >. Rechte Dritter bleiben unberührt. Eine Weiterverwendung außerhalb der gesetzlich
+          zulässigen Fälle bedarf unserer Zustimmung.
+        </p>
+      </div>
+    </div>
+  </section>
+</PageLayout>

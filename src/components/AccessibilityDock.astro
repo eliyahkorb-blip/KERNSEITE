@@ -1,0 +1,379 @@
+---
+/**
+ * AccessibilityDock – globaler Barrierefreiheits-Schalter unten links.
+ *
+ * Zwei Bedienbereiche in einer kompakten dunklen Kapsel:
+ *   „Aa“   – öffnet die Textgröße-Einstellungen (100 / 112,5 / 125 Prozent)
+ *   Kreis  – schaltet den Hochkontrastmodus um
+ *
+ * Im geöffneten Feld liegen zusätzlich „Bewegungen reduzieren“ und
+ * „Einstellungen zurücksetzen“. Alles ist echtes HTML mit Buttons, ohne
+ * externe Bibliothek, ohne Icon-Font und ohne Bilddatei; das Kontrastsymbol
+ * ist eine CSS-Fläche.
+ *
+ * Die Einstellungen liegen in `localStorage` unter `kernseite-accessibility`
+ * und enthalten keine personenbezogenen Daten – deshalb ist dafür keine
+ * Einwilligung nötig. Angewendet werden sie über ein sehr kurzes Skript im
+ * `<head>` (siehe `BaseLayout.astro`), damit nichts aufflackert.
+ */
+---
+
+<div class="a11y" data-a11y>
+  <div class="a11y__bar">
+    <button
+      type="button"
+      class="a11y__btn a11y__btn--text"
+      data-a11y-toggle
+      aria-expanded="false"
+      aria-controls="a11y-panel"
+      aria-label="Darstellung anpassen: Textgröße, Kontrast und Bewegung"
+    >
+      <span class="a11y__aa" aria-hidden="true">Aa</span>
+    </button>
+
+    <span class="a11y__sep" aria-hidden="true"></span>
+
+    <button
+      type="button"
+      class="a11y__btn a11y__btn--contrast"
+      data-a11y-contrast-toggle
+      aria-pressed="false"
+      aria-label="Hoher Kontrast"
+    >
+      <span class="a11y__circle" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <div class="a11y__panel" id="a11y-panel" data-a11y-panel hidden>
+    <fieldset class="a11y__group">
+      <legend class="a11y__legend">Textgröße</legend>
+      <div class="a11y__choices">
+        <button type="button" class="a11y__choice" data-a11y-size="1" aria-pressed="true">
+          Standard
+        </button>
+        <button type="button" class="a11y__choice" data-a11y-size="1.125" aria-pressed="false">
+          Größer
+        </button>
+        <button type="button" class="a11y__choice" data-a11y-size="1.25" aria-pressed="false">
+          Sehr groß
+        </button>
+      </div>
+    </fieldset>
+
+    <div class="a11y__group">
+      <button type="button" class="a11y__row" data-a11y-motion aria-pressed="false">
+        Bewegungen reduzieren
+      </button>
+      <button type="button" class="a11y__row a11y__row--quiet" data-a11y-reset>
+        Einstellungen zurücksetzen
+      </button>
+    </div>
+  </div>
+
+  <p class="a11y__status" role="status" aria-live="polite" data-a11y-status></p>
+</div>
+
+<script>
+  type Settings = { size: number; contrast: boolean; motion: boolean };
+
+  const KEY = 'kernseite-accessibility';
+  const SIZES = [1, 1.125, 1.25];
+  const DEFAULTS: Settings = { size: 1, contrast: false, motion: false };
+
+  function read(): Settings {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return { ...DEFAULTS };
+      const p = JSON.parse(raw) as Partial<Settings>;
+      return {
+        size: SIZES.includes(Number(p.size)) ? Number(p.size) : 1,
+        contrast: p.contrast === true,
+        motion: p.motion === true,
+      };
+    } catch {
+      return { ...DEFAULTS };
+    }
+  }
+
+  function write(s: Settings) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(s));
+    } catch {
+      // Privater Modus oder gesperrter Speicher: Einstellung gilt nur für
+      // diese Sitzung, die Bedienung bleibt funktionsfähig.
+    }
+  }
+
+  /** Setzt die Werte am Wurzelelement – die CSS-Regeln hängen daran. */
+  function apply(s: Settings) {
+    const root = document.documentElement;
+    root.style.setProperty('--a11y-scale', String(s.size));
+    root.dataset.a11yContrast = s.contrast ? 'high' : '';
+    root.dataset.a11yMotion = s.motion ? 'reduced' : '';
+    if (!s.contrast) delete root.dataset.a11yContrast;
+    if (!s.motion) delete root.dataset.a11yMotion;
+  }
+
+  const dock = document.querySelector<HTMLElement>('[data-a11y]');
+  if (dock) {
+    const toggle = dock.querySelector<HTMLButtonElement>('[data-a11y-toggle]')!;
+    const panel = dock.querySelector<HTMLElement>('[data-a11y-panel]')!;
+    const contrastBtn = dock.querySelector<HTMLButtonElement>('[data-a11y-contrast-toggle]')!;
+    const motionBtn = dock.querySelector<HTMLButtonElement>('[data-a11y-motion]')!;
+    const resetBtn = dock.querySelector<HTMLButtonElement>('[data-a11y-reset]')!;
+    const sizeBtns = [...dock.querySelectorAll<HTMLButtonElement>('[data-a11y-size]')];
+    const status = dock.querySelector<HTMLElement>('[data-a11y-status]')!;
+
+    let state = read();
+
+    const say = (text: string) => {
+      status.textContent = text;
+    };
+
+    const paint = () => {
+      contrastBtn.setAttribute('aria-pressed', String(state.contrast));
+      motionBtn.setAttribute('aria-pressed', String(state.motion));
+      for (const b of sizeBtns) {
+        b.setAttribute('aria-pressed', String(Number(b.dataset.a11ySize) === state.size));
+      }
+    };
+
+    const save = () => {
+      apply(state);
+      write(state);
+      paint();
+    };
+
+    const open = () => {
+      panel.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+    };
+    const close = (focusToggle = false) => {
+      panel.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      if (focusToggle) toggle.focus();
+    };
+
+    toggle.addEventListener('click', () => {
+      if (panel.hidden) open();
+      else close();
+    });
+
+    contrastBtn.addEventListener('click', () => {
+      state.contrast = !state.contrast;
+      save();
+      say(state.contrast ? 'Hoher Kontrast eingeschaltet.' : 'Hoher Kontrast ausgeschaltet.');
+    });
+
+    motionBtn.addEventListener('click', () => {
+      state.motion = !state.motion;
+      save();
+      say(state.motion ? 'Bewegungen reduziert.' : 'Bewegungen wieder erlaubt.');
+    });
+
+    for (const b of sizeBtns) {
+      b.addEventListener('click', () => {
+        state.size = Number(b.dataset.a11ySize);
+        save();
+        say(`Textgröße: ${b.textContent?.trim()}.`);
+      });
+    }
+
+    resetBtn.addEventListener('click', () => {
+      state = { ...DEFAULTS };
+      save();
+      say('Einstellungen zurückgesetzt.');
+    });
+
+    // Escape schließt, Klick außerhalb schließt.
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) close(true);
+    });
+    document.addEventListener('pointerdown', (e) => {
+      if (panel.hidden) return;
+      if (!dock.contains(e.target as Node)) close();
+    });
+
+    paint();
+  }
+</script>
+
+<style>
+  .a11y {
+    position: fixed;
+    z-index: var(--z-modal);
+    inset-block-end: calc(16px + env(safe-area-inset-bottom, 0px));
+    inset-inline-start: calc(12px + env(safe-area-inset-left, 0px));
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+  }
+  @media (min-width: 48rem) {
+    .a11y {
+      inset-block-end: calc(20px + env(safe-area-inset-bottom, 0px));
+      inset-inline-start: calc(20px + env(safe-area-inset-left, 0px));
+    }
+  }
+  /* Solange ein Einwilligungsbanner sichtbar ist, rückt der Schalter nach
+     oben, damit er nichts verdeckt. */
+  :global(body:has(.consent:not([hidden]))) .a11y {
+    inset-block-end: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* --- Kapsel -------------------------------------------------------------
+     Dunkel, kompakt, feine Lichtkante. Vollrund ist hier bewusst erlaubt:
+     Das ist ein Systemschalter, kein Marketingelement. */
+  .a11y__bar {
+    display: flex;
+    align-items: stretch;
+    block-size: 46px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #23262a 0%, #14171a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+  }
+
+  .a11y__btn {
+    display: grid;
+    place-items: center;
+    inline-size: 48px;
+    min-block-size: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ks-cream);
+    cursor: pointer;
+  }
+  .a11y__btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .a11y__btn:focus-visible {
+    outline: 3px solid var(--ks-cyan);
+    outline-offset: -3px;
+  }
+
+  .a11y__aa {
+    font-family: var(--font-body);
+    font-weight: var(--fw-semibold);
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .a11y__sep {
+    inline-size: 1px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  /* Kontrastsymbol: Kreis, zur Hälfte hell, zur Hälfte dunkel. */
+  .a11y__circle {
+    inline-size: 20px;
+    block-size: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ks-cream);
+    background: linear-gradient(90deg, var(--ks-cream) 0 50%, transparent 50% 100%);
+  }
+  .a11y__btn--contrast[aria-pressed='true'] .a11y__circle {
+    border-color: var(--ks-cyan);
+    background: linear-gradient(90deg, var(--ks-cyan) 0 50%, transparent 50% 100%);
+  }
+
+  /* --- Einstellungsfeld ---------------------------------------------------
+     Öffnet nach oben, damit es auf Mobil nicht aus dem Bild läuft. */
+  .a11y__panel {
+    order: -1;
+    inline-size: max-content;
+    max-inline-size: calc(100vw - 24px);
+    padding: 0.9rem 1rem 1rem;
+    border-radius: var(--radius-md);
+    background: #14171a;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    color: var(--ks-cream);
+  }
+  .a11y__panel[hidden] {
+    display: none;
+  }
+
+  .a11y__group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .a11y__group + .a11y__group {
+    margin-block-start: 0.9rem;
+    padding-block-start: 0.9rem;
+    border-block-start: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .a11y__legend {
+    padding: 0;
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    color: var(--ks-cyan);
+  }
+  .a11y__choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-block-start: 0.6rem;
+  }
+
+  .a11y__choice,
+  .a11y__row {
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    font-weight: var(--fw-medium);
+    color: var(--ks-cream);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.8rem;
+    min-block-size: 44px;
+    cursor: pointer;
+    text-align: start;
+  }
+  .a11y__row {
+    display: block;
+    inline-size: 100%;
+  }
+  .a11y__row + .a11y__row {
+    margin-block-start: 0.4rem;
+  }
+  .a11y__row--quiet {
+    background: none;
+    color: #b9bcc0;
+  }
+  .a11y__choice:hover,
+  .a11y__row:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+  .a11y__choice:focus-visible,
+  .a11y__row:focus-visible {
+    outline: 3px solid var(--ks-cyan);
+    outline-offset: 2px;
+  }
+  .a11y__choice[aria-pressed='true'],
+  .a11y__row[aria-pressed='true'] {
+    background: var(--ks-cyan);
+    border-color: var(--ks-cyan);
+    color: var(--ks-black);
+  }
+
+  /* Statusmeldung nur für Screenreader. */
+  .a11y__status {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media print {
+    .a11y {
+      display: none;
+    }
+  }
+</style>

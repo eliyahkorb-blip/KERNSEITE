@@ -1,0 +1,102 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import DraftNotice from '../components/DraftNotice.astro';
+import { activeCompany } from '../lib/config-validation';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Barrierefreiheit', path: '/barrierefreiheit/' },
+];
+const c = activeCompany;
+
+// Tatsächlicher dokumentierter Prüfstand, nicht automatisch das Build-Datum.
+const lastReview = '15. September 2026';
+---
+
+<PageLayout
+  title="Barrierefreiheit"
+  description="Erklärung zur Barrierefreiheit von KERNSEITE. Ziel ist die weitgehende Vereinbarkeit mit WCAG 2.2 AA."
+  h1="Erklärung zur Barrierefreiheit"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section section--paper">
+    <div class="content">
+      <DraftNotice
+        text="Entwurf – nur im Entwicklungsmodus sichtbar. Diese Erklärung zur Barrierefreiheit ist ein technisch vorbereiteter Entwurf. Der tatsächliche Stand der Vereinbarkeit sowie bekannte Einschränkungen sind nach einer fachlichen Prüfung (z. B. gemäß BFSG/EN 301 549) zu ergänzen."
+      />
+      <div class="prose">
+        <p>
+          Wir möchten, dass unsere Website von möglichst vielen Menschen gut genutzt werden kann –
+          unabhängig von Einschränkungen oder der verwendeten Technik. Als technischer
+          Qualitätsstandard dient uns WCAG 2.2 auf Stufe AA.
+        </p>
+
+        <h2>Umgesetzte Maßnahmen</h2>
+        <ul>
+          <li>Semantisches HTML mit klaren Landmarken und sinnvoller Überschriftenstruktur</li>
+          <li>
+            Tastaturbedienung für Navigation, Formular und Aufklappelemente mit sichtbaren
+            Fokuszuständen
+          </li>
+          <li>
+            Ausreichende Farbkontraste; Informationen werden nicht allein über Farbe vermittelt
+          </li>
+          <li>Skip-Link zum Hauptinhalt</li>
+          <li>Formulare mit Beschriftungen, Beschreibungen und verständlichen Fehlermeldungen</li>
+          <li>Statusmeldungen über geeignete Live-Regionen</li>
+          <li>Respektierung der Systemeinstellung „Bewegung reduzieren“</li>
+          <li>Alternativtexte für informative Bilder; dekorative Grafiken ohne Alt-Text</li>
+          <li>Ausreichend große Bedienelemente</li>
+        </ul>
+
+        <h2>Stand der Prüfung</h2>
+        <p>
+          Diese Website ist <strong>teilweise geprüft</strong>. Eine vollständige Prüfung nach
+          WCAG 2.2 AA ist noch nicht abgeschlossen.
+        </p>
+        <p>Die bisherige technische Prüfung umfasst:</p>
+        <ul>
+          <li>Überschriftenhierarchie und Landmarken auf allen öffentlichen Seiten</li>
+          <li>Alternativtexte aller informativen Bilder</li>
+          <li>
+            Bedienung ohne Maus: Navigation, mobiles Menü, Formular, Aufklappelemente und der
+            Barrierefreiheits-Schalter
+          </li>
+          <li>Sichtbare Fokuszustände</li>
+          <li>Farbkontraste von Fließtext, Überschriften und Schaltflächen</li>
+          <li>
+            Darstellung in schmalen Ansichten ab 320 Pixel Breite sowie die Textgrößen-Einstellungen
+          </li>
+          <li>Verhalten bei aktivierter Systemeinstellung „Bewegung reduzieren“</li>
+        </ul>
+
+        <h2>Bekannte Einschränkungen</h2>
+        <ul>
+          <li>
+            Eine vollständige manuelle Prüfung mit Screenreadern und bei vergrößerter
+            Browserdarstellung steht noch aus.
+          </li>
+          <li>Verlinkte externe Kundenwebsites liegen außerhalb unseres Prüfbereichs.</li>
+          <li>
+            Es liegt noch keine Prüfung durch eine unabhängige Stelle und keine Rückmeldung von
+            Nutzenden mit assistiven Technologien vor.
+          </li>
+        </ul>
+
+        <h2>Barrierefreiheits-Schalter</h2>
+        <p>
+          Unten links lassen sich Textgröße, hoher Kontrast und reduzierte Bewegung einstellen. Die
+          Auswahl wird nur lokal im Browser gespeichert, ohne Übertragung dieser Einstellungen an
+          unseren Server. Der Schalter ersetzt keine barrierefreie Gestaltung, sondern ergänzt sie.
+        </p>
+
+        <h2>Feedback und Kontakt</h2>
+        <p>
+          Wenn dir etwas auffällt, das nicht gut zugänglich ist, freuen wir uns über einen Hinweis.
+          Du erreichst uns unter: {c.email}. Wir bemühen uns, gemeldete Probleme zeitnah zu beheben.
+        </p>
+        <p>Letzte Prüfung: {lastReview}.</p>
+      </div>
+    </div>
+  </section>
+</PageLayout>

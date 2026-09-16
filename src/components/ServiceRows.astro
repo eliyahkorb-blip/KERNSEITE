@@ -1,0 +1,154 @@
+---
+/**
+ * ServiceRows – Leistungsübersicht als große redaktionelle Reihen.
+ *
+ * Keine Kacheln, keine Nummern: Auf breiten Displays steht der Titel links,
+ * Erklärung und konkretes Beispiel stehen rechts. Das Beispiel ist der Grund
+ * weiterzulesen – es macht eine abstrakte Leistung greifbar.
+ */
+import { services } from '../config/services';
+
+interface Props {
+  /** Nur diese Leistungen zeigen (Schlüssel). Leer = alle. */
+  exclude?: readonly string[];
+  headingLevel?: 'h2' | 'h3' | 'h4';
+  /**
+   * Kompakt: ohne das konkrete Beispiel. Auf der Startseite steht es direkt
+   * darunter auf `/leistungen/` noch einmal – zweimal ist es Wiederholung.
+   */
+  compact?: boolean;
+}
+const { exclude = [], headingLevel = 'h3', compact = false } = Astro.props;
+const rows = services.filter((s) => !exclude.includes(s.key));
+const Tag = headingLevel;
+---
+
+<ul class="rows" role="list">
+  {
+    rows.map((s) => (
+      <li class="rows__item">
+        <a class="rows__link" href={s.href}>
+          <span class="rows__head">
+            <Tag class="rows__title">{s.cardTitle}</Tag>
+            <span class="rows__go" aria-hidden="true">
+              →
+            </span>
+          </span>
+          <span class="rows__main">
+            <span class="rows__body">{s.teaser}</span>
+            {!compact && <span class="rows__example">{s.example}</span>}
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .rows__item {
+    position: relative;
+    border-block-end: 1px solid var(--line);
+  }
+  .rows__link {
+    display: grid;
+    gap: 0.9rem clamp(1.5rem, 4vw, 4.5rem);
+    padding-block: clamp(1.75rem, 1rem + 2.4vw, 3.25rem);
+    text-decoration: none;
+    color: var(--text);
+    transition: padding-inline-start var(--dur-base) var(--ease-out);
+  }
+  .rows__link:hover,
+  .rows__link:focus-visible {
+    color: var(--text);
+    padding-inline-start: clamp(0.5rem, 1.5vw, 1.5rem);
+  }
+
+  .rows__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .rows__title {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.75rem, 3.6vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: var(--track-display);
+  }
+  .rows__body {
+    display: block;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    max-width: 52ch;
+  }
+  /* Konkretes Beispiel: der Grund, weiterzulesen. */
+  .rows__example {
+    display: block;
+    margin-block-start: 0.7rem;
+    color: var(--accent-ink);
+    font-size: var(--fs-small);
+    max-width: 52ch;
+  }
+  .rows__go {
+    flex: none;
+    font-size: 1.4rem;
+    color: var(--accent-ink);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .rows__link:hover .rows__go,
+  .rows__link:focus-visible .rows__go {
+    transform: translateX(8px);
+  }
+
+  /* Feine Cyan-Linie beim Hover statt Kachelrahmen */
+  .rows__item::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: -1px;
+    block-size: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .rows__item:hover::after,
+  .rows__item:focus-within::after {
+    transform: scaleX(1);
+  }
+
+  /* Zweispaltig erst, wenn die längsten Leistungsnamen sicher passen. */
+  @media (min-width: 64rem) {
+    .rows__link {
+      grid-template-columns: minmax(22rem, 1fr) minmax(0, 0.95fr) auto;
+      align-items: start;
+    }
+    /* Titel links, Text rechts, Pfeil am Zeilenende – die Spalten werden
+       ausdrücklich zugewiesen, sonst rutscht der Pfeil in die Textspalte. */
+    .rows__head {
+      display: contents;
+    }
+    .rows__title {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .rows__main {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .rows__go {
+      grid-column: 3;
+      grid-row: 1;
+      align-self: start;
+      padding-block-start: 0.15em;
+    }
+  }
+</style>

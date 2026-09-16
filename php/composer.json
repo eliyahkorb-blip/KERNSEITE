@@ -1,0 +1,23 @@
+{
+  "name": "kernseite/contact-endpoint",
+  "description": "Gehärteter Kontakt-Endpunkt für KERNSEITE (SMTP-Versand via PHPMailer).",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.1",
+    "phpmailer/phpmailer": "^6.9"
+  },
+  "config": {
+    "vendor-dir": "api/vendor",
+    "optimize-autoloader": true,
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/package-versions-deprecated": false
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Kernseite\\Contact\\": "api/src/"
+    }
+  }
+}

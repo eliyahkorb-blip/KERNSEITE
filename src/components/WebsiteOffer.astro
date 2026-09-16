@@ -1,0 +1,94 @@
+---
+import { websiteOffer } from '../config/pricing';
+interface Props {
+  detailed?: boolean;
+}
+const { detailed = false } = Astro.props;
+---
+
+<section class="section section--dark on-dark" id="website-angebot">
+  <div class="content offer">
+    <div>
+      <h2>Deine Website. Von der Idee bis zum Start.</h2><p class="offer__intro">
+        Für Selbstständige, Handwerksbetriebe und Dienstleister, die online klarer auftreten und
+        passende Anfragen gewinnen möchten.
+      </p><a
+        class="btn btn--primary"
+        href={detailed ? '/kontakt/?leistung=websites' : '/leistungen/websites/'}
+        >{detailed ? 'Projekt einschätzen lassen' : 'Umfang & Preise ansehen'}
+        <span aria-hidden="true">↗</span></a
+      >
+    </div>
+    <div class="offer__detail">
+      <p class="offer__budget-label">Typischer Projektumfang</p><p class="offer__price">
+        {websiteOffer.range}
+      </p><p class="offer__note">{websiteOffer.note}</p><ul role="list">
+        {websiteOffer.includes.map((item) => <li>{item}</li>)}
+      </ul><p class="offer__extras">{websiteOffer.additionalCosts}</p>{
+        detailed && (
+          <p class="offer__extras">
+            Für Buchungssysteme, Mehrsprachigkeit oder umfangreiche Integrationen erstellen wir ein
+            gesondertes Angebot. Online-Shops gehören derzeit nicht zum Angebot.
+          </p>
+        )
+      }
+    </div>
+  </div>
+</section>
+<style>
+  .offer {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .offer h2 {
+    max-width: 17ch;
+  }
+  .offer__intro {
+    max-width: 42ch;
+    color: var(--text-muted);
+    margin-block: 1.5rem;
+    font-size: 1rem;
+  }
+  .offer__detail {
+    padding-block-start: 0.25rem;
+  }
+  .offer__budget-label {
+    font-size: 1rem;
+    color: var(--text-muted);
+  }
+  .offer__price {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2rem, 3vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    margin-block: 0.5rem 1rem;
+  }
+  .offer__note,
+  .offer__extras {
+    font-size: 1rem;
+    color: var(--text-muted);
+    max-width: 58ch;
+  }
+  .offer ul {
+    margin-block: 1.75rem 1.25rem;
+  }
+  .offer li {
+    display: flex;
+    gap: 1rem;
+    padding-block: 0.4rem;
+    font-size: 1rem;
+  }
+  .offer li span {
+    color: var(--accent);
+  }
+  .offer__extras + .offer__extras {
+    margin-block-start: 0.75rem;
+  }
+  @media (min-width: 48rem) {
+    .offer {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 8vw, 8rem);
+    }
+  }
+</style>

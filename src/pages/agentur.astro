@@ -1,0 +1,276 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import Photo from '../components/Photo.astro';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Agentur', path: '/agentur/' },
+];
+
+const values = [
+  {
+    title: 'Ein fester Ansprechpartner',
+    body: 'Du besprichst dein Projekt direkt mit Eliyah. Rückfragen, Gestaltung und Umsetzung laufen an einer Stelle zusammen.',
+  },
+  {
+    title: 'Ein nachvollziehbares Angebot',
+    body: 'Seiten, Funktionen, Zuarbeit und Kosten werden vor Projektstart vereinbart. Erweiterungen stimmen wir mit dir ab.',
+  },
+  {
+    title: 'Entscheidungen am Entwurf',
+    body: 'Du siehst, wie deine Website aufgebaut wird, und kannst Texte und Gestaltung in Ruhe prüfen.',
+  },
+  {
+    title: 'Zusammenarbeit auf Distanz',
+    body: 'Telefon, Videogespräch und eine gemeinsame Vorschau machen die Abstimmung in ganz Deutschland möglich.',
+  },
+];
+---
+
+<PageLayout
+  title="Webdesign-Agentur von Eliyah Korb bei Würzburg"
+  description="KERNSEITE ist das Digitalstudio von Eliyah Korb aus dem Raum Würzburg: Schwerpunkt individuelle Websites, ergänzt durch ein projektbezogenes Partnernetzwerk."
+  h1="Ich bin Eliyah. Dein Ansprechpartner bei KERNSEITE."
+  lead="Ich entwickle Websites für Unternehmen, deren gute Arbeit auch online sichtbar werden soll. Von Erlabrunn bei Würzburg aus begleite ich Projekte in ganz Deutschland."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Person / Porträt -->
+  <section class="section section--paper section--tight">
+    <div class="content person">
+      <div class="person__identity">
+        <span class="person__initials" aria-hidden="true">EK.</span><p>
+          Eliyah Korb<br /><span>Gründer · Konzept · Webdesign</span>
+        </p>
+      </div>
+      <div class="person__text">
+        <h2 class="head__title">Warum KERNSEITE?</h2>
+        <p class="lead">
+          Wer dein Unternehmen noch nicht kennt, bildet sich online einen ersten Eindruck. Deshalb
+          arbeite ich zuerst daran, dein Angebot und deine Kunden zu verstehen. Daraus entstehen
+          Seiten, die erklären, Vertrauen aufbauen und die Kontaktaufnahme erleichtern.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Werte -->
+  <section class="section section--cream">
+    <div class="content">
+      <div class="band-head">
+        <h2 class="head__title">Wie wir arbeiten.</h2>
+      </div>
+      <ul class="values" role="list">
+        {
+          values.map((v) => (
+            <li class="values__item">
+              <h3 class="values__title">{v.title}</h3>
+              <p class="values__body">{v.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="content network">
+      <h2>Für besondere Aufgaben kommen Spezialisten dazu.</h2><div>
+        <p class="lead">
+          Die Website betreue ich persönlich. Für Film, Social Media oder anspruchsvolle
+          Automatisierungen arbeite ich je nach Projekt mit selbstständigen Partnern zusammen.
+        </p><p>
+          Wer welche Aufgabe übernimmt, besprechen wir vorab. Dein zentraler Ansprechpartner und
+          Vertragspartner bleibt KERNSEITE – Eliyah Korb.
+        </p><a class="link-arrow" href="/leistungen/"
+          >Leistungen kennenlernen <span aria-hidden="true">→</span></a
+        >
+      </div>
+    </div>
+  </section>
+
+  <!-- Region: Überschrift links, Bild rechts, Text darunter -->
+  <section class="section section--surface">
+    <div class="content region">
+      <div class="region__body">
+        <h2 class="region__title">Verwurzelt im Raum Würzburg.</h2>
+        <p class="region__text">
+          Der Sitz liegt in Erlabrunn bei Würzburg. Betreut werden Unternehmen in Würzburg, in
+          Unterfranken und bundesweit. Persönliche Termine sind in der Region möglich – vieles lässt
+          sich zugleich schnell und unkompliziert digital abstimmen.
+        </p>
+      </div>
+      <Photo
+        photo="standort-wuerzburg"
+        ratio="4x3"
+        sizes="(min-width: 64rem) 50vw, 100vw"
+        class="region__photo"
+      />
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Lernen wir uns kennen."
+    text="Ein erstes Gespräch ist unverbindlich – und oft klärt es schon eine Menge."
+    ctaLabel="Projekt besprechen"
+    ctaHref="/kontakt/"
+    secondaryLabel="Prozess ansehen"
+    secondaryHref="/prozess/"
+  />
+</PageLayout>
+
+<style>
+  .person__identity {
+    padding: 2rem;
+    background: var(--ks-black);
+    color: var(--ks-cream);
+    min-width: 15rem;
+  }
+  .person__initials {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 6rem;
+    line-height: 1;
+    color: var(--ks-cyan);
+    margin-block-end: 3rem;
+    letter-spacing: -0.06em;
+  }
+  .person__identity p {
+    font-size: 0.9375rem;
+  }
+  .person__identity p span {
+    color: var(--text-invert-muted);
+    font-size: 0.8125rem;
+  }
+  .network {
+    display: grid;
+    gap: 2rem;
+  }
+  .network p + p {
+    margin-block: 1rem 1.5rem;
+    color: var(--text-muted);
+  }
+  @media (min-width: 48rem) {
+    .network {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+
+  .band-head {
+    display: grid;
+    gap: var(--space-sm);
+    margin-block-end: var(--space-xl);
+  }
+
+  .person {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  /* Eigenes Markenmotiv statt Porträt-Platzhalter – ein echtes Foto der
+     Person folgt, bis dahin steht hier kein erfundenes Bild. */
+  .person__motif {
+    inline-size: 100%;
+    max-inline-size: 22rem;
+    block-size: auto;
+    display: block;
+  }
+  @media (min-width: 64rem) {
+    .person {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+  .values {
+    display: grid;
+    gap: var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* Keine Kacheln: nur eine feine Linie trennt die Haltungen. */
+  .values__item {
+    padding-block: var(--space-lg);
+    border-block-start: 1px solid var(--line);
+  }
+  .values__title {
+    font-size: var(--fs-h4);
+  }
+  .values__body {
+    margin-block-start: 0.4rem;
+    color: var(--text-muted);
+  }
+
+  .roles {
+    display: grid;
+    gap: 0;
+    margin: var(--space-xl) 0 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .roles__item {
+    display: grid;
+    gap: 0.25rem 1.5rem;
+    padding: 1.1rem 0;
+    border-block-end: 1px solid var(--line);
+  }
+  .roles__role {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-h4);
+  }
+  .roles__who {
+    font-size: var(--fs-small);
+    color: var(--accent-ink);
+  }
+  .roles__note {
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  .roles__hint {
+    margin-block-start: var(--space-lg);
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    max-width: min(64ch, 100%);
+  }
+
+  /* Zwei Spalten, zwei Zellen: links Überschrift samt Text, rechts das Bild.
+     Text und Überschrift stehen bewusst in derselben Zelle. Lagen sie in
+     zwei Rasterzeilen, verteilte das über beide Zeilen gespannte Bild seine
+     Höhe auf die Zeilen und riss eine leere Fläche dazwischen auf. */
+  .region {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+  .region__title {
+    font-size: var(--fs-h3);
+    max-width: min(12ch, 100%);
+  }
+  .region__text {
+    margin-block-start: clamp(1.25rem, 1rem + 1vw, 2rem);
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    color: var(--text-muted);
+    max-width: min(58ch, 100%);
+  }
+
+  @media (min-width: 48rem) {
+    .values {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2rem, 4vw, 4.5rem);
+    }
+  }
+  @media (min-width: 64rem) {
+    .roles__item {
+      grid-template-columns: 1fr 1fr 1.4fr;
+      align-items: baseline;
+    }
+    .region {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: clamp(2.5rem, 5vw, 5rem);
+      align-items: start;
+    }
+  }
+</style>

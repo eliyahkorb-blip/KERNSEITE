@@ -1,0 +1,236 @@
+---
+/**
+ * SEO & GEO – Split-Komposition mit Bild.
+ *
+ * Eigene Komposition: Kopf mit sofortiger Erklärung, danach ein
+ * Bild-Text-Split, vier klare Anforderungen als Reihe, eine kurze
+ * Begriffserklärung auf dunkler Fläche und ein knapper Ablauf.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import Photo from '../../components/Photo.astro';
+import RelatedServices from '../../components/RelatedServices.astro';
+import AccentWord from '../../components/AccentWord.astro';
+import FaqAccordion from '../../components/FaqAccordion.astro';
+import { getService } from '../../config/services';
+import { faqs } from '../../config/faq';
+import { serviceJsonLd, faqPageJsonLd } from '../../lib/jsonld';
+
+const service = getService('seo-geo');
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Leistungen', path: '/leistungen/' },
+  { name: service.label, path: service.href },
+];
+const pageFaqs = faqs.filter((f) => f.services?.includes('seo-geo')).slice(0, 2);
+
+const needs = [
+  { t: 'Eindeutige Seitenthemen', b: 'Eine Seite beantwortet eine Frage – nicht fünf halb.' },
+  { t: 'Verständliche Antworten', b: 'Klare Sätze statt Schlagwortlisten.' },
+  { t: 'Strukturierte Unternehmensdaten', b: 'Name, Leistung, Ort und Kontakt maschinenlesbar.' },
+  { t: 'Technisch saubere Seiten', b: 'Schnell, fehlerfrei, auf jedem Gerät bedienbar.' },
+];
+
+const steps = ['Analyse', 'Seitenstruktur', 'Inhalte', 'Technische Umsetzung', 'Auswertung'];
+---
+
+<PageLayout
+  title="SEO & GEO Agentur Würzburg"
+  description="SEO- und GEO-Agentur im Raum Würzburg: Seiten so aufbauen, dass Suchmaschinen und generative Antwortsysteme dein Angebot verstehen und korrekt wiedergeben."
+  h1Slot
+  breadcrumbs={breadcrumbs}
+  extraJsonLd={[serviceJsonLd(service), faqPageJsonLd(pageFaqs)]}
+>
+  <h1 slot="h1" class="seo__h1">Gefunden werden.<br />Und richtig wiedergegeben.</h1>
+
+  <!-- Bild und Erklärung nebeneinander -->
+  <section class="section section--cream">
+    <div class="content seo__split">
+      <Photo
+        photo="seo-geo"
+        ratio="4x3"
+        sizes="(min-width: 64rem) 46vw, 100vw"
+        priority
+        class="seo__photo"
+      />
+      <div class="seo__text">
+        <p class="lead">
+          Suche passiert längst nicht mehr nur bei Google. Immer öfter beantworten Systeme die Frage
+          direkt.
+        </p>
+        <p class="seo__body">
+          Beides braucht dieselbe Grundlage: eine Seite, die eindeutig sagt, was du anbietest, für
+          wen und wo. Wir bauen die Inhalte entlang echter Fragen auf und machen die Fakten
+          maschinenlesbar.
+        </p>
+        <p class="seo__note">
+          Sichtbarkeit lässt sich verbessern, aber nicht garantieren. Wir nennen keine Platzierungen
+          als Versprechen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Was Suchsysteme brauchen -->
+  <section class="section section--paper">
+    <div class="content">
+      <h2 class="seo__h2">Was Suchsysteme brauchen.</h2>
+      <ul class="needs" role="list">
+        {
+          needs.map((n) => (
+            <li class="needs__item">
+              <h3 class="needs__title">{n.t}</h3>
+              <p class="needs__body">{n.b}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Begriffe kurz erklärt, auf dunkler Fläche -->
+  <section class="terms section--dark on-dark">
+    <div class="content">
+      <p class="terms__text">
+        <AccentWord>SEO</AccentWord> hilft Suchmaschinen, deine Seite zu verstehen.{' '}
+        <AccentWord>GEO</AccentWord> sorgt dafür, dass auch KI-Antwortsysteme deine Informationen korrekt
+        einordnen können.
+      </p>
+    </div>
+  </section>
+
+  <!-- Ablauf als kompakte Reihe -->
+  <section class="section section--cream">
+    <div class="content seo__flowwrap">
+      <h2 class="seo__h2">So gehen wir vor.</h2>
+      <ol class="seo__flow" role="list">
+        {steps.map((s) => <li class="seo__flowstep">{s}</li>)}
+      </ol>
+    </div>
+  </section>
+
+  {
+    pageFaqs.length > 0 && (
+      <section class="section section--paper">
+        <div class="content">
+          <h2 class="seo__h2 seo__h2--gap">Kurz gefragt.</h2>
+          <FaqAccordion items={pageFaqs} />
+        </div>
+      </section>
+    )
+  }
+
+  <RelatedServices exclude="seo-geo" only={['websites', 'google', 'ki']} />
+  <CtaBanner ctaLabel="Sichtbarkeit besprechen" ctaHref="/kontakt/?leistung=seo-geo" />
+</PageLayout>
+
+<style>
+  .seo__h1 {
+    margin-block-start: var(--space-md);
+    max-width: min(18ch, 100%);
+  }
+  .seo__h2 {
+    font-size: var(--fs-h3);
+    max-width: min(14ch, 100%);
+    margin-block-end: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+  .seo__h2--gap {
+    margin-block-end: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+
+  .seo__split {
+    display: grid;
+    gap: clamp(1.75rem, 1.5rem + 2vw, 3.5rem);
+    align-items: center;
+  }
+  .seo__body {
+    margin-block-start: var(--space-lg);
+    color: var(--text-muted);
+    max-width: min(52ch, 100%);
+  }
+  .seo__note {
+    margin-block-start: var(--space-lg);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    max-width: min(52ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    .seo__split {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(2.5rem, 4vw, 4.5rem);
+    }
+  }
+
+  .needs {
+    display: grid;
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .needs__item {
+    padding-block-start: var(--space-md);
+    border-block-start: 2px solid var(--accent-mark);
+  }
+  .needs__title {
+    font-size: var(--fs-h5);
+  }
+  .needs__body {
+    margin-block-start: 0.35rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  @media (min-width: 48rem) {
+    .needs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2rem, 4vw, 4rem);
+    }
+  }
+  @media (min-width: 69rem) {
+    .needs {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .terms {
+    padding-block: clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+  .terms__text {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.35rem, 2.6vw, 2.4rem);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--text-invert);
+    max-width: min(40ch, 100%);
+  }
+
+  .seo__flowwrap {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+  .seo__flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem clamp(1rem, 2vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .seo__flowstep {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+    letter-spacing: -0.02em;
+  }
+  @media (min-width: 64rem) {
+    .seo__flowwrap {
+      grid-template-columns: minmax(0, 0.6fr) minmax(0, 1.4fr);
+      align-items: start;
+      gap: clamp(2.5rem, 5vw, 5rem);
+    }
+    .seo__h2 {
+      margin-block-end: 0;
+    }
+  }
+</style>

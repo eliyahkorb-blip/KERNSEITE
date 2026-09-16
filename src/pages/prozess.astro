@@ -1,0 +1,79 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import ProcessTimeline from '../components/ProcessTimeline.astro';
+import AccentWord from '../components/AccentWord.astro';
+import { processTimeline } from '../config/process';
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Prozess', path: '/prozess/' },
+];
+---
+
+<PageLayout
+  title="Prozess"
+  description="Von der ersten Idee bis zur laufenden Betreuung: sieben nachvollziehbare Schritte – mit klarer Aufteilung, wer was übernimmt."
+  h1Slot
+  variant="dark"
+  lead="Ein gutes Projekt braucht keinen Nebel, sondern einen nachvollziehbaren Ablauf. Hier steht jeder Schritt – und wer jeweils was beiträgt."
+  breadcrumbs={breadcrumbs}
+>
+  <h1 slot="h1">Klarer Prozess. Keine <AccentWord>Agentur-Schleifen</AccentWord>.</h1>
+
+  <section class="section section--cream">
+    <div class="content">
+      <ProcessTimeline steps={processTimeline} headingLevel="h2" />
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="content honest">
+      <div>
+        <h2 class="honest__title">Kein Projekt läuft ohne Rückfragen. Aber ohne Rätselraten.</h2>
+      </div>
+      <div class="honest__body">
+        <p class="lead">
+          Du hast eine Ansprechperson, feste Zwischenstände und schriftliche Zusammenfassungen nach
+          jeder Abstimmung. Wenn etwas länger dauert, sagen wir das – bevor du fragen musst.
+        </p>
+        <p class="honest__text">
+          Was wir nicht machen: Zwischenstände schönreden, Umfang stillschweigend erweitern oder
+          Entscheidungen ohne dich treffen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Starten wir mit Schritt eins."
+    text="Das Erstgespräch ist unverbindlich. Danach weißt du, woran du bist."
+  />
+</PageLayout>
+
+<style>
+  .honest {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+  .honest__title {
+    margin-block-start: var(--space-md);
+    font-size: var(--fs-h2);
+    max-width: min(18ch, 100%);
+  }
+  .honest__body {
+    display: grid;
+    gap: var(--space-lg);
+  }
+  .honest__text {
+    color: var(--text-muted);
+    max-width: min(52ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    .honest {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: clamp(3rem, 5vw, 6rem);
+    }
+  }
+</style>

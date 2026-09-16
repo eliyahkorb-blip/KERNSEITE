@@ -1,0 +1,257 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import GoogleProfile from '../../components/GoogleProfile.astro';
+import { works, type ProjectWork } from '../../config/cases';
+import { breadcrumbJsonLd } from '../../lib/jsonld';
+
+export function getStaticPaths() {
+  return works
+    .filter((w): w is ProjectWork => w.kind === 'project')
+    .map((w) => ({ params: { slug: w.slug }, props: { work: w } }));
+}
+
+interface Props {
+  work: ProjectWork;
+}
+const { work } = Astro.props;
+
+/** „Gastronomie · Website · digitale Speisekarte“ → einzelne Schlagworte. */
+const tags = work.category
+  .split('·')
+  .map((part) => part.trim())
+  .filter(Boolean);
+
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Arbeiten', path: '/arbeiten/' },
+  { name: work.title, path: work.href },
+];
+
+const projects = works.filter((w): w is ProjectWork => w.kind === 'project');
+const other = projects[(projects.findIndex((w) => w.slug === work.slug) + 1) % projects.length];
+
+// Nur beim Kindertagespflege-Projekt gehört das echte Google-Profil dazu.
+const showGoogleProfile = work.slug === 'kinderkoerbchen';
+---
+
+<BaseLayout
+  title={`${work.title} – ${work.stage === 'preview' ? 'Website-Entwurf' : 'Referenz'}`}
+  description={work.tagline.slice(0, 155)}
+  jsonLd={[breadcrumbJsonLd(breadcrumbs)]}
+>
+  <header class="chero section--paper">
+    <div class="content">
+      <Breadcrumbs items={breadcrumbs} />
+      <h1 class="chero__title">{work.headline}</h1>
+      <p class="chero__client">{work.title}</p>
+      <p class="lead chero__lead">{work.tagline}</p>
+      <ul class="tags chero__tags" role="list">
+        {tags.map((tag) => <li class="tag">{tag}</li>)}
+      </ul>
+      <div class="chero__actions">
+        {
+          work.liveUrl ? (
+            <a
+              class="btn btn--primary"
+              href={work.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Website ansehen <span class="visually-hidden">(öffnet in neuem Tab)</span>
+            </a>
+          ) : (
+            <a class="btn btn--primary" href="#projektvorschau">
+              Entwurf ansehen
+            </a>
+          )
+        }
+        <a class="link-arrow" href="/kontakt/?leistung=websites">Ähnliche Website anfragen</a>
+        <span class="chero__domain"
+          >{work.previewDomain ? `${work.previewDomain} · Beispieladresse` : work.liveLabel}</span
+        >
+      </div>
+    </div>
+  </header>
+
+  <!-- Großflächiger echter Screenshot -->
+  <section class="shot" id="projektvorschau" aria-label="Projektvorschau">
+    <div class="content--wide content">
+      <img
+        src={work.screenshotDesktop.src}
+        srcset={work.screenshotDesktop.srcset}
+        sizes="(min-width: 90rem) 1480px, 100vw"
+        width={work.screenshotDesktop.width}
+        height={work.screenshotDesktop.height}
+        alt={work.screenshotDesktop.alt}
+        decoding="async"
+      />
+    </div>
+  </section>
+
+  <!-- Ausgangslage / Lösung -->
+  <section class="section section--cream">
+    <div class="content two">
+      <div class="two__col">
+        <p class="label">Ausgangslage</p>
+        <p class="two__text">{work.situation}</p>
+      </div>
+      <div class="two__col">
+        <p class="label">Lösung</p>
+        <p class="two__text">{work.solution}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leistungsumfang als typografische Liste -->
+  <section class="section section--paper">
+    <div class="content">
+      <h2 class="sec-title">Was umgesetzt wurde</h2>
+      <ul class="scope" role="list">
+        {
+          work.scope.map((item) => (
+            <li class="scope__item">
+              <span class="scope__text">{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {showGoogleProfile && <GoogleProfile />}
+
+  {
+    other && (
+      <section class="section section--surface">
+        <div class="content nextwork">
+          <p class="label">Nächste Arbeit</p>
+          <h2 class="nextwork__title">
+            <a href={other.href}>{other.headline}</a>
+          </h2>
+          <p class="nextwork__meta">
+            {other.title} · {other.category}
+          </p>
+          <a class="link-arrow" href={other.href}>
+            Projekt ansehen{' '}
+            <span class="arrow" aria-hidden="true">
+              →
+            </span>
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <CtaBanner />
+</BaseLayout>
+
+<style>
+  .chero {
+    padding-block: clamp(2rem, 1.5rem + 3vw, 4rem) clamp(2.5rem, 2rem + 3vw, 4rem);
+  }
+  .chero__title {
+    margin-block-start: var(--space-xl);
+    font-size: var(--fs-h1);
+    line-height: 1.15;
+    letter-spacing: var(--track-hero);
+    max-width: min(24ch, 100%);
+  }
+  .chero__client {
+    margin-block-start: var(--space-lg);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-lead);
+  }
+  .chero__lead {
+    margin-block-start: var(--space-md);
+  }
+  .chero__tags {
+    margin-block-start: var(--space-lg);
+  }
+  .chero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-block-start: var(--space-2xl);
+  }
+  .chero__domain {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+
+  .shot {
+    padding-block-end: clamp(2rem, 1.5rem + 3vw, 4rem);
+    background: linear-gradient(to bottom, var(--ks-paper) 0 45%, var(--ks-cream) 45% 100%);
+  }
+  .shot img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+  }
+
+  .two {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .two__text {
+    margin-block-start: var(--space-md);
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    max-width: min(46ch, 100%);
+  }
+
+  .sec-title {
+    font-size: var(--fs-h2);
+    max-width: min(24ch, 100%);
+    margin-block-end: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  .scope {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .scope__item {
+    padding-block: clamp(1.1rem, 0.9rem + 1.2vw, 1.9rem);
+    border-block-end: 1px solid var(--line);
+  }
+  .scope__text {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.2rem, 2.2vw, 1.9rem);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+
+  .nextwork {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+  }
+  .nextwork__title {
+    font-size: var(--fs-h3);
+    line-height: 1;
+    max-width: min(24ch, 100%);
+  }
+  .nextwork__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .nextwork__meta {
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  .nextwork .link-arrow {
+    margin-block-start: var(--space-md);
+  }
+
+  @media (min-width: 64rem) {
+    .two {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 5vw, 6rem);
+    }
+  }
+</style>

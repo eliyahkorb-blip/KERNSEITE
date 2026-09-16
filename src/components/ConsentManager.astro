@@ -1,0 +1,108 @@
+---
+import { site } from '../config/site';
+
+// Zwei-Ebenen-Consent-Gerüst.
+// Wird NUR gerendert, wenn zustimmungspflichtige Dienste aktiviert sind
+// (site.consentRequired). Standard: aus – es werden keine externen Dienste geladen,
+// daher ist kein Banner nötig. Die Optionen "Alle akzeptieren", "Alle ablehnen" und
+// "Einstellungen" sind gleichwertig; keine Kategorie ist vorausgewählt.
+const show = site.consentRequired;
+---
+
+{
+  show && (
+    <div
+      class="consent"
+      data-consent
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="consent-title"
+      hidden
+    >
+      <div class="consent__inner content">
+        <div class="consent__text">
+          <h2 id="consent-title" class="consent__title">
+            Datenschutz-Einstellungen
+          </h2>
+          <p>
+            Wir setzen technisch notwendige Funktionen ein. Zustimmungspflichtige Dienste werden
+            erst nach deiner Einwilligung geladen. Du kannst deine Auswahl jederzeit über
+            „Cookie-Einstellungen“ im Footer ändern.
+          </p>
+        </div>
+        <div class="consent__actions">
+          <button type="button" class="btn btn--secondary" data-consent-action="settings">
+            Einstellungen
+          </button>
+          <button type="button" class="btn btn--secondary" data-consent-action="reject">
+            Alle ablehnen
+          </button>
+          <button type="button" class="btn btn--primary" data-consent-action="accept">
+            Alle akzeptieren
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .consent {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: var(--z-modal);
+    background: var(--ks-cream);
+    border-block-start: 2px solid var(--accent-mark);
+    box-shadow: var(--shadow-lg);
+    padding-block: var(--space-lg);
+  }
+  .consent[hidden] {
+    display: none;
+  }
+  .consent__inner {
+    display: grid;
+    gap: var(--space-lg);
+  }
+  .consent__title {
+    font-size: var(--fs-h4);
+    margin-block-end: 0.35rem;
+  }
+  .consent__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  @media (min-width: 48rem) {
+    .consent__inner {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+  }
+</style>
+
+<script>
+  // Minimaler Consent-Zustand (lokal gespeichert, keine personenbezogenen Profile).
+  // No-op, wenn kein Banner vorhanden ist (consentRequired = false).
+  const banner = document.querySelector<HTMLElement>('[data-consent]');
+  if (banner) {
+    const STORAGE_KEY = 'kernseite-consent';
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) banner.hidden = false;
+
+    const save = (value: string) => {
+      localStorage.setItem(STORAGE_KEY, value);
+      banner.hidden = true;
+      // Hier würden zustimmungspflichtige Dienste je nach Auswahl geladen.
+    };
+
+    banner.querySelectorAll<HTMLButtonElement>('[data-consent-action]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.consentAction;
+        if (action === 'accept') save('all');
+        else if (action === 'reject') save('essential');
+        else window.location.href = '/cookie-einstellungen/';
+      });
+    });
+  }
+</script>

@@ -1,0 +1,27 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import ProjectGrid from '../../components/ProjectGrid.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Projekte', path: '/arbeiten/' },
+];
+---
+
+<PageLayout
+  title="Webdesign-Projekte & Website-Entwürfe"
+  description="Webdesign von KERNSEITE: Kaya Döner, Kinderkörbchen, Babyschlafberatung und Bestattungen Gorhau. Einblicke in Gestaltung und Umsetzung."
+  h1="Websites mit eigenem Charakter."
+  lead="Gastronomie, Betreuung und persönliche Beratung: Schau dir unsere Websites und aktuellen Entwürfe an. Jedes Projekt beginnt mit einer anderen Aufgabe."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section section--cream">
+    <div class="content">
+      <h2 class="visually-hidden">Websites und aktuelle Entwürfe</h2><ProjectGrid />
+    </div>
+  </section>
+  <CtaBanner
+    title="Wie könnte dein Auftritt aussehen?"
+    text="Zeig uns dein Unternehmen und erzähl, was deine Website leisten soll. Daraus entwickeln wir einen passenden Vorschlag."
+  />
+</PageLayout>

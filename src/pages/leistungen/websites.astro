@@ -1,0 +1,344 @@
+---
+/**
+ * Individuelle Websites – redaktioneller Aufbau mit echten Projekten.
+ *
+ * Eigene Komposition: heller Editorial-Hero mit Projektcollage, ein kurzer
+ * Grundsatz auf dunkler Fläche, ein zusammengefasster Leistungsblock, der
+ * Prozess als ruhige, gleichmäßig ausgerichtete Reihe und drei Qualitätsprinzipien. Kein
+ * gemeinsames Detailseiten-Template.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import FaqAccordion from '../../components/FaqAccordion.astro';
+import RelatedServices from '../../components/RelatedServices.astro';
+import WebsiteOffer from '../../components/WebsiteOffer.astro';
+import { getService } from '../../config/services';
+import { works, type ProjectWork } from '../../config/cases';
+import { faqs } from '../../config/faq';
+import { serviceJsonLd, faqPageJsonLd } from '../../lib/jsonld';
+
+const service = getService('websites');
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Leistungen', path: '/leistungen/' },
+  { name: service.label, path: service.href },
+];
+
+const projects = works.filter((w): w is ProjectWork => w.kind === 'project');
+const pageFaqs = faqs.filter((f) => f.services?.includes('websites')).slice(0, 2);
+
+/** Zusammengefasst: was drin ist – nicht zweimal in zwei Listen. */
+const scope = [
+  { t: 'Strategie und Struktur', b: 'Ziele, Zielgruppen, Seitenaufbau und Nutzerführung.' },
+  { t: 'Individuelles Design', b: 'Gestaltung für dein Unternehmen, nicht aus dem Baukasten.' },
+  {
+    t: 'Responsive Entwicklung',
+    b: 'Angepasste Layouts und geprüfte Kontaktwege für Smartphone, Tablet und Desktop.',
+  },
+  { t: 'SEO- und GEO-Grundlage', b: 'Titel, Struktur und Daten, die Suchsysteme verstehen.' },
+  { t: 'Performance und Barrierearmut', b: 'Kurze Ladezeiten, Tastaturbedienung, gute Kontraste.' },
+  {
+    t: 'Start und Übergabe',
+    b: 'Gemeinsame Funktionsprüfung, Veröffentlichung und Abstimmung der weiteren Pflege.',
+  },
+];
+
+const steps = [
+  { t: 'Gespräch', b: 'Wir klären, was du vorhast.' },
+  { t: 'Struktur', b: 'Seitenaufbau und Inhalte stehen fest.' },
+  { t: 'Design', b: 'Eine visuelle Richtung, die zu dir passt.' },
+  { t: 'Umsetzung', b: 'Entwicklung, Tests, Feinschliff.' },
+  { t: 'Start', b: 'Live-Gang mit Kontrolle statt Bauchgefühl.' },
+];
+---
+
+<PageLayout
+  title="Website erstellen lassen – Umfang, Preise & Ablauf"
+  description="Individuelle Website erstellen lassen: meist 1.500–3.600 € netto. Design, Inhalte, Umsetzung und SEO-Grundlage. Persönliche Beratung, bundesweit."
+  h1Slot
+  breadcrumbs={breadcrumbs}
+  extraJsonLd={[serviceJsonLd(service), faqPageJsonLd(pageFaqs)]}
+>
+  <h1 slot="h1" class="wsite__h1">Deine neue Website. Klar geplant, individuell gestaltet.</h1>
+  <p slot="hero-extra" class="lead wsite__lead">
+    Für Unternehmen, die ihren ersten professionellen Auftritt planen oder eine bestehende Website
+    erneuern möchten. Wir entwickeln Struktur, Design und Technik passend zu deinem Angebot.
+  </p>
+  <div slot="hero-extra" class="wsite__actions">
+    <a class="btn btn--primary" href="/kontakt/?leistung=websites"
+      >Website anfragen <span aria-hidden="true">↗</span></a
+    ><a class="link-arrow" href="#website-angebot"
+      >Budget & Umfang <span aria-hidden="true">↓</span></a
+    >
+  </div>
+
+  <!-- Echte Arbeiten direkt unter dem Kopf: die Seite beweist sich selbst -->
+  <section class="proof section--cream">
+    <div class="content--wide content">
+      <ul class="proof__list" role="list">
+        {
+          projects.map((p) => (
+            <li class="proof__item">
+              <a class="proof__link" href={p.href}>
+                <img
+                  src={p.screenshotDesktop.src}
+                  srcset={p.screenshotDesktop.srcset}
+                  sizes="(min-width: 64rem) 46vw, 100vw"
+                  width={p.screenshotDesktop.width}
+                  height={p.screenshotDesktop.height}
+                  alt={p.screenshotDesktop.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="proof__name">{p.title}</span>
+                <span class="proof__go" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <WebsiteOffer detailed />
+
+  <!-- Leistung kompakt: eine Liste statt „Was dazugehört“ + „Was es bringt“ -->
+  <section class="section section--paper">
+    <div class="content wsite__split">
+      <div class="wsite__aside">
+        <h2 class="wsite__h2">Was du bekommst.</h2>
+        <p class="wsite__aside-text">
+          Du bekommst eine abgestimmte Seitenstruktur, ein eigenes Design und eine Umsetzung mit
+          klaren Kontaktwegen. Die einzelnen Seiten und Funktionen halten wir im Angebot fest.
+        </p>
+      </div>
+      <ul class="scope" role="list">
+        {
+          scope.map((s) => (
+            <li class="scope__item">
+              <h3 class="scope__title">{s.t}</h3>
+              <p class="scope__body">{s.b}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Prozess als ruhige, gleichmäßig ausgerichtete Reihe -->
+  <section class="section section--cream">
+    <div class="content">
+      <h2 class="wsite__h2 wsite__h2--wide">Von der Idee zur fertigen Website.</h2>
+      <ol class="flow" role="list">
+        {
+          steps.map((s) => (
+            <li class="flow__step">
+              <h3 class="flow__title">{s.t}</h3>
+              <p class="flow__body">{s.b}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {
+    pageFaqs.length > 0 && (
+      <section class="section section--paper">
+        <div class="content wsite__faq">
+          <h2 class="wsite__h2">Kurz gefragt.</h2>
+          <FaqAccordion items={pageFaqs} />
+        </div>
+      </section>
+    )
+  }
+
+  <RelatedServices exclude="websites" only={['seo-geo', 'google', 'video']} />
+  <CtaBanner ctaLabel="Website-Projekt besprechen" ctaHref="/kontakt/?leistung=websites" />
+</PageLayout>
+
+<style>
+  .wsite__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    margin-block-start: 1.75rem;
+  }
+
+  .wsite__h1 {
+    margin-block-start: var(--space-md);
+    max-width: min(16ch, 100%);
+  }
+  .wsite__lead {
+    margin-block-start: var(--space-lg);
+    max-width: min(46ch, 100%);
+  }
+  .wsite__h2 {
+    font-size: var(--fs-h3);
+    max-width: min(28ch, 100%);
+  }
+  .wsite__h2--wide {
+    margin-block-end: clamp(2rem, 1.5rem + 2vw, 3rem);
+  }
+
+  /* --- Projektnachweis ---------------------------------------------------- */
+  .proof {
+    padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+  .proof__list {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .proof__link {
+    display: grid;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .proof__link img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+    border-radius: var(--radius-image);
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .proof__link:hover img {
+    transform: scale(1.012);
+  }
+  .proof__name {
+    font-weight: var(--fw-semibold);
+  }
+  .proof__go {
+    color: var(--accent-mark);
+  }
+  @media (min-width: 48rem) {
+    .proof__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* --- Grundsatz ----------------------------------------------------------- */
+  .creed {
+    padding-block: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+  }
+  .creed__text {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.9rem, 4.4vw, 4rem);
+    line-height: 1.04;
+    letter-spacing: var(--track-display);
+    color: var(--text-invert);
+    max-width: min(20ch, 100%);
+  }
+  .creed__note {
+    margin-block-start: var(--space-xl);
+    color: var(--text-invert-muted);
+    max-width: min(52ch, 100%);
+  }
+
+  /* --- Leistungsumfang ----------------------------------------------------- */
+  .wsite__split {
+    display: grid;
+    gap: clamp(2rem, 1.5rem + 3vw, 4rem);
+  }
+  .wsite__aside-text {
+    margin-block-start: var(--space-md);
+    color: var(--text-muted);
+    max-width: min(40ch, 100%);
+  }
+  .scope {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+  }
+  .scope__item {
+    padding-block: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+    border-block-end: 1px solid var(--line);
+  }
+  .scope__title {
+    font-size: var(--fs-h5);
+  }
+  .scope__body {
+    margin-block-start: 0.3rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    max-width: min(52ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    .wsite__split {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: clamp(3rem, 5vw, 6rem);
+    }
+  }
+
+  /* --- Ablauf -------------------------------------------------------------- */
+  .flow {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .flow__title {
+    font-size: var(--fs-h5);
+  }
+  .flow__step {
+    min-width: 0;
+  }
+  .flow__body {
+    margin-block-start: 0.35rem;
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+  @media (min-width: 64rem) {
+    .flow {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: clamp(1rem, 2vw, 2rem);
+    }
+  }
+
+  /* --- Prinzipien ---------------------------------------------------------- */
+  .creds {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .creds__title {
+    font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+    letter-spacing: -0.025em;
+  }
+  .creds__body {
+    margin-block-start: 0.5rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+    max-width: min(38ch, 100%);
+  }
+  @media (min-width: 48rem) {
+    .creds {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: clamp(2rem, 4vw, 4rem);
+    }
+  }
+
+  .wsite__faq {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  @media (min-width: 64rem) {
+    .wsite__faq {
+      grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+      gap: clamp(3rem, 5vw, 5rem);
+    }
+  }
+</style>

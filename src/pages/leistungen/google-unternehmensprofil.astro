@@ -1,0 +1,278 @@
+---
+/**
+ * Google-Unternehmensprofil – Aufbau um den echten Screenshot.
+ *
+ * Eigene Komposition: kompakter Kopf, echter Profil-Screenshot mit
+ * Erklärung, vier Optimierungsbereiche, die Verbindung zur Website und ein
+ * echtes Referenzbeispiel. Keine erfundenen Zahlen, keine Platzierungs-
+ * versprechen.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import RelatedServices from '../../components/RelatedServices.astro';
+import FaqAccordion from '../../components/FaqAccordion.astro';
+import { getService } from '../../config/services';
+import { works, type ProjectWork } from '../../config/cases';
+import { faqs } from '../../config/faq';
+import { serviceJsonLd, faqPageJsonLd } from '../../lib/jsonld';
+
+const service = getService('google');
+const breadcrumbs = [
+  { name: 'Start', path: '/' },
+  { name: 'Leistungen', path: '/leistungen/' },
+  { name: service.label, path: service.href },
+];
+const pageFaqs = faqs.filter((f) => f.services?.includes('google')).slice(0, 2);
+
+const reference = works.find(
+  (w): w is ProjectWork => w.kind === 'project' && w.slug === 'kinderkoerbchen',
+);
+
+const areas = [
+  {
+    t: 'Profil sauber aufsetzen',
+    b: 'Kategorien, Öffnungszeiten, Kontaktwege und Fotos vollständig hinterlegen.',
+  },
+  {
+    t: 'Leistungen eindeutig darstellen',
+    b: 'Was ihr anbietet, steht als Leistung im Profil – nicht nur auf der Website.',
+  },
+  {
+    t: 'Website und Profil verbinden',
+    b: 'Gleiche Angaben, gleiche Sprache, passende Landeseiten statt Startseiten-Link für alles.',
+  },
+  {
+    t: 'Bewertungen begleiten',
+    b: 'Ein Ablauf für Anfragen und Antworten – sachlich, zeitnah, ohne gekaufte Sterne.',
+  },
+];
+---
+
+<PageLayout
+  title="Google-Unternehmensprofil Würzburg"
+  description="Google-Unternehmensprofil aus dem Raum Würzburg: vollständig eingerichtet, gepflegt und auf die Website abgestimmt – für Anfragen aus der direkten Umgebung."
+  h1="Gefunden werden, wenn es vor Ort zählt."
+  lead="Wer in der Nähe sucht, entscheidet schnell. Ein gepflegtes Profil sorgt dafür, dass dein Unternehmen richtig verstanden wird."
+  breadcrumbs={breadcrumbs}
+  extraJsonLd={[serviceJsonLd(service), faqPageJsonLd(pageFaqs)]}
+>
+  <!-- Echter Screenshot mit Erklärung -->
+  <section class="section section--cream">
+    <div class="content gsplit">
+      <figure class="gsplit__shot">
+        <img
+          src="/assets/references/google-business-profile-kinderkoerbchen.webp"
+          width="455"
+          height="569"
+          alt="Google-Unternehmensprofil von Anna-Lena’s Kinderkörbchen mit Adresse, Öffnungszeiten, Telefonnummer und Bewertungen."
+          decoding="async"
+        />
+        <figcaption class="gsplit__cap">
+          Echtes Unternehmensprofil eines KERNSEITE-Projekts
+        </figcaption>
+      </figure>
+      <div class="gsplit__text">
+        <h2 class="g__h2">Was Google sieht, entscheidet mit.</h2>
+        <p class="gsplit__body">
+          Viele Anfragen entstehen nicht auf der Website, sondern direkt in der Suche und in Maps.
+          Unvollständige oder widersprüchliche Angaben führen dazu, dass Google Angebot und Standort
+          nicht eindeutig zuordnet.
+        </p>
+        <p class="gsplit__note">
+          Sichtbarkeit lässt sich verbessern, aber nicht garantieren. Wir arbeiten an dem, was in
+          deiner Hand liegt.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vier Optimierungsbereiche -->
+  <section class="section section--paper">
+    <div class="content">
+      <h2 class="g__h2 g__h2--gap">Woran wir arbeiten.</h2>
+      <ul class="areas" role="list">
+        {
+          areas.map((a) => (
+            <li class="areas__item">
+              <h3 class="areas__title">{a.t}</h3>
+              <p class="areas__body">{a.b}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Verbindung Website und Profil -->
+  <section class="link section--dark on-dark">
+    <div class="content">
+      <p class="link__text">
+        Profil und Website müssen dasselbe sagen. Sonst entscheidet der Zufall, welche Angabe jemand
+        zuerst sieht.
+      </p>
+    </div>
+  </section>
+
+  <!-- Echtes Referenzbeispiel -->
+  {
+    reference && (
+      <section class="section section--surface">
+        <div class="content gref">
+          <div>
+            <h2 class="g__h2">Ein Beispiel aus der Praxis.</h2>
+            <p class="gref__body">
+              Für {reference.title} haben wir Website und Unternehmensprofil aufeinander abgestimmt:
+              gleiche Leistungen, gleiche Kontaktwege, gleiche Öffnungszeiten.
+            </p>
+            <a class="link-arrow gref__link" href={reference.href}>
+              Projekt ansehen{' '}
+              <span class="arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </div>
+          <img
+            class="gref__shot"
+            src={reference.screenshotDesktop.src}
+            srcset={reference.screenshotDesktop.srcset}
+            sizes="(min-width: 64rem) 50vw, 100vw"
+            width={reference.screenshotDesktop.width}
+            height={reference.screenshotDesktop.height}
+            alt={reference.screenshotDesktop.alt}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    pageFaqs.length > 0 && (
+      <section class="section section--cream">
+        <div class="content">
+          <h2 class="g__h2 g__h2--gap">Kurz gefragt.</h2>
+          <FaqAccordion items={pageFaqs} />
+        </div>
+      </section>
+    )
+  }
+
+  <RelatedServices exclude="google" only={['seo-geo', 'websites', 'social']} />
+  <CtaBanner ctaLabel="Google-Profil besprechen" ctaHref="/kontakt/?leistung=google" />
+</PageLayout>
+
+<style>
+  .g__h2 {
+    font-size: var(--fs-h3);
+    max-width: min(15ch, 100%);
+  }
+  .g__h2--gap {
+    margin-block-end: clamp(1.75rem, 1.5rem + 2vw, 3rem);
+  }
+
+  .gsplit {
+    display: grid;
+    gap: clamp(1.75rem, 1.5rem + 2vw, 3rem);
+    align-items: center;
+  }
+  .gsplit__shot {
+    margin: 0;
+    justify-self: start;
+    max-inline-size: 24rem;
+  }
+  .gsplit__shot img {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-image);
+  }
+  .gsplit__cap {
+    margin-block-start: var(--space-sm);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+  .gsplit__body {
+    margin-block-start: var(--space-lg);
+    color: var(--text-muted);
+    max-width: min(50ch, 100%);
+  }
+  .gsplit__note {
+    margin-block-start: var(--space-lg);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    max-width: min(50ch, 100%);
+  }
+  @media (min-width: 64rem) {
+    .gsplit {
+      grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+
+  .areas {
+    display: grid;
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .areas__item {
+    padding-block-start: var(--space-md);
+    border-block-start: 2px solid var(--accent-mark);
+  }
+  .areas__title {
+    font-size: var(--fs-h5);
+  }
+  .areas__body {
+    margin-block-start: 0.35rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  @media (min-width: 48rem) {
+    .areas {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2rem, 4vw, 4rem);
+    }
+  }
+
+  .link {
+    padding-block: clamp(3rem, 2rem + 4vw, 5rem);
+  }
+  .link__text {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: clamp(1.35rem, 2.8vw, 2.4rem);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--text-invert);
+    max-width: min(32ch, 100%);
+  }
+
+  .gref {
+    display: grid;
+    gap: clamp(1.75rem, 1.5rem + 2vw, 3rem);
+    align-items: center;
+  }
+  .gref__body {
+    margin-block-start: var(--space-md);
+    color: var(--text-muted);
+    max-width: min(46ch, 100%);
+  }
+  .gref__link {
+    margin-block-start: var(--space-lg);
+  }
+  .gref__shot {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+    border-radius: var(--radius-image);
+  }
+  @media (min-width: 64rem) {
+    .gref {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+</style>

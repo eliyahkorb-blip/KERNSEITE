@@ -1,0 +1,75 @@
+name: Preview
+
+# Erzeugt eine visuelle Vorschau (echte Daten, noindex, Vorschau-Hinweis, Formular
+# deaktiviert). Nicht für produktives Hosting (Marker + guard-no-fixture).
+on:
+  push:
+    branches:
+      - rework/agentur-launch-2026-09-15
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: kernseite-preview-${{ github.event_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Immer verfügbar: vollständiger Vorschau-Build als herunterladbares Artefakt.
+  artifact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm copy-fonts
+      - run: pnpm build:preview
+      - name: Vorschau-Build als Artefakt hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: kernseite-preview
+          path: dist/
+          retention-days: 14
+
+  # Öffentliche Vorschau-URL via GitHub Pages auf dem Repo-Unterpfad (/<repo>/).
+  # Voraussetzung: Settings -> Pages -> Source = "GitHub Actions" (bei privaten Repos ist
+  # GitHub Pages nur mit passendem Plan verfügbar).
+  # Läuft bei Push auf den Feature-Branch und bei manuellem Start – NICHT bei Pull Requests,
+  # damit PR-Läufe nur das Artefakt erzeugen und niemals deployen.
+  pages:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm copy-fonts
+      - run: pnpm build:preview
+      - name: Auf Repo-Unterpfad umschreiben (/<repo>/)
+        run: node scripts/rebase-dist.mjs "/${{ github.event.repository.name }}" dist
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Auf GitHub Pages veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4

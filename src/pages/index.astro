@@ -1,0 +1,192 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroCinematic from '../components/HeroCinematic.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
+import WebsiteOffer from '../components/WebsiteOffer.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import { site } from '../config/site';
+import { homeFaqs } from '../config/faq';
+import { faqPageJsonLd } from '../lib/jsonld';
+const steps = [
+  {
+    title: 'Kennenlernen & Angebot',
+    text: 'Wir sprechen über dein Unternehmen, deine Kunden und das Budget. Danach bekommst du ein schriftliches Angebot mit klarem Umfang.',
+  },
+  {
+    title: 'Inhalte & Gestaltung',
+    text: 'Wir ordnen dein Angebot, stimmen Texte und Bilder ab und entwickeln das Design. Du siehst den Entwurf, bevor die Umsetzung beginnt.',
+  },
+  {
+    title: 'Umsetzung & Start',
+    text: 'Wir bauen die Seiten, prüfen Darstellung und Kontaktwege und begleiten den Live-Gang. Die weitere Betreuung stimmen wir gesondert ab.',
+  },
+];
+---
+
+<BaseLayout
+  title="Webdesign für Unternehmen – bei Würzburg, bundesweit"
+  description={site.metaDescription}
+  jsonLd={[faqPageJsonLd(homeFaqs)]}
+>
+  <HeroCinematic />
+  <section class="section section--cream" id="arbeiten">
+    <div class="content">
+      <div class="section-heading">
+        <div>
+          <h2>Websites mit eigenem Charakter.</h2>
+        </div><a class="link-arrow" href="/arbeiten/"
+          >Alle Projekte <span aria-hidden="true">→</span></a
+        >
+      </div>
+      <ProjectGrid />
+    </div>
+  </section>
+  <WebsiteOffer />
+  <section class="section section--paper" id="prozess">
+    <div class="content">
+      <div class="section-heading">
+        <div>
+          <h2>So arbeiten wir zusammen.</h2>
+        </div><a class="link-arrow" href="/prozess/"
+          >Der Ablauf im Detail <span aria-hidden="true">→</span></a
+        >
+      </div>
+      <ol class="steps" role="list">
+        {
+          steps.map((step) => (
+            <li>
+              <>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+  <section class="section section--surface" id="agentur">
+    <div class="content founder">
+      <div>
+        <h2>Dein direkter Ansprechpartner.</h2>
+      </div>
+      <div class="founder__text">
+        <p class="lead">
+          Ich bin Eliyah, Gründer von KERNSEITE. Ich begleite dein Website-Projekt vom ersten
+          Gespräch bis zur Veröffentlichung.
+        </p><p>
+          Du sprichst direkt mit dem Menschen, der deinen Auftritt konzipiert und umsetzt. Unser
+          Sitz ist in Erlabrunn bei Würzburg; die Zusammenarbeit funktioniert bundesweit per
+          Telefon, Videogespräch und gemeinsamer Vorschau.
+        </p><a class="link-arrow" href="/agentur/"
+          >KERNSEITE kennenlernen <span aria-hidden="true">→</span></a
+        >
+      </div>
+    </div>
+  </section>
+  <section class="section section--cream">
+    <div class="content extensions">
+      <div>
+        <h2>Passend erweitern.</h2><p>
+          Ein gutes Fundament lässt sich ausbauen. Wir besprechen, welche Ergänzung zu deinem
+          Unternehmen passt.
+        </p>
+      </div><ul role="list">
+        <li>
+          <a href="/leistungen/seo-geo/">SEO & GEO <span aria-hidden="true">↗</span></a><p>
+            Inhalte und Technik für die Auffindbarkeit in Such- und Antwortsystemen.
+          </p>
+        </li><li>
+          <a href="/leistungen/google-unternehmensprofil/"
+            >Google-Unternehmensprofil <span aria-hidden="true">↗</span></a
+          ><p>Ein gepflegter Auftritt für die lokale Suche und Google Maps.</p>
+        </li><li>
+          <a href="/leistungen/">Alle ergänzenden Leistungen <span aria-hidden="true">↗</span></a><p
+          >
+            Film, Social Media und Automatisierung – je nach Bedarf mit spezialisierten Partnern.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </section>
+  <section class="section section--paper">
+    <div class="content home-faq">
+      <div>
+        <h2>Häufige Fragen.</h2><a class="link-arrow" href="/faq/"
+          >Weitere Antworten <span aria-hidden="true">→</span></a
+        >
+      </div><FaqAccordion items={homeFaqs} />
+    </div>
+  </section>
+  <CtaBanner
+    title="Lass uns über deine Website sprechen."
+    text="Erzähl uns kurz von deinem Unternehmen. Wir klären gemeinsam, welcher Auftritt und welcher Umfang zu dir passen."
+    ctaLabel="Website anfragen"
+    ctaHref="/kontakt/?leistung=websites"
+  />
+</BaseLayout>
+<style>
+  .steps {
+    display: grid;
+    gap: 2rem;
+  }
+  .steps li {
+    min-width: 0;
+  }
+  .steps h3 {
+    font-size: 1.35rem;
+    margin-block: 0 0.75rem;
+  }
+  .steps p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+  .founder,
+  .home-faq,
+  .extensions {
+    display: grid;
+    gap: 2rem;
+  }
+  .founder h2 {
+    max-width: 17ch;
+  }
+  .founder__text p + p {
+    margin-block-start: 1rem;
+    color: var(--text-muted);
+  }
+  .founder .link-arrow,
+  .home-faq .link-arrow {
+    margin-block-start: 1.5rem;
+  }
+  .extensions h2 {
+    margin-block-end: 1rem;
+  }
+  .extensions p {
+    color: var(--text-muted);
+    max-width: 42ch;
+    font-size: 1rem;
+  }
+  .extensions li {
+    padding-block: 0.5rem 1rem;
+  }
+  .extensions li a {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    text-decoration: none;
+    font-weight: 600;
+    margin-block-end: 0.4rem;
+  }
+  @media (min-width: 48rem) {
+    .steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .founder,
+    .home-faq,
+    .extensions {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 6vw, 6rem);
+    }
+  }
+</style>
